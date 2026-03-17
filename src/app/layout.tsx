@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ICEMANZ® | Walk-In Cooler & Freezer Solutions",
+  title: "ICEMANZ | Walk-In Cooler & Freezer Solutions",
   description: "Fast, reliable, and high-performance walk-in coolers and freezers. Ready to ship in 36-48 hours with 10-year panel warranty.",
 };
 

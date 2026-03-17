@@ -1,84 +1,148 @@
-import Link from 'next/link';
-import { ArrowRight, ShoppingBag } from 'lucide-react';
+"use client";
+
+import { useState, useEffect, useCallback } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const products = [
   {
     id: 1,
-    title: 'Quick-Ship Walk-In Cooler',
-    description: 'Fast delivery so you can get up and running quickly. Modular cam-lock panels.',
-    price: 'Starting from $4,999',
-    image: '/products/product_1.jpg',
-    tag: '36-48h Shipping',
+    title: 'Walk-in Cooler',
+    description: 'As the most affordable walk-in cooler provider nationwide, we understand that reliability and efficiency are vital to our customers’ operations. That’s why we offer top-tier, energy-efficient systems, along with complete services—from supply and installation to dedicated after-sales support. Please let us know your needs — we’ll do the rest! From standard to glass-door walk-in coolers and freezers, our wide range fits every business.',
+    images: ['/products/product_1.jpg', '/slider/s_1.jpeg', '/slider/s_2.jpeg'],
+    tag: 'Nationwide Provider',
   },
   {
     id: 2,
-    title: 'Quick-Ship Cooler-Freezer Combo',
-    description: 'The new ICEMANZ® Quick-Ship Walk-In Cooler-Freezer combo deliver top-quality cooling solutions.',
-    price: 'Starting from $6,499',
-    image: '/products/product_2.jpg',
-    tag: 'Quick-Ship Combo',
+    title: 'Glassdoor Walk-in Cooler',
+    description: 'As the most affordable walk-in cooler provider nationwide, we understand that reliability and efficiency are vital to our customers’ operations. That’s why we offer top-tier, energy-efficient systems, along with complete services—from supply and installation to dedicated after-sales support. Please let us know your needs — we’ll do the rest! From standard to glass-door walk-in coolers and freezers, our wide range fits every business.',
+    images: ['/products/product_2.jpg', '/slider/s_3.jpeg', '/slider/s_1.jpeg'],
+    tag: 'Energy Efficient',
   },
   {
     id: 3,
-    title: 'Custom Walk-In Cooler & Freezer',
-    description: 'Tailored to your needs – Whether you need a small unit or a large walk-in, we offer any size.',
-    price: 'Custom Pricing',
-    image: '/slider/s_3.jpg',
-    tag: 'Custom Sizes',
+    title: 'Walk-in Freezer',
+    description: 'As the most affordable walk-in cooler provider nationwide, we understand that reliability and efficiency are vital to our customers’ operations. That’s why we offer top-tier, energy-efficient systems, along with complete services—from supply and installation to dedicated after-sales support. Please let us know your needs — we’ll do the rest! From standard to glass-door walk-in coolers and freezers, our wide range fits every business.',
+    images: ['/slider/s_2.jpeg', '/slider/s_1.jpeg', '/products/product_1.jpg'],
+    tag: 'Heavy Duty',
   }
 ];
 
+function ProductCard({ product }: { product: typeof products[0] }) {
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const nextImage = useCallback(() => {
+    setCurrentImage((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
+  }, [product.images.length]);
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImage((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
+  };
+
+  const handleNextClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    nextImage();
+  };
+
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(nextImage, 4000);
+    return () => clearInterval(timer);
+  }, [nextImage, isHovered]);
+
+  return (
+    <div
+      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col h-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Internal Slider */}
+      <div className="relative h-72 overflow-hidden">
+        {product.images.map((img, idx) => (
+          <img
+            key={idx}
+            src={img}
+            alt={`${product.title} ${idx + 1}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === currentImage ? 'opacity-100 scale-105' : 'opacity-0'
+              }`}
+          />
+        ))}
+
+        {/* Slider Controls */}
+        <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={prevImage}
+            className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={handleNextClick}
+            className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+
+        {/* Indicators */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {product.images.map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-1 rounded-full transition-all duration-300 ${idx === currentImage ? 'w-4 bg-primary' : 'w-1.5 bg-white/50'
+                }`}
+            />
+          ))}
+        </div>
+
+        <div className="absolute top-4 left-4">
+          <span className="bg-primary text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-xl">
+            {product.tag}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-8 flex flex-col grow">
+        <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-primary transition-colors tracking-tight">
+          {product.title}
+        </h3>
+        <div className="relative">
+          <div className="absolute -left-4 top-0 bottom-0 w-1 bg-accent/30 rounded-full"></div>
+          <p className="text-gray-700 text-[13px] md:text-[15px] leading-relaxed font-medium bg-accent/5 p-4 md:p-6 rounded-xl border border-accent/10 italic">
+            "{product.description}"
+          </p>
+        </div>
+        <div className="mt-8 flex justify-end items-center pt-6 border-t border-gray-100">
+          <button className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 transform cursor-pointer">
+            Learn More <ArrowRight size={18} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Products() {
   return (
-    <section className="py-12 md:py-20 bg-gray-50">
+    <section className="py-20 md:py-32 bg-gray-50">
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-12 gap-6">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-              Our Premium Cooling <span className="text-primary">Solutions</span>
-            </h2>
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-              From quick-ship standard units to fully custom designs, ICEMANZ® provides high-performance refrigeration solutions tailored to your business.
-            </p>
-          </div>
-          <Link href="/products" className="text-primary font-bold flex items-center gap-2 hover:underline group text-sm md:text-base">
-            View All Products <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+        <div className="text-center max-w-4xl mx-auto mb-16 md:mb-24">
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight uppercase flex items-center justify-center gap-3">
+            <span className="text-[#171717]">Our</span>
+            <span className="text-primary">Products</span>
+          </h2>
+          <div className="h-1.5 w-16 bg-accent mx-auto mt-6 mb-8 rounded-full"></div>
+          <p className="text-base md:text-lg text-gray-600 leading-relaxed font-semibold max-w-2xl mx-auto uppercase tracking-wide">
+            High-performance refrigeration solutions tailored to your business.
+          </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
           {products.map((product) => (
-            <div key={product.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-gray-100 flex flex-col h-full">
-              <div className="relative h-64 overflow-hidden">
-                <img 
-                  src={product.image} 
-                  alt={product.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                    {product.tag}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-6 flex flex-col grow">
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                  {product.title}
-                </h3>
-                <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">
-                  {product.description}
-                </p>
-                <div className="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
-                  <span className="text-primary font-bold text-lg">
-                    {product.price}
-                  </span>
-                  <button className="bg-gray-100 p-3 rounded-full hover:bg-primary hover:text-white transition-all text-primary">
-                    <ShoppingBag size={20} />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

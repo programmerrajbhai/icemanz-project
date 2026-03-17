@@ -11,21 +11,17 @@ export default function CTA() {
           Ready to Upgrade Your <span className="text-accent">Cold Storage</span>?
         </h2>
         <p className="text-lg md:text-xl text-blue-100 mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
-          Contact us today to discuss your project requirements. Whether you need a standard quick-ship unit or a fully custom-built walk-in, ICEMANZ® has you covered.
+          Contact us today to discuss your project requirements. Whether you need a standard quick-ship unit or a fully custom-built walk-in, ICEMANZ has you covered.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
-          <Link href="/quote" className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform">
+          <Link href="/quote" className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
             <FileText size={24} /> Get a Quote Now
           </Link>
-          <a href="tel:1-800-000-0000" className="bg-white text-primary px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all shadow-xl hover:scale-105 transform">
+          <a href="tel:1-800-000-0000" className="bg-white text-primary px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
             <PhoneCall size={24} /> Call 1-800-000-0000
           </a>
         </div>
-
-        <p className="mt-10 md:mt-12 text-xs md:text-sm text-blue-200 font-medium tracking-wide uppercase">
-          Trusted by Businesses Nationwide Since 2005
-        </p>
       </div>
     </section>
   );

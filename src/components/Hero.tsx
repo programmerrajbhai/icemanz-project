@@ -1,34 +1,24 @@
 "use client";
 
-import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowRight, Search, FileText } from 'lucide-react';
+import Link from 'next/link';
 
 const sliderImages = [
   {
-    url: '/slider/s_1.png',
-    title: 'ICEMANZ® Walk-In Cooler & Freezer',
+    url: '/slider/s_1.jpeg',
+    title: 'ICEMANZ Walk-In Cooler & Freezer',
     subtitle: 'Fast. Reliable. Built for Performance.',
   },
   {
-    url: '/slider/s_2.jpg',
+    url: '/slider/s_2.jpeg',
     title: 'Custom Modular Solutions',
     subtitle: 'Tailored to fit your business perfectly.',
   },
   {
-    url: '/slider/s_3.jpg',
+    url: '/slider/s_3.jpeg',
     title: '36-48 Hour Quick Ship',
     subtitle: 'Get your cooling solutions delivered fast.',
-  },
-  {
-    url: '/slider/s_4.jpg',
-    title: '10-Year Panel Warranty',
-    subtitle: 'Dependable quality you can trust.',
-  },
-  {
-    url: '/slider/s_5.jpg',
-    title: 'Fully Compliant Engineering',
-    subtitle: 'Meets all NSF, UL, DOE, and ASTM standards.',
   }
 ];
 
@@ -45,75 +35,71 @@ export default function Hero() {
   }, [nextSlide]);
 
   return (
-    <section className="relative min-h-[550px] md:h-[650px] w-full overflow-hidden bg-gray-900 mt-[70px] md:mt-[100px]">
+    <section className="relative h-[550px] sm:h-[600px] md:h-[720px] w-full overflow-hidden bg-gray-950 mt-[70px] md:mt-[100px]">
       {/* Background Slides */}
       <div className="absolute inset-0 z-0">
         {sliderImages.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-50' : 'opacity-0'
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
           >
             <img
               src={slide.url}
               alt={slide.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/60 to-transparent md:via-gray-900/40"></div>
+            <div className="absolute inset-0 bg-black/60 md:bg-black/50"></div>
           </div>
         ))}
       </div>
 
-      <div className="container relative z-10 h-full flex items-center py-20 md:py-0">
-        <div className="max-w-3xl">
-          <div className="overflow-hidden">
-            {sliderImages.map((slide, index) => (
-              <div
-                key={index}
-                className={`transition-all duration-700 ease-out ${index === currentSlide
-                  ? 'translate-y-0 opacity-100 relative block'
-                  : 'translate-y-8 opacity-0 absolute hidden'
-                  }`}
+      {/* Centered Text Overlay */}
+      <div className="container relative z-10 h-full flex items-center justify-center">
+        <div className="max-w-4xl pt-4 md:pt-10 text-center">
+          <div className="space-y-6 md:space-y-8">
+            <h1 className="text-3xl sm:text-4xl md:text-[72px] font-black text-white uppercase tracking-tighter leading-[1.1] md:leading-[0.95] drop-shadow-2xl">
+              YOUR <span className="text-accent">TOTAL</span> <br className="hidden sm:block" />
+              REFRIGERATION <br className="hidden sm:block" />
+              <span className="text-accent">SOLUTIONS</span>
+            </h1>
+
+            <div className="hidden md:flex flex-wrap justify-center gap-x-6 gap-y-3 text-white/80 font-bold text-xs md:text-base tracking-widest uppercase">
+              <span className="flex items-center gap-2 group">
+                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
+                WALK-IN COOLER
+              </span>
+              <span className="flex items-center gap-2 group">
+                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
+                WALK-IN FREEZER
+              </span>
+              <span className="flex items-center gap-2 group">
+                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
+                CONDENSING UNIT
+              </span>
+              <span className="flex items-center gap-2 group">
+                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
+                COMMERCIAL HVAC
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6 justify-center px-6 sm:px-0">
+              <Link
+                href="/products"
+                className="w-full sm:w-auto bg-primary hover:bg-blue-700 text-white px-8 md:px-10 py-3.5 md:py-4.5 rounded-xl font-black text-[11px] md:text-[15px] uppercase tracking-[0.15em] flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-2xl shadow-primary/40 cursor-pointer"
               >
-                <span className="inline-block bg-accent px-4 py-1 rounded text-[10px] md:text-sm font-bold uppercase tracking-widest mb-4 md:mb-6 text-white shadow-lg">
-                  New Quick-Ship Available
-                </span>
-                <h1 className="text-4xl md:text-7xl font-black text-white leading-[1.1] mb-4 md:mb-6 tracking-tighter">
-                  {slide.title.split('®')[0]}<span className="text-accent">®</span><br />
-                  <span className="text-3xl md:text-7xl">{slide.title.split('®')[1]}</span>
-                </h1>
-                <p className="text-lg md:text-2xl text-gray-200 mb-8 md:mb-10 max-w-xl leading-relaxed font-medium">
-                  {slide.subtitle}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 mb-10 md:mb-12">
-            <Link href="/products" className="bg-primary text-white px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-all transform hover:scale-105 shadow-2xl shadow-primary/30">
-              View Inventory <ArrowRight size={20} />
-            </Link>
-            <Link href="/quote" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
-              Request a Quote
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              '10-Year Warranty',
-              'NSF/UL Compliant',
-              '36-48h Shipping',
-              'Modular Design'
-            ].map((text, i) => (
-              <div key={i} className="flex items-center gap-2 text-white/80 font-semibold text-xs md:text-sm">
-                <CheckCircle size={16} className="text-accent flex-shrink-0" />
-                <span>{text}</span>
-              </div>
-            ))}
+                Explore Products <ArrowRight size={16} className="md:w-[18px] md:h-[18px]" />
+              </Link>
+              <Link
+                href="/quote"
+                className="w-full sm:w-auto bg-white hover:bg-gray-100 text-primary px-8 md:px-10 py-3.5 md:py-4.5 rounded-xl font-black text-[11px] md:text-[15px] uppercase tracking-[0.15em] flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-2xl cursor-pointer"
+              >
+                <Search size={16} className="text-primary md:w-[18px] md:h-[18px]" /> Request a Quote
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-
     </section>
   );
 }
