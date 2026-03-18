@@ -49,52 +49,44 @@ export default function Hero() {
               alt={slide.title}
               className="w-full h-full object-cover object-center scale-105"
             />
-            <div className="absolute inset-0 bg-black/60 md:bg-black/50"></div>
+            <div className="absolute inset-0 bg-black/20"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/10 to-transparent"></div>
           </div>
         ))}
       </div>
 
-      {/* Centered Text Overlay */}
-      <div className="container relative z-10 h-full flex items-center justify-center">
-        <div className="max-w-4xl pt-4 md:pt-10 text-center">
+      {/* Left-Aligned Text Overlay */}
+      <div className="container relative z-10 h-full flex items-center">
+        <div className="max-w-4xl pt-4 md:pt-10">
           <div className="space-y-6 md:space-y-8">
-            <h1 className="text-3xl sm:text-4xl md:text-[72px] font-black text-white uppercase tracking-tighter leading-[1.1] md:leading-[0.95] drop-shadow-2xl">
-              YOUR <span className="text-accent">TOTAL</span> <br className="hidden sm:block" />
-              REFRIGERATION <br className="hidden sm:block" />
-              <span className="text-accent">SOLUTIONS</span>
+            {/* Main Headline with provided image style */}
+            <h1 className="text-4xl sm:text-6xl md:text-[90px] font-semibold text-white uppercase tracking-tighter leading-[0.85] drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)]">
+              YOUR <span className="text-accent inline-block relative">
+                TOTAL
+                <div className="absolute bottom-0 left-0 w-full h-2 md:h-3 bg-primary"></div>
+              </span> <br />
+              REFRIGERATION <br />
+              SOLUTIONS
             </h1>
 
-            <div className="hidden md:flex flex-wrap justify-center gap-x-6 gap-y-3 text-white/80 font-bold text-xs md:text-base tracking-widest uppercase">
-              <span className="flex items-center gap-2 group">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
-                WALK-IN COOLER
-              </span>
-              <span className="flex items-center gap-2 group">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
-                WALK-IN FREEZER
-              </span>
-              <span className="flex items-center gap-2 group">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
-                CONDENSING UNIT
-              </span>
-              <span className="flex items-center gap-2 group">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover:scale-150 transition-transform"></div>
-                COMMERCIAL HVAC
-              </span>
-            </div>
+            {/* Sub-headline from content */}
+            <p className="text-white font-medium text-lg md:text-2xl tracking-tight max-w-2xl drop-shadow-md transition-all duration-500">
+              {sliderImages[currentSlide].subtitle}
+            </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6 justify-center px-6 sm:px-0">
+            {/* Action Buttons matching reference image */}
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 pt-4">
               <Link
                 href="/products"
-                className="w-full sm:w-auto bg-primary hover:bg-blue-700 text-white px-8 md:px-10 py-3.5 md:py-4.5 rounded-xl font-black text-[11px] md:text-[15px] uppercase tracking-[0.15em] flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-2xl shadow-primary/40 cursor-pointer"
+                className="bg-primary hover:bg-blue-700 text-white px-8 md:px-12 py-4 md:py-5 rounded-lg font-semibold text-sm md:text-lg uppercase tracking-widest flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
-                Explore Products <ArrowRight size={16} className="md:w-[18px] md:h-[18px]" />
+                Explore Products
               </Link>
               <Link
                 href="/quote"
-                className="w-full sm:w-auto bg-white hover:bg-gray-100 text-primary px-8 md:px-10 py-3.5 md:py-4.5 rounded-xl font-black text-[11px] md:text-[15px] uppercase tracking-[0.15em] flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-2xl cursor-pointer"
+                className="bg-white hover:bg-gray-100 text-primary px-8 md:px-12 py-4 md:py-5 rounded-lg font-semibold text-sm md:text-lg uppercase tracking-widest flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
-                <Search size={16} className="text-primary md:w-[18px] md:h-[18px]" /> Request a Quote
+                <Search size={24} className="text-primary" /> Request a Quote
               </Link>
             </div>
           </div>
