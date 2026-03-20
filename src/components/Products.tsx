@@ -6,24 +6,24 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 const products = [
   {
     id: 1,
-    title: 'Walk-in Cooler',
-    description: 'As the most affordable walk-in cooler provider nationwide, we understand that reliability and efficiency are vital to our customers’ operations. That’s why we offer top-tier, energy-efficient systems, along with complete services—from supply and installation to dedicated after-sales support. Please let us know your needs — we’ll do the rest! From standard to glass-door walk-in coolers and freezers, our wide range fits every business.',
+    title: 'Walk-in Cooler & Freezer',
+    description: 'Custom walk-in coolers, freezers, and combo units built for maximum efficiency and durability. Our systems are engineered for restaurants, supermarkets, and warehouses, featuring standard or floor-mounted options with premium doors and reliable insulation.',
     images: ['/products/product_1.jpg', '/slider/s_1.jpeg', '/slider/s_2.jpeg'],
-    tag: 'Nationwide Provider',
+    tag: 'Best Seller',
   },
   {
     id: 2,
     title: 'Glassdoor Walk-in Cooler',
-    description: 'As the most affordable walk-in cooler provider nationwide, we understand that reliability and efficiency are vital to our customers’ operations. That’s why we offer top-tier, energy-efficient systems, along with complete services—from supply and installation to dedicated after-sales support. Please let us know your needs — we’ll do the rest! From standard to glass-door walk-in coolers and freezers, our wide range fits every business.',
+    description: 'Premium glass-door display coolers and freezers perfect for retail and grocery stores. These high-visibility units combine elegant design with advanced cooling performance, including custom shelving solutions and energy-efficient glass panels.',
     images: ['/products/product_2.jpg', '/slider/s_3.jpeg', '/slider/s_1.jpeg'],
-    tag: 'Energy Efficient',
+    tag: 'Retail Special',
   },
   {
     id: 3,
-    title: 'Walk-in Freezer',
-    description: 'As the most affordable walk-in cooler provider nationwide, we understand that reliability and efficiency are vital to our customers’ operations. That’s why we offer top-tier, energy-efficient systems, along with complete services—from supply and installation to dedicated after-sales support. Please let us know your needs — we’ll do the rest! From standard to glass-door walk-in coolers and freezers, our wide range fits every business.',
+    title: 'Refrigeration Equipment',
+    description: 'Featuring industry-leading systems like Turbo AIR and Package Unit SMART 7. Our inventory includes low-profile evaporators, condensing units, and high-performance medium/low temp systems designed for seamless integration and expert cooling.',
     images: ['/slider/s_2.jpeg', '/slider/s_1.jpeg', '/products/product_1.jpg'],
-    tag: 'Heavy Duty',
+    tag: 'Advanced Tech',
   }
 ];
 
@@ -106,16 +106,13 @@ function ProductCard({ product }: { product: typeof products[0] }) {
       </div>
 
       <div className="p-8 flex flex-col grow">
-        <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-primary transition-colors tracking-tight">
+        <h3 className="text-2xl font-black text-gray-900 mb-6 group-hover:text-primary transition-colors tracking-tight uppercase">
           {product.title}
         </h3>
-        <div className="relative">
-          <div className="absolute -left-4 top-0 bottom-0 w-1 bg-accent/30 rounded-full"></div>
-          <p className="text-gray-700 text-[13px] md:text-[15px] leading-relaxed font-medium bg-accent/5 p-4 md:p-6 rounded-xl border border-accent/10 italic">
-            "{product.description}"
-          </p>
-        </div>
-        <div className="mt-8 flex justify-end items-center pt-6 border-t border-gray-100">
+        <p className="text-gray-600 text-[14px] md:text-[15px] leading-relaxed font-medium">
+          {product.description}
+        </p>
+        <div className="mt-auto flex justify-end items-center pt-8 border-t border-gray-100 mt-8">
           <button className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 transform cursor-pointer">
             Learn More <ArrowRight size={18} />
           </button>

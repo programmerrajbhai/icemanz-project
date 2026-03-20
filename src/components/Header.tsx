@@ -79,21 +79,102 @@ export default function Header() {
               <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer">
                 Products <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
-              {/* Simple Dropdown for now */}
-              <div className="absolute top-full left-0 w-72 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-4">
-                <div className="grid gap-2">
-                  <Link href="/products/walk-in-cooler-freezer" className="p-3 hover:bg-gray-50 rounded-lg transition-colors block text-left cursor-pointer">
-                    <span className="font-bold text-gray-900 block leading-tight">Walk in Cooler and Freezer</span>
-                    <span className="text-xs text-gray-500">Premium cold storage solutions</span>
-                  </Link>
-                  <Link href="/products/refrigeration-unit" className="p-3 hover:bg-gray-50 rounded-lg transition-colors block text-left cursor-pointer">
-                    <span className="font-bold text-gray-900 block leading-tight">Refrigeration Unit/Condensing Unit</span>
-                    <span className="text-xs text-gray-500">High-efficiency cooling components</span>
-                  </Link>
-                  <Link href="/products/portable-refrigeration" className="p-3 hover:bg-gray-50 rounded-lg transition-colors block text-left cursor-pointer">
-                    <span className="font-bold text-gray-900 block leading-tight">Portable Refrigeration Unit</span>
-                    <span className="text-xs text-gray-500">Flexible mobile cooling systems</span>
-                  </Link>
+              {/* Comprehensive Mega Menu */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[900px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-8 grid grid-cols-3 gap-10">
+                {/* Category 1 */}
+                <div className="space-y-4">
+                  <h4 className="text-primary font-black text-sm uppercase tracking-wider pb-2 border-b-2 border-primary/10">
+                    Walk-in Cooler & Freezer
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      'Walk-in Coolers',
+                      'Coolers with Floor',
+                      'Walking Freezer',
+                      'Freezers with Floor',
+                      'Combo Units',
+                      'Refrigerated Container',
+                      'Frozen Container',
+                      'Doors'
+                    ].map((item) => (
+                      <Link
+                        key={item}
+                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                        className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors py-1 flex items-center gap-2 group/item"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category 2 */}
+                <div className="space-y-4">
+                  <h4 className="text-primary font-black text-sm uppercase tracking-wider pb-2 border-b-2 border-primary/10">
+                    Glassdoor Walk-in Cooler
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      'Glassdoor walk-in Cooler',
+                      'Glassdoor walk-in Freezer',
+                      'Glassdoor',
+                      'Shelving'
+                    ].map((item) => (
+                      <Link
+                        key={item}
+                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                        className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors py-1 flex items-center gap-2 group/item"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category 3 */}
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-primary font-black text-sm uppercase tracking-wider pb-2 border-b-2 border-primary/10 mb-4">
+                      Refrigeration Equipment
+                    </h4>
+                    <div className="space-y-4">
+                      {/* Sub-section: Turbo AIR */}
+                      <div>
+                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-2">Turbo AIR</span>
+                        <div className="flex flex-col gap-1 pl-2 border-l-2 border-gray-50">
+                          {[
+                            'Low Profile Evaporator',
+                            'Thin Profile Evaporator',
+                            'Medium Profile',
+                            'Center Mount Evaporator'
+                          ].map((item) => (
+                            <Link key={item} href="#" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-0.5">{item}</Link>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Sub-section: SMART 7 */}
+                      <div>
+                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-2">Package Unit SMART 7</span>
+                        <div className="flex flex-col gap-1 pl-2 border-l-2 border-gray-50">
+                          <Link href="#" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-0.5">Indoor+</Link>
+                          <Link href="#" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-0.5">Outdoor+</Link>
+                        </div>
+                      </div>
+                      {/* Sub-section: Systems */}
+                      <div className="flex flex-col gap-1">
+                        {[
+                          'Medium Temp Systems',
+                          'Low Temp Systems',
+                          'Condensing Units',
+                          'Evaporators'
+                        ].map((item) => (
+                          <Link key={item} href="#" className="text-[12px] font-bold text-gray-600 hover:text-primary transition-colors py-0.5 uppercase tracking-tighter">{item}</Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,14 +231,59 @@ export default function Header() {
             </div>
 
             <nav className="flex flex-col gap-6 text-lg font-bold text-gray-800">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">Home</Link>
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer border-b border-gray-50 pb-4">Home</Link>
+
               <div className="flex flex-col gap-4">
-                <span className="text-sm uppercase tracking-widest text-gray-400 font-black">Products</span>
-                <Link href="/products/walk-in-cooler-freezer" onClick={() => setIsMobileMenuOpen(false)} className="pl-2 hover:text-primary transition-colors text-base font-bold cursor-pointer">Walk in Cooler and Freezer</Link>
-                <Link href="/products/refrigeration-unit" onClick={() => setIsMobileMenuOpen(false)} className="pl-2 hover:text-primary transition-colors text-base font-bold cursor-pointer">Refrigeration Unit/Condensing Unit</Link>
-                <Link href="/products/portable-refrigeration" onClick={() => setIsMobileMenuOpen(false)} className="pl-2 hover:text-primary transition-colors text-base font-bold cursor-pointer">Portable Refrigeration Unit</Link>
+                <span className="text-xs uppercase tracking-[0.3em] text-primary font-black mb-2">Products</span>
+
+                {/* Mobile Sub-categories */}
+                <div className="space-y-6 pl-2">
+                  {/* Walk-in Cooler & Freezer */}
+                  <div className="space-y-3">
+                    <span className="text-[13px] font-black text-gray-900 block border-l-4 border-accent pl-3">Walk-in Cooler & Freezer</span>
+                    <div className="grid grid-cols-1 gap-2 pl-4">
+                      {[
+                        'Walk-in Coolers',
+                        'Coolers with Floor',
+                        'Walking Freezer',
+                        'Freezers with Floor',
+                        'Combo Units',
+                        'Doors'
+                      ].map((item) => (
+                        <Link key={item} href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Glassdoor Walk-in Cooler */}
+                  <div className="space-y-3">
+                    <span className="text-[13px] font-black text-gray-900 block border-l-4 border-accent pl-3">Glassdoor Walk-in Cooler</span>
+                    <div className="grid grid-cols-1 gap-2 pl-4">
+                      {[
+                        'Glassdoor walk-in Cooler',
+                        'Glassdoor walk-in Freezer',
+                        'Glassdoor',
+                        'Shelving'
+                      ].map((item) => (
+                        <Link key={item} href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Refrigeration Equipment */}
+                  <div className="space-y-3">
+                    <span className="text-[13px] font-black text-gray-900 block border-l-4 border-accent pl-3">Refrigeration Equipment</span>
+                    <div className="grid grid-cols-1 gap-2 pl-4">
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">Turbo AIR</span>
+                      <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">Low Profile Evaporator</Link>
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">Package Unit SMART 7</span>
+                      <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">Indoor/Outdoor Units</Link>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">About Us</Link>
+
+              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer border-t border-gray-50 pt-4">About Us</Link>
               <Link href="/resources" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">Resources</Link>
               <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">Contact</Link>
             </nav>

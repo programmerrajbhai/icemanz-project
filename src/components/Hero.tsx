@@ -49,44 +49,37 @@ export default function Hero() {
               alt={slide.title}
               className="w-full h-full object-cover object-center scale-105"
             />
-            <div className="absolute inset-0 bg-black/20"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/10 to-transparent"></div>
+            <div className="absolute inset-0 bg-black/40"></div>
           </div>
         ))}
       </div>
 
-      {/* Left-Aligned Text Overlay */}
-      <div className="container relative z-10 h-full flex items-center">
-        <div className="max-w-4xl pt-4 md:pt-10">
-          <div className="space-y-6 md:space-y-8">
-            {/* Main Headline with provided image style */}
-            <h1 className="text-4xl sm:text-6xl md:text-[90px] font-semibold text-white uppercase tracking-tighter leading-[0.85] drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)]">
+      {/* Centered Text Overlay */}
+      <div className="container relative z-10 h-full flex items-center justify-center">
+        <div className="max-w-6xl pt-4 md:pt-10 text-center">
+          <div className="space-y-6 md:space-y-10">
+            {/* Main Headline matching reference image style but in 2 lines */}
+            <h1 className="text-3xl sm:text-5xl md:text-[72px] font-semibold text-white uppercase tracking-tighter leading-[1.05] drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)]">
               YOUR <span className="text-accent inline-block relative">
                 TOTAL
-                <div className="absolute bottom-0 left-0 w-full h-2 md:h-3 bg-primary"></div>
-              </span> <br />
-              REFRIGERATION <br />
+                <div className="absolute bottom-1 md:bottom-2 left-0 w-full h-1 md:h-2 bg-primary"></div>
+              </span> REFRIGERATION <br className="hidden md:block" />
               SOLUTIONS
             </h1>
 
-            {/* Sub-headline from content */}
-            <p className="text-white font-medium text-lg md:text-2xl tracking-tight max-w-2xl drop-shadow-md transition-all duration-500">
-              {sliderImages[currentSlide].subtitle}
-            </p>
-
             {/* Action Buttons matching reference image */}
-            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 justify-center">
               <Link
                 href="/products"
-                className="bg-primary hover:bg-blue-700 text-white px-8 md:px-12 py-4 md:py-5 rounded-lg font-semibold text-sm md:text-lg uppercase tracking-widest flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
+                className="bg-primary hover:bg-blue-700 text-white px-6 md:px-10 py-3 md:py-4 rounded-lg font-semibold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
                 Explore Products
               </Link>
               <Link
                 href="/quote"
-                className="bg-white hover:bg-gray-100 text-primary px-8 md:px-12 py-4 md:py-5 rounded-lg font-semibold text-sm md:text-lg uppercase tracking-widest flex items-center justify-center gap-3 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
+                className="bg-white hover:bg-gray-100 text-primary px-6 md:px-10 py-3 md:py-4 rounded-lg font-semibold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
-                <Search size={24} className="text-primary" /> Request a Quote
+                <Search size={20} className="text-primary" /> Request a Quote
               </Link>
             </div>
           </div>
