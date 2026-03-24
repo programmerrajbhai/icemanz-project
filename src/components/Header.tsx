@@ -76,116 +76,104 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <div className="relative group py-2">
-              <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer">
-                Products <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+              <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
+                Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
-              {/* Comprehensive Mega Menu */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[900px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-8 grid grid-cols-3 gap-10">
-                {/* Category 1 */}
-                <div className="space-y-4">
-                  <h4 className="text-primary font-black text-sm uppercase tracking-wider pb-2 border-b-2 border-primary/10">
-                    Walk-in Cooler & Freezer
-                  </h4>
-                  <div className="flex flex-col gap-2">
-                    {[
-                      'Walk-in Coolers',
-                      'Coolers with Floor',
-                      'Walking Freezer',
-                      'Freezers with Floor',
-                      'Combo Units',
-                      'Refrigerated Container',
-                      'Frozen Container',
-                      'Doors'
-                    ].map((item) => (
-                      <Link
-                        key={item}
-                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
-                        className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors py-1 flex items-center gap-2 group/item"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
-                        {item}
-                      </Link>
-                    ))}
-                  </div>
+              {/* Dropdown for Walk-in Cooler & Freezer */}
+              <div className="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-4 z-50">
+                <div className="flex flex-col gap-1">
+                  {[
+                    'Walk-in Coolers',
+                    'Coolers with Floor',
+                    'Walking Freezer',
+                    'Freezers with Floor',
+                    'Combo Units',
+                    'Refrigerated Container',
+                    'Frozen Container',
+                    'Doors'
+                  ].map((item) => (
+                    <Link
+                      key={item}
+                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                      className="text-[13px] font-bold text-gray-600 hover:text-primary hover:bg-gray-50 px-3 py-2 rounded-lg transition-all flex items-center gap-2 group/item"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
+                      {item}
+                    </Link>
+                  ))}
                 </div>
-
-                {/* Category 2 */}
-                <div className="space-y-4">
-                  <h4 className="text-primary font-black text-sm uppercase tracking-wider pb-2 border-b-2 border-primary/10">
-                    Glassdoor Walk-in Cooler
-                  </h4>
-                  <div className="flex flex-col gap-2">
-                    {[
-                      'Glassdoor walk-in Cooler',
-                      'Glassdoor walk-in Freezer',
-                      'Glassdoor',
-                      'Shelving'
-                    ].map((item) => (
-                      <Link
-                        key={item}
-                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
-                        className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors py-1 flex items-center gap-2 group/item"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
-                        {item}
-                      </Link>
-                    ))}
-                  </div>
+              </div>
+            </div>
+            <div className="relative group py-2">
+              <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
+                Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+              </button>
+              {/* Dropdown for Glassdoor Walk-in Cooler */}
+              <div className="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-4 z-50">
+                <div className="flex flex-col gap-1">
+                  {[
+                    'Glassdoor walk-in Cooler',
+                    'Glassdoor walk-in Freezer',
+                    'Glassdoor',
+                    'Shelving'
+                  ].map((item) => (
+                    <Link
+                      key={item}
+                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                      className="text-[13px] font-bold text-gray-600 hover:text-primary hover:bg-gray-50 px-3 py-2 rounded-lg transition-all flex items-center gap-2 group/item"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
+                      {item}
+                    </Link>
+                  ))}
                 </div>
-
-                {/* Category 3 */}
+              </div>
+            </div>
+            <div className="relative group py-2">
+              <Link href="/refrigeration-equipment" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap uppercase tracking-tight">
+                Refrigeration Equipment <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+              </Link>
+              {/* Dropdown for Refrigeration Equipment */}
+              <div className="absolute top-full left-0 w-72 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-6 z-50 overflow-y-auto max-h-[80vh]">
                 <div className="space-y-6">
+                  {/* Turbo AIR Section */}
                   <div>
-                    <h4 className="text-primary font-black text-sm uppercase tracking-wider pb-2 border-b-2 border-primary/10 mb-4">
-                      Refrigeration Equipment
-                    </h4>
-                    <div className="space-y-4">
-                      {/* Sub-section: Turbo AIR */}
-                      <div>
-                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-2">Turbo AIR</span>
-                        <div className="flex flex-col gap-1 pl-2 border-l-2 border-gray-50">
-                          {[
-                            'Low Profile Evaporator',
-                            'Thin Profile Evaporator',
-                            'Medium Profile',
-                            'Center Mount Evaporator'
-                          ].map((item) => (
-                            <Link key={item} href="#" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-0.5">{item}</Link>
-                          ))}
-                        </div>
-                      </div>
-                      {/* Sub-section: SMART 7 */}
-                      <div>
-                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-2">Package Unit SMART 7</span>
-                        <div className="flex flex-col gap-1 pl-2 border-l-2 border-gray-50">
-                          <Link href="#" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-0.5">Indoor+</Link>
-                          <Link href="#" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-0.5">Outdoor+</Link>
-                        </div>
-                      </div>
-                      {/* Sub-section: Systems */}
-                      <div className="flex flex-col gap-1">
-                        {[
-                          'Medium Temp Systems',
-                          'Low Temp Systems',
-                          'Condensing Units',
-                          'Evaporators'
-                        ].map((item) => (
-                          <Link key={item} href="#" className="text-[12px] font-bold text-gray-600 hover:text-primary transition-colors py-0.5 uppercase tracking-tighter">{item}</Link>
-                        ))}
-                      </div>
+                    <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Turbo AIR</h5>
+                    <div className="flex flex-col gap-1 pl-3 border-l-2 border-gray-50">
+                      {[
+                        'Low Profile Evaporator',
+                        'Thin Profile Evaporator',
+                        'Medium Profile',
+                        'Center Mount Evaporator'
+                      ].map((item) => (
+                        <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-1">{item}</Link>
+                      ))}
                     </div>
+                  </div>
+
+                  {/* SMART 7 Section */}
+                  <div>
+                    <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Package Unit SMART 7</h5>
+                    <div className="flex flex-col gap-1 pl-3 border-l-2 border-gray-50">
+                      <Link href="/products/indoor-plus" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-1">Indoor+</Link>
+                      <Link href="/products/outdoor-plus" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-1">Outdoor+</Link>
+                    </div>
+                  </div>
+
+                  {/* Systems Section */}
+                  <div className="flex flex-col gap-2 pt-2 border-t border-gray-50">
+                    {[
+                      'Medium Temp Systems',
+                      'Low Temp Systems',
+                      'Condensing Units',
+                      'Evaporators'
+                    ].map((item) => (
+                      <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} className="text-[13px] font-black text-gray-800 hover:text-primary transition-colors uppercase tracking-tight">{item}</Link>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-            <Link href="/about" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
-              About Us
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link href="/resources" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
-              Resources
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </Link>
             <Link href="/contact" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
               Contact
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
@@ -233,58 +221,77 @@ export default function Header() {
             <nav className="flex flex-col gap-6 text-lg font-bold text-gray-800">
               <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer border-b border-gray-50 pb-4">Home</Link>
 
-              <div className="flex flex-col gap-4">
-                <span className="text-xs uppercase tracking-[0.3em] text-primary font-black mb-2">Products</span>
+              <div className="flex flex-col gap-3">
+                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black">Walk-in Cooler & Freezer</span>
+                <div className="grid grid-cols-1 gap-2 pl-4 border-l-2 border-accent/20">
+                  {[
+                    'Walk-in Coolers',
+                    'Coolers with Floor',
+                    'Walking Freezer',
+                    'Freezers with Floor',
+                    'Combo Units',
+                    'Refrigerated Container',
+                    'Frozen Container',
+                    'Doors'
+                  ].map((item) => (
+                    <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                  ))}
+                </div>
+              </div>
 
-                {/* Mobile Sub-categories */}
-                <div className="space-y-6 pl-2">
-                  {/* Walk-in Cooler & Freezer */}
-                  <div className="space-y-3">
-                    <span className="text-[13px] font-black text-gray-900 block border-l-4 border-accent pl-3">Walk-in Cooler & Freezer</span>
-                    <div className="grid grid-cols-1 gap-2 pl-4">
+              <div className="flex flex-col gap-3">
+                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black">Glassdoor Walk-in Cooler</span>
+                <div className="grid grid-cols-1 gap-2 pl-4 border-l-2 border-accent/20">
+                  {[
+                    'Glassdoor walk-in Cooler',
+                    'Glassdoor walk-in Freezer',
+                    'Glassdoor',
+                    'Shelving'
+                  ].map((item) => (
+                    <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Link href="/refrigeration-equipment" onClick={() => setIsMobileMenuOpen(false)} className="text-xs uppercase tracking-[0.2em] text-primary font-black hover:text-accent transition-colors">Refrigeration Equipment</Link>
+                <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-accent/20">
+                  {/* Turbo AIR */}
+                  <div>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Turbo AIR</span>
+                    <div className="flex flex-col gap-2 pl-2">
                       {[
-                        'Walk-in Coolers',
-                        'Coolers with Floor',
-                        'Walking Freezer',
-                        'Freezers with Floor',
-                        'Combo Units',
-                        'Doors'
+                        'Low Profile Evaporator',
+                        'Thin Profile Evaporator',
+                        'Medium Profile',
+                        'Center Mount Evaporator'
                       ].map((item) => (
-                        <Link key={item} href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                        <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">{item}</Link>
                       ))}
                     </div>
                   </div>
-
-                  {/* Glassdoor Walk-in Cooler */}
-                  <div className="space-y-3">
-                    <span className="text-[13px] font-black text-gray-900 block border-l-4 border-accent pl-3">Glassdoor Walk-in Cooler</span>
-                    <div className="grid grid-cols-1 gap-2 pl-4">
-                      {[
-                        'Glassdoor walk-in Cooler',
-                        'Glassdoor walk-in Freezer',
-                        'Glassdoor',
-                        'Shelving'
-                      ].map((item) => (
-                        <Link key={item} href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
-                      ))}
+                  {/* SMART 7 */}
+                  <div>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Package Unit SMART 7</span>
+                    <div className="flex flex-col gap-2 pl-2">
+                      <Link href="/products/indoor-plus" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Indoor+</Link>
+                      <Link href="/products/outdoor-plus" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Outdoor+</Link>
                     </div>
                   </div>
-
-                  {/* Refrigeration Equipment */}
-                  <div className="space-y-3">
-                    <span className="text-[13px] font-black text-gray-900 block border-l-4 border-accent pl-3">Refrigeration Equipment</span>
-                    <div className="grid grid-cols-1 gap-2 pl-4">
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">Turbo AIR</span>
-                      <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">Low Profile Evaporator</Link>
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">Package Unit SMART 7</span>
-                      <Link href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">Indoor/Outdoor Units</Link>
-                    </div>
+                  {/* General */}
+                  <div className="flex flex-col gap-2 pt-2 border-t border-gray-50">
+                    {[
+                      'Medium Temp Systems',
+                      'Low Temp Systems',
+                      'Condensing Units',
+                      'Evaporators'
+                    ].map((item) => (
+                      <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-black text-gray-800 uppercase tracking-tight hover:text-primary transition-colors">{item}</Link>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer border-t border-gray-50 pt-4">About Us</Link>
-              <Link href="/resources" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">Resources</Link>
               <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">Contact</Link>
             </nav>
 
