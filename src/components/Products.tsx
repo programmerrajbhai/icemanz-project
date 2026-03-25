@@ -124,22 +124,51 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 
 export default function Products() {
   return (
-    <section className="py-20 md:py-32 bg-gray-50">
+    <section id="products" className="py-16 md:py-24 bg-white">
       <div className="container px-4 md:px-6">
-        <div className="text-center max-w-4xl mx-auto mb-16 md:mb-24">
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight uppercase flex items-center justify-center gap-3">
-            <span className="text-[#171717]">Our</span>
+        <div className="text-center max-w-4xl mx-auto mb-12 md:mb-20">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase flex flex-wrap items-center justify-center gap-2 md:gap-3">
+            <span className="text-[#171717]">Featured</span>
             <span className="text-primary">Products</span>
           </h2>
-          <div className="h-1.5 w-16 bg-accent mx-auto mt-6 mb-8 rounded-full"></div>
-          <p className="text-base md:text-lg text-gray-600 leading-relaxed font-semibold max-w-2xl mx-auto uppercase tracking-wide">
-            High-performance refrigeration solutions tailored to your business.
-          </p>
+          <div className="h-1.5 w-16 bg-accent mx-auto mt-4 rounded-full"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+          {products.map((product, index) => (
+            <div
+              key={index}
+              className="group bg-white rounded-[24px] md:rounded-[32px] p-6 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-2 flex flex-col"
+            >
+              <div className="mb-6 md:mb-8 relative aspect-square overflow-hidden rounded-2xl bg-gray-50 flex items-center justify-center p-6 md:p-10">
+                <img
+                  src={product.images[0]}
+                  alt={product.title}
+                  className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute top-4 right-4">
+                  <span className="bg-white/90 backdrop-blur-md text-[10px] font-bold text-primary px-3 py-1 rounded-full shadow-sm border border-gray-100 uppercase tracking-wider">
+                    In Stock
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex-grow">
+                <h3 className="text-xl md:text-2xl font-black text-[#171717] mb-3 md:mb-4 group-hover:text-primary transition-colors uppercase tracking-tight">
+                  {product.title}
+                </h3>
+                <p className="text-gray-600 text-[14px] md:text-[15px] leading-relaxed font-medium mb-6 md:mb-8 line-clamp-3">
+                  {product.description}
+                </p>
+              </div>
+
+              <button
+                className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl font-bold text-sm md:text-base hover:bg-primary transition-all duration-300 shadow-lg shadow-gray-200 group/btn cursor-pointer"
+              >
+                View Details
+                <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+              </button>
+            </div>
           ))}
         </div>
       </div>

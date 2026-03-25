@@ -11,12 +11,33 @@ import {
   ChevronDown,
   Clock,
   X,
-  FileText
+  FileText,
+  ArrowRight
 } from 'lucide-react';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/products/product_1.jpg');
+  const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
+
+  const walkInImages: { [key: string]: string } = {
+    'Walk In Coolers': '/products/product_1.jpg',
+    'Coolers With Floor': '/products/product_2.jpg',
+    'Walk In Freezers': '/slider/s_1.jpeg',
+    'Freezers With Floor': '/slider/s_2.jpeg',
+    'Combo Units': '/slider/s_3.jpeg',
+    'Portable Refrigeration': '/products/product_1.jpg',
+    'Drive-in Coolers Freezers': '/products/product_2.jpg',
+    'Doors': '/slider/s_1.jpeg'
+  };
+
+  const glassdoorImages: { [key: string]: string } = {
+    'Glassdoor Walk-in Cooler': '/products/product_2.jpg',
+    'Glassdoor Walk-in Freezer': '/slider/s_2.jpeg',
+    'Glassdoor': '/slider/s_3.jpeg',
+    'Shelving': '/products/product_1.jpg'
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +46,14 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMobileMenuOpen]);
 
   return (
     <header className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? '-top-[37px]' : 'top-0'}`}>
@@ -44,8 +73,6 @@ export default function Header() {
               <Clock size={14} className="text-accent" />
               <span className="text-accent">36-48h Shipping</span> - Nationwide Delivery
             </span>
-            <div className="h-4 w-px bg-white/20"></div>
-            <Link href="/track" className="hover:text-accent transition-colors">Track Order</Link>
             <Link href="/support" className="hover:text-accent transition-colors">Support</Link>
           </div>
         </div>
@@ -76,31 +103,43 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <div className="relative group py-2">
-              <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
+              <Link href="/walk-in-cooler-freezer" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
-              </button>
-              {/* Dropdown for Walk-in Cooler & Freezer */}
-              <div className="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-4 z-50">
-                <div className="flex flex-col gap-1">
-                  {[
-                    'Walk-in Coolers',
-                    'Coolers with Floor',
-                    'Walking Freezer',
-                    'Freezers with Floor',
-                    'Combo Units',
-                    'Refrigerated Container',
-                    'Frozen Container',
-                    'Doors'
-                  ].map((item) => (
-                    <Link
-                      key={item}
-                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
-                      className="text-[13px] font-bold text-gray-600 hover:text-primary hover:bg-gray-50 px-3 py-2 rounded-lg transition-all flex items-center gap-2 group/item"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
-                      {item}
-                    </Link>
-                  ))}
+              </Link>
+              {/* Mega Dropdown for Walk-in Cooler & Freezer */}
+              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-8 z-50">
+                <div className="flex gap-10">
+                  {/* Links Column */}
+                  <div className="flex flex-col gap-2 flex-1">
+                    {[
+                      'Walk In Coolers',
+                      'Coolers With Floor',
+                      'Walk In Freezers',
+                      'Freezers With Floor',
+                      'Combo Units',
+                      'Portable Refrigeration',
+                      'Drive-in Coolers Freezers',
+                      'Doors'
+                    ].map((item, index) => (
+                      <Link
+                        key={item}
+                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                        onMouseEnter={() => setHoveredWalkInItem(walkInImages[item])}
+                        className={`text-[16px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                      >
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                  {/* Image Column */}
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-4 overflow-hidden min-h-[300px]">
+                    <img
+                      key={hoveredWalkInItem}
+                      src={hoveredWalkInItem}
+                      alt="Walk-in Cooler Preview"
+                      className="max-w-full h-auto rounded-lg shadow-sm animate-in fade-in zoom-in-95 duration-500"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -108,72 +147,48 @@ export default function Header() {
               <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
                 Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
-              {/* Dropdown for Glassdoor Walk-in Cooler */}
-              <div className="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-4 z-50">
-                <div className="flex flex-col gap-1">
-                  {[
-                    'Glassdoor walk-in Cooler',
-                    'Glassdoor walk-in Freezer',
-                    'Glassdoor',
-                    'Shelving'
-                  ].map((item) => (
-                    <Link
-                      key={item}
-                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
-                      className="text-[13px] font-bold text-gray-600 hover:text-primary hover:bg-gray-50 px-3 py-2 rounded-lg transition-all flex items-center gap-2 group/item"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover/item:bg-accent transition-all"></span>
-                      {item}
-                    </Link>
-                  ))}
+              {/* Mega Dropdown for Glassdoor Walk-in Cooler */}
+              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-8 z-50">
+                <div className="flex gap-10">
+                  {/* Links Column */}
+                  <div className="flex flex-col gap-2 flex-1">
+                    {[
+                      'Glassdoor Walk-in Cooler',
+                      'Glassdoor Walk-in Freezer',
+                      'Glassdoor',
+                      'Shelving'
+                    ].map((item, index) => (
+                      <Link
+                        key={item}
+                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                        onMouseEnter={() => setHoveredGlassdoorItem(glassdoorImages[item])}
+                        className={`text-[16px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                      >
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                  {/* Image Column */}
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-4 overflow-hidden min-h-[300px]">
+                    <img
+                      key={hoveredGlassdoorItem}
+                      src={hoveredGlassdoorItem}
+                      alt="Glassdoor Cooler Preview"
+                      className="max-w-full h-auto rounded-lg shadow-sm animate-in fade-in zoom-in-95 duration-500"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
             <div className="relative group py-2">
               <Link href="/refrigeration-equipment" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap uppercase tracking-tight">
-                Refrigeration Equipment <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+                Refrigeration Equipment
               </Link>
-              {/* Dropdown for Refrigeration Equipment */}
-              <div className="absolute top-full left-0 w-72 bg-white shadow-2xl rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-6 z-50 overflow-y-auto max-h-[80vh]">
-                <div className="space-y-6">
-                  {/* Turbo AIR Section */}
-                  <div>
-                    <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Turbo AIR</h5>
-                    <div className="flex flex-col gap-1 pl-3 border-l-2 border-gray-50">
-                      {[
-                        'Low Profile Evaporator',
-                        'Thin Profile Evaporator',
-                        'Medium Profile',
-                        'Center Mount Evaporator'
-                      ].map((item) => (
-                        <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-1">{item}</Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* SMART 7 Section */}
-                  <div>
-                    <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Package Unit SMART 7</h5>
-                    <div className="flex flex-col gap-1 pl-3 border-l-2 border-gray-50">
-                      <Link href="/products/indoor-plus" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-1">Indoor+</Link>
-                      <Link href="/products/outdoor-plus" className="text-[12px] font-bold text-gray-600 hover:text-accent transition-colors py-1">Outdoor+</Link>
-                    </div>
-                  </div>
-
-                  {/* Systems Section */}
-                  <div className="flex flex-col gap-2 pt-2 border-t border-gray-50">
-                    {[
-                      'Medium Temp Systems',
-                      'Low Temp Systems',
-                      'Condensing Units',
-                      'Evaporators'
-                    ].map((item) => (
-                      <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} className="text-[13px] font-black text-gray-800 hover:text-primary transition-colors uppercase tracking-tight">{item}</Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
+            <Link href="/services" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
+              Services
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            </Link>
             <Link href="/contact" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
               Contact
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
@@ -192,119 +207,138 @@ export default function Header() {
               </button>
             </div>
 
-            <Link href="/quote" className="hidden md:flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer">
+            <Link href="https://www.barrinc.com/quote-request/5868" className="hidden md:flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer">
               <FileText size={18} />
               Get a Quote
             </Link>
 
             <button
-              className="lg:hidden p-2.5 hover:bg-gray-100 rounded-xl transition-all text-gray-700 cursor-pointer"
+              className="lg:hidden p-3 hover:bg-gray-100 rounded-xl transition-all text-gray-900 cursor-pointer active:scale-90 border border-gray-100 shadow-sm bg-white"
               onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Open menu"
             >
-              <Menu size={24} />
+              <Menu size={26} />
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 z-[60] bg-gray-900/50 backdrop-blur-sm lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-        <div className={`absolute top-0 right-0 h-full w-[300px] bg-white shadow-2xl transition-transform duration-300 transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-          <div className="p-6 flex flex-col h-full">
-            <div className="flex justify-between items-center mb-10">
-              <span className="text-xl font-black text-primary">ICEMANZ<span className="text-accent"></span></span>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
-                <X size={24} />
-              </button>
+      <div
+        className={`fixed inset-0 z-[100] bg-gray-900/60 backdrop-blur-md lg:hidden transition-all duration-500 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      >
+        <div
+          className={`absolute top-0 right-0 h-full w-[85%] max-w-[400px] bg-white shadow-2xl transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Mobile Menu Header - Fixed */}
+          <div className="p-5 flex justify-between items-center border-b border-gray-100 shrink-0 bg-white z-10">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-bold">I</div>
+              <span className="text-xl font-black text-primary tracking-tighter">ICEMANZ</span>
             </div>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer active:scale-90"
+              aria-label="Close menu"
+            >
+              <X size={28} className="text-gray-900" />
+            </button>
+          </div>
 
-            <nav className="flex flex-col gap-6 text-lg font-bold text-gray-800">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer border-b border-gray-50 pb-4">Home</Link>
+          {/* Mobile Menu Body - Scrollable */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 custom-scrollbar">
+            <nav className="flex flex-col gap-1 text-lg font-bold text-gray-800">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+                Home
+                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+              </Link>
 
-              <div className="flex flex-col gap-3">
-                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black">Walk-in Cooler & Freezer</span>
-                <div className="grid grid-cols-1 gap-2 pl-4 border-l-2 border-accent/20">
+              <div className="py-6 border-b border-gray-50">
+                <Link href="/walk-in-cooler-freezer" onClick={() => setIsMobileMenuOpen(false)} className="text-xs uppercase tracking-[0.2em] text-primary font-black mb-4 block">Walk-in Cooler & Freezer</Link>
+                <div className="grid grid-cols-1 gap-3 pl-4 border-l-2 border-primary/10">
                   {[
-                    'Walk-in Coolers',
-                    'Coolers with Floor',
-                    'Walking Freezer',
-                    'Freezers with Floor',
+                    'Walk In Coolers',
+                    'Coolers With Floor',
+                    'Walk In Freezers',
+                    'Freezers With Floor',
                     'Combo Units',
-                    'Refrigerated Container',
-                    'Frozen Container',
+                    'Portable Refrigeration',
+                    'Drive-in Coolers Freezers',
                     'Doors'
                   ].map((item) => (
-                    <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                    <Link
+                      key={item}
+                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-[15px] font-bold text-gray-500 hover:text-primary py-1 transition-colors block"
+                    >
+                      {item}
+                    </Link>
                   ))}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black">Glassdoor Walk-in Cooler</span>
-                <div className="grid grid-cols-1 gap-2 pl-4 border-l-2 border-accent/20">
+              <div className="py-6 border-b border-gray-50">
+                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black mb-4 block">Glassdoor Walk-in Cooler</span>
+                <div className="grid grid-cols-1 gap-3 pl-4 border-l-2 border-primary/10">
                   {[
-                    'Glassdoor walk-in Cooler',
-                    'Glassdoor walk-in Freezer',
+                    'Glassdoor Walk-in Cooler',
+                    'Glassdoor Walk-in Freezer',
                     'Glassdoor',
                     'Shelving'
                   ].map((item) => (
-                    <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary">{item}</Link>
+                    <Link
+                      key={item}
+                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-[15px] font-bold text-gray-500 hover:text-primary py-1 transition-colors block"
+                    >
+                      {item}
+                    </Link>
                   ))}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <Link href="/refrigeration-equipment" onClick={() => setIsMobileMenuOpen(false)} className="text-xs uppercase tracking-[0.2em] text-primary font-black hover:text-accent transition-colors">Refrigeration Equipment</Link>
-                <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-accent/20">
-                  {/* Turbo AIR */}
-                  <div>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Turbo AIR</span>
-                    <div className="flex flex-col gap-2 pl-2">
-                      {[
-                        'Low Profile Evaporator',
-                        'Thin Profile Evaporator',
-                        'Medium Profile',
-                        'Center Mount Evaporator'
-                      ].map((item) => (
-                        <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">{item}</Link>
-                      ))}
-                    </div>
-                  </div>
-                  {/* SMART 7 */}
-                  <div>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Package Unit SMART 7</span>
-                    <div className="flex flex-col gap-2 pl-2">
-                      <Link href="/products/indoor-plus" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Indoor+</Link>
-                      <Link href="/products/outdoor-plus" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Outdoor+</Link>
-                    </div>
-                  </div>
-                  {/* General */}
-                  <div className="flex flex-col gap-2 pt-2 border-t border-gray-50">
-                    {[
-                      'Medium Temp Systems',
-                      'Low Temp Systems',
-                      'Condensing Units',
-                      'Evaporators'
-                    ].map((item) => (
-                      <Link key={item} href={`/products/${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-black text-gray-800 uppercase tracking-tight hover:text-primary transition-colors">{item}</Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Link href="/refrigeration-equipment" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+                Refrigeration Equipment
+                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+              </Link>
 
-              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors cursor-pointer">Contact</Link>
+              <Link href="/services" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+                Services
+                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+              </Link>
+
+              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+                Contact
+                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+              </Link>
             </nav>
 
-            <div className="mt-auto pt-10 border-t border-gray-100">
-              <Link href="/quote" onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center block mb-4 shadow-lg shadow-primary/20 cursor-pointer">
+            <div className="mt-8 pb-10">
+              <Link
+                href="https://www.barrinc.com/quote-request/5868"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center flex items-center justify-center gap-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-transform"
+              >
+                <FileText size={20} />
                 Get a Quote
               </Link>
-              <div className="flex flex-col gap-4 text-sm text-gray-600 font-medium">
-                <a href="tel:1-800-000-0000" className="flex items-center gap-3">
-                  <Phone size={18} className="text-primary" /> 1-800-000-0000
+              <div className="space-y-5 bg-gray-50 p-6 rounded-2xl">
+                <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Info</p>
+                <a href="tel:1-800-000-0000" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    <Phone size={18} className="text-primary" />
+                  </div>
+                  <span className="font-bold text-sm">1-800-000-0000</span>
                 </a>
-                <a href="mailto:sales@icemanz.com" className="flex items-center gap-3">
-                  <Mail size={18} className="text-primary" /> sales@icemanz.com
+                <a href="mailto:sales@icemanz.com" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    <Mail size={18} className="text-primary" />
+                  </div>
+                  <span className="font-bold text-sm">sales@icemanz.com</span>
                 </a>
               </div>
             </div>

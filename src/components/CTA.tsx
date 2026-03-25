@@ -15,7 +15,7 @@ export default function CTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
-          <Link href="/quote" className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
+          <Link href="https://www.barrinc.com/quote-request/5868" className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
             <FileText size={24} /> Get a Quote Now
           </Link>
           <a href="tel:1-800-000-0000" className="bg-white text-primary px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all shadow-xl hover:scale-105 transform cursor-pointer">

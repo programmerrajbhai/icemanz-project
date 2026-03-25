@@ -34,10 +34,17 @@ export default function Footer() {
             <span className="absolute -bottom-2 left-0 w-8 h-1 bg-accent rounded-full"></span>
           </h4>
           <ul className="space-y-3 md:space-y-4 font-medium text-sm md:text-base">
-            {['Home', 'Products', 'About Us', 'Contact', 'Get a Quote'].map((item) => (
-              <li key={item}>
-                <Link href={`/${item.toLowerCase().replace(/ /g, '-')}`} className="flex items-center gap-2 hover:text-accent transition-all group cursor-pointer">
-                  <ArrowRight size={14} className="text-gray-600 group-hover:text-accent group-hover:translate-x-1 transition-all" /> {item}
+            {[
+              { name: 'Home', href: '/' },
+              { name: 'Products', href: '/products' },
+              { name: 'Services', href: '/services' },
+              { name: 'About Us', href: '/about-us' },
+              { name: 'Contact', href: '/contact' },
+              { name: 'Get a Quote', href: 'https://www.barrinc.com/quote-request/5868' }
+            ].map((item) => (
+              <li key={item.name}>
+                <Link href={item.href} className="flex items-center gap-2 hover:text-accent transition-all group cursor-pointer">
+                  <ArrowRight size={14} className="text-gray-600 group-hover:text-accent group-hover:translate-x-1 transition-all" /> {item.name}
                 </Link>
               </li>
             ))}

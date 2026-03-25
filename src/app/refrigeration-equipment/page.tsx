@@ -1,161 +1,251 @@
+"use client";
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import CTA from '@/components/CTA';
-import {
-  Snowflake,
-  Droplets,
-  Layers,
-  Cpu,
-  Wind,
-  ThermometerSnowflake,
-  Thermometer,
-  Zap,
-  ArrowDown,
-  Wifi,
-  ChevronRight
-} from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import { ChevronDown, ChevronRight, Grid, List, ArrowRight, ChevronUp, Minus, Plus } from 'lucide-react';
 
-const systems = [
+const products = Array(12).fill(null).map((_, index) => {
+  const images = [
+    '/products/product_1.jpg',
+    '/products/product_2.jpg',
+    '/slider/s_1.jpeg',
+    '/slider/s_2.jpeg',
+    '/slider/s_3.jpeg'
+  ];
+  return {
+    name: `TS0${60 + index * 5}MR404A3-T`,
+    image: images[index % images.length],
+  };
+});
+
+const sidebarCategories = [
   {
-    title: "Ammonia Refrigerators",
-    description: "Ammonia refrigerators are large, industrial-strength units. They are mostly used in food processing plants and warehouses because of their ability to maintain very low temperatures (-40°F). They work by using an ammonia solution to remove heat from the air inside the fridge.",
-    icon: Zap,
-    color: "bg-blue-50 text-blue-600"
+    name: 'Unit Coolers',
+    subCategories: [
+      {
+        name: 'Low Profile Evaporator',
+        items: ['Air Defrost', 'Electric Defrost']
+      },
+      {
+        name: 'Thin Profile Evaporator (Reach-in)',
+        items: ['Air Defrost', 'Electric Defrost']
+      },
+      {
+        name: 'Medium Profile',
+        items: ['Air Defrost', 'Electric Defrost - 6FPI', 'Electric Defrost - 4FPI']
+      },
+      {
+        name: 'Center Mount Evaporator (Low Velocity)',
+        items: ['Air Defrost', 'Electric Defrost']
+      }
+    ]
   },
   {
-    title: "Blast Freezing Equipment",
-    description: "Blast freezing equipment is used to rapidly freeze large quantities of food. This type of refrigeration is often used in the seafood industry, as it can preserve the quality and taste of fish and other seafood. Blast freezing can also be used to quick-freeze other products, like meat, fruits, and vegetables.",
-    icon: Snowflake,
-    color: "bg-cyan-50 text-cyan-600"
-  },
-  {
-    title: "Chillers",
-    description: "Chillers are used to cool liquids, like water or oil. They work by circulating the liquid through a series of tubes in the chiller unit. Chillers are often used in factories and laboratories, as they can cool large quantities of liquid quickly and evenly.",
-    icon: Droplets,
-    color: "bg-blue-50 text-blue-600"
-  },
-  {
-    title: "Compressor Racks",
-    description: "Compressor racks are a type of commercial refrigeration system that uses multiple compressors to cool a large area. Compressor racks are often used in supermarkets, as they can efficiently cool a large space.",
-    icon: Layers,
-    color: "bg-indigo-50 text-indigo-600"
-  },
-  {
-    title: "Compressors for a Walk-In Cooler",
-    description: "A walk-in cooler unit is a large, commercial refrigeration machine that can be used to store food or other products. They work by circulating cold air through the unit, using a commercial refrigeration compressor. Walk-in cooler refrigeration units are often used in restaurants, grocery stores, and warehouses.",
-    icon: Cpu,
-    color: "bg-slate-50 text-slate-600"
-  },
-  {
-    title: "Condensing Units",
-    description: "Condensing units are a type of commercial refrigeration system that uses a compressor to cool air. The compressor circulates the air through a series of coils, which remove heat from the air. Condensing units are often used in office buildings, hotels, and hospitals.",
-    icon: Wind,
-    color: "bg-sky-50 text-sky-600"
-  },
-  {
-    title: "Evaporators",
-    description: "Evaporators are used to remove water from the air. They work by circulating the air through a series of coils, which remove moisture from the air. Evaporators are often used in factories, greenhouses, and laboratories.",
-    icon: ThermometerSnowflake,
-    color: "bg-blue-50 text-blue-600"
-  },
-  {
-    title: "Low-Temperature Systems",
-    description: "Low-temperature systems are commercial refrigeration units that can maintain very low temperatures, like -40°F. They work by using a compressor to circulate the air through a series of coils, which remove heat from the air. Low-temperature systems are often used in food processing plants and warehouses.",
-    icon: ArrowDown,
-    color: "bg-blue-100 text-blue-700"
-  },
-  {
-    title: "Medium-Temperature Systems",
-    description: "Medium-temperature systems are commercial refrigeration units that can maintain temperatures between -40°F and 0°F. They work by using a compressor to circulate the air through a series of coils, which remove heat from the air. Medium-temperature systems are often used in restaurants and grocery stores.",
-    icon: Thermometer,
-    color: "bg-orange-50 text-orange-600"
-  },
-  {
-    title: "Remote Condensers",
-    description: "Remote condensers are a type of commercial refrigeration system that uses a compressor to cool air. The compressor circulates the air through a series of coils, which remove heat from the air. Remote condensers are often used in office buildings, hotels, and hospitals.",
-    icon: Wifi,
-    color: "bg-gray-50 text-gray-600"
+    name: 'Package Unit SMART 7',
+    subCategories: [
+      {
+        name: 'Indoor',
+        items: ['Cooler', 'Freezer']
+      },
+      {
+        name: 'Outdoor',
+        items: ['Cooler', 'Freezer']
+      }
+    ]
   }
 ];
 
-export default function RefrigerationEquipment() {
+export default function RefrigerationEquipmentPage() {
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(['Unit Coolers', 'Package Unit SMART 7']);
+  const [expandedSubCategories, setExpandedSubCategories] = useState<string[]>(['Low Profile Evaporator', 'Indoor', 'Outdoor']);
+
+  const toggleCategory = (name: string) => {
+    setExpandedCategories(prev =>
+      prev.includes(name) ? prev.filter(c => c !== name) : [...prev, name]
+    );
+  };
+
+  const toggleSubCategory = (name: string) => {
+    setExpandedSubCategories(prev =>
+      prev.includes(name) ? prev.filter(c => c !== name) : [...prev, name]
+    );
+  };
+
   return (
-    <main className="min-h-screen bg-white">
+    <div className="bg-white">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 md:pt-48 md:pb-32 bg-slate-900 overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/10 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-accent/5 to-transparent"></div>
-
-        <div className="container relative z-10 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-tight mb-8">
-              Commercial <span className="text-accent">Refrigeration</span> <br className="hidden md:block" /> Systems
-            </h1>
-            <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-              Refrigeration systems are vital for many businesses across diverse industries.
-              They preserve products, materials, and ingredients by maintaining the proper
-              temperatures for every item. ICEMANZ offers the highest quality equipment
-              to ensure your business stays cool and efficient.
-            </p>
+      <main className="pt-24 md:pt-32">
+        {/* Hero Section */}
+        <section className="relative h-64 md:h-80 mb-12 bg-gray-800 text-white overflow-hidden">
+          <img
+            src="/slider/s_2.jpeg"
+            alt="Refrigeration Equipment"
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0  from-black/50 to-transparent" />
+          <div className="container mx-auto h-full flex items-center justify-center relative">
+            <div className="bg-black/60 backdrop-blur-sm p-6 md:p-8 rounded-xl">
+              <h1 className="text-4xl md:text-6xl font-extrabold uppercase tracking-tight">
+                Refrigeration Equipment
+              </h1>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Intro Section */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="container px-4">
-          <div className="max-w-4xl mx-auto text-center mb-16 md:mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 tracking-tight">
-              The Perfect Cooling Solution for Your Business
-            </h2>
-            <p className="text-slate-600 text-lg leading-relaxed">
-              In order to choose the best system for your business, you must understand the
-              different types of refrigeration systems and how they differ. At ICEMANZ,
-              we offer an expansive catalog of commercial refrigeration units, including
-              everything from industrial ammonia refrigerators to specialized blast freezing equipment.
-            </p>
-          </div>
+        <div className="container mx-auto py-8 md:py-16 px-4">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+            {/* Sidebar */}
+            <aside className="w-full lg:w-[300px] shrink-0">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 px-2">Product Category</h2>
+              <div className="bg-white border border-gray-100 rounded-2xl p-5 md:p-8 sticky top-32 shadow-sm">
+                <nav className="flex flex-col gap-6">
+                  {sidebarCategories.map((category) => (
+                    <div key={category.name} className="flex flex-col gap-4">
+                      <button
+                        onClick={() => toggleCategory(category.name)}
+                        className="flex items-center justify-between w-full text-lg font-extrabold text-gray-900 group text-left cursor-pointer"
+                      >
+                        {category.name}
+                        {expandedCategories.includes(category.name) ? (
+                          <Minus size={14} className="text-accent stroke-[3] cursor-pointer" />
+                        ) : (
+                          <Plus size={14} className="text-accent stroke-[3] cursor-pointer" />
+                        )}
+                      </button>
 
-          {/* Systems Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {systems.map((system, index) => (
-              <div
-                key={index}
-                className="group p-8 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
-              >
-                {/* Accent line */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-slate-100 group-hover:bg-primary transition-colors"></div>
+                      {expandedCategories.includes(category.name) && category.subCategories.length > 0 && (
+                        <div className="flex flex-col gap-5 pl-4 md:pl-6">
+                          {category.subCategories.map((sub) => (
+                            <div key={sub.name} className="flex flex-col gap-3">
+                              <button
+                                onClick={() => toggleSubCategory(sub.name)}
+                                className="flex items-center justify-between w-full text-[15px] font-semibold text-gray-700 hover:text-primary transition-colors text-left cursor-pointer"
+                              >
+                                {sub.name}
+                                {expandedSubCategories.includes(sub.name) ? (
+                                  <Minus size={12} className="text-accent shrink-0 stroke-[3] cursor-pointer" />
+                                ) : (
+                                  <Plus size={12} className="text-accent shrink-0 stroke-[3] cursor-pointer" />
+                                )}
+                              </button>
 
-                <div className={`w-14 h-14 ${system.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
-                  <system.icon size={28} />
+                              {expandedSubCategories.includes(sub.name) && (
+                                <div className="flex flex-col gap-3 pl-6 md:pl-8">
+                                  {sub.items.map((item) => (
+                                    <Link
+                                      key={item}
+                                      href="#"
+                                      className="text-[14px] font-medium text-gray-600 hover:text-primary transition-colors"
+                                    >
+                                      {item}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1 mt-12 lg:mt-0">
+              {/* Sorting and View Options */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b border-gray-200 gap-4">
+                <p className="text-sm text-gray-600">Showing 1–12 of 40 results</p>
+                <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="sort-by" className="text-sm font-medium text-gray-700 whitespace-nowrap">Sort By:</label>
+                    <select id="sort-by" className="border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary w-32 sm:w-40 bg-white">
+                      <option>Default Order</option>
+                      <option>Price: Low to High</option>
+                      <option>Price: High to Low</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button className="p-2 rounded-md bg-gray-200 text-gray-800 hover:bg-primary hover:text-white transition-colors">
+                      <Grid size={18} />
+                    </button>
+                    <button className="p-2 rounded-md text-gray-400 hover:bg-primary hover:text-white transition-colors">
+                      <List size={18} />
+                    </button>
+                  </div>
                 </div>
+              </div>
 
-                <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-primary transition-colors">
-                  {system.title}
-                </h3>
+              {/* Product Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
+                {products.map((product, index) => (
+                  <div key={index} className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden h-full">
+                    {/* Image Area */}
+                    <div className="relative aspect-square bg-gray-50 flex items-center justify-center p-6 sm:p-8 overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
 
-                <p className="text-slate-600 leading-relaxed mb-6 text-sm">
-                  {system.description}
-                </p>
+                    {/* Content Area */}
+                    <div className="p-5 sm:p-6 flex flex-col flex-grow">
+                      <div className="mb-4">
+                        <div className="text-[10px] font-bold text-accent uppercase tracking-widest mb-1 opacity-70">Unit Cooler</div>
+                        <h3 className="font-bold text-gray-900 group-hover:text-primary transition-colors duration-300 leading-snug text-sm sm:text-base">
+                          {product.name}
+                        </h3>
+                      </div>
 
-                <Link
-                  href="/quote"
-                  className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:gap-3 transition-all"
-                >
-                  Learn More <ChevronRight size={16} />
+                      <div className="mt-auto space-y-4">
+                        <div className="flex items-center gap-2 text-[12px] text-gray-500 font-medium">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                          In Stock
+                        </div>
+
+                        <button className="w-full py-3 text-[13px] font-bold text-primary border-2 border-primary/10 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 flex items-center justify-center gap-2 group/btn shadow-sm hover:shadow-lg hover:shadow-primary/20 cursor-pointer">
+                          Compare Details
+                          <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex flex-wrap justify-center items-center gap-2 mt-12 sm:mt-16 pt-10 border-t border-gray-100 mb-12">
+                {[1, 2, 3, 4].map((page) => (
+                  <Link
+                    key={page}
+                    href="#"
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${page === 1
+                      ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-105 sm:scale-110'
+                      : 'text-gray-400 hover:bg-gray-50 hover:text-primary'
+                      }`}
+                  >
+                    {page}
+                  </Link>
+                ))}
+
+                <div className="hidden sm:block w-px h-6 bg-gray-100 mx-1 sm:mx-2"></div>
+
+                <Link href="#" className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-primary transition-all duration-300">
+                  <ChevronRight size={18} />
                 </Link>
               </div>
-            ))}
+            </div>
           </div>
         </div>
-      </section>
+      </main>
 
-      <CTA />
       <Footer />
-    </main>
+    </div>
   );
 }

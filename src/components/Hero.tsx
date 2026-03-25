@@ -59,11 +59,11 @@ export default function Hero() {
         <div className="max-w-6xl pt-4 md:pt-10 text-center">
           <div className="space-y-6 md:space-y-10">
             {/* Main Headline matching reference image style but in 2 lines */}
-            <h1 className="text-3xl sm:text-5xl md:text-[72px] font-semibold text-white uppercase tracking-tighter leading-[1.05] drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)]">
+            <h1 className="text-4xl sm:text-5xl md:text-[72px] font-extrabold text-white uppercase tracking-tighter leading-tight md:leading-[1.05] drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)] px-4 sm:px-2 max-w-[90vw] mx-auto">
               YOUR <span className="text-accent inline-block relative">
                 TOTAL
-                <div className="absolute bottom-1 md:bottom-2 left-0 w-full h-1 md:h-2 bg-primary"></div>
-              </span> REFRIGERATION <br className="hidden md:block" />
+                <div className="absolute bottom-0 md:bottom-2 left-0 w-full h-1 md:h-2 bg-primary"></div>
+              </span> REFRIGERATION <br className="hidden sm:block" />
               SOLUTIONS
             </h1>
 
@@ -71,13 +71,13 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 justify-center">
               <Link
                 href="/products"
-                className="bg-primary hover:bg-blue-700 text-white px-6 md:px-10 py-3 md:py-4 rounded-lg font-semibold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
+                className="bg-primary hover:bg-blue-700 text-white px-6 md:px-10 py-3 md:py-4 rounded-lg font-bold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
                 Explore Products
               </Link>
               <Link
-                href="/quote"
-                className="bg-white hover:bg-gray-100 text-primary px-6 md:px-10 py-3 md:py-4 rounded-lg font-semibold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
+                href="https://www.barrinc.com/quote-request/5868"
+                className="bg-white hover:bg-gray-100 text-primary px-6 md:px-10 py-3 md:py-4 rounded-lg font-bold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
                 <Search size={20} className="text-primary" /> Request a Quote
               </Link>
