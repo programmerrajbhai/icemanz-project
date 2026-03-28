@@ -37,7 +37,6 @@ export default function Footer() {
             {[
               { name: 'Home', href: '/' },
               { name: 'Products', href: '/products' },
-              { name: 'Services', href: '/services' },
               { name: 'About Us', href: '/about-us' },
               { name: 'Contact', href: '/contact' },
               { name: 'Get a Quote', href: 'https://www.barrinc.com/quote-request/5868' }

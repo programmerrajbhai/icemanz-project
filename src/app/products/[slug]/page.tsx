@@ -7,14 +7,20 @@ import {
   Search,
   ChevronDown,
   Filter,
-  Check
+  Check,
+  ArrowRight,
+  Layers,
+  Box,
+  Tag,
+  Truck,
+  ShieldCheck
 } from 'lucide-react';
 
 const mockProducts = [
   {
     id: 1,
     badge: 'ALWAYS IN STOCK!',
-    title: 'New ICEMANZ 5\' x 8\' x 8\'H Walk-in Cooler',
+    title: "New ICEMANZ 5' x 8' x 8'H Walk-in Cooler",
     image: '/products/product_1.jpg',
     description: 'We can quote any size walk-in cooler or freezer to suit your needs.',
     condition: 'Used',
@@ -24,9 +30,9 @@ const mockProducts = [
   {
     id: 2,
     badge: 'NEXT DAY DELIVERY!',
-    title: 'New ICEMANZ 8\' x 10\' x 10\'H Walk-in Cooler',
+    title: "New ICEMANZ 8' x 10' x 10'H Walk-in Cooler",
     image: '/slider/s_1.jpeg',
-    description: 'Don\'t see the size you need? We can quote any size walk-in cooler or freezer to suit your needs.',
+    description: "Don't see the size you need? We can quote any size walk-in cooler or freezer to suit your needs.",
     condition: 'New',
     sqFt: '0 Sq. Ft.',
     type: 'New'
@@ -44,7 +50,7 @@ const mockProducts = [
   {
     id: 4,
     badge: '$9,883 IN STOCK!',
-    title: 'ICEMANZ 10\' x 12\' x 8\'H Commercial Freezer',
+    title: "ICEMANZ 10' x 12' x 8'H Commercial Freezer",
     image: '/slider/s_2.jpeg',
     description: 'High-performance cooling for large inventory storage.',
     condition: 'New',
@@ -64,7 +70,7 @@ const mockProducts = [
   {
     id: 6,
     badge: '$9,158 IN STOCK!',
-    title: 'New ICEMANZ 8\' x 8\' x 10\'H Walk-in Cooler',
+    title: "New ICEMANZ 8' x 8' x 10'H Walk-in Cooler",
     image: '/slider/s_3.jpeg',
     description: 'Extra height for increased storage capacity.',
     condition: 'New',
@@ -86,72 +92,91 @@ export default async function ProductPage({ params }: { params: { slug: string }
     <main className="min-h-screen bg-white">
       <Header />
 
-      <div className="pt-32 pb-20 md:pt-40 md:pb-24">
+      <div className="pt-28 pb-20 md:pt-36 md:pb-24">
         <div className="container px-4">
-          {/* Breadcrumb & Search Row */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
-            <nav className="flex items-center gap-2 text-[13px] font-medium text-blue-600">
-              <Link href="/" className="hover:underline">Home</Link>
-              <ChevronRight size={14} className="text-gray-400" />
-              <Link href="/walk-in-cooler-freezer" className="hover:underline">Coolers & Freezers</Link>
-              <ChevronRight size={14} className="text-gray-400" />
-              <span className="text-gray-400">{title}</span>
+          {/* Top Row: Breadcrumb & Search */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+            <nav className="flex items-center gap-2 text-[14px] font-medium">
+              <Link href="/" className="text-blue-600 hover:text-blue-800 transition-colors">Home</Link>
+              <span className="text-gray-400 font-light mx-1">&gt;</span>
+              <Link href="/walk-in-cooler-freezer" className="text-blue-600 hover:text-blue-800 transition-colors">Walk-in Cooler & Freezer</Link>
+              <span className="text-gray-400 font-light mx-1">&gt;</span>
+              <span className="text-slate-400 font-normal">{title}</span>
             </nav>
 
-            <div className="flex w-full md:w-auto items-center">
-              <div className="relative flex-grow md:w-64">
+            <div className="flex w-full md:w-auto items-center shadow-sm border border-gray-100 rounded-lg overflow-hidden transition-shadow hover:shadow-md">
+              <div className="relative flex-grow md:w-80">
                 <input
                   type="text"
                   placeholder="Search the Catalog"
-                  className="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-l-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full pl-5 pr-10 py-3 text-[15px] focus:outline-none placeholder:text-gray-400"
                 />
               </div>
-              <button className="bg-primary text-white px-6 py-2.5 rounded-r-md font-bold text-sm hover:bg-blue-700 transition-all flex items-center gap-2 uppercase tracking-wider">
-                Find It <ChevronRight size={16} />
+              <button className="bg-[#005cb9] text-white px-8 py-3 font-black text-[15px] hover:bg-blue-700 transition-all flex items-center gap-2 uppercase tracking-tighter shrink-0">
+                Find It <ChevronRight size={18} strokeWidth={3} />
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-12">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
             {/* Sidebar Filters */}
             <aside className="w-full lg:w-[240px] shrink-0">
-              <div className="space-y-10">
-                <section>
-                  <h3 className="text-lg font-black text-gray-900 mb-6 uppercase tracking-tighter">Sort By</h3>
-                  <ul className="space-y-4">
-                    {['Featured', 'Size', 'Brand'].map((item) => (
-                      <li key={item}>
-                        <button className="flex items-center gap-2 text-[15px] font-bold text-gray-600 hover:text-primary transition-colors group w-full text-left">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                          {item}
+              <div className="space-y-10 sticky top-32">
+                <section className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50">
+                  <div className="flex items-center gap-2 mb-6">
+                    <Layers size={18} className="text-slate-900" />
+                    <h3 className="text-[16px] font-black text-slate-900 uppercase tracking-wider">Sort By</h3>
+                  </div>
+                  <ul className="space-y-3">
+                    {[
+                      { label: 'Featured', icon: Tag },
+                      { label: 'Size', icon: Box },
+                      { label: 'Brand', icon: ShieldCheck }
+                    ].map((item) => (
+                      <li key={item.label}>
+                        <button className="flex items-center gap-3 w-full p-2 rounded-xl text-[14px] font-bold text-slate-600 hover:text-[#005cb9] hover:bg-white hover:shadow-sm transition-all cursor-pointer group">
+                          <item.icon size={16} className="text-slate-400 group-hover:text-[#005cb9] transition-colors" />
+                          {item.label}
                         </button>
                       </li>
                     ))}
                   </ul>
                 </section>
 
-                <section>
-                  <h3 className="text-lg font-black text-gray-900 mb-6 uppercase tracking-tighter">Narrow By</h3>
-                  <div className="space-y-8">
+                <section className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50">
+                  <div className="flex items-center gap-2 mb-8">
+                    <Filter size={18} className="text-slate-900" />
+                    <h3 className="text-[16px] font-black text-slate-900 uppercase tracking-wider">Narrow By</h3>
+                  </div>
+
+                  <div className="space-y-10">
                     <div>
-                      <h4 className="text-[14px] font-bold text-gray-900 mb-4">Availability</h4>
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <div className="w-5 h-5 border-2 border-gray-200 rounded flex items-center justify-center group-hover:border-primary transition-colors">
-                          <Check size={14} className="text-primary opacity-0 group-hover:opacity-100" />
+                      <div className="flex items-center gap-2 mb-4">
+                        <Truck size={14} className="text-slate-400" />
+                        <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-widest">Availability</h4>
+                      </div>
+                      <label className="flex items-center gap-3 cursor-pointer group p-2 rounded-xl hover:bg-white hover:shadow-sm transition-all">
+                        <div className="relative flex items-center justify-center">
+                          <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-slate-200 rounded-md checked:bg-[#005cb9] checked:border-[#005cb9] transition-all cursor-pointer" />
+                          <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
                         </div>
-                        <span className="text-[14px] font-medium text-gray-600">ICEMANZ Ready Ship</span>
+                        <span className="text-[14px] font-bold text-slate-600 group-hover:text-[#005cb9] transition-colors">Barr Ready Ship</span>
                       </label>
                     </div>
 
                     <div>
-                      <h4 className="text-[14px] font-bold text-gray-900 mb-4">Condition</h4>
-                      <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Box size={14} className="text-slate-400" />
+                        <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-widest">Condition</h4>
+                      </div>
+                      <div className="space-y-2">
                         {['New', 'Used'].map((condition) => (
-                          <label key={condition} className="flex items-center gap-3 cursor-pointer group">
-                            <div className="w-5 h-5 border-2 border-gray-200 rounded flex items-center justify-center group-hover:border-primary transition-colors">
-                              <Check size={14} className="text-primary opacity-0 group-hover:opacity-100" />
+                          <label key={condition} className="flex items-center gap-3 cursor-pointer group p-2 rounded-xl hover:bg-white hover:shadow-sm transition-all">
+                            <div className="relative flex items-center justify-center">
+                              <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-slate-200 rounded-md checked:bg-[#005cb9] checked:border-[#005cb9] transition-all cursor-pointer" />
+                              <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
                             </div>
-                            <span className="text-[14px] font-medium text-gray-600">{condition}</span>
+                            <span className="text-[14px] font-bold text-slate-600 group-hover:text-[#005cb9] transition-colors">{condition}</span>
                           </label>
                         ))}
                       </div>
@@ -161,26 +186,26 @@ export default async function ProductPage({ params }: { params: { slug: string }
               </div>
             </aside>
 
-            {/* Main Content */}
+            {/* Main Content Area */}
             <div className="flex-1">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 border-b border-gray-100 pb-6">
-                <h1 className="text-3xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline gap-4 mb-12 border-b border-slate-100 pb-8">
+                <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
                   {title}
                 </h1>
-                <Link href="https://www.barrinc.com/quote-request/5868" className="text-[13px] font-bold text-blue-600 hover:underline uppercase tracking-wider">
-                  Don't see the size you need? <span className="text-primary">Click Here!</span>
+                <Link href="https://www.barrinc.com/quote-request/5868" className="text-[13px] font-black text-[#005cb9] hover:underline uppercase tracking-widest">
+                  Don't see the size you need? <span className="text-slate-900">Click Here!</span>
                 </Link>
               </div>
 
               {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-16">
                 {mockProducts.map((product) => (
-                  <div key={product.id} className="group flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden h-full">
-                    {/* Image Area with Badge Overlay */}
-                    <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
-                      {/* Badge */}
-                      <div className="absolute top-0 left-0 z-10">
-                        <span className="bg-[#cc0000] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-md inline-block">
+                  <div key={product.id} className="group flex flex-col h-full bg-white rounded-2xl border border-slate-100 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 overflow-hidden cursor-pointer">
+                    {/* Image Area with Floating Badge */}
+                    <div className="relative group/img aspect-[4/3] bg-slate-50 overflow-hidden flex items-center justify-center p-4">
+                      {/* Badge matching reference image exactly */}
+                      <div className="absolute top-4 left-4 z-10">
+                        <span className="bg-[#cc0000] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-900/20 rounded-sm">
                           {product.badge}
                         </span>
                       </div>
@@ -188,43 +213,33 @@ export default async function ProductPage({ params }: { params: { slug: string }
                       <img
                         src={product.image}
                         alt={product.title}
-                        className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                        className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-110"
                       />
-
-                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
 
                     {/* Content Area */}
-                    <div className="p-4 flex flex-col flex-grow">
-                      <div className="space-y-2 mb-4">
-                        <h3 className="text-[14px] font-bold text-gray-900 leading-snug group-hover:text-primary transition-colors min-h-[40px] line-clamp-2">
-                          {product.title}
-                        </h3>
-                        <p className="text-[12px] text-gray-500 leading-relaxed line-clamp-2">
-                          {product.description}
-                        </p>
+                    <div className="flex flex-col flex-grow p-5">
+                      <h3 className="text-[15px] font-black text-slate-900 leading-tight mb-3 group-hover:text-[#005cb9] transition-colors min-h-[40px] line-clamp-2">
+                        {product.title}
+                      </h3>
+
+                      <p className="text-[13px] font-medium text-slate-500 line-clamp-2 mb-6 leading-relaxed flex-grow">
+                        {product.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-3 mb-6">
+                        {product.sqFt !== '0 Sq. Ft.' && (
+                          <div className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider">{product.sqFt}</div>
+                        )}
+                        <div className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider">{product.condition}</div>
                       </div>
 
-                      {/* Specs Grid */}
-                      <div className="grid grid-cols-2 gap-3 p-3 bg-gray-50 rounded-lg mb-4 border border-gray-100/50">
-                        <div className="flex flex-col">
-                          <span className="text-gray-400 text-[9px] font-bold uppercase tracking-widest mb-0.5">Size</span>
-                          <span className="text-gray-900 text-[12px] font-extrabold">{product.sqFt}</span>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-gray-400 text-[9px] font-bold uppercase tracking-widest mb-0.5">Condition</span>
-                          <span className="text-gray-900 text-[12px] font-extrabold">{product.condition}</span>
-                        </div>
-                      </div>
-
-                      {/* Action Button */}
-                      <div className="mt-auto">
+                      <div className="mt-auto pt-4 border-t border-slate-50">
                         <Link
                           href="https://www.barrinc.com/quote-request/5868"
-                          className="w-full bg-slate-900 text-white py-2.5 rounded-lg font-bold text-[12px] flex items-center justify-center gap-2 hover:bg-primary transition-all duration-300 shadow-lg shadow-gray-200 uppercase tracking-wide group/btn cursor-pointer"
+                          className="text-[#005cb9] text-[13px] font-black hover:gap-2 flex items-center gap-1.5 group/link transition-all"
                         >
-                          View / Get Quote
-                          <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                          View Details <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
                         </Link>
                       </div>
                     </div>

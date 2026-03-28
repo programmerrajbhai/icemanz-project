@@ -18,18 +18,18 @@ import {
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/products/product_1.jpg');
+  const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/Walk-inCooler&Freezer/walkincoolers.jpg');
   const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
 
   const walkInImages: { [key: string]: string } = {
-    'Walk In Coolers': '/products/product_1.jpg',
-    'Coolers With Floor': '/products/product_2.jpg',
-    'Walk In Freezers': '/slider/s_1.jpeg',
-    'Freezers With Floor': '/slider/s_2.jpeg',
-    'Combo Units': '/slider/s_3.jpeg',
-    'Portable Refrigeration': '/products/product_1.jpg',
-    'Drive-in Coolers Freezers': '/products/product_2.jpg',
-    'Doors': '/slider/s_1.jpeg'
+    'Walk In Coolers': '/Walk-inCooler&Freezer/walkincoolers.jpg',
+    'Coolers With Floor': '/Walk-inCooler&Freezer/coolerswithfloor.jpg',
+    'Walk In Freezers': '/Walk-inCooler&Freezer/walk-infreezerunits.jpg',
+    'Freezers With Floor': '/Walk-inCooler&Freezer/freezerswithfloor.jpg',
+    'Combo Units': '/Walk-inCooler&Freezer/combounits.jpg',
+    'Portable Refrigeration': '/Walk-inCooler&Freezer/portableRefrigeration.jpg',
+    'Drive-in Coolers Freezers': '/Walk-inCooler&Freezer/drive-inCoolersFreezers.jpg',
+    'Doors': '/Walk-inCooler&Freezer/NewCooler.jpg'
   };
 
   const glassdoorImages: { [key: string]: string } = {
@@ -60,7 +60,7 @@ export default function Header() {
       {/* Top Bar */}
       <div className="bg-primary text-white py-2.5 h-[37px] flex items-center">
         <div className="container flex justify-between items-center text-[13px] font-medium leading-none">
-          <div className="flex gap-6">
+          <div className="flex gap-6" suppressHydrationWarning>
             <a href="tel:1-800-000-0000" className="flex items-center gap-2 hover:text-accent transition-colors">
               <Phone size={14} className="text-accent" /> 1-800-000-0000
             </a>
@@ -107,7 +107,7 @@ export default function Header() {
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               {/* Mega Dropdown for Walk-in Cooler & Freezer */}
-              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-8 z-50">
+              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-8 z-50">
                 <div className="flex gap-10">
                   {/* Links Column */}
                   <div className="flex flex-col gap-2 flex-1">
@@ -137,7 +137,7 @@ export default function Header() {
                       key={hoveredWalkInItem}
                       src={hoveredWalkInItem}
                       alt="Walk-in Cooler Preview"
-                      className="max-w-full h-auto rounded-lg shadow-sm animate-in fade-in zoom-in-95 duration-500"
+                      className="max-w-full h-auto rounded-lg shadow-sm"
                     />
                   </div>
                 </div>
@@ -148,7 +148,7 @@ export default function Header() {
                 Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
               {/* Mega Dropdown for Glassdoor Walk-in Cooler */}
-              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 p-8 z-50">
+              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-8 z-50">
                 <div className="flex gap-10">
                   {/* Links Column */}
                   <div className="flex flex-col gap-2 flex-1">
@@ -174,7 +174,7 @@ export default function Header() {
                       key={hoveredGlassdoorItem}
                       src={hoveredGlassdoorItem}
                       alt="Glassdoor Cooler Preview"
-                      className="max-w-full h-auto rounded-lg shadow-sm animate-in fade-in zoom-in-95 duration-500"
+                      className="max-w-full h-auto rounded-lg shadow-sm"
                     />
                   </div>
                 </div>
@@ -185,14 +185,6 @@ export default function Header() {
                 Refrigeration Equipment
               </Link>
             </div>
-            <Link href="/services" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
-              Services
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link href="/contact" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
-              Contact
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </Link>
           </nav>
 
           {/* Actions */}
@@ -303,16 +295,6 @@ export default function Header() {
 
               <Link href="/refrigeration-equipment" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
                 Refrigeration Equipment
-                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-              </Link>
-
-              <Link href="/services" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
-                Services
-                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-              </Link>
-
-              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
-                Contact
                 <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
               </Link>
             </nav>

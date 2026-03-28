@@ -181,37 +181,37 @@ export default function RefrigerationEquipmentPage() {
               </div>
 
               {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-5">
                 {products.map((product, index) => (
-                  <div key={index} className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden h-full">
+                  <div key={index} className="group flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 overflow-hidden h-full">
                     {/* Image Area */}
-                    <div className="relative aspect-square bg-gray-50 flex items-center justify-center p-6 sm:p-8 overflow-hidden">
+                    <div className="relative h-36 md:h-40 bg-gray-50 flex items-center justify-center overflow-hidden">
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
 
                     {/* Content Area */}
-                    <div className="p-5 sm:p-6 flex flex-col flex-grow">
-                      <div className="mb-4">
-                        <div className="text-[10px] font-bold text-accent uppercase tracking-widest mb-1 opacity-70">Unit Cooler</div>
-                        <h3 className="font-bold text-gray-900 group-hover:text-primary transition-colors duration-300 leading-snug text-sm sm:text-base">
+                    <div className="p-4 sm:p-5 flex flex-col flex-grow">
+                      <div className="mb-3">
+                        <div className="text-[9px] font-bold text-accent uppercase tracking-widest mb-1 opacity-70">Unit Cooler</div>
+                        <h3 className="font-bold text-gray-900 group-hover:text-primary transition-colors duration-300 leading-snug text-xs sm:text-[13px]">
                           {product.name}
                         </h3>
                       </div>
 
-                      <div className="mt-auto space-y-4">
-                        <div className="flex items-center gap-2 text-[12px] text-gray-500 font-medium">
-                          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                      <div className="mt-auto space-y-3">
+                        <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-medium">
+                          <span className="w-1 h-1 rounded-full bg-green-500"></span>
                           In Stock
                         </div>
 
-                        <button className="w-full py-3 text-[13px] font-bold text-primary border-2 border-primary/10 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 flex items-center justify-center gap-2 group/btn shadow-sm hover:shadow-lg hover:shadow-primary/20 cursor-pointer">
+                        <button className="w-full py-2.5 text-[12px] font-bold text-primary border-2 border-primary/10 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 flex items-center justify-center gap-1.5 group/btn shadow-sm hover:shadow-lg hover:shadow-primary/20 cursor-pointer">
                           Compare Details
-                          <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                          <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
                         </button>
                       </div>
                     </div>
