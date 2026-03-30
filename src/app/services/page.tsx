@@ -1,12 +1,12 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CTA from '@/components/CTA';
-import { 
-  Wrench, 
-  Settings, 
-  PenTool, 
-  ShieldCheck, 
-  Truck, 
+import {
+  Wrench,
+  Settings,
+  PenTool,
+  ShieldCheck,
+  Truck,
   Clock,
   ChevronRight
 } from 'lucide-react';
@@ -40,20 +40,20 @@ export default function ServicesPage() {
   return (
     <main className="min-h-screen bg-white">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 bg-slate-900 overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/10 to-transparent"></div>
         <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-accent/5 to-transparent"></div>
-        
+
         <div className="container relative z-10 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-tight mb-8">
               Our Professional <span className="text-accent">Services</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-              Comprehensive refrigeration and cooling solutions tailored to your business needs. 
-              From smart engineering design to rapid maintenance support, we ensure your 
+              Comprehensive refrigeration and cooling solutions tailored to your business needs.
+              From smart engineering design to rapid maintenance support, we ensure your
               operations stay cool and efficient.
             </p>
           </div>
@@ -65,18 +65,17 @@ export default function ServicesPage() {
         <div className="container px-4">
           <div className="grid grid-cols-1 gap-16 md:gap-24">
             {services.map((service, index) => (
-              <div 
-                key={service.title} 
-                className={`flex flex-col lg:flex-row items-center gap-12 ${
-                  index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-                }`}
+              <div
+                key={service.title}
+                className={`flex flex-col lg:flex-row items-center gap-12 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                  }`}
               >
                 {/* Content */}
                 <div className="flex-1 space-y-8">
                   <div className={`w-16 h-16 ${service.color} rounded-2xl flex items-center justify-center`}>
                     <service.icon size={32} />
                   </div>
-                  
+
                   <div>
                     <h2 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tight mb-6">
                       {service.title}
@@ -97,11 +96,11 @@ export default function ServicesPage() {
                     ))}
                   </ul>
 
-                  <Link 
-                    href="https://www.barrinc.com/quote-request/5868" 
+                  <Link
+                    href="/quote"
                     className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition-all group"
                   >
-                    Get Started 
+                    Get Started
                     <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -109,8 +108,8 @@ export default function ServicesPage() {
                 {/* Decorative Visual Area */}
                 <div className="flex-1 w-full max-w-2xl">
                   <div className="relative aspect-video rounded-[32px] overflow-hidden group shadow-2xl">
-                    <img 
-                      src={`/slider/s_${(index % 3) + 1}.jpeg`} 
+                    <img
+                      src={`/slider/s_${(index % 3) + 1}.jpeg`}
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />

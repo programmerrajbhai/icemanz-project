@@ -39,7 +39,7 @@ export default function Footer() {
               { name: 'Products', href: '/products' },
               { name: 'About Us', href: '/about-us' },
               { name: 'Contact', href: '/contact' },
-              { name: 'Get a Quote', href: 'https://www.barrinc.com/quote-request/5868' }
+              { name: 'Get a Quote', href: '/quote' }
             ].map((item) => (
               <li key={item.name}>
                 <Link href={item.href} className="flex items-center gap-2 hover:text-accent transition-all group cursor-pointer">

@@ -199,7 +199,7 @@ export default function Header() {
               </button>
             </div>
 
-            <Link href="https://www.barrinc.com/quote-request/5868" className="hidden md:flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer">
+            <Link href="/quote" className="hidden md:flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer">
               <FileText size={18} />
               Get a Quote
             </Link>
@@ -301,7 +301,7 @@ export default function Header() {
 
             <div className="mt-8 pb-10">
               <Link
-                href="https://www.barrinc.com/quote-request/5868"
+                href="/quote"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center flex items-center justify-center gap-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-transform"
               >

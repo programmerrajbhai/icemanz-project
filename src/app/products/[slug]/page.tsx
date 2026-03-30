@@ -192,7 +192,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
                 <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
                   {title}
                 </h1>
-                <Link href="https://www.barrinc.com/quote-request/5868" className="text-[13px] font-black text-[#005cb9] hover:underline uppercase tracking-widest">
+                <Link href="/quote" className="text-[13px] font-black text-[#005cb9] hover:underline uppercase tracking-widest">
                   Don't see the size you need? <span className="text-slate-900">Click Here!</span>
                 </Link>
               </div>
@@ -236,7 +236,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
                       <div className="mt-auto pt-4 border-t border-slate-50">
                         <Link
-                          href="https://www.barrinc.com/quote-request/5868"
+                          href="/quote"
                           className="text-[#005cb9] text-[13px] font-black hover:gap-2 flex items-center gap-1.5 group/link transition-all"
                         >
                           View Details <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform" />

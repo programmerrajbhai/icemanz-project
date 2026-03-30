@@ -152,7 +152,7 @@ export default function WalkInCoolerFreezerPage() {
                   ))}
                 </ul>
                 <p className="pt-2 md:pt-4">
-                  Or do you require the personalized service of a <Link href="https://www.barrinc.com/quote-request/5868" className="text-primary font-bold hover:underline">Custom Package</Link>? Our refrigeration experts are help you find the perfect solution for your business.
+                  Or do you require the personalized service of a <Link href="/quote" className="text-primary font-bold hover:underline">Custom Package</Link>? Our refrigeration experts are help you find the perfect solution for your business.
                 </p>
               </div>
             </section>
@@ -177,7 +177,7 @@ export default function WalkInCoolerFreezerPage() {
               <p className="text-gray-600 text-base md:text-lg mb-6 md:mb-8 font-medium">
                 To find or design the perfect cooler or freezer for your business, reach out to our team today.
               </p>
-              <Link href="https://www.barrinc.com/quote-request/5868" className="inline-flex items-center gap-2 bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-xl font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform group">
+              <Link href="/quote" className="inline-flex items-center gap-2 bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-xl font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform group">
                 Contact Us <ArrowRight className="group-hover:translate-x-1 transition-transform w-4.5 h-4.5 md:w-5 md:h-5" />
               </Link>
             </section>

@@ -173,10 +173,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
                 {/* Primary CTA */}
                 <div className="space-y-4 mb-8">
-                  <button className="group w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl font-black text-[12px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 hover:shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+                  <Link href="/quote" className="group w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl font-black text-[12px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 hover:shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
                     Get A Customized Quote
                     <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  </Link>
 
                   <Link href="#" className="flex items-center justify-center gap-2 text-[12px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-widest py-2 transition-colors">
                     <FileText size={16} />

@@ -76,7 +76,7 @@ export default function Hero() {
                 Explore Products
               </Link>
               <Link
-                href="https://www.barrinc.com/quote-request/5868"
+                href="/quote"
                 className="bg-white hover:bg-gray-100 text-primary px-6 md:px-10 py-3 md:py-4 rounded-lg font-bold text-xs md:text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 transform shadow-lg cursor-pointer"
               >
                 <Search size={20} className="text-primary" /> Request a Quote
