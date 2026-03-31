@@ -20,6 +20,21 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/Walk-inCooler&Freezer/walkincoolers.jpg');
   const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
+  const mobileProductLinks = [
+    { label: 'Walk In Coolers', href: '/products/walk-in-coolers' },
+    { label: 'Coolers With Floor', href: '/products/coolers-with-floor' },
+    { label: 'Walk In Freezers', href: '/products/walk-in-freezers' },
+    { label: 'Freezers With Floor', href: '/products/freezers-with-floor' },
+    { label: 'Combo Units', href: '/products/combo-units' },
+    { label: 'Portable Refrigeration', href: '/products/portable-refrigeration' },
+    { label: 'Drive-in Coolers Freezers', href: '/products/drive-in-coolers-freezers' },
+    { label: 'Doors', href: '/products/doors' },
+    { label: 'Glassdoor Walk-in Cooler', href: '/products/glassdoor-walk-in-cooler' },
+    { label: 'Glassdoor Walk-in Freezer', href: '/products/glassdoor-walk-in-freezer' },
+    { label: 'Glassdoor', href: '/products/glassdoor' },
+    { label: 'Shelving', href: '/products/shelving' },
+    { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' }
+  ];
 
   const walkInImages: { [key: string]: string } = {
     'Walk In Coolers': '/Walk-inCooler&Freezer/walkincoolers.jpg',
@@ -56,19 +71,19 @@ export default function Header() {
   }, [isMobileMenuOpen]);
 
   return (
-    <header className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? '-top-[37px]' : 'top-0'}`}>
+    <header className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'lg:-top-[37px]' : 'top-0'}`}>
       {/* Top Bar */}
-      <div className="bg-primary text-white py-2.5 h-[37px] flex items-center">
+      <div className="hidden lg:flex bg-primary text-white py-2.5 h-[37px] items-center">
         <div className="container flex justify-between items-center text-[13px] font-medium leading-none">
           <div className="flex gap-6" suppressHydrationWarning>
-            <a href="tel:1-800-000-0000" className="flex items-center gap-2 hover:text-accent transition-colors">
-              <Phone size={14} className="text-accent" /> 1-800-000-0000
+            <a href="tel:929-451-7665" className="flex items-center gap-2 hover:text-accent transition-colors">
+              <Phone size={14} className="text-accent" /> 929-451-7665
             </a>
             <a href="mailto:sales@icemanz.com" className="flex items-center gap-2 hover:text-accent transition-colors">
               <Mail size={14} className="text-accent" /> sales@icemanz.com
             </a>
           </div>
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="flex items-center gap-6">
             <span className="flex items-center gap-2">
               <Clock size={14} className="text-accent" />
               <span className="text-accent">36-48h Shipping</span> - Nationwide Delivery
@@ -83,17 +98,7 @@ export default function Header() {
         <div className="container flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-1 group">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl group-hover:bg-accent transition-colors duration-300">
-              I
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-black text-primary tracking-tighter leading-none group-hover:text-gray-900 transition-colors">
-                ICEMANZ<span className="text-accent"></span>
-              </span>
-              <span className="text-[10px] font-bold text-gray-500 tracking-[0.2em] uppercase leading-none mt-1">
-                Cooling Excellence
-              </span>
-            </div>
+            <img src='/logo.png' alt='logo' className='h-14' />
           </Link>
 
           {/* Desktop Navigation */}
@@ -227,8 +232,7 @@ export default function Header() {
           {/* Mobile Menu Header - Fixed */}
           <div className="p-5 flex justify-between items-center border-b border-gray-100 shrink-0 bg-white z-10">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-bold">I</div>
-              <span className="text-xl font-black text-primary tracking-tighter">ICEMANZ</span>
+              <img src='/logo.png' alt='logo' className='h-12' />
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
@@ -248,55 +252,20 @@ export default function Header() {
               </Link>
 
               <div className="py-6 border-b border-gray-50">
-                <Link href="/walk-in-cooler-freezer" onClick={() => setIsMobileMenuOpen(false)} className="text-xs uppercase tracking-[0.2em] text-primary font-black mb-4 block">Walk-in Cooler & Freezer</Link>
+                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black mb-4 block">Products</span>
                 <div className="grid grid-cols-1 gap-3 pl-4 border-l-2 border-primary/10">
-                  {[
-                    'Walk In Coolers',
-                    'Coolers With Floor',
-                    'Walk In Freezers',
-                    'Freezers With Floor',
-                    'Combo Units',
-                    'Portable Refrigeration',
-                    'Drive-in Coolers Freezers',
-                    'Doors'
-                  ].map((item) => (
+                  {mobileProductLinks.map((item) => (
                     <Link
-                      key={item}
-                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
+                      key={item.label}
+                      href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="text-[15px] font-bold text-gray-500 hover:text-primary py-1 transition-colors block"
                     >
-                      {item}
+                      {item.label}
                     </Link>
                   ))}
                 </div>
               </div>
-
-              <div className="py-6 border-b border-gray-50">
-                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black mb-4 block">Glassdoor Walk-in Cooler</span>
-                <div className="grid grid-cols-1 gap-3 pl-4 border-l-2 border-primary/10">
-                  {[
-                    'Glassdoor Walk-in Cooler',
-                    'Glassdoor Walk-in Freezer',
-                    'Glassdoor',
-                    'Shelving'
-                  ].map((item) => (
-                    <Link
-                      key={item}
-                      href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-[15px] font-bold text-gray-500 hover:text-primary py-1 transition-colors block"
-                    >
-                      {item}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <Link href="/refrigeration-equipment" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
-                Refrigeration Equipment
-                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-              </Link>
             </nav>
 
             <div className="mt-8 pb-10">
@@ -310,11 +279,11 @@ export default function Header() {
               </Link>
               <div className="space-y-5 bg-gray-50 p-6 rounded-2xl">
                 <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Info</p>
-                <a href="tel:1-800-000-0000" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
+                <a href="tel:929-451-7665" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     <Phone size={18} className="text-primary" />
                   </div>
-                  <span className="font-bold text-sm">1-800-000-0000</span>
+                  <span className="font-bold text-sm">929-451-7665</span>
                 </a>
                 <a href="mailto:sales@icemanz.com" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">

@@ -1,108 +1,74 @@
-import Link from 'next/link';
-import {
-  ArrowRight,
-  Settings,
-  ShieldCheck,
-  Wrench,
-  ThermometerSnowflake,
-  Zap,
-  Layout
-} from 'lucide-react';
+import { Wrench, Zap, Layout, ShieldCheck } from 'lucide-react';
 
 const services = [
   {
     title: 'Installation',
     description: 'ICEMANZ provides professional installation for walk-in coolers, walk-in freezers, refrigeration units, and HVAC systems. Our skilled team ensures every system is set up for maximum efficiency, reliability, and long-term performance.',
-    image: '/slider/s_1.jpeg',
-    icon: Zap
+    icon: Zap,
   },
   {
     title: 'Maintenance',
-    description: 'Maximize uptime and boost efficiency with ICEMANZ’s expert maintenance and rapid aftersales support. Stay cool, stay confident — contact us today for hassle-free service!',
-    image: '/slider/s_2.jpeg',
-    icon: Wrench
+    description: 'Maximize uptime and boost efficiency with ICEMANZ’s expert maintenance and rapid aftersales support. Stay cool, stay confident—contact us today for hassle-free service!',
+    icon: Wrench,
   },
   {
     title: 'Engineering Design',
     description: 'At ICEMANZ, every cooler and freezer is backed by smart engineering. We provide custom designs, accurate load calculations, and professional application support to ensure your system performs at its best.',
-    image: '/slider/s_3.jpeg',
-    icon: Layout
+    icon: Layout,
   },
   {
     title: 'Smart Cooling',
     description: 'Advanced temperature control and monitoring systems to keep your products safe and energy costs low. Integration with modern smart building protocols.',
-    image: '/products/product_1.jpg',
-    icon: ThermometerSnowflake
-  }
+    icon: ShieldCheck,
+  },
 ];
 
 export default function Services() {
   return (
-    <section id="services" className="py-12 md:py-16 bg-white overflow-hidden">
-      <div className="container px-4 md:px-6">
-        <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-16">
-          {/* Image Grid with Animation */}
-          <div className="flex-1 w-full max-w-2xl lg:max-w-none grid grid-cols-2 gap-3 md:gap-4 relative group">
-            <div className="space-y-3 md:space-y-4">
-              <div className="aspect-[4/5] rounded-[24px] md:rounded-[32px] overflow-hidden shadow-xl transform group-hover:-translate-y-2 transition-transform duration-700">
-                <img src="/slider/s_1.jpeg" alt="ICEMANZ Facility" className="w-full h-full object-cover" />
-              </div>
-              <div className="aspect-square rounded-[24px] md:rounded-[32px] overflow-hidden shadow-xl transform group-hover:translate-y-2 transition-transform duration-700 delay-100">
-                <img src="/slider/s_2.jpeg" alt="Walk-in Cooler" className="w-full h-full object-cover" />
-              </div>
-            </div>
-            <div className="pt-8 md:pt-12 space-y-3 md:space-y-4">
-              <div className="aspect-square rounded-[24px] md:rounded-[32px] overflow-hidden shadow-xl transform group-hover:-translate-y-2 transition-transform duration-700 delay-200">
-                <img src="/slider/s_3.jpeg" alt="Refrigeration Unit" className="w-full h-full object-cover" />
-              </div>
-              <div className="aspect-[4/5] rounded-[24px] md:rounded-[32px] overflow-hidden shadow-xl transform group-hover:translate-y-2 transition-transform duration-700 delay-300">
-                <img src="/products/product_1.jpg" alt="Installation Service" className="w-full h-full object-cover" />
-              </div>
-            </div>
+    <section className="py-24 md:py-32 bg-[#fafafa] overflow-hidden relative">
+      {/* Subtle Background Decorations */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-40">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-50 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
+      </div>
+
+      <div className="container px-4 mx-auto relative z-10">
+        {/* Header Section */}
+        <div className="text-center max-w-4xl mx-auto mb-20 md:mb-24">
+          <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 bg-white shadow-sm rounded-full border border-gray-100">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+            <span className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">Our Services</span>
           </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[1.05]">
+            <span className="text-gray-900 block mb-2">Smart Cooling</span>
+            <span className="text-primary relative inline-block">
+              Tailored Solutions
+              <div className="absolute -bottom-2 left-0 w-full h-1.5 bg-primary/10 rounded-full"></div>
+            </span>
+          </h2>
+        </div>
 
-          {/* Content with modern styling */}
-          <div className="flex-1 space-y-6 md:space-y-10">
-            <div className="space-y-4 md:space-y-6">
-              <div className="inline-flex items-center gap-2 bg-primary/5 text-primary px-4 py-2 rounded-full font-bold text-xs md:text-sm uppercase tracking-widest">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                Professional Services
+        {/* Services Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+          {services.map((service) => (
+            <div
+              key={service.title}
+              className="p-10 md:p-12 rounded-[40px] bg-white border border-gray-100/50 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-10px_rgba(0,74,153,0.15)] hover:-translate-y-3 transition-all duration-700 flex flex-col items-center text-center group relative overflow-hidden"
+            >
+              {/* Card Accent Top */}
+              <div className="absolute top-0 left-0 w-full h-2 bg-primary transform -translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+              
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-gray-50 text-primary flex items-center justify-center mb-8 md:mb-10 group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:rotate-6 shadow-sm">
+                <service.icon className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5px]" />
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#171717] leading-tight uppercase tracking-tighter">
-                Smart Cooling <br className="hidden md:block" />
-                <span className="text-primary">Tailored Solutions</span>
-              </h2>
-              <p className="text-gray-600 text-base md:text-lg leading-relaxed max-w-xl font-medium">
-                We don't just sell equipment; we provide end-to-end refrigeration excellence.
-                From custom engineering to rapid installation, our team ensures your business
-                stays cool and efficient.
-              </p>
+              
+              <h3 className="text-xl md:text-2xl font-black text-gray-900 uppercase tracking-tight group-hover:text-primary transition-colors leading-none">
+                {service.title}
+              </h3>
+              
+              <div className="w-8 h-1 bg-primary/10 mt-6 group-hover:w-16 group-hover:bg-primary/30 transition-all duration-500 rounded-full"></div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
-              {services.map((service, index) => (
-                <div key={index} className="group/item space-y-3 md:space-y-4 p-4 md:p-6 rounded-2xl md:rounded-[24px] hover:bg-gray-50 transition-all duration-300 border border-transparent hover:border-gray-100">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-white shadow-lg rounded-xl flex items-center justify-center text-primary group-hover/item:bg-primary group-hover/item:text-white transition-all duration-500">
-                    <service.icon size={20} className="md:w-6 md:h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base md:text-lg font-bold text-[#171717] mb-1 md:mb-2">{service.title}</h3>
-                    <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed">{service.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-4 md:pt-6">
-              <Link
-                href="/services"
-                className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-bold text-sm md:text-base hover:bg-primary transition-all duration-300 shadow-xl shadow-gray-200 group/btn cursor-pointer"
-              >
-                Explore Our Services
-                <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

@@ -9,12 +9,7 @@ export default function Footer() {
       <div className="container px-4 md:px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16 md:mb-24">
         <div className="space-y-6 md:space-y-8">
           <Link href="/" className="inline-block group cursor-pointer">
-            <span className="text-2xl md:text-3xl font-black text-white tracking-tighter leading-none">
-              ICEMANZ<span className="text-accent text-sm align-top ml-0.5"></span>
-            </span>
-            <span className="block text-[10px] font-bold text-gray-500 tracking-[0.2em] uppercase mt-2 group-hover:text-accent transition-colors">
-              Cooling Excellence
-            </span>
+            <img src='/logo.png' alt='logo' className='h-12' />
           </Link>
           <p className="text-gray-400 leading-relaxed max-w-sm text-sm md:text-[15px]">
             ICEMANZ is your trusted partner for reliable and efficient refrigeration systems—built for supermarkets, restaurants, retail outlets, and warehouses. We offer a complete, hassle-free experience with expert support at every step. From design consultation to seamless installation, ICEMANZ is your one-stop shop for modern refrigeration.
@@ -88,7 +83,7 @@ export default function Footer() {
               <div className="bg-gray-900 w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-accent border border-gray-800 group-hover:bg-accent group-hover:text-white transition-colors">
                 <Phone size={20} />
               </div>
-              <a href="tel:1-800-000-0000" className="text-gray-400 font-bold hover:text-white transition-colors text-sm md:text-base cursor-pointer">1-800-000-0000</a>
+              <a href="tel:929-451-7665" className="text-gray-400 font-bold hover:text-white transition-colors text-sm md:text-base cursor-pointer">929-451-7665</a>
             </li>
             <li className="flex gap-4 items-center group">
               <div className="bg-gray-900 w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-accent border border-gray-800 group-hover:bg-accent group-hover:text-white transition-colors">

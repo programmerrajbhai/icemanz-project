@@ -14,12 +14,12 @@ export default function CTA() {
           Contact us today to discuss your project requirements. Whether you need a standard quick-ship unit or a fully custom-built walk-in, ICEMANZ has you covered.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
-          <Link href="/quote" className="bg-accent text-white px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
-            <FileText size={24} /> Get a Quote Now
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/quote" className="bg-accent text-white px-7 md:px-9 py-3.5 md:py-4.5 rounded-xl font-bold text-sm md:text-base flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
+            <FileText size={22} /> Get a Quote Now
           </Link>
-          <a href="tel:1-800-000-0000" className="bg-white text-primary px-8 md:px-10 py-4 md:py-5 rounded-xl font-bold text-base md:text-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
-            <PhoneCall size={24} /> Call 1-800-000-0000
+          <a href="tel:929-451-7665" className="bg-white text-primary px-7 md:px-9 py-3.5 md:py-4.5 rounded-xl font-bold text-sm md:text-base flex items-center justify-center gap-3 hover:bg-gray-100 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
+            <PhoneCall size={22} /> Call 929-451-7665
           </a>
         </div>
       </div>

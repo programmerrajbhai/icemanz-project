@@ -14,10 +14,7 @@ import {
     Maximize,
     DoorOpen,
     Info,
-    Mail,
-    Phone,
-    Send,
-    ChevronRight
+    Send
 } from 'lucide-react';
 
 export default function QuotePage() {
@@ -380,18 +377,7 @@ export default function QuotePage() {
                         </div>
 
                         {/* Submit Button */}
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-4">
-                            <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-3 text-slate-500">
-                                    <Mail size={18} className="text-blue-600" />
-                                    <span className="text-[13px] font-bold">kooltecnyc@gmail.com</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-slate-500">
-                                    <Phone size={18} className="text-blue-600" />
-                                    <span className="text-[13px] font-bold">+1 (929) 451-7665</span>
-                                </div>
-                            </div>
-
+                        <div className="flex justify-end pt-4">
                             <button
                                 type="submit"
                                 className="group bg-blue-600 hover:bg-blue-700 text-white py-5 px-12 rounded-2xl font-black text-[14px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 hover:shadow-blue-200 hover:-translate-y-1 active:translate-y-0 w-full md:w-auto cursor-pointer"
