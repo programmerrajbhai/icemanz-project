@@ -1,11 +1,12 @@
 @import "tailwindcss";
+@source "../../node_modules/preline/dist/*.js";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --primary: #004a99;
   --secondary: #f4f4f4;
-  --accent: #ff6b00;
+  --accent: #00a3ff;
 }
 
 @theme {
@@ -14,6 +15,24 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  --animate-marquee: marquee 30s linear infinite;
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
 }
 
 body {
@@ -32,13 +51,16 @@ body {
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #e5e7eb;
     border-radius: 10px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #d1d5db;
   }

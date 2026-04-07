@@ -58,8 +58,9 @@ function ProductCard({ product }: { product: typeof products[0] }) {
   }, [nextImage, isHovered]);
 
   return (
-    <div
-      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col h-full"
+    <Link
+      href={product.href}
+      className="group flex flex-col h-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg hover:border-primary transition-all overflow-hidden focus:outline-none focus:shadow-lg"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -110,19 +111,19 @@ function ProductCard({ product }: { product: typeof products[0] }) {
       </div>
 
       <div className="p-6 flex flex-col grow">
-        <h3 className="text-xl font-black text-gray-900 mb-4 group-hover:text-primary transition-colors tracking-tight uppercase">
+        <h3 className="text-xl font-black text-gray-900 mb-3 group-hover:text-primary transition-colors tracking-tight uppercase">
           {product.title}
         </h3>
-        <p className="text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-medium">
+        <p className="text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-medium line-clamp-3">
           {product.description}
         </p>
-        <div className="mt-auto flex justify-end items-center pt-6 border-t border-gray-100 mt-6">
-          <button className="bg-primary text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 transform cursor-pointer text-sm">
-            Learn More <ArrowRight size={16} />
-          </button>
+        <div className="mt-auto flex justify-end items-center pt-5 border-t border-gray-100 mt-6">
+          <span className="inline-flex items-center gap-2 text-primary text-[11px] font-black uppercase tracking-widest">
+            View Details <ArrowRight size={14} />
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -139,43 +140,8 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-          {products.map((product, index) => (
-            <Link
-              key={index}
-              href={product.href}
-              className="group bg-white rounded-[24px] md:rounded-[32px] p-0 border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 flex flex-col overflow-hidden cursor-pointer min-h-[550px] md:min-h-[600px]"
-            >
-              <div className="relative h-64 md:h-80 overflow-hidden bg-gray-50 flex items-center justify-center">
-                <img
-                  src={product.images[0]}
-                  alt={product.title}
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className="bg-white/95 backdrop-blur-md text-[10px] font-black text-primary px-3 py-1.5 rounded-full shadow-md border border-gray-100 uppercase tracking-widest">
-                    In Stock
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-6 md:p-8 flex-grow flex flex-col">
-                <h3 className="text-xl md:text-2xl font-black text-[#171717] mb-3 md:mb-4 group-hover:text-primary transition-colors uppercase tracking-tight leading-tight">
-                  {product.title}
-                </h3>
-                <p className="text-gray-600 text-[14px] md:text-[15px] leading-relaxed font-medium mb-6 md:mb-8 line-clamp-4">
-                  {product.description}
-                </p>
-
-                <div className="mt-auto">
-                  <div
-                    className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-xl font-bold text-xs md:text-sm group-hover:bg-primary transition-all duration-300 shadow-lg shadow-gray-200 group/btn"
-                  >
-                    View Details
-                    <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </Link>
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

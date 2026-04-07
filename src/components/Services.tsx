@@ -1,76 +1,114 @@
-import { Wrench, Zap, Layout, ShieldCheck } from 'lucide-react';
+"use client";
+
+import { Wrench, Zap, Layout, ShieldCheck, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const services = [
   {
     title: 'Installation',
-    description: 'ICEMANZ provides professional installation for walk-in coolers, walk-in freezers, refrigeration units, and HVAC systems. Our skilled team ensures every system is set up for maximum efficiency, reliability, and long-term performance.',
+    description: 'ICEMANZ provides professional installation for walk-in coolers, refrigeration units, and HVAC systems. Our skilled team ensures every system is set up for maximum efficiency and long-term performance.',
     icon: Zap,
+    gridArea: 'lg:col-span-2',
+    color: 'bg-primary/10',
+    iconColor: 'text-primary',
+    variant: 'primary'
   },
   {
     title: 'Maintenance',
-    description: 'Maximize uptime and boost efficiency with ICEMANZ’s expert maintenance and rapid aftersales support. Stay cool, stay confident—contact us today for hassle-free service!',
+    description: 'Maximize uptime and boost efficiency with ICEMANZ’s expert maintenance and rapid aftersales support.',
     icon: Wrench,
+    gridArea: 'lg:col-span-1',
+    color: 'bg-primary/10',
+    iconColor: 'text-primary',
+    variant: 'neutral'
   },
   {
     title: 'Engineering Design',
-    description: 'At ICEMANZ, every cooler and freezer is backed by smart engineering. We provide custom designs, accurate load calculations, and professional application support to ensure your system performs at its best.',
+    description: 'At ICEMANZ, every cooler and freezer is backed by smart engineering and accurate load calculations.',
     icon: Layout,
+    gridArea: 'lg:col-span-1',
+    color: 'bg-primary/10',
+    iconColor: 'text-primary',
+    variant: 'neutral'
   },
   {
     title: 'Smart Cooling',
-    description: 'Advanced temperature control and monitoring systems to keep your products safe and energy costs low. Integration with modern smart building protocols.',
+    description: 'Advanced temperature control and monitoring systems to keep your products safe and energy costs low.',
     icon: ShieldCheck,
+    gridArea: 'lg:col-span-2',
+    color: 'bg-primary/10',
+    iconColor: 'text-primary',
+    variant: 'primary'
   },
 ];
 
 export default function Services() {
   return (
-    <section className="py-24 md:py-32 bg-[#fafafa] overflow-hidden relative">
-      {/* Subtle Background Decorations */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-40">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-50 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
-      </div>
-
-      <div className="container px-4 mx-auto relative z-10">
-        {/* Header Section */}
-        <div className="text-center max-w-4xl mx-auto mb-20 md:mb-24">
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 bg-white shadow-sm rounded-full border border-gray-100">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-            <span className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">Our Services</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[1.05]">
-            <span className="text-gray-900 block mb-2">Smart Cooling</span>
-            <span className="text-primary relative inline-block">
+    <section id="services" className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden relative">
+      <div className="container px-4 md:px-6 relative z-10">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10 md:mb-12">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-primary">
+              <div className="w-6 h-px bg-primary"></div>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Excellence in Service</span>
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight uppercase leading-[0.95]">
+              Smart <span className="text-primary">Cooling</span><br />
               Tailored Solutions
-              <div className="absolute -bottom-2 left-0 w-full h-1.5 bg-primary/10 rounded-full"></div>
-            </span>
-          </h2>
+            </h2>
+          </div>
+
+          <Link
+            href="/services"
+            className="group flex items-center gap-2 text-primary text-xs font-black uppercase tracking-widest hover:text-blue-700 transition-colors mb-1"
+          >
+            View All Services
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
-        {/* Services Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
-          {services.map((service) => (
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          {services.map((service, index) => (
             <div
-              key={service.title}
-              className="p-10 md:p-12 rounded-[40px] bg-white border border-gray-100/50 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-10px_rgba(0,74,153,0.15)] hover:-translate-y-3 transition-all duration-700 flex flex-col items-center text-center group relative overflow-hidden"
+              key={index}
+              className={`${service.gridArea} group relative flex flex-col rounded-3xl overflow-hidden transition-all duration-700 p-6 md:p-7 bg-gradient-to-br ${service.variant === 'primary' ? 'from-primary/5 to-white border border-primary/30 hover:border-primary/50 hover:shadow-xl' : 'from-gray-50 to-white border border-gray-200 hover:border-primary/30 hover:shadow-lg'}`}
             >
-              {/* Card Accent Top */}
-              <div className="absolute top-0 left-0 w-full h-2 bg-primary transform -translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-              
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-gray-50 text-primary flex items-center justify-center mb-8 md:mb-10 group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:rotate-6 shadow-sm">
-                <service.icon className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5px]" />
+              <div className={`size-11 inline-flex justify-center items-center rounded-xl ${service.color} ${service.iconColor} mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm`}>
+                <service.icon className="size-5 stroke-[1.5px]" />
               </div>
-              
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 uppercase tracking-tight group-hover:text-primary transition-colors leading-none">
-                {service.title}
-              </h3>
-              
-              <div className="w-8 h-1 bg-primary/10 mt-6 group-hover:w-16 group-hover:bg-primary/30 transition-all duration-500 rounded-full"></div>
+
+              <div className="mt-auto space-y-3">
+                <h3 className="text-xl md:text-2xl font-black text-gray-900 uppercase tracking-tight leading-none group-hover:text-primary transition-colors">
+                  {service.title}
+                </h3>
+
+                <p className="text-slate-600 text-sm leading-relaxed max-w-md line-clamp-2 md:line-clamp-none">
+                  {service.description}
+                </p>
+
+                <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 pt-1">
+                  <span>Learn More</span>
+                  <ArrowRight size={14} />
+                </div>
+              </div>
+
+              {/* Decorative background number or icon */}
+              <div className="absolute -bottom-4 -right-4 size-20 opacity-[0.05] group-hover:opacity-[0.1] group-hover:scale-110 transition-all duration-700">
+                <service.icon className="size-full" />
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        .outline-text {
+          -webkit-text-stroke: 1px #e5e7eb;
+          color: transparent;
+        }
+      `}</style>
     </section>
   );
 }

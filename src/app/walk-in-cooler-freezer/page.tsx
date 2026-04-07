@@ -1,6 +1,5 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import CTA from '@/components/CTA';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Zap, Clock, Snowflake, ArrowRight, CheckCircle2 } from 'lucide-react';
 
@@ -45,147 +44,131 @@ export default function WalkInCoolerFreezerPage() {
     <main className="min-h-screen bg-white">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-12 md:pt-36 md:pb-16 bg-[#0a0a0a] overflow-hidden border-b border-gray-100">
-        <div className="absolute inset-0">
-          <img src="/slider/s_1.jpeg" alt="Background" className="w-full h-full object-cover opacity-25 scale-110 md:scale-105" />
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-        </div>
-
-        <div className="container relative z-10 px-4">
-          <div className="flex flex-col items-center text-center gap-4 md:gap-6">
-            <nav className="flex items-center justify-center gap-2 md:gap-3">
-              <Link href="/" className="text-[9px] md:text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-[0.2em] md:tracking-[0.3em]">Home</Link>
-              <div className="w-1 h-1 rounded-full bg-accent/50"></div>
-              <span className="text-[9px] md:text-[10px] font-black text-accent uppercase tracking-[0.2em] md:tracking-[0.3em]">Walk-in Cooler & Freezer</span>
-            </nav>
-
-            <div className="relative inline-block px-2">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-[1] md:leading-[0.9] drop-shadow-2xl">
-                Walk-in <br />
-                <span className="text-accent">Cooler & Freezer</span>
-              </h1>
-              <div className="h-1 w-16 md:h-1.5 md:w-24 bg-accent mx-auto mt-4 md:mt-6 rounded-full"></div>
-            </div>
+      <div className="pt-32 pb-20 md:pt-44 md:pb-24">
+        <div className="container px-4">
+          {/* Header Bar */}
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
+              Walk-in <span className="text-primary">Cooler & Freezer</span>
+            </h1>
           </div>
-        </div>
-      </section>
 
-      {/* Main Grid Section */}
-      <section className="py-8 md:py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12 md:gap-x-12 md:gap-y-16 mb-12 md:mb-20">
+          {/* Main Grid Section */}
+          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-24 md:mb-32">
             {productCategories.map((product, index) => (
               <Link
                 key={index}
                 href={`/walk-in-cooler-freezer/${product.name.toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')}`}
-                className="group flex flex-col items-center transition-all duration-500 hover:-translate-y-2 cursor-pointer"
+                className="group flex flex-col bg-white border border-gray-100 rounded-2xl hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden text-center items-center"
               >
-                <div className="relative w-full aspect-square bg-white flex items-center justify-center overflow-hidden mb-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-slate-100 rounded-3xl group-hover:shadow-2xl group-hover:shadow-slate-200/60 transition-all duration-500">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="max-h-[80%] max-w-[80%] object-contain transition-transform duration-700 group-hover:scale-110"
-                  />
+                {/* Image Area */}
+                <div className="p-3 bg-white w-full">
+                  <div className="relative pt-[100%] rounded-xl bg-gray-50 overflow-hidden border border-gray-50">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="size-full absolute top-0 start-0 object-contain transition-transform duration-700 ease-in-out p-4 group-hover:scale-110"
+                    />
+                  </div>
                 </div>
-                <h3 className="text-[15px] md:text-[17px] font-extrabold text-slate-900 group-hover:text-primary transition-colors tracking-tight text-center leading-tight max-w-[220px]">
-                  {product.name}
-                </h3>
+
+                {/* Content Area */}
+                <div className="px-3 pb-4 pt-1 flex flex-col flex-grow">
+                  <h3 className="text-[11px] md:text-[13px] font-black text-gray-900 leading-tight uppercase tracking-tight group-hover:text-primary transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                </div>
               </Link>
             ))}
           </div>
 
-          {/* Content Section */}
-          <div className="max-w-5xl mx-auto space-y-12 md:space-y-16">
-            <section>
-              <h2 className="text-xl md:text-4xl font-black text-gray-900 mb-6 md:mb-8 uppercase tracking-tight">Shop Coolers & Freezers</h2>
-              <div className="space-y-4 md:space-y-6 text-gray-600 leading-relaxed text-sm md:text-[15px] font-medium">
-                <p>
-                  Commercial refrigerators and freezers are a necessary investment for any business that wants to keep their products and ingredients fresh. The food & beverage industry may be the first that comes to mind, but there are an abundance of diverse industries that require an industrial cooling solution.
-                </p>
-                <p>
-                  At ICEMANZ, we've been designing custom refrigeration solutions for years! From pharmaceutical production to laboratory testing, many of the products and services that you use require reliable refrigeration.
-                </p>
-                <p>
-                  Our inventory of commercial refrigerator freezers includes quality brands such as Copeland, Bohn, Krack, Hussmann, Heatcraft, Larkin, Kysor, and Tyler. Browse the categories above to find a great selection of new and used walk-in commercial refrigerators and freezers, refrigerated containers, combo units, and doors.
-                </p>
+          {/* Content Section - Redesigned with Preline Card Patterns */}
+          <div className="max-w-5xl mx-auto space-y-16">
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
+              <div className="space-y-6">
+                <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Shop Coolers & Freezers</h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    Commercial refrigerators and freezers are a necessary investment for any business that wants to keep their products and ingredients fresh. The food & beverage industry may be the first that comes to mind, but there are an abundance of diverse industries that require an industrial cooling solution.
+                  </p>
+                  <p>
+                    At ICEMANZ, we've been designing custom refrigeration solutions for years! From pharmaceutical production to laboratory testing, many of the products and services that you use require reliable refrigeration.
+                  </p>
+                  <p>
+                    Our inventory of commercial refrigerator freezers includes quality brands such as Copeland, Bohn, Krack, Hussmann, Heatcraft, Larkin, Kysor, and Tyler. Browse the categories above to find a great selection of new and used walk-in commercial refrigerators and freezers, refrigerated containers, combo units, and doors.
+                  </p>
+                </div>
               </div>
-            </section>
 
-            <section>
-              <h2 className="text-xl md:text-4xl font-black text-gray-900 mb-6 md:mb-8 uppercase tracking-tight">Commercial Refrigerators for Sale</h2>
-              <div className="space-y-4 md:space-y-6 text-gray-600 leading-relaxed text-sm md:text-[15px] font-medium">
-                <p>
-                  If you're looking for a commercial refrigerator for sale, there are a few things you need to know. Commercial freezers and coolers are an important investment for any business, big or small.
-                </p>
-                <p>
-                  Not only do they maintain the quality of your stock, but they can also help you save money in the long-run. Here are 10 reasons why you should invest in a commercial refrigerator:
-                </p>
-                <ul className="space-y-3 md:space-y-4">
-                  {reasons.map((reason, i) => (
-                    <li key={i} className="flex gap-2 md:gap-3 items-start">
-                      <div className="w-4 h-4 md:w-5 md:h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <CheckCircle2 className="text-primary w-3 h-3 md:w-3.5 md:h-3.5" />
+              <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10">
+                <h2 className="text-2xl font-black text-gray-900 mb-6 uppercase tracking-tight">Why Choose ICEMANZ?</h2>
+                <ul className="space-y-4">
+                  {reasons.slice(0, 6).map((reason, i) => (
+                    <li key={i} className="flex gap-3 items-start">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <CheckCircle2 className="text-primary w-4 h-4" />
                       </div>
-                      <span className="text-sm md:text-base">{reason}</span>
+                      <span className="text-[15px] text-gray-700 font-bold">{reason}</span>
                     </li>
                   ))}
                 </ul>
-                <p className="pt-2 md:pt-4">
-                  However, you still must ensure that you choose the right type of refrigerator for your operations.
-                </p>
               </div>
-            </section>
+            </div>
 
-            <section>
-              <h2 className="text-xl md:text-4xl font-black text-gray-900 mb-6 md:mb-8 uppercase tracking-tight">Types of Commercial Coolers</h2>
-              <div className="space-y-4 md:space-y-6 text-gray-600 leading-relaxed text-sm md:text-[15px] font-medium">
-                <p>
-                  At ICEMANZ, we offer an expansive selection of commercial refrigeration solutions that can be custom-fit to any space. But first, you must determine what you need; should you choose a/an:
-                </p>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
-                  {coolerTypes.map((type, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm md:text-base">
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
-                      {type}
-                    </li>
-                  ))}
-                </ul>
-                <p className="pt-2 md:pt-4">
-                  Or do you require the personalized service of a <Link href="/quote" className="text-primary font-bold hover:underline">Custom Package</Link>? Our refrigeration experts are help you find the perfect solution for your business.
-                </p>
+            <div className="bg-[#004a99] bg-gradient-to-r from-primary to-blue-800 rounded-3xl p-8 md:p-16 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+              <div className="relative z-10 grid md:grid-cols-3 gap-12">
+                <div className="md:col-span-2">
+                  <h2 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tight leading-tight">Types of Commercial Coolers We Offer</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                    {coolerTypes.map((type, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                        <span className="text-[15px] font-bold text-blue-50">{type}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-col justify-center gap-6">
+                  <p className="text-blue-100 font-medium text-lg leading-relaxed">
+                    Need a personalized solution? Our experts help you find the perfect fit.
+                  </p>
+                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-black uppercase tracking-widest text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
+                    Get a Custom Quote <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
+                  </Link>
+                </div>
               </div>
-            </section>
+            </div>
 
-            <section>
-              <h2 className="text-xl md:text-4xl font-black text-gray-900 mb-6 md:mb-8 uppercase tracking-tight">Used Commercial Refrigeration</h2>
-              <div className="space-y-4 md:space-y-6 text-gray-600 leading-relaxed text-sm md:text-[15px] font-medium">
-                <p>
-                  There are a number of reasons to invest in a used commercial refrigerator. Perhaps the most obvious one is that it can save your business money. Commercial refrigerators are expensive to purchase new, but you can often find them at a fraction of the cost if you buy them used.
-                </p>
-                <p>
-                  Another reason to buy a used commercial refrigerator is that it can help you reduce your environmental impact. Refrigerators use a lot of energy, and new ones are even more energy-intensive than used ones. Buying a used refrigerator is a great way to reduce your company's carbon footprint.
-                </p>
-                <p>
-                  Finally, buying a used commercial refrigerator is a great way to recycle an old walk in. Commercial refrigerators are built to last, so if your business is looking for a new refrigerator, it's worth considering buying one that's been pre-owned.
-                </p>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="md:col-span-2 space-y-6">
+                <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Used Commercial Refrigeration</h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    There are a number of reasons to invest in a used commercial refrigerator. Perhaps the most obvious one is that it can save your business money. Commercial refrigerators are expensive to purchase new, but you can often find them at a fraction of the cost if you buy them used.
+                  </p>
+                  <p>
+                    Another reason to buy a used commercial refrigerator is that it can help you reduce your environmental impact. Refrigerators use a lot of energy, and new ones are even more energy-intensive than used ones. Buying a used refrigerator is a great way to reduce your company's carbon footprint.
+                  </p>
+                </div>
               </div>
-            </section>
-
-            <section className="bg-gray-50 p-6 md:p-12 rounded-2xl md:rounded-3xl text-center">
-              <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-gray-900 mb-4 md:mb-6 uppercase tracking-tight">Find the Best Commercial Coolers for Sale at ICEMANZ</h2>
-              <p className="text-gray-600 text-base md:text-lg mb-6 md:mb-8 font-medium">
-                To find or design the perfect cooler or freezer for your business, reach out to our team today.
-              </p>
-              <Link href="/quote" className="inline-flex items-center gap-2 bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-xl font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform group">
-                Contact Us <ArrowRight className="group-hover:translate-x-1 transition-transform w-4.5 h-4.5 md:w-5 md:h-5" />
-              </Link>
-            </section>
+              <div className="flex flex-col gap-6">
+                <div className="p-6 border border-gray-100 rounded-3xl bg-white shadow-sm hover:shadow-xl transition-all group">
+                  <Zap className="size-8 text-primary mb-4" />
+                  <h4 className="text-base font-black text-gray-900 mb-2 uppercase tracking-tight">Fast Installation</h4>
+                  <p className="text-sm text-gray-500 font-medium">Modular designs that can be set up in any space quickly.</p>
+                </div>
+                <div className="p-6 border border-gray-100 rounded-3xl bg-white shadow-sm hover:shadow-xl transition-all group">
+                  <ShieldCheck className="size-8 text-primary mb-4" />
+                  <h4 className="text-base font-black text-gray-900 mb-2 uppercase tracking-tight">Quality Tested</h4>
+                  <p className="text-sm text-gray-500 font-medium">All used equipment undergoes rigorous testing before sale.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <CTA />
       <Footer />
     </main>
   );

@@ -28,7 +28,7 @@ export default function Header() {
     { label: 'Combo Units', href: '/products/combo-units' },
     { label: 'Portable Refrigeration', href: '/products/portable-refrigeration' },
     { label: 'Drive-in Coolers Freezers', href: '/products/drive-in-coolers-freezers' },
-    { label: 'Doors', href: '/products/doors' },
+    { label: 'Doors and Parts', href: '/products/doors' },
     { label: 'Glassdoor Walk-in Cooler', href: '/products/glassdoor-walk-in-cooler' },
     { label: 'Glassdoor Walk-in Freezer', href: '/products/glassdoor-walk-in-freezer' },
     { label: 'Glassdoor', href: '/products/glassdoor' },
@@ -44,7 +44,8 @@ export default function Header() {
     'Combo Units': '/Walk-inCooler&Freezer/combounits.jpg',
     'Portable Refrigeration': '/Walk-inCooler&Freezer/portableRefrigeration.jpg',
     'Drive-in Coolers Freezers': '/Walk-inCooler&Freezer/drive-inCoolersFreezers.jpg',
-    'Doors': '/Walk-inCooler&Freezer/NewCooler.jpg'
+    'Doors and Parts': '/Walk-inCooler&Freezer/NewCooler.jpg',
+    'Refrigeration Equipment': '/slider/s_1.jpeg'
   };
 
   const glassdoorImages: { [key: string]: string } = {
@@ -72,29 +73,29 @@ export default function Header() {
 
   return (
     <header className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'lg:-top-[37px]' : 'top-0'}`}>
-      {/* Top Bar */}
-      <div className="hidden lg:flex bg-primary text-white py-2.5 h-[37px] items-center">
-        <div className="container flex justify-between items-center text-[13px] font-medium leading-none">
-          <div className="flex gap-6" suppressHydrationWarning>
-            <a href="tel:929-451-7665" className="flex items-center gap-2 hover:text-accent transition-colors">
-              <Phone size={14} className="text-accent" /> 929-451-7665
+      {/* Top Bar - Refined Blue */}
+      <div className="hidden lg:flex bg-[#003d80] text-white py-2.5 h-[37px] items-center border-b border-white/5">
+        <div className="container flex justify-between items-center text-[12px] font-bold uppercase tracking-wider leading-none">
+          <div className="flex gap-8" suppressHydrationWarning>
+            <a href="tel:929-451-7665" className="flex items-center gap-2 hover:text-blue-200 transition-colors">
+              <Phone size={14} className="text-blue-300" /> 929-451-7665
             </a>
-            <a href="mailto:sales@icemanz.com" className="flex items-center gap-2 hover:text-accent transition-colors">
-              <Mail size={14} className="text-accent" /> sales@icemanz.com
+            <a href="mailto:sales@icemanz.com" className="flex items-center gap-2 hover:text-blue-200 transition-colors">
+              <Mail size={14} className="text-blue-300" /> sales@icemanz.com
             </a>
           </div>
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2">
-              <Clock size={14} className="text-accent" />
-              <span className="text-accent">36-48h Shipping</span> - Nationwide Delivery
+          <div className="flex items-center gap-8">
+            <span className="flex items-center gap-2 text-blue-50">
+              <Clock size={14} className="text-blue-300" />
+              <span className="text-white">36-48h Shipping</span> - Nationwide Delivery
             </span>
-            <Link href="/support" className="hover:text-accent transition-colors">Support</Link>
+            <Link href="/support" className="hover:text-blue-200 transition-colors border-l border-white/20 pl-8">Support</Link>
           </div>
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <div className={`bg-white/95 backdrop-blur-md transition-all duration-300 ${isScrolled ? 'py-2 shadow-xl' : 'py-4 shadow-sm border-b border-gray-100'}`}>
+      {/* Main Navigation - Enhanced Shadow and Border */}
+      <div className={`bg-white/95 backdrop-blur-md transition-all duration-300 ${isScrolled ? 'py-2 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)]' : 'py-4 shadow-sm border-b border-gray-100'}`}>
         <div className="container flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-1 group">
@@ -117,22 +118,23 @@ export default function Header() {
                   {/* Links Column */}
                   <div className="flex flex-col gap-2 flex-1">
                     {[
-                      'Walk In Coolers',
-                      'Coolers With Floor',
-                      'Walk In Freezers',
-                      'Freezers With Floor',
-                      'Combo Units',
-                      'Portable Refrigeration',
-                      'Drive-in Coolers Freezers',
-                      'Doors'
+                      { label: 'Walk In Coolers', href: '/products/walk-in-coolers' },
+                      { label: 'Coolers With Floor', href: '/products/coolers-with-floor' },
+                      { label: 'Walk In Freezers', href: '/products/walk-in-freezers' },
+                      { label: 'Freezers With Floor', href: '/products/freezers-with-floor' },
+                      { label: 'Combo Units', href: '/products/combo-units' },
+                      { label: 'Portable Refrigeration', href: '/products/portable-refrigeration' },
+                      { label: 'Drive-in Coolers Freezers', href: '/products/drive-in-coolers-freezers' },
+                      { label: 'Doors and Parts', href: '/products/doors' },
+                      { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' }
                     ].map((item, index) => (
                       <Link
-                        key={item}
-                        href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
-                        onMouseEnter={() => setHoveredWalkInItem(walkInImages[item])}
+                        key={item.label}
+                        href={item.href}
+                        onMouseEnter={() => setHoveredWalkInItem(walkInImages[item.label])}
                         className={`text-[16px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
                       >
-                        {item}
+                        {item.label}
                       </Link>
                     ))}
                   </div>
@@ -149,7 +151,7 @@ export default function Header() {
               </div>
             </div>
             <div className="relative group py-2">
-              <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
+              <button className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap focus:outline-none">
                 Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
               {/* Mega Dropdown for Glassdoor Walk-in Cooler */}
@@ -185,11 +187,6 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <div className="relative group py-2">
-              <Link href="/refrigeration-equipment" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap uppercase tracking-tight">
-                Refrigeration Equipment
-              </Link>
-            </div>
           </nav>
 
           {/* Actions */}
@@ -204,7 +201,10 @@ export default function Header() {
               </button>
             </div>
 
-            <Link href="/quote" className="hidden md:flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer">
+            <Link
+              href="/quote"
+              className="hidden md:inline-flex items-center gap-x-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer"
+            >
               <FileText size={18} />
               Get a Quote
             </Link>
@@ -272,7 +272,7 @@ export default function Header() {
               <Link
                 href="/quote"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center flex items-center justify-center gap-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-transform"
+                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center inline-flex items-center justify-center gap-x-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-all focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
               >
                 <FileText size={20} />
                 Get a Quote

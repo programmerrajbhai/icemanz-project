@@ -3,24 +3,60 @@ import { PhoneCall, FileText } from 'lucide-react';
 
 export default function CTA() {
   return (
-    <section className="py-16 md:py-24 bg-primary relative overflow-hidden text-white">
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-white opacity-5 rounded-full blur-3xl animate-pulse"></div>
+    <section className="py-12 md:py-20 bg-white">
+      <div className="container px-4 md:px-6">
+        <div className="relative bg-[#020617] rounded-3xl overflow-hidden px-6 py-12 md:py-16 lg:px-12 shadow-2xl">
+          {/* Background Decorative Elements */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] from-primary/20 pointer-events-none"></div>
+          <div className="absolute -top-24 -right-24 size-96 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 size-96 bg-accent/10 blur-[80px] rounded-full pointer-events-none"></div>
 
-      <div className="container relative z-10 text-center px-4 md:px-6">
-        <h2 className="text-3xl md:text-5xl font-extrabold mb-6 md:mb-8 tracking-tight">
-          Ready to Upgrade Your <span className="text-accent">Cold Storage</span>?
-        </h2>
-        <p className="text-lg md:text-xl text-blue-100 mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
-          Contact us today to discuss your project requirements. Whether you need a standard quick-ship unit or a fully custom-built walk-in, ICEMANZ has you covered.
-        </p>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              Direct Factory Solutions
+            </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/quote" className="bg-accent text-white px-7 md:px-9 py-3.5 md:py-4.5 rounded-xl font-bold text-sm md:text-base flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
-            <FileText size={22} /> Get a Quote Now
-          </Link>
-          <a href="tel:929-451-7665" className="bg-white text-primary px-7 md:px-9 py-3.5 md:py-4.5 rounded-xl font-bold text-sm md:text-base flex items-center justify-center gap-3 hover:bg-gray-100 transition-all shadow-xl hover:scale-105 transform cursor-pointer">
-            <PhoneCall size={22} /> Call 929-451-7665
-          </a>
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tighter uppercase leading-[0.95] drop-shadow-sm">
+              Ready to Upgrade Your <br />
+              <span className="text-primary">Cold Storage</span>?
+            </h2>
+            
+            <p className="text-sm md:text-lg text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed font-medium opacity-90">
+              Contact us today to discuss your project requirements. Whether you need a standard quick-ship unit or a fully custom-built walk-in, ICEMANZ has you covered.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/quote"
+                className="w-full sm:w-auto py-3.5 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-xl bg-primary text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#020617] transition-all shadow-xl shadow-primary/20 cursor-pointer active:scale-95"
+              >
+                <FileText size={18} /> Get a Quote Now
+              </Link>
+              
+              <a
+                href="tel:929-451-7665"
+                className="w-full sm:w-auto py-3.5 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-xl border border-slate-800 bg-white/5 text-white backdrop-blur-sm hover:bg-white/10 focus:outline-none transition-all cursor-pointer active:scale-95"
+              >
+                <PhoneCall size={18} /> Call 929-451-7665
+              </a>
+            </div>
+
+            <div className="mt-12 flex flex-wrap justify-center items-center gap-x-10 gap-y-4 opacity-40 grayscale group hover:grayscale-0 transition-all duration-500">
+              <div className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                <span className="text-primary text-base">✓</span> Factory Direct
+              </div>
+              <div className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                <span className="text-primary text-base">✓</span> Nationwide Shipping
+              </div>
+              <div className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                <span className="text-primary text-base">✓</span> Custom Engineered
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -13,7 +13,8 @@ import {
   Box,
   Tag,
   Truck,
-  ShieldCheck
+  ShieldCheck,
+  LayoutGrid
 } from 'lucide-react';
 
 const mockProducts = [
@@ -94,122 +95,148 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
 
       <div className="pt-28 pb-20 md:pt-36 md:pb-24">
         <div className="container px-4">
-          {/* Top Row: Breadcrumb & Search */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-            <nav className="flex items-center gap-2 text-[14px] font-medium">
-              <Link href="/" className="text-blue-600 hover:text-blue-800 transition-colors">Home</Link>
-              <span className="text-gray-400 font-light mx-1">&gt;</span>
-              <Link href="/walk-in-cooler-freezer" className="text-blue-600 hover:text-blue-800 transition-colors">Walk-in Cooler & Freezer</Link>
-              <span className="text-gray-400 font-light mx-1">&gt;</span>
-              <span className="text-slate-400 font-normal">{title}</span>
+          {/* Breadcrumb & Search Section - Preline Pattern */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <nav className="flex items-center whitespace-nowrap min-w-0" aria-label="Breadcrumb">
+              <ol className="flex items-center text-sm text-gray-500 font-medium">
+                <li className="flex items-center">
+                  <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+                  <ChevronRight size={14} className="mx-2 text-gray-400 shrink-0" />
+                </li>
+                <li className="flex items-center">
+                  <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-in Cooler & Freezer</Link>
+                  <ChevronRight size={14} className="mx-2 text-gray-400 shrink-0" />
+                </li>
+                <li className="text-gray-800 font-bold truncate" aria-current="page">
+                  {title}
+                </li>
+              </ol>
             </nav>
 
-            <div className="flex w-full md:w-auto items-center shadow-sm border border-gray-100 rounded-lg overflow-hidden transition-shadow hover:shadow-md">
-              <div className="relative flex-grow md:w-80">
+            <div className="w-full md:w-auto">
+              <div className="flex rounded-lg shadow-sm">
                 <input
                   type="text"
                   placeholder="Search the Catalog"
-                  className="w-full pl-5 pr-10 py-3 text-[15px] focus:outline-none placeholder:text-gray-400"
+                  className="py-3 px-4 block w-full md:w-80 border-gray-300 shadow-sm rounded-s-lg text-sm focus:z-10 focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none"
                 />
+                <button
+                  type="button"
+                  className="py-3 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-black uppercase tracking-widest rounded-e-lg border border-transparent bg-primary text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Find It
+                  <ChevronRight size={18} strokeWidth={3} />
+                </button>
               </div>
-              <button className="bg-[#005cb9] text-white px-8 py-3 font-black text-[15px] hover:bg-blue-700 transition-all flex items-center gap-2 uppercase tracking-tighter shrink-0">
-                Find It <ChevronRight size={18} strokeWidth={3} />
-              </button>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-            {/* Sidebar Filters */}
-            <aside className="w-full lg:w-[240px] shrink-0">
-              <div className="space-y-10 sticky top-32">
-                <section className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50">
-                  <div className="flex items-center gap-2 mb-6">
-                    <Layers size={18} className="text-slate-900" />
-                    <h3 className="text-[16px] font-black text-slate-900 uppercase tracking-wider">Sort By</h3>
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Sidebar - Preline Vertical Nav Pattern */}
+            <aside className="lg:w-64 shrink-0">
+              <div className="space-y-6 sticky top-32">
+                {/* Sort By Section */}
+                <div className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                  <div className="bg-gray-50/50 px-5 py-3 border-b border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <LayoutGrid size={16} className="text-gray-800" />
+                      <h3 className="text-sm font-black text-gray-800 uppercase tracking-wider">Sort By</h3>
+                    </div>
                   </div>
-                  <ul className="space-y-3">
-                    {[
-                      { label: 'Featured', icon: Tag },
-                      { label: 'Size', icon: Box },
-                      { label: 'Brand', icon: ShieldCheck }
-                    ].map((item) => (
-                      <li key={item.label}>
-                        <button className="flex items-center gap-3 w-full p-2 rounded-xl text-[14px] font-bold text-slate-600 hover:text-[#005cb9] hover:bg-white hover:shadow-sm transition-all cursor-pointer group">
-                          <item.icon size={16} className="text-slate-400 group-hover:text-[#005cb9] transition-colors" />
+                  <div className="p-2">
+                    <nav className="flex flex-col space-y-1">
+                      {[
+                        { label: 'Featured', icon: Tag },
+                        { label: 'Size', icon: Box },
+                        { label: 'Brand', icon: ShieldCheck }
+                      ].map((item) => (
+                        <button
+                          key={item.label}
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-100 hover:text-primary transition-all cursor-pointer w-full text-left"
+                        >
+                          <item.icon size={16} className="text-gray-400" />
                           {item.label}
                         </button>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50">
-                  <div className="flex items-center gap-2 mb-8">
-                    <Filter size={18} className="text-slate-900" />
-                    <h3 className="text-[16px] font-black text-slate-900 uppercase tracking-wider">Narrow By</h3>
+                      ))}
+                    </nav>
                   </div>
+                </div>
 
-                  <div className="space-y-10">
+                {/* Narrow By Section */}
+                <div className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                  <div className="bg-gray-50/50 px-5 py-3 border-b border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <Filter size={16} className="text-gray-800" />
+                      <h3 className="text-sm font-black text-gray-800 uppercase tracking-wider">Narrow By</h3>
+                    </div>
+                  </div>
+                  <div className="p-5 space-y-8">
+                    {/* Availability */}
                     <div>
                       <div className="flex items-center gap-2 mb-4">
-                        <Truck size={14} className="text-slate-400" />
-                        <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-widest">Availability</h4>
+                        <Truck size={14} className="text-gray-400" />
+                        <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">Availability</h4>
                       </div>
-                      <label className="flex items-center gap-3 cursor-pointer group p-2 rounded-xl hover:bg-white hover:shadow-sm transition-all">
-                        <div className="relative flex items-center justify-center">
-                          <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-slate-200 rounded-md checked:bg-[#005cb9] checked:border-[#005cb9] transition-all cursor-pointer" />
-                          <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
-                        </div>
-                        <span className="text-[14px] font-bold text-slate-600 group-hover:text-[#005cb9] transition-colors">Barr Ready Ship</span>
-                      </label>
+                      <div className="space-y-3">
+                        <label className="flex items-center gap-x-3 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="shrink-0 size-4 border-gray-300 rounded text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all" 
+                            id="hs-availability-ready-ship"
+                          />
+                          <span className="text-sm font-bold text-gray-600 cursor-pointer hover:text-primary transition-colors">Barr Ready Ship</span>
+                        </label>
+                      </div>
                     </div>
 
+                    {/* Condition */}
                     <div>
                       <div className="flex items-center gap-2 mb-4">
-                        <Box size={14} className="text-slate-400" />
-                        <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-widest">Condition</h4>
+                        <Box size={14} className="text-gray-400" />
+                        <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">Condition</h4>
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {['New', 'Used'].map((condition) => (
-                          <label key={condition} className="flex items-center gap-3 cursor-pointer group p-2 rounded-xl hover:bg-white hover:shadow-sm transition-all">
-                            <div className="relative flex items-center justify-center">
-                              <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-slate-200 rounded-md checked:bg-[#005cb9] checked:border-[#005cb9] transition-all cursor-pointer" />
-                              <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
-                            </div>
-                            <span className="text-[14px] font-bold text-slate-600 group-hover:text-[#005cb9] transition-colors">{condition}</span>
+                          <label key={condition} className="flex items-center gap-x-3 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              className="shrink-0 size-4 border-gray-300 rounded text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all" 
+                              id={`hs-condition-${condition.toLowerCase()}`}
+                            />
+                            <span className="text-sm font-bold text-gray-600 cursor-pointer hover:text-primary transition-colors">{condition}</span>
                           </label>
                         ))}
                       </div>
                     </div>
                   </div>
-                </section>
+                </div>
               </div>
             </aside>
 
             {/* Main Content Area */}
             <div className="flex-1">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline gap-4 mb-12 border-b border-slate-100 pb-8">
-                <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-4 mb-10 pb-6 border-b border-gray-100">
+                <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter">
                   {title}
                 </h1>
-                <Link href="/quote" className="text-[13px] font-black text-[#005cb9] hover:underline uppercase tracking-widest">
-                  Don't see the size you need? <span className="text-slate-900">Click Here!</span>
+                <Link href="/quote" className="text-[12px] font-black text-primary hover:text-blue-800 uppercase tracking-widest transition-colors">
+                  Don't see the size you need? <span className="text-gray-900">Click Here!</span>
                 </Link>
               </div>
 
-              {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-16">
+              {/* Product Grid - Compact Preline Pattern */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {mockProducts.map((product) => (
                   <Link
                     key={product.id}
                     href={`/walk-in-cooler-freezer/${slug}/${product.id}`}
-                    className="group flex flex-col h-full bg-white rounded-2xl border border-slate-100 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 overflow-hidden cursor-pointer"
+                    className="group flex flex-col bg-white border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
                   >
-                    {/* Image Area with Floating Badge */}
-                    <div className="relative group/img aspect-[4/3] bg-slate-50 overflow-hidden flex items-center justify-center p-4">
-                      {/* Badge matching reference image exactly */}
-                      <div className="absolute top-4 left-4 z-10">
-                        <span className="bg-[#cc0000] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-900/20 rounded-sm">
+                    {/* Compact Image Area */}
+                    <div className="relative pt-[65%] bg-gray-50 overflow-hidden">
+                      {/* Red Badge matching reference image */}
+                      <div className="absolute top-0 left-0 z-10">
+                        <span className="inline-block bg-[#cc0000] text-white px-2.5 py-1 text-[9px] font-black uppercase tracking-widest">
                           {product.badge}
                         </span>
                       </div>
@@ -217,31 +244,32 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                       <img
                         src={product.image}
                         alt={product.title}
-                        className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-110"
+                        className="size-full absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                       />
                     </div>
 
-                    {/* Content Area */}
-                    <div className="flex flex-col flex-grow p-5">
-                      <h3 className="text-[15px] font-black text-slate-900 leading-tight mb-3 group-hover:text-[#005cb9] transition-colors min-h-[40px] line-clamp-2">
+                    {/* Compact Content Area */}
+                    <div className="p-4 flex flex-col flex-grow">
+                      <h3 className="text-sm font-semibold text-gray-800 leading-snug group-hover:text-primary transition-colors line-clamp-2">
                         {product.title}
                       </h3>
 
-                      <p className="text-[13px] font-medium text-slate-500 line-clamp-2 mb-6 leading-relaxed flex-grow">
-                        {product.description}
-                      </p>
-
-                      <div className="flex flex-wrap gap-3 mb-6">
+                      <div className="mt-3 flex flex-wrap gap-1.5">
                         {product.sqFt !== '0 Sq. Ft.' && (
-                          <div className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider">{product.sqFt}</div>
+                          <span className="py-1 px-2 inline-flex items-center text-[11px] font-medium uppercase tracking-wider bg-gray-100 text-gray-500 rounded-md">
+                            {product.sqFt}
+                          </span>
                         )}
-                        <div className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider">{product.condition}</div>
+                        <span className="py-1 px-2 inline-flex items-center text-[11px] font-medium uppercase tracking-wider bg-gray-100 text-gray-500 rounded-md">
+                          {product.condition}
+                        </span>
                       </div>
 
-                      <div className="mt-auto pt-4 border-t border-slate-50">
-                        <div className="text-[#005cb9] text-[13px] font-black hover:gap-2 flex items-center gap-1.5 group/link transition-all">
-                          View Details <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
-                        </div>
+                      <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-sm font-semibold text-primary group-hover:text-blue-700 transition-colors">
+                          View Details
+                        </span>
+                        <ArrowRight size={14} className="text-primary group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </Link>
