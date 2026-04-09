@@ -33,7 +33,10 @@ export default function Header() {
     { label: 'Glassdoor Walk-in Freezer', href: '/products/glassdoor-walk-in-freezer' },
     { label: 'Glassdoor', href: '/products/glassdoor' },
     { label: 'Shelving', href: '/products/shelving' },
-    { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' }
+    { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' },
+    { label: 'Low Profile Evaporator', href: '/products/low-profile-evaporator' },
+    { label: 'Thin Profile Evaporator (Reach-in)', href: '/products/thin-profile-evaporator' },
+    { label: 'Medium Profile', href: '/products/medium-profile' }
   ];
 
   const walkInImages: { [key: string]: string } = {
@@ -54,6 +57,15 @@ export default function Header() {
     'Glassdoor': '/slider/s_3.jpeg',
     'Shelving': '/products/product_1.jpg'
   };
+
+  const refrigerationImages: { [key: string]: string } = {
+    'Low Profile Evaporator': '/slider/s_1.jpeg',
+    'Thin Profile Evaporator (Reach-in)': '/slider/s_2.jpeg',
+    'Medium Profile': '/slider/s_3.jpeg',
+    'Refrigeration Equipment': '/slider/s_1.jpeg'
+  };
+
+  const [hoveredRefrigerationItem, setHoveredRefrigerationItem] = useState('/slider/s_1.jpeg');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,17 +118,16 @@ export default function Header() {
           <nav className="hidden lg:flex gap-10 items-center">
             <Link href="/" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
               Home
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <div className="relative group py-2">
               <Link href="/walk-in-cooler-freezer" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               {/* Mega Dropdown for Walk-in Cooler & Freezer */}
-              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-8 z-50">
-                <div className="flex gap-10">
+              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+                <div className="flex gap-8">
                   {/* Links Column */}
-                  <div className="flex flex-col gap-2 flex-1">
+                  <div className="flex flex-col gap-1.5 flex-1">
                     {[
                       { label: 'Walk In Coolers', href: '/products/walk-in-coolers' },
                       { label: 'Coolers With Floor', href: '/products/coolers-with-floor' },
@@ -125,21 +136,20 @@ export default function Header() {
                       { label: 'Combo Units', href: '/products/combo-units' },
                       { label: 'Portable Refrigeration', href: '/products/portable-refrigeration' },
                       { label: 'Drive-in Coolers Freezers', href: '/products/drive-in-coolers-freezers' },
-                      { label: 'Doors and Parts', href: '/products/doors' },
-                      { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' }
+                      { label: 'Doors and Parts', href: '/products/doors' }
                     ].map((item, index) => (
                       <Link
                         key={item.label}
                         href={item.href}
                         onMouseEnter={() => setHoveredWalkInItem(walkInImages[item.label])}
-                        className={`text-[16px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                        className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
                       >
                         {item.label}
                       </Link>
                     ))}
                   </div>
                   {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-4 overflow-hidden min-h-[300px]">
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-3 overflow-hidden min-h-[180px] max-h-[220px]">
                     <img
                       key={hoveredWalkInItem}
                       src={hoveredWalkInItem}
@@ -155,10 +165,10 @@ export default function Header() {
                 Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
               {/* Mega Dropdown for Glassdoor Walk-in Cooler */}
-              <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-8 z-50">
-                <div className="flex gap-10">
+              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+                <div className="flex gap-8">
                   {/* Links Column */}
-                  <div className="flex flex-col gap-2 flex-1">
+                  <div className="flex flex-col gap-1.5 flex-1">
                     {[
                       'Glassdoor Walk-in Cooler',
                       'Glassdoor Walk-in Freezer',
@@ -169,18 +179,55 @@ export default function Header() {
                         key={item}
                         href={`/products/${item.toLowerCase().replace(/ /g, '-')}`}
                         onMouseEnter={() => setHoveredGlassdoorItem(glassdoorImages[item])}
-                        className={`text-[16px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                        className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
                       >
                         {item}
                       </Link>
                     ))}
                   </div>
                   {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-4 overflow-hidden min-h-[300px]">
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-3 overflow-hidden min-h-[180px] max-h-[220px]">
                     <img
                       key={hoveredGlassdoorItem}
                       src={hoveredGlassdoorItem}
                       alt="Glassdoor Cooler Preview"
+                      className="max-w-full h-auto rounded-lg shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative group py-2">
+              <Link href="/refrigeration-equipment" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
+                Refrigeration Equipment <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+              </Link>
+              {/* Mega Dropdown for Refrigeration Equipment */}
+              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+                <div className="flex gap-8">
+                  {/* Links Column */}
+                  <div className="flex flex-col gap-1.5 flex-1">
+                    {[
+                      { label: 'Low Profile Evaporator', href: '/products/low-profile-evaporator' },
+                      { label: 'Thin Profile Evaporator (Reach-in)', href: '/products/thin-profile-evaporator' },
+                      { label: 'Medium Profile', href: '/products/medium-profile' }
+                    ].map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        onMouseEnter={() => setHoveredRefrigerationItem(refrigerationImages[item.label])}
+                        className="text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block text-gray-500 hover:text-primary"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                  {/* Image Column */}
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-3 overflow-hidden min-h-[180px] max-h-[220px]">
+                    <img
+                      key={hoveredRefrigerationItem}
+                      src={hoveredRefrigerationItem}
+                      alt="Refrigeration Equipment Preview"
                       className="max-w-full h-auto rounded-lg shadow-sm"
                     />
                   </div>

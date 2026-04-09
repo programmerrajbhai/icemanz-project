@@ -60,66 +60,69 @@ function ProductCard({ product }: { product: typeof products[0] }) {
   return (
     <Link
       href={product.href}
-      className="group flex flex-col h-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg hover:border-primary transition-all overflow-hidden focus:outline-none focus:shadow-lg"
+      className="group flex flex-col h-full bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden focus:outline-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Internal Slider */}
-      <div className="relative h-52 overflow-hidden">
+      <div className="relative h-64 overflow-hidden">
         {product.images.map((img, idx) => (
           <img
             key={idx}
             src={img}
             alt={`${product.title} ${idx + 1}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === currentImage ? 'opacity-100 scale-100' : 'opacity-0'
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${idx === currentImage ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
               }`}
           />
         ))}
 
+        {/* Overlay for depth */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
         {/* Slider Controls */}
-        <div className="absolute inset-0 flex items-center justify-between p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
             onClick={prevImage}
-            className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer"
+            className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={18} />
           </button>
           <button
             onClick={handleNextClick}
-            className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer"
+            className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
           >
-            <ChevronRight size={16} />
+            <ChevronRight size={18} />
           </button>
         </div>
 
         {/* Indicators */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
           {product.images.map((_, idx) => (
             <div
               key={idx}
-              className={`h-0.5 rounded-full transition-all duration-300 ${idx === currentImage ? 'w-3 bg-primary' : 'w-1 bg-white/50'
+              className={`h-1 rounded-full transition-all duration-500 ${idx === currentImage ? 'w-6 bg-white' : 'w-2 bg-white/40'
                 }`}
             />
           ))}
         </div>
 
-        <div className="absolute top-3 left-3">
-          <span className="bg-primary text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-xl">
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-primary/90 backdrop-blur-md text-white text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-widest shadow-2xl border border-white/10">
             {product.tag}
           </span>
         </div>
       </div>
 
-      <div className="p-6 flex flex-col grow">
-        <h3 className="text-xl font-black text-gray-900 mb-3 group-hover:text-primary transition-colors tracking-tight uppercase">
+      <div className="p-7 flex flex-col grow relative">
+        <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-4 group-hover:text-primary transition-colors tracking-tight uppercase leading-tight">
           {product.title}
         </h3>
-        <p className="text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-medium line-clamp-3">
+        <p className="text-slate-500 text-[14px] leading-relaxed font-medium line-clamp-3 mb-6">
           {product.description}
         </p>
-        <div className="mt-auto flex justify-end items-center pt-5 border-t border-gray-100 mt-6">
-          <span className="inline-flex items-center gap-2 text-primary text-[11px] font-black uppercase tracking-widest">
-            View Details <ArrowRight size={14} />
+        <div className="mt-auto flex items-center justify-between pt-6 border-t border-gray-50">
+          <span className="inline-flex items-center gap-2 text-primary text-[11px] font-black uppercase tracking-[0.2em] group-hover:gap-3 transition-all duration-300">
+            View Details <ArrowRight size={14} className="stroke-[3px]" />
           </span>
         </div>
       </div>
@@ -129,8 +132,18 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 
 export default function Products() {
   return (
-    <section id="products" className="py-16 md:py-24 bg-white">
-      <div className="container px-4 md:px-6">
+    <section id="products" className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50/50 relative overflow-hidden">
+      {/* Background patterns */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none">
+        <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <pattern id="dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="currentColor" />
+          </pattern>
+          <rect width="100" height="100" fill="url(#dots)" />
+        </svg>
+      </div>
+
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="text-center max-w-4xl mx-auto mb-12 md:mb-20">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase flex flex-wrap items-center justify-center gap-2 md:gap-3">
             <span className="text-[#171717]">Featured</span>
