@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowRight, Search, FileText } from 'lucide-react';
+import { ArrowRight, Search, FileText, ChevronLeft, ChevronRight, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 const sliderImages = [
@@ -35,7 +35,7 @@ export default function Hero() {
   }, [nextSlide]);
 
   return (
-    <section className="relative h-[420px] sm:h-[480px] md:h-[560px] w-full overflow-hidden bg-gray-950 mt-[60px] md:mt-[90px]">
+    <section className="relative h-[480px] sm:h-[540px] md:h-[620px] w-full overflow-hidden bg-gray-950 mt-[70px] md:mt-[100px]">
       {/* Background Slides */}
       <div className="absolute inset-0 z-0">
         {sliderImages.map((slide, index) => (
@@ -59,13 +59,9 @@ export default function Hero() {
         <div className="max-w-4xl pt-4 md:pt-10 text-center">
           <div className="space-y-10 md:space-y-12">
             {/* Main Headline following reference image */}
-            <h1 className="text-3xl sm:text-4xl md:text-[64px] font-black text-white uppercase tracking-tight leading-[0.95] md:leading-[0.95] px-2 max-w-[95vw] mx-auto drop-shadow-2xl">
-              YOUR <span className="text-accent relative inline-block">
-                TOTAL
-                <div className="absolute -bottom-1 md:bottom-2 left-0 w-full h-1 md:h-2 bg-primary"></div>
-              </span> <br />
-              REFRIGERATION <br />
-              SOLUTIONS
+            <h1 className="text-4xl sm:text-5xl md:text-[64px] font-black text-white uppercase tracking-tight leading-[0.9] md:leading-[0.9] px-2 max-w-[95vw] mx-auto drop-shadow-2xl">
+              YOUR TOTAL <br />
+              REFRIGERATION SOLUTIONS
             </h1>
 
             {/* Action Buttons using Preline Styles */}
