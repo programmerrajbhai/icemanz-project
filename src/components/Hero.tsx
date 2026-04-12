@@ -65,18 +65,18 @@ export default function Hero() {
             </h1>
 
             {/* Action Buttons using Preline Styles */}
-            <div className="flex flex-col sm:flex-row gap-3 px-4 sm:px-0 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 px-4 sm:px-0 justify-center">
               <Link
                 href="/products"
-                className="py-3 px-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-primary text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all uppercase tracking-wider"
+                className="py-4 px-10 inline-flex justify-center items-center gap-x-2 text-sm font-black rounded-xl border border-transparent bg-primary text-white hover:bg-blue-600 focus:outline-none focus:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(0,74,153,0.3)] hover:shadow-[0_0_30px_rgba(0,74,153,0.5)] active:scale-[0.98]"
               >
                 Explore Products
               </Link>
               <Link
                 href="/quote"
-                className="py-3 px-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all uppercase tracking-wider"
+                className="py-4 px-10 inline-flex justify-center items-center gap-x-3 text-sm font-black rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-gray-950 focus:outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all uppercase tracking-[0.2em] active:scale-[0.98] group/btn"
               >
-                <Search size={18} /> Request a Quote
+                <Search size={20} className="group-hover/btn:scale-110 transition-transform" /> Request a Quote
               </Link>
             </div>
           </div>

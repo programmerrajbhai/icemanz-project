@@ -6,19 +6,80 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Grid, List, ArrowRight, ChevronUp, Minus, Plus } from 'lucide-react';
 
-const products = Array(8).fill(null).map((_, index) => {
-  const images = [
-    '/products/product_1.jpg',
-    '/products/product_2.jpg',
-    '/slider/s_1.jpeg',
-    '/slider/s_2.jpeg',
-    '/slider/s_3.jpeg'
-  ];
-  return {
-    name: `TS0${60 + index * 5}MR404A3-T`,
-    image: images[index % images.length],
-  };
-});
+const products = [
+  {
+    name: "ADM124AE",
+    description: "12444 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-1-1.jpg",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM173AE",
+    description: "17363 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-1-1.jpg",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM251AE",
+    description: "25184 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-2.jpg",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM350AE",
+    description: "35000 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-2.jpg",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM380AE",
+    description: "38006 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-2.jpg",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM527AE",
+    description: "52731 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/ADM527AE.png",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM625AE",
+    description: "62551 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/ADM625AE.png",
+    category: "Medium Profile"
+  },
+  {
+    name: "ADM704AE",
+    description: "70494 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/ADM704AE.png",
+    category: "Medium Profile"
+  },
+  {
+    name: "MED098BE",
+    description: "9833 BTU, Electric Defrost, EC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED098BE.png",
+    category: "Medium Profile"
+  },
+  {
+    name: "MED139BE",
+    description: "14400 BTU, Electric Defrost, PSC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED139BE.png",
+    category: "Medium Profile"
+  },
+  {
+    name: "MED207BE",
+    description: "20746 BTU, Electric Defrost, EC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED207BE.png",
+    category: "Medium Profile"
+  },
+  {
+    name: "MED291BE",
+    description: "29170 BTU, Electric Defrost, EC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
+    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED291BE.png",
+    category: "Medium Profile"
+  }
+];
 
 const sidebarCategories = [
   {
@@ -152,17 +213,20 @@ export default function RefrigerationEquipmentPage() {
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full absolute inset-0 object-cover group-hover:scale-110 transition-transform duration-700 ease-out p-4"
+                          className="w-full h-full absolute inset-0 object-contain group-hover:scale-105 transition-transform duration-700 ease-out p-6"
                         />
                       </div>
                     </div>
 
                     {/* Content Area */}
                     <div className="px-6 pb-6 pt-2 flex flex-col flex-grow text-center items-center">
-                      <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 opacity-80">Unit Cooler</div>
-                      <h3 className="font-black text-gray-900 group-hover:text-primary transition-colors duration-300 leading-tight text-base uppercase tracking-tight mb-4">
+                      <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 opacity-80">{product.category}</div>
+                      <h3 className="font-black text-gray-900 group-hover:text-primary transition-colors duration-300 leading-tight text-base uppercase tracking-tight mb-2">
                         {product.name}
                       </h3>
+                      <p className="text-[11px] text-gray-500 font-medium leading-relaxed mb-4 line-clamp-2">
+                        {product.description}
+                      </p>
 
                       <div className="flex items-center gap-1.5 mb-6">
                         <div className="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>

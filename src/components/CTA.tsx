@@ -32,9 +32,9 @@ export default function CTA() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/quote"
-                className="w-full sm:w-auto py-3.5 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-xl bg-primary text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#020617] transition-all shadow-xl shadow-primary/20 cursor-pointer active:scale-95"
+                className="w-full sm:w-auto py-4 px-10 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-[0.2em] rounded-2xl bg-primary text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-4 focus:ring-offset-[#020617] transition-all shadow-[0_0_20px_rgba(0,74,153,0.3)] hover:shadow-[0_0_30px_rgba(0,74,153,0.5)] cursor-pointer active:scale-[0.98] group/btn"
               >
-                <FileText size={18} /> Get a Quote Now
+                <FileText size={20} className="group-hover/btn:scale-110 transition-transform" /> Get a Quote Now
               </Link>
               
               <a

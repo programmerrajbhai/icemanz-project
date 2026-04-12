@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import ScrollingTicker from "@/components/ScrollingTicker";
 import Products from "@/components/Products";
 import Services from "@/components/Services";
+import Industries from "@/components/Industries";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
@@ -16,6 +17,7 @@ export default function Home() {
         <ScrollingTicker />
         <Products />
         <Services />
+        <Industries />
         <Testimonials />
         <CTA />
       </main>
