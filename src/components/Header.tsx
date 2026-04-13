@@ -9,6 +9,7 @@ import {
   Search,
   ShoppingCart,
   ChevronDown,
+  ChevronRight,
   Clock,
   X,
   FileText,
@@ -18,26 +19,56 @@ import {
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedMobileCategories, setExpandedMobileCategories] = useState<string[]>([]);
   const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/Walk-inCooler&Freezer/walkincoolers.jpg');
   const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
-  const mobileProductLinks = [
-    { label: 'Walk In Coolers', href: '/products/walk-in-coolers' },
-    { label: 'Coolers With Floor', href: '/products/coolers-with-floor' },
-    { label: 'Walk In Freezers', href: '/products/walk-in-freezers' },
-    { label: 'Freezers With Floor', href: '/products/freezers-with-floor' },
-    { label: 'Combo Units', href: '/products/combo-units' },
-    { label: 'Portable Refrigeration', href: '/products/portable-refrigeration' },
-    { label: 'Drive-in Coolers Freezers', href: '/products/drive-in-coolers-freezers' },
-    { label: 'Doors and Parts', href: '/products/doors' },
-    { label: 'Glassdoor Walk-in Cooler', href: '/products/glassdoor-walk-in-cooler' },
-    { label: 'Glassdoor Walk-in Freezer', href: '/products/glassdoor-walk-in-freezer' },
-    { label: 'Glassdoor', href: '/products/glassdoor' },
-    { label: 'Shelving', href: '/products/shelving' },
-    { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' },
-    { label: 'Low Profile Evaporator', href: '/products/low-profile-evaporator' },
-    { label: 'Thin Profile Evaporator (Reach-in)', href: '/products/thin-profile-evaporator' },
-    { label: 'Medium Profile', href: '/products/medium-profile' }
+
+  const mobileMenuData = [
+    {
+      label: 'Walk-in Cooler & Freezer',
+      href: '/walk-in-cooler-freezer',
+      subItems: [
+        { label: 'Walk In Coolers', href: '/products/walk-in-coolers' },
+        { label: 'Coolers With Floor', href: '/products/coolers-with-floor' },
+        { label: 'Walk In Freezers', href: '/products/walk-in-freezers' },
+        { label: 'Freezers With Floor', href: '/products/freezers-with-floor' },
+        { label: 'Combo Units', href: '/products/combo-units' },
+        { label: 'Portable Refrigeration', href: '/products/portable-refrigeration' },
+        { label: 'Drive-in Coolers Freezers', href: '/products/drive-in-coolers-freezers' },
+        { label: 'Doors and Parts', href: '/products/doors' }
+      ]
+    },
+    {
+      label: 'Glassdoor Walk-in Cooler',
+      href: '/products/glassdoor-walk-in-cooler',
+      subItems: [
+        { label: 'Glassdoor Walk-in Cooler', href: '/products/glassdoor-walk-in-cooler' },
+        { label: 'Glassdoor Walk-in Freezer', href: '/products/glassdoor-walk-in-freezer' },
+        { label: 'Glassdoor', href: '/products/glassdoor' },
+        { label: 'Shelving', href: '/products/shelving' }
+      ]
+    },
+    {
+      label: 'Refrigeration Equipment',
+      href: '/refrigeration-equipment',
+      subItems: [
+        { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
+        { label: 'Medium profile (Scroll compressor)', href: '/refrigeration-equipment/medium-profile-scroll-compressor' },
+        { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
+        { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' },
+        { label: 'Low profile evaporator', href: '/refrigeration-equipment/low-profile-evaporator' },
+        { label: 'Medium profile', href: '/refrigeration-equipment/medium-profile' },
+        { label: 'Center mount', href: '/refrigeration-equipment/center-mount' },
+        { label: 'Thin profile evaporator', href: '/refrigeration-equipment/thin-profile-evaporator' }
+      ]
+    }
   ];
+
+  const toggleMobileCategory = (label: string) => {
+    setExpandedMobileCategories(prev =>
+      prev.includes(label) ? prev.filter(c => c !== label) : [...prev, label]
+    );
+  };
 
   const walkInImages: { [key: string]: string } = {
     'Walk In Coolers': '/Walk-inCooler&Freezer/walkincoolers.jpg',
@@ -59,9 +90,14 @@ export default function Header() {
   };
 
   const refrigerationImages: { [key: string]: string } = {
-    'Low Profile Evaporator': '/slider/s_1.jpeg',
-    'Thin Profile Evaporator (Reach-in)': '/slider/s_2.jpeg',
-    'Medium Profile': '/slider/s_3.jpeg',
+    'Condensing units': '/slider/s_1.jpeg',
+    'Medium profile (Scroll compressor)': '/slider/s_2.jpeg',
+    'Evaporation units': '/slider/s_3.jpeg',
+    'Combo units / package unit': '/slider/s_1.jpeg',
+    'Low profile evaporator': '/slider/s_2.jpeg',
+    'Medium profile': '/slider/s_3.jpeg',
+    'Center mount': '/slider/s_1.jpeg',
+    'Thin profile evaporator': '/slider/s_2.jpeg',
     'Refrigeration Equipment': '/slider/s_1.jpeg'
   };
 
@@ -99,7 +135,7 @@ export default function Header() {
           <div className="flex items-center gap-8">
             <span className="flex items-center gap-2 text-blue-50">
               <Clock size={14} className="text-blue-300" />
-              <span className="text-white">36-48h Shipping</span> - Nationwide Delivery
+              <span className="text-white cursor-pointer">General enquiry</span>
             </span>
             <Link href="/support" className="hover:text-blue-200 transition-colors border-l border-white/20 pl-8">Support</Link>
           </div>
@@ -116,9 +152,6 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex gap-10 items-center">
-            <Link href="/" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer">
-              Home
-            </Link>
             <div className="relative group py-2">
               <Link href="/walk-in-cooler-freezer" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
@@ -208,9 +241,14 @@ export default function Header() {
                   {/* Links Column */}
                   <div className="flex flex-col gap-1.5 flex-1">
                     {[
-                      { label: 'Low Profile Evaporator', href: '/products/low-profile-evaporator' },
-                      { label: 'Thin Profile Evaporator (Reach-in)', href: '/products/thin-profile-evaporator' },
-                      { label: 'Medium Profile', href: '/products/medium-profile' }
+                      { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
+                      { label: 'Medium profile (Scroll compressor)', href: '/refrigeration-equipment/medium-profile-scroll-compressor' },
+                      { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
+                      { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' },
+                      { label: 'Low profile evaporator', href: '/refrigeration-equipment/low-profile-evaporator' },
+                      { label: 'Medium profile', href: '/refrigeration-equipment/medium-profile' },
+                      { label: 'Center mount', href: '/refrigeration-equipment/center-mount' },
+                      { label: 'Thin profile evaporator', href: '/refrigeration-equipment/thin-profile-evaporator' }
                     ].map((item) => (
                       <Link
                         key={item.label}
@@ -234,6 +272,10 @@ export default function Header() {
                 </div>
               </div>
             </div>
+
+            <Link href="/completed-projects" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all relative group py-2 cursor-pointer whitespace-nowrap">
+              Completed projects
+            </Link>
           </nav>
 
           {/* Actions */}
@@ -273,7 +315,7 @@ export default function Header() {
         onClick={() => setIsMobileMenuOpen(false)}
       >
         <div
-          className={`absolute top-0 right-0 h-full w-[85%] max-w-[400px] bg-white shadow-2xl transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}
+          className={`absolute top-0 right-0 h-full w-[85%] max-w-[400px] bg-white transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col shadow-2xl`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Mobile Menu Header - Fixed */}
@@ -291,39 +333,67 @@ export default function Header() {
           </div>
 
           {/* Mobile Menu Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 custom-scrollbar">
-            <nav className="flex flex-col gap-1 text-lg font-bold text-gray-800">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary transition-colors cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+            <nav className="flex flex-col text-lg font-bold text-gray-800">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-5 hover:text-primary transition-all cursor-pointer border-b border-gray-50 flex items-center justify-between group">
                 Home
                 <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
               </Link>
 
-              <div className="py-6 border-b border-gray-50">
-                <span className="text-xs uppercase tracking-[0.2em] text-primary font-black mb-4 block">Products</span>
-                <div className="grid grid-cols-1 gap-3 pl-4 border-l-2 border-primary/10">
-                  {mobileProductLinks.map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-[15px] font-bold text-gray-500 hover:text-primary py-1 transition-colors block"
+              <div className="py-2 border-t border-gray-50">
+                {mobileMenuData.map((category) => (
+                  <div key={category.label} className="border-b border-gray-50">
+                    <button
+                      onClick={() => toggleMobileCategory(category.label)}
+                      className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer group"
                     >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
+                      <span className="text-[15px] font-bold text-gray-800 group-hover:text-primary transition-colors">{category.label}</span>
+                      <ChevronDown
+                        size={18}
+                        className={`text-gray-400 transition-transform duration-300 ${expandedMobileCategories.includes(category.label) ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+
+                    {expandedMobileCategories.includes(category.label) && (
+                      <div className="bg-gray-50/50 flex flex-col">
+                        {category.subItems.map((item) => (
+                          <Link
+                            key={item.label}
+                            href={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="px-10 py-4 text-[14px] font-bold text-gray-500 hover:text-primary hover:bg-white transition-all flex items-center justify-between group"
+                          >
+                            {item.label}
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20 group-hover:bg-primary transition-colors"></div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
+
+              <Link href="/services" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-5 hover:text-primary transition-all cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+                Services
+                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+              </Link>
+
+              <Link href="/completed-projects" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-5 hover:text-primary transition-all cursor-pointer border-b border-gray-50 flex items-center justify-between group">
+                Completed projects
+                <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+              </Link>
             </nav>
 
-            <div className="mt-8 pb-10">
+            <div className="p-6 mt-4">
               <Link
                 href="/quote"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center inline-flex items-center justify-center gap-x-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-all focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center inline-flex items-center justify-center gap-x-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-all"
               >
                 <FileText size={20} />
                 Get a Quote
               </Link>
+
               <div className="space-y-5 bg-gray-50 p-6 rounded-2xl">
                 <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Info</p>
                 <a href="tel:929-451-7665" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">

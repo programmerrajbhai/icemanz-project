@@ -3,280 +3,148 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { useState } from 'react';
-import { ChevronDown, ChevronRight, Grid, List, ArrowRight, ChevronUp, Minus, Plus } from 'lucide-react';
+import { ChevronRight, ShieldCheck, Zap, Clock, Snowflake, ArrowRight, CheckCircle2, Settings } from 'lucide-react';
 
-const products = [
-  {
-    name: "ADM124AE",
-    description: "12444 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-1-1.jpg",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM173AE",
-    description: "17363 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-1-1.jpg",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM251AE",
-    description: "25184 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-2.jpg",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM350AE",
-    description: "35000 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-2.jpg",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM380AE",
-    description: "38006 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2020/08/ADM-2.jpg",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM527AE",
-    description: "52731 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/ADM527AE.png",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM625AE",
-    description: "62551 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/ADM625AE.png",
-    category: "Medium Profile"
-  },
-  {
-    name: "ADM704AE",
-    description: "70494 BTU, Air Defrost, EC Motor Medium Profile Evap Coil, 115V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/ADM704AE.png",
-    category: "Medium Profile"
-  },
-  {
-    name: "MED098BE",
-    description: "9833 BTU, Electric Defrost, EC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED098BE.png",
-    category: "Medium Profile"
-  },
-  {
-    name: "MED139BE",
-    description: "14400 BTU, Electric Defrost, PSC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED139BE.png",
-    category: "Medium Profile"
-  },
-  {
-    name: "MED207BE",
-    description: "20746 BTU, Electric Defrost, EC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED207BE.png",
-    category: "Medium Profile"
-  },
-  {
-    name: "MED291BE",
-    description: "29170 BTU, Electric Defrost, EC Motor Medium Profile Evap Coil, 208-230V/60Hz/1Ph",
-    image: "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/11/MED291BE.png",
-    category: "Medium Profile"
-  }
+const productCategories = [
+  { name: 'Condensing units', image: '/slider/s_1.jpeg', slug: 'condensing-units' },
+  { name: 'Medium profile (Scroll compressor)', image: '/slider/s_2.jpeg', slug: 'medium-profile-scroll-compressor' },
+  { name: 'Evaporation units', image: '/slider/s_3.jpeg', slug: 'evaporation-units' },
+  { name: 'Combo units / package unit', image: '/Walk-inCooler&Freezer/combounits.jpg', slug: 'combo-units-package-unit' },
+  { name: 'Low profile evaporator', image: '/slider/s_1.jpeg', slug: 'low-profile-evaporator' },
+  { name: 'Medium profile', image: '/slider/s_2.jpeg', slug: 'medium-profile' },
+  { name: 'Center mount', image: '/slider/s_3.jpeg', slug: 'center-mount' },
+  { name: 'Thin profile evaporator', image: '/slider/s_1.jpeg', slug: 'thin-profile-evaporator' },
 ];
 
-const sidebarCategories = [
-  {
-    name: 'Unit Coolers',
-    subCategories: [
-      {
-        name: 'Low Profile Evaporator',
-        items: ['Air Defrost', 'Electric Defrost']
-      },
-      {
-        name: 'Thin Profile Evaporator (Reach-in)',
-        items: ['Air Defrost', 'Electric Defrost']
-      },
-      {
-        name: 'Medium Profile',
-        items: ['Air Defrost', 'Electric Defrost - 6FPI', 'Electric Defrost - 4FPI']
-      },
-      {
-        name: 'Center Mount Evaporator (Low Velocity)',
-        items: ['Air Defrost', 'Electric Defrost']
-      }
-    ]
-  },
-  {
-    name: 'Package Unit SMART 7',
-    subCategories: [
-      {
-        name: 'Indoor',
-        items: ['Cooler', 'Freezer']
-      },
-      {
-        name: 'Outdoor',
-        items: ['Cooler', 'Freezer']
-      }
-    ]
-  }
+const reasons = [
+  'High-efficiency cooling systems for all industries',
+  'Precision temperature and humidity control',
+  'Energy-saving technology for lower operating costs',
+  'Reliable performance in extreme environments',
+  'Easy integration with existing systems',
+  'Durable construction for long-term use',
+  'Expert engineering and design support',
+  'Comprehensive maintenance and after-sales service'
+];
+
+const equipmentTypes = [
+  'Air Cooled Condensing Units',
+  'Water Cooled Condensing Units',
+  'Scroll Compressor Systems',
+  'Semi-Hermetic Solutions',
+  'Electric Defrost Evaporators',
+  'Air Defrost Systems',
+  'Low Profile Cooling Units',
+  'Medium Profile Evaporators',
+  'Thin Profile Systems'
 ];
 
 export default function RefrigerationEquipmentPage() {
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(['Unit Coolers', 'Package Unit SMART 7', 'Low Profile Evaporator', 'Indoor', 'Outdoor']);
-  const [expandedSubCategories, setExpandedSubCategories] = useState<string[]>(['Low Profile Evaporator', 'Indoor', 'Outdoor']);
-
-  const toggleCategory = (name: string) => {
-    setExpandedCategories(prev =>
-      prev.includes(name) ? prev.filter(c => c !== name) : [...prev, name]
-    );
-  };
-
-  const toggleSubCategory = (name: string) => {
-    setExpandedSubCategories(prev =>
-      prev.includes(name) ? prev.filter(c => c !== name) : [...prev, name]
-    );
-  };
-
   return (
-    <div className="bg-white min-h-screen">
+    <main className="min-h-screen bg-white">
       <Header />
 
-      <main className="pt-32 pb-20 md:pt-44 md:pb-24">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-10">
-            {/* Sidebar */}
-            <aside className="w-full lg:w-72 shrink-0">
-              <div className="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 sticky top-32 shadow-2xl shadow-gray-200/50">
-                <div className="mb-6 px-1">
-                  <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Filter By Category</h2>
-                </div>
-                <nav className="flex flex-col gap-8">
-                  {sidebarCategories.map((category) => (
-                    <div key={category.name} className="flex flex-col gap-4">
-                      <button
-                        onClick={() => toggleCategory(category.name)}
-                        className="flex items-center justify-between w-full text-base font-black text-gray-900 group text-left cursor-pointer uppercase tracking-tight"
-                      >
-                        {category.name}
-                        {expandedCategories.includes(category.name) ? (
-                          <Minus size={16} className="text-primary stroke-[3]" />
-                        ) : (
-                          <Plus size={16} className="text-primary stroke-[3]" />
-                        )}
-                      </button>
+      <div className="pt-32 pb-20 md:pt-44 md:pb-24">
+        <div className="container px-4">
+          {/* Header Bar */}
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
+              Refrigeration <span className="text-primary">Equipment</span>
+            </h1>
+          </div>
 
-                      {expandedCategories.includes(category.name) && category.subCategories.length > 0 && (
-                        <div className="flex flex-col gap-6 pl-4">
-                          {category.subCategories.map((sub) => (
-                            <div key={sub.name} className="flex flex-col gap-3">
-                              <button
-                                onClick={() => toggleSubCategory(sub.name)}
-                                className="flex items-center justify-between w-full text-[13px] font-bold text-gray-600 hover:text-primary transition-colors text-left cursor-pointer"
-                              >
-                                {sub.name}
-                                {expandedSubCategories.includes(sub.name) ? (
-                                  <Minus size={14} className="text-primary shrink-0 stroke-[2]" />
-                                ) : (
-                                  <Plus size={14} className="text-primary shrink-0 stroke-[2]" />
-                                )}
-                              </button>
-
-                              {expandedSubCategories.includes(sub.name) && (
-                                <div className="flex flex-col gap-3 pl-6 border-l border-gray-100">
-                                  {sub.items.map((item) => (
-                                    <Link
-                                      key={item}
-                                      href="#"
-                                      className="text-[13px] font-medium text-gray-400 hover:text-primary transition-colors"
-                                    >
-                                      {item}
-                                    </Link>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </nav>
-              </div>
-            </aside>
-
-            {/* Main Content */}
-            <div className="flex-1">
-              {/* Product Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
-                {products.map((product, index) => (
-                  <div key={index} className="group flex flex-col bg-white rounded-3xl border border-gray-100 hover:shadow-2xl hover:shadow-gray-200/60 transition-all duration-500 overflow-hidden h-full">
-                    {/* Image Area */}
-                    <div className="p-4">
-                      <div className="relative pt-[75%] bg-gray-50 rounded-2xl flex items-center justify-center overflow-hidden border border-gray-50">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full absolute inset-0 object-contain group-hover:scale-105 transition-transform duration-700 ease-out p-6"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="px-6 pb-6 pt-2 flex flex-col flex-grow text-center items-center">
-                      <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-2 opacity-80">{product.category}</div>
-                      <h3 className="font-black text-gray-900 group-hover:text-primary transition-colors duration-300 leading-tight text-base uppercase tracking-tight mb-2">
-                        {product.name}
-                      </h3>
-                      <p className="text-[11px] text-gray-500 font-medium leading-relaxed mb-4 line-clamp-2">
-                        {product.description}
-                      </p>
-
-                      <div className="flex items-center gap-1.5 mb-6">
-                        <div className="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                          In Stock
-                        </span>
-                      </div>
-
-                      <Link
-                        href={`/products/refrigeration-equipment/${index + 1}`}
-                        className="w-full py-3.5 text-[12px] font-black text-gray-800 uppercase tracking-widest border border-gray-100 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 flex items-center justify-center gap-2 group/btn shadow-sm active:scale-95 cursor-pointer bg-white"
-                      >
-                        View Details
-                        <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-                      </Link>
-                    </div>
+          {/* Main Grid Section */}
+          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-24 md:mb-32">
+            {productCategories.map((product, index) => (
+              <Link
+                key={index}
+                href={`/refrigeration-equipment/${product.slug}`}
+                className="group flex flex-col bg-white border border-gray-100 rounded-2xl hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden text-center items-center"
+              >
+                {/* Image Area */}
+                <div className="p-3 bg-white w-full">
+                  <div className="relative pt-[100%] rounded-xl bg-gray-50 overflow-hidden border border-gray-50">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="size-full absolute top-0 start-0 object-contain transition-transform duration-700 ease-in-out p-4 group-hover:scale-110"
+                    />
                   </div>
-                ))}
+                </div>
+
+                {/* Content Area */}
+                <div className="px-3 pb-4 pt-1 flex flex-col flex-grow">
+                  <h3 className="text-[11px] md:text-[13px] font-black text-gray-900 leading-tight tracking-tight group-hover:text-primary transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Content Section */}
+          <div className="max-w-5xl mx-auto space-y-16">
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
+              <div className="space-y-6">
+                <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Shop Refrigeration Equipment</h2>
+                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                  <p>
+                    Quality refrigeration equipment is the backbone of any successful cold storage operation. At ICEMANZ, we provide high-performance condensing units, evaporation units, and specialized cooling solutions designed for maximum reliability and efficiency.
+                  </p>
+                  <p>
+                    Whether you're looking for low-profile evaporators for tight spaces or powerful scroll compressor systems for industrial use, our selection covers every need. We partner with industry-leading brands to ensure you get the best technology for your business.
+                  </p>
+                  <p>
+                    Our expert team is here to help you select the right components for your system, from air-cooled condensing units to custom-built package units. Browse our categories above to explore our full range of professional refrigeration equipment.
+                  </p>
+                </div>
               </div>
 
-              {/* Pagination */}
-              <div className="flex justify-center items-center gap-2 mt-20">
-                <button className="min-h-[40px] min-w-[40px] py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-xl border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition-all">
-                  <ChevronRight size={18} className="rotate-180" />
-                  <span>Prev</span>
-                </button>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3].map((page) => (
-                    <button
-                      key={page}
-                      className={`min-h-[40px] min-w-[40px] flex justify-center items-center rounded-xl text-sm font-black transition-all duration-300 ${page === 1
-                        ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-110'
-                        : 'text-gray-400 hover:bg-gray-50 hover:text-primary'
-                        }`}
-                    >
-                      {page}
-                    </button>
+              <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10">
+                <h2 className="text-2xl font-black text-gray-900 mb-6 uppercase tracking-tight">Why Choose ICEMANZ?</h2>
+                <ul className="space-y-4">
+                  {reasons.slice(0, 6).map((reason, i) => (
+                    <li key={i} className="flex gap-3 items-start">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <CheckCircle2 className="text-primary w-4 h-4" />
+                      </div>
+                      <span className="text-[15px] text-gray-700 font-bold">{reason}</span>
+                    </li>
                   ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Types Banner */}
+            <div className="bg-[#004a99] bg-gradient-to-r from-primary to-blue-800 rounded-3xl p-8 md:p-16 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+              <div className="relative z-10 grid md:grid-cols-3 gap-12">
+                <div className="md:col-span-2">
+                  <h2 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tight leading-tight">Types of Refrigeration Equipment We Offer</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                    {equipmentTypes.map((type, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                        <span className="text-[15px] font-bold text-blue-50">{type}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <button className="min-h-[40px] min-w-[40px] py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-xl border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition-all">
-                  <span>Next</span>
-                  <ChevronRight size={18} />
-                </button>
+                <div className="flex flex-col justify-center gap-6">
+                  <p className="text-blue-100 font-medium text-lg leading-relaxed">
+                    Need technical advice on your next system upgrade?
+                  </p>
+                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-black uppercase tracking-widest text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
+                    Get Expert Advice <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       <Footer />
-    </div>
+    </main>
   );
 }

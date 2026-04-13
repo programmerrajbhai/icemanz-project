@@ -93,44 +93,8 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
     <main className="min-h-screen bg-white">
       <Header />
 
-      <div className="pt-28 pb-20 md:pt-36 md:pb-24">
+      <div className="pt-36 pb-20 md:pt-48 md:pb-24">
         <div className="container px-4">
-          {/* Breadcrumb & Search Section - Preline Pattern */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-            <nav className="flex items-center whitespace-nowrap min-w-0" aria-label="Breadcrumb">
-              <ol className="flex items-center text-sm text-gray-500 font-medium">
-                <li className="flex items-center">
-                  <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                  <ChevronRight size={14} className="mx-2 text-gray-400 shrink-0" />
-                </li>
-                <li className="flex items-center">
-                  <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-in Cooler & Freezer</Link>
-                  <ChevronRight size={14} className="mx-2 text-gray-400 shrink-0" />
-                </li>
-                <li className="text-gray-800 font-bold truncate" aria-current="page">
-                  {title}
-                </li>
-              </ol>
-            </nav>
-
-            <div className="w-full md:w-auto">
-              <div className="flex rounded-lg shadow-sm">
-                <input
-                  type="text"
-                  placeholder="Search the Catalog"
-                  className="py-3 px-4 block w-full md:w-80 border-gray-300 shadow-sm rounded-s-lg text-sm focus:z-10 focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none"
-                />
-                <button
-                  type="button"
-                  className="py-3 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-black uppercase tracking-widest rounded-e-lg border border-transparent bg-primary text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
-                >
-                  Find It
-                  <ChevronRight size={18} strokeWidth={3} />
-                </button>
-              </div>
-            </div>
-          </div>
-
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar - Preline Vertical Nav Pattern */}
             <aside className="lg:w-64 shrink-0">
