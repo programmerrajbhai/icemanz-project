@@ -53,13 +53,8 @@ export default function Header() {
       href: '/refrigeration-equipment',
       subItems: [
         { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
-        { label: 'Medium profile (Scroll compressor)', href: '/refrigeration-equipment/medium-profile-scroll-compressor' },
         { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
-        { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' },
-        { label: 'Low profile evaporator', href: '/refrigeration-equipment/low-profile-evaporator' },
-        { label: 'Medium profile', href: '/refrigeration-equipment/medium-profile' },
-        { label: 'Center mount', href: '/refrigeration-equipment/center-mount' },
-        { label: 'Thin profile evaporator', href: '/refrigeration-equipment/thin-profile-evaporator' }
+        { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' }
       ]
     }
   ];
@@ -242,13 +237,8 @@ export default function Header() {
                   <div className="flex flex-col gap-1.5 flex-1">
                     {[
                       { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
-                      { label: 'Medium profile (Scroll compressor)', href: '/refrigeration-equipment/medium-profile-scroll-compressor' },
                       { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
-                      { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' },
-                      { label: 'Low profile evaporator', href: '/refrigeration-equipment/low-profile-evaporator' },
-                      { label: 'Medium profile', href: '/refrigeration-equipment/medium-profile' },
-                      { label: 'Center mount', href: '/refrigeration-equipment/center-mount' },
-                      { label: 'Thin profile evaporator', href: '/refrigeration-equipment/thin-profile-evaporator' }
+                      { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' }
                     ].map((item) => (
                       <Link
                         key={item.label}
