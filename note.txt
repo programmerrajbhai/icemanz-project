@@ -11,13 +11,47 @@ mobile responsive menu
 Walk-in Cooler & Freezer :  https://www.barrinc.com/coolers-freezers/
 
 Condensing Units 
-Medium Profile (Scroll Compressor)
+    Low profile Evaporator
+        Scroll compressor
+        Semi- Hermetic
+    Medium Profile (Scroll Compressor)
+
+
+
 Evaporation Units    
 Combo units /package Unit
-Low profile Evaporator
+
 Medium profile 
 Center Mount 
 Thin profile Evaporator
+
+
+
+
+
+Evaporation Units 
+    Low Profile Evaporator-
+        Air Defrost
+        Electric Defrost
+    Thin Profile Evaporator (Reach-in)-
+        Air Defrost
+        Electric Defrost
+    Medium Profile-
+        Air Defrost
+        Electric Defrost - 6FPI
+        Electric Defrost - 4FPI
+    Center Mount Evaporator (Low Velocity)-
+        Air Defrost
+        Electric Defrost
+
+
+
+ Condensing Units >              
+
+    Low Profile >
+         Scroll compressor
+         Semi- Hermetic
+   Medium Profile (Scroll Compressor)
 
 
 Services page in footer  https://www.icemanz.com/services

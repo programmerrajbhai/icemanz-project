@@ -6,14 +6,14 @@ import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Zap, Clock, Snowflake, ArrowRight, CheckCircle2, Settings } from 'lucide-react';
 
 const productCategories = [
-  { name: 'Condensing units', image: '/slider/s_1.jpeg', slug: 'condensing-units' },
-  { name: 'Medium profile (Scroll compressor)', image: '/slider/s_2.jpeg', slug: 'medium-profile-scroll-compressor' },
-  { name: 'Evaporation units', image: '/slider/s_3.jpeg', slug: 'evaporation-units' },
-  { name: 'Combo units / package unit', image: '/Walk-inCooler&Freezer/combounits.jpg', slug: 'combo-units-package-unit' },
-  { name: 'Low profile evaporator', image: '/slider/s_1.jpeg', slug: 'low-profile-evaporator' },
-  { name: 'Medium profile', image: '/slider/s_2.jpeg', slug: 'medium-profile' },
-  { name: 'Center mount', image: '/slider/s_3.jpeg', slug: 'center-mount' },
-  { name: 'Thin profile evaporator', image: '/slider/s_1.jpeg', slug: 'thin-profile-evaporator' },
+  { name: 'Condensing units', image: '/category/refrigerationEquipment/condensingUnit.jpg', slug: 'condensing-units' },
+  { name: 'Medium profile (Scroll compressor)', image: '/category/refrigerationEquipment/mediumProfile.jpg', slug: 'medium-profile-scroll-compressor' },
+  { name: 'Evaporation units', image: '/category/refrigerationEquipment/evaporationUnit.jpg', slug: 'evaporation-units' },
+  { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/packageUnit.jpg', slug: 'combo-units-package-unit' },
+  { name: 'Low profile evaporator', image: '/category/refrigerationEquipment/lowProfileEvaporator.jpg', slug: 'low-profile-evaporator' },
+  { name: 'Medium profile', image: '/category/refrigerationEquipment/mediumProfile.jpg', slug: 'medium-profile' },
+  { name: 'Center mount', image: '/category/refrigerationEquipment/centerMount.jpg', slug: 'center-mount' },
+  { name: 'Thin profile evaporator', image: '/category/refrigerationEquipment/thinProfileEvaporator.jpg', slug: 'thin-profile-evaporator' },
 ];
 
 const reasons = [
@@ -48,7 +48,7 @@ export default function RefrigerationEquipmentPage() {
         <div className="container px-4">
           {/* Header Bar */}
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
-            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
+            <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl text-gray-900">
               Refrigeration <span className="text-primary">Equipment</span>
             </h1>
           </div>
@@ -74,7 +74,7 @@ export default function RefrigerationEquipmentPage() {
 
                 {/* Content Area */}
                 <div className="px-3 pb-4 pt-1 flex flex-col flex-grow">
-                  <h3 className="text-[11px] md:text-[13px] font-black text-gray-900 leading-tight tracking-tight group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
                     {product.name}
                   </h3>
                 </div>
@@ -86,8 +86,8 @@ export default function RefrigerationEquipmentPage() {
           <div className="max-w-5xl mx-auto space-y-16">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
               <div className="space-y-6">
-                <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Shop Refrigeration Equipment</h2>
-                <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
+                <h2 className="text-2xl font-bold md:text-3xl text-gray-900">Shop Refrigeration Equipment</h2>
+                <div className="space-y-4 text-base sm:text-lg text-gray-700">
                   <p>
                     Quality refrigeration equipment is the backbone of any successful cold storage operation. At ICEMANZ, we provide high-performance condensing units, evaporation units, and specialized cooling solutions designed for maximum reliability and efficiency.
                   </p>
@@ -101,14 +101,14 @@ export default function RefrigerationEquipmentPage() {
               </div>
 
               <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10">
-                <h2 className="text-2xl font-black text-gray-900 mb-6 uppercase tracking-tight">Why Choose ICEMANZ?</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Why Choose ICEMANZ?</h2>
                 <ul className="space-y-4">
                   {reasons.slice(0, 6).map((reason, i) => (
                     <li key={i} className="flex gap-3 items-start">
                       <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                         <CheckCircle2 className="text-primary w-4 h-4" />
                       </div>
-                      <span className="text-[15px] text-gray-700 font-bold">{reason}</span>
+                      <span className="text-base text-gray-800">{reason}</span>
                     </li>
                   ))}
                 </ul>
@@ -120,21 +120,21 @@ export default function RefrigerationEquipmentPage() {
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative z-10 grid md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
-                  <h2 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tight leading-tight">Types of Refrigeration Equipment We Offer</h2>
+                  <h2 className="text-2xl font-bold md:text-3xl mb-6 leading-tight text-white">Types of Refrigeration Equipment We Offer</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                     {equipmentTypes.map((type, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
-                        <span className="text-[15px] font-bold text-blue-50">{type}</span>
+                        <span className="text-base font-medium text-blue-50">{type}</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="flex flex-col justify-center gap-6">
-                  <p className="text-blue-100 font-medium text-lg leading-relaxed">
+                  <p className="text-blue-100 text-base sm:text-lg">
                     Need technical advice on your next system upgrade?
                   </p>
-                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-black uppercase tracking-widest text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
+                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-semibold text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
                     Get Expert Advice <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
                   </Link>
                 </div>
