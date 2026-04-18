@@ -47,14 +47,14 @@ export default function WalkInCoolerFreezerPage() {
       <div className="pt-32 pb-20 md:pt-44 md:pb-24">
         <div className="container px-4">
           {/* Header Bar */}
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
             <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
               Walk-in <span className="text-primary">Cooler & Freezer</span>
             </h1>
           </div>
 
           {/* Main Grid Section */}
-          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-24 md:mb-32">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-24 md:mb-32">
             {productCategories.map((product, index) => (
               <Link
                 key={index}
@@ -83,7 +83,7 @@ export default function WalkInCoolerFreezerPage() {
           </div>
 
           {/* Content Section - Redesigned with Preline Card Patterns */}
-          <div className="max-w-5xl mx-auto space-y-16">
+          <div className="space-y-16">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
               <div className="space-y-6">
                 <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Shop Coolers & Freezers</h2>

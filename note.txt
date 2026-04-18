@@ -10,30 +10,16 @@ mobile responsive menu
 
 Walk-in Cooler & Freezer :  https://www.barrinc.com/coolers-freezers/
 
-Condensing Units 
-    Low profile Evaporator
-        Scroll compressor
-        Semi- Hermetic
+
+
+ Condensing Units >              
+    Low Profile >
+         Scroll compressor
+         Semi- Hermetic
     Medium Profile (Scroll Compressor)
-
-
-
-Evaporation Units    
-Combo units /package Unit
-
-Medium profile 
-Center Mount 
-Thin profile Evaporator
-
-
-
-
 
 Evaporation Units 
     Low Profile Evaporator-
-        Air Defrost
-        Electric Defrost
-    Thin Profile Evaporator (Reach-in)-
         Air Defrost
         Electric Defrost
     Medium Profile-
@@ -43,15 +29,16 @@ Evaporation Units
     Center Mount Evaporator (Low Velocity)-
         Air Defrost
         Electric Defrost
+    Thin Profile Evaporator (Reach-in)-
+        Air Defrost
+        Electric Defrost
+Combo Units/Package Units 
+    Indoor 
+    Outdoor
+  
 
 
 
- Condensing Units >              
-
-    Low Profile >
-         Scroll compressor
-         Semi- Hermetic
-   Medium Profile (Scroll Compressor)
 
 
 Services page in footer  https://www.icemanz.com/services
@@ -84,3 +71,7 @@ Questions :
 
 
 https://www.figma.com/design/uME58llNtfpsy4tjoCgQdB/Untitled?node-id=2001-12&t=wQF40Cr7fvhbFLKU-1
+
+
+
+https://demo.gloriathemes.com/gromark/demo/product/chex-mix-traditional-large-crunchy-savory-snack-mix-13-5oz/

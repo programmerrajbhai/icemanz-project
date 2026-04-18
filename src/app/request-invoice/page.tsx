@@ -58,7 +58,7 @@ export default function RequestInvoicePage() {
       <Header />
 
       <div className="pt-32 pb-20 md:pt-40 md:pb-32">
-        <div className="container px-4 max-w-[1400px] mx-auto">
+        <div className="container px-4 mx-auto">
 
           <div className="flex flex-col lg:flex-row gap-8 items-start">
 

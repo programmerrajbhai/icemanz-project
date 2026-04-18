@@ -96,7 +96,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       <Header />
 
       <div className="pt-32 pb-12 md:pt-40 md:pb-16">
-        <div className="container max-w-6xl px-4 md:px-6">
+        <div className="container px-4 md:px-6">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold mb-10 text-slate-400 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap pb-2 md:pb-0">
             <Link href="/" className="text-blue-600 hover:text-blue-800 transition-colors shrink-0">Home</Link>

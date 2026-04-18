@@ -41,10 +41,16 @@ body {
   font-family: var(--font-sans);
 }
 
-.container {
-  max-width: 1720px;
-  margin: 0 auto;
-  padding: 0 2rem;
+@layer utilities {
+  .container {
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container {
+      padding-inline: 2rem;
+    }
+  }
 }
 
 @layer utilities {
@@ -63,11 +69,5 @@ body {
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #d1d5db;
-  }
-}
-
-@media (max-width: 640px) {
-  .container {
-    padding: 0 1rem;
   }
 }

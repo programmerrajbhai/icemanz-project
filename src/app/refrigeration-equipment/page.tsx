@@ -47,34 +47,32 @@ export default function RefrigerationEquipmentPage() {
       <div className="pt-32 pb-20 md:pt-44 md:pb-24">
         <div className="container px-4">
           {/* Header Bar */}
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
-            <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl text-gray-900">
-              Refrigeration <span className="text-primary">Equipment</span>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <h1 className="text-2xl md:text-[28px] font-bold text-[#1f2937] tracking-tight">
+              Refrigeration <span className="text-[#004a99]">Equipment</span>
             </h1>
           </div>
 
           {/* Main Grid Section */}
-          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-24 md:mb-32">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 md:gap-5 lg:gap-6 mb-24 max-w-7xl">
             {productCategories.map((product, index) => (
               <Link
                 key={index}
                 href={`/refrigeration-equipment/${product.slug}`}
-                className="group flex flex-col bg-white border border-gray-100 rounded-2xl hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden text-center items-center"
+                className="group flex flex-col bg-white border border-gray-100 rounded-xl hover:shadow-lg hover:shadow-gray-200/40 transition-all duration-300 overflow-hidden text-center items-center p-3 sm:p-4"
               >
                 {/* Image Area */}
-                <div className="p-3 bg-white w-full">
-                  <div className="relative pt-[100%] rounded-xl bg-gray-50 overflow-hidden border border-gray-50">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="size-full absolute top-0 start-0 object-contain transition-transform duration-700 ease-in-out p-4 group-hover:scale-110"
-                    />
-                  </div>
+                <div className="w-full relative pt-[90%] rounded-lg bg-gray-50/80 overflow-hidden mb-4 border border-gray-50">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="size-full absolute top-0 start-0 object-contain transition-transform duration-500 ease-in-out p-4 group-hover:scale-110"
+                  />
                 </div>
 
                 {/* Content Area */}
-                <div className="px-3 pb-4 pt-1 flex flex-col flex-grow">
-                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+                <div className="px-1 pb-1 flex flex-col justify-center min-h-[44px]">
+                  <h3 className="text-[13px] sm:text-[14px] font-semibold text-gray-800 group-hover:text-[#004a99] transition-colors leading-snug">
                     {product.name}
                   </h3>
                 </div>
@@ -83,7 +81,7 @@ export default function RefrigerationEquipmentPage() {
           </div>
 
           {/* Content Section */}
-          <div className="max-w-5xl mx-auto space-y-16">
+          <div className="space-y-16">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold md:text-3xl text-gray-900">Shop Refrigeration Equipment</h2>
