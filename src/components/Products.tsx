@@ -60,7 +60,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
   return (
     <Link
       href={product.href}
-      className="group flex flex-col h-full bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden focus:outline-none"
+      className="group flex flex-col h-full bg-white border border-gray-100 rounded-sm shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden focus:outline-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -83,13 +83,13 @@ function ProductCard({ product }: { product: typeof products[0] }) {
         <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
             onClick={prevImage}
-            className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
+            className="w-9 h-9 rounded-sm bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
           >
             <ChevronLeft size={18} />
           </button>
           <button
             onClick={handleNextClick}
-            className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
+            className="w-9 h-9 rounded-sm bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
           >
             <ChevronRight size={18} />
           </button>
@@ -100,14 +100,14 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           {product.images.map((_, idx) => (
             <div
               key={idx}
-              className={`h-1 rounded-full transition-all duration-500 ${idx === currentImage ? 'w-6 bg-white' : 'w-2 bg-white/40'
+              className={`h-1 rounded-sm transition-all duration-500 ${idx === currentImage ? 'w-6 bg-white' : 'w-2 bg-white/40'
                 }`}
             />
           ))}
         </div>
 
         <div className="absolute top-4 left-4 z-10">
-          <span className="bg-primary/90 backdrop-blur-md text-white text-[10px] font-black px-4 py-1.5 rounded-lg uppercase tracking-widest shadow-2xl border border-white/10">
+          <span className="bg-primary/90 backdrop-blur-md text-white text-[10px] font-black px-4 py-1.5 rounded-sm uppercase tracking-widest shadow-2xl border border-white/10">
             {product.tag}
           </span>
         </div>
@@ -149,7 +149,7 @@ export default function Products() {
             <span className="text-[#171717]">Featured</span>
             <span className="text-primary">Products</span>
           </h2>
-          <div className="h-1.5 w-16 bg-accent mx-auto mt-4 rounded-full"></div>
+          <div className="h-1.5 w-16 bg-accent mx-auto mt-4 rounded-sm"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">

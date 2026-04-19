@@ -100,7 +100,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
             <aside className="lg:w-64 shrink-0">
               <div className="space-y-6 sticky top-32">
                 {/* Sort By Section */}
-                <div className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                <div className="flex flex-col bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm">
                   <div className="bg-gray-50/50 px-5 py-3 border-b border-gray-200">
                     <div className="flex items-center gap-2">
                       <LayoutGrid size={16} className="text-gray-800" />
@@ -116,7 +116,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                       ].map((item) => (
                         <button
                           key={item.label}
-                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-100 hover:text-primary transition-all cursor-pointer w-full text-left"
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-sm text-sm font-bold text-gray-600 hover:bg-gray-100 hover:text-primary transition-all cursor-pointer w-full text-left"
                         >
                           <item.icon size={16} className="text-gray-400" />
                           {item.label}
@@ -127,7 +127,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                 </div>
 
                 {/* Narrow By Section */}
-                <div className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                <div className="flex flex-col bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm">
                   <div className="bg-gray-50/50 px-5 py-3 border-b border-gray-200">
                     <div className="flex items-center gap-2">
                       <Filter size={16} className="text-gray-800" />
@@ -145,7 +145,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                         <label className="flex items-center gap-x-3 cursor-pointer">
                           <input 
                             type="checkbox" 
-                            className="shrink-0 size-4 border-gray-300 rounded text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all" 
+                            className="shrink-0 size-4 border-gray-300 rounded-sm text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all" 
                             id="hs-availability-ready-ship"
                           />
                           <span className="text-sm font-bold text-gray-600 cursor-pointer hover:text-primary transition-colors">Barr Ready Ship</span>
@@ -164,7 +164,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                           <label key={condition} className="flex items-center gap-x-3 cursor-pointer">
                             <input 
                               type="checkbox" 
-                              className="shrink-0 size-4 border-gray-300 rounded text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all" 
+                              className="shrink-0 size-4 border-gray-300 rounded-sm text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all" 
                               id={`hs-condition-${condition.toLowerCase()}`}
                             />
                             <span className="text-sm font-bold text-gray-600 cursor-pointer hover:text-primary transition-colors">{condition}</span>
@@ -194,7 +194,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                   <Link
                     key={product.id}
                     href={`/walk-in-cooler-freezer/${slug}/${product.id}`}
-                    className="group flex flex-col bg-white border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
+                    className="group flex flex-col bg-white border border-gray-200 rounded-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
                   >
                     {/* Compact Image Area */}
                     <div className="relative pt-[65%] bg-gray-50 overflow-hidden">
@@ -220,11 +220,11 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
 
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {product.sqFt !== '0 Sq. Ft.' && (
-                          <span className="py-1 px-2 inline-flex items-center text-[11px] font-medium uppercase tracking-wider bg-gray-100 text-gray-500 rounded-md">
+                          <span className="py-1 px-2 inline-flex items-center text-[11px] font-medium uppercase tracking-wider bg-gray-100 text-gray-500 rounded-sm">
                             {product.sqFt}
                           </span>
                         )}
-                        <span className="py-1 px-2 inline-flex items-center text-[11px] font-medium uppercase tracking-wider bg-gray-100 text-gray-500 rounded-md">
+                        <span className="py-1 px-2 inline-flex items-center text-[11px] font-medium uppercase tracking-wider bg-gray-100 text-gray-500 rounded-sm">
                           {product.condition}
                         </span>
                       </div>

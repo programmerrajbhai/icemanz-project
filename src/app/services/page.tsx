@@ -72,7 +72,7 @@ export default function ServicesPage() {
               >
                 {/* Content */}
                 <div className="flex-1 space-y-8">
-                  <div className={`w-16 h-16 ${service.color} rounded-2xl flex items-center justify-center`}>
+                  <div className={`w-16 h-16 ${service.color} rounded-sm flex items-center justify-center`}>
                     <service.icon size={32} />
                   </div>
 
@@ -88,7 +88,7 @@ export default function ServicesPage() {
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {service.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-3 text-slate-700 font-bold">
-                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <div className="w-5 h-5 rounded-sm bg-primary/10 flex items-center justify-center shrink-0">
                           <CheckIcon className="w-3 h-3 text-primary" />
                         </div>
                         {feature}
@@ -98,7 +98,7 @@ export default function ServicesPage() {
 
                   <Link
                     href="/quote"
-                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition-all group"
+                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-sm font-bold hover:bg-slate-800 transition-all group"
                   >
                     Get Started
                     <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />

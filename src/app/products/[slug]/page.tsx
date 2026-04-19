@@ -135,7 +135,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           <div className="flex flex-col lg:flex-row gap-10">
             {/* Sidebar - Redesigned matching reference */}
             <aside className="lg:w-72 shrink-0">
-              <div className="bg-white border border-gray-200 rounded-3xl shadow-sm p-6 sticky top-32">
+              <div className="bg-white border border-gray-200 rounded-sm shadow-sm p-6 sticky top-32">
                 <div className="mb-6 px-1">
                   <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Filter By Category</h2>
                 </div>
@@ -206,11 +206,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 {mockProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="group flex flex-col bg-white border border-gray-100 rounded-3xl hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden"
+                    className="group flex flex-col bg-white border border-gray-100 rounded-sm hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden"
                   >
                     {/* Image Area with subtle padding */}
                     <div className="p-4 bg-white">
-                      <div className="relative pt-[75%] rounded-2xl bg-gray-50 overflow-hidden border border-gray-100">
+                      <div className="relative pt-[75%] rounded-sm bg-gray-50 overflow-hidden border border-gray-100">
                         <img
                           src={product.image}
                           alt={product.title}
@@ -230,7 +230,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                       </h3>
 
                       <div className="flex items-center gap-1.5 mb-6">
-                        <div className="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                        <div className="size-2 rounded-sm bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
                         <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                           In Stock
                         </span>
@@ -238,7 +238,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                       <Link
                         href={`/products/${slug}/${product.id}`}
-                        className="w-full py-3.5 px-6 inline-flex justify-center items-center gap-x-2 text-[12px] font-black uppercase tracking-widest rounded-xl border border-gray-100 bg-white text-gray-800 shadow-sm hover:bg-primary hover:text-white hover:border-primary focus:outline-none focus:bg-primary focus:text-white transition-all duration-300 active:scale-95"
+                        className="w-full py-3.5 px-6 inline-flex justify-center items-center gap-x-2 text-[12px] font-black uppercase tracking-widest rounded-sm border border-gray-100 bg-white text-gray-800 shadow-sm hover:bg-primary hover:text-white hover:border-primary focus:outline-none focus:bg-primary focus:text-white transition-all duration-300 active:scale-95"
                       >
                         View Details
                         <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -251,16 +251,16 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               {/* Pagination Placeholder */}
               <div className="mt-16 flex justify-center">
                 <nav className="flex items-center gap-x-1">
-                  <button className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm font-bold rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition-all">
+                  <button className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm font-bold rounded-sm border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition-all">
                     <ChevronLeft size={16} />
                     <span>Prev</span>
                   </button>
                   <div className="flex items-center gap-x-1">
-                    <button className="min-h-[38px] min-w-[38px] flex justify-center items-center bg-primary text-white py-2 px-3 text-sm font-bold rounded-lg focus:outline-none">1</button>
-                    <button className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm font-bold rounded-lg focus:outline-none">2</button>
-                    <button className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm font-bold rounded-lg focus:outline-none">3</button>
+                    <button className="min-h-[38px] min-w-[38px] flex justify-center items-center bg-primary text-white py-2 px-3 text-sm font-bold rounded-sm focus:outline-none">1</button>
+                    <button className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm font-bold rounded-sm focus:outline-none">2</button>
+                    <button className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm font-bold rounded-sm focus:outline-none">3</button>
                   </div>
-                  <button className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm font-bold rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition-all">
+                  <button className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm font-bold rounded-sm border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition-all">
                     <span>Next</span>
                     <ChevronRight size={16} />
                   </button>

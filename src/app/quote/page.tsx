@@ -51,8 +51,8 @@ export default function QuotePage() {
         alert('Quote request submitted successfully!');
     };
 
-    const inputClasses = "py-3 px-4 ps-11 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none transition-colors";
-    const buttonBaseClasses = "inline-flex items-center gap-x-2 text-xs font-bold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all";
+    const inputClasses = "py-3 px-4 ps-11 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none transition-colors";
+    const buttonBaseClasses = "inline-flex items-center gap-x-2 text-xs font-bold rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all";
 
     return (
         <main className="min-h-screen bg-gray-50">
@@ -75,10 +75,10 @@ export default function QuotePage() {
                             <div className="grid gap-y-6">
 
                                 {/* Section 1: General Information */}
-                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden">
                                     <div className="p-4 md:p-7">
                                         <div className="flex items-center gap-x-3 mb-6">
-                                            <div className="inline-flex justify-center items-center size-10 rounded-lg bg-blue-50 text-blue-600">
+                                            <div className="inline-flex justify-center items-center size-10 rounded-sm bg-blue-50 text-blue-600">
                                                 <Info className="size-5" />
                                             </div>
                                             <h3 className="text-lg font-bold text-gray-800 uppercase tracking-wider">
@@ -137,9 +137,9 @@ export default function QuotePage() {
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Electric Voltage & Phase</label>
                                                 <div className="flex gap-x-2">
                                                     <div className="relative flex-1">
-                                                        <input type="text" name="voltage" value={formData.voltage} onChange={handleChange} placeholder="Voltage" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                        <input type="text" name="voltage" value={formData.voltage} onChange={handleChange} placeholder="Voltage" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                                     </div>
-                                                    <div className="inline-flex rounded-lg shadow-sm border border-gray-300">
+                                                    <div className="inline-flex rounded-sm shadow-sm border border-gray-300">
                                                         {['Single', '3 Phase'].map(p => (
                                                             <button
                                                                 key={p}
@@ -158,10 +158,10 @@ export default function QuotePage() {
                                 </div>
 
                                 {/* Section 2: Cooler Details */}
-                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden">
                                     <div className="p-4 md:p-7">
                                         <div className="flex items-center gap-x-3 mb-6">
-                                            <div className="inline-flex justify-center items-center size-10 rounded-lg bg-emerald-50 text-emerald-600">
+                                            <div className="inline-flex justify-center items-center size-10 rounded-sm bg-emerald-50 text-emerald-600">
                                                 <Wind className="size-5" />
                                             </div>
                                             <h3 className="text-lg font-bold text-gray-800 uppercase tracking-wider">
@@ -177,8 +177,8 @@ export default function QuotePage() {
                                                         { id: 'remote', label: 'Remote', sub: 'Condensing unit + Evaporator' },
                                                         { id: 'package', label: 'Package', sub: 'Top mount' }
                                                     ].map(type => (
-                                                        <label key={type.id} className={`flex p-3 w-full bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer transition-all ${formData.coolerSystemType === type.label ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' : ''}`}>
-                                                            <input type="radio" name="coolerSystemType" value={type.label} checked={formData.coolerSystemType === type.label} onChange={handleChange} className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
+                                                        <label key={type.id} className={`flex p-3 w-full bg-white border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer transition-all ${formData.coolerSystemType === type.label ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' : ''}`}>
+                                                            <input type="radio" name="coolerSystemType" value={type.label} checked={formData.coolerSystemType === type.label} onChange={handleChange} className="shrink-0 mt-0.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
                                                             <span className="text-sm text-gray-500 ms-3">
                                                                 <span className="block font-bold text-gray-800">{type.label}</span>
                                                                 <span className="block text-xs">{type.sub}</span>
@@ -190,32 +190,32 @@ export default function QuotePage() {
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Required Temperature</label>
-                                                <input type="text" name="coolerRequiredTemp" value={formData.coolerRequiredTemp} onChange={handleChange} placeholder="e.g. 35F to 38F" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="coolerRequiredTemp" value={formData.coolerRequiredTemp} onChange={handleChange} placeholder="e.g. 35F to 38F" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Dimensions (W x D x H)</label>
-                                                <input type="text" name="coolerDimension" value={formData.coolerDimension} onChange={handleChange} placeholder="e.g. 8' x 10' x 8'2'' H" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="coolerDimension" value={formData.coolerDimension} onChange={handleChange} placeholder="e.g. 8' x 10' x 8'2'' H" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">No. of Doors</label>
-                                                <input type="text" name="coolerNoOfDoors" value={formData.coolerNoOfDoors} onChange={handleChange} placeholder="Quantity" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="coolerNoOfDoors" value={formData.coolerNoOfDoors} onChange={handleChange} placeholder="Quantity" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Door Size</label>
-                                                <input type="text" name="coolerDoorSize" value={formData.coolerDoorSize} onChange={handleChange} placeholder="e.g. 36'' x 78''" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="coolerDoorSize" value={formData.coolerDoorSize} onChange={handleChange} placeholder="e.g. 36'' x 78''" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Section 3: Freezer Details */}
-                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden">
                                     <div className="p-4 md:p-7">
                                         <div className="flex items-center gap-x-3 mb-6">
-                                            <div className="inline-flex justify-center items-center size-10 rounded-lg bg-blue-50 text-blue-600">
+                                            <div className="inline-flex justify-center items-center size-10 rounded-sm bg-blue-50 text-blue-600">
                                                 <Box className="size-5" />
                                             </div>
                                             <h3 className="text-lg font-bold text-gray-800 uppercase tracking-wider">
@@ -231,8 +231,8 @@ export default function QuotePage() {
                                                         { id: 'f-remote', label: 'Remote', sub: 'Condensing unit + Evaporator' },
                                                         { id: 'f-package', label: 'Package', sub: 'Top mount' }
                                                     ].map(type => (
-                                                        <label key={type.id} className={`flex p-3 w-full bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer transition-all ${formData.freezerSystemType === type.label ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' : ''}`}>
-                                                            <input type="radio" name="freezerSystemType" value={type.label} checked={formData.freezerSystemType === type.label} onChange={handleChange} className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
+                                                        <label key={type.id} className={`flex p-3 w-full bg-white border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer transition-all ${formData.freezerSystemType === type.label ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' : ''}`}>
+                                                            <input type="radio" name="freezerSystemType" value={type.label} checked={formData.freezerSystemType === type.label} onChange={handleChange} className="shrink-0 mt-0.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
                                                             <span className="text-sm text-gray-500 ms-3">
                                                                 <span className="block font-bold text-gray-800">{type.label}</span>
                                                                 <span className="block text-xs">{type.sub}</span>
@@ -244,32 +244,32 @@ export default function QuotePage() {
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Required Temperature</label>
-                                                <input type="text" name="freezerRequiredTemp" value={formData.freezerRequiredTemp} onChange={handleChange} placeholder="e.g. -10F to 0F" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="freezerRequiredTemp" value={formData.freezerRequiredTemp} onChange={handleChange} placeholder="e.g. -10F to 0F" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Dimensions (W x D x H)</label>
-                                                <input type="text" name="freezerDimension" value={formData.freezerDimension} onChange={handleChange} placeholder="e.g. 8' x 10' x 8'2'' H" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="freezerDimension" value={formData.freezerDimension} onChange={handleChange} placeholder="e.g. 8' x 10' x 8'2'' H" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">No. of Doors</label>
-                                                <input type="text" name="freezerNoOfDoors" value={formData.freezerNoOfDoors} onChange={handleChange} placeholder="Quantity" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="freezerNoOfDoors" value={formData.freezerNoOfDoors} onChange={handleChange} placeholder="Quantity" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Door Size</label>
-                                                <input type="text" name="freezerDoorSize" value={formData.freezerDoorSize} onChange={handleChange} placeholder="e.g. 36'' x 78''" className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
+                                                <input type="text" name="freezerDoorSize" value={formData.freezerDoorSize} onChange={handleChange} placeholder="e.g. 36'' x 78''" className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Section 4: Additional Information */}
-                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                                <div className="flex flex-col bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden">
                                     <div className="p-4 md:p-7">
                                         <div className="flex items-center gap-x-3 mb-6">
-                                            <div className="inline-flex justify-center items-center size-10 rounded-lg bg-yellow-50 text-yellow-600">
+                                            <div className="inline-flex justify-center items-center size-10 rounded-sm bg-yellow-50 text-yellow-600">
                                                 <Info className="size-5" />
                                             </div>
                                             <h3 className="text-lg font-bold text-gray-800 uppercase tracking-wider">
@@ -277,13 +277,13 @@ export default function QuotePage() {
                                             </h3>
                                         </div>
 
-                                        <textarea id="additionalInfo" name="additionalInfo" value={formData.additionalInfo} onChange={handleChange} className="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none transition-colors" rows={4} placeholder="Tell us more about your specific requirements..."></textarea>
+                                        <textarea id="additionalInfo" name="additionalInfo" value={formData.additionalInfo} onChange={handleChange} className="py-3 px-4 block w-full border border-gray-300 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none transition-colors" rows={4} placeholder="Tell us more about your specific requirements..."></textarea>
                                     </div>
                                 </div>
 
                                 {/* Submit Button */}
                                 <div className="mt-6 flex justify-end">
-                                    <button type="submit" className="py-3 px-8 inline-flex items-center gap-x-2 text-sm font-black uppercase tracking-widest rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-all shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer">
+                                    <button type="submit" className="py-3 px-8 inline-flex items-center gap-x-2 text-sm font-black uppercase tracking-widest rounded-sm border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-all shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer">
                                         Submit Quote Request
                                         <Send className="size-4" />
                                     </button>

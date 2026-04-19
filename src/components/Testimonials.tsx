@@ -90,7 +90,7 @@ export default function Testimonials() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-x-2 py-1 px-3 rounded-full bg-blue-100 text-blue-600 mb-4">
+            <div className="inline-flex items-center gap-x-2 py-1 px-3 rounded-sm bg-blue-100 text-blue-600 mb-4">
               <div className="w-4 h-px bg-blue-600"></div>
               <span className="text-[10px] font-black uppercase tracking-[0.2em]">Testimonials</span>
               <div className="w-4 h-px bg-blue-600"></div>
@@ -107,7 +107,7 @@ export default function Testimonials() {
             <button
               onClick={scrollPrev}
               disabled={!canScrollPrev}
-              className="w-12 h-12 rounded-2xl bg-white border border-gray-100 text-gray-900 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-gray-900 disabled:hover:border-gray-100 transition-all duration-300 shadow-sm cursor-pointer"
+              className="w-12 h-12 rounded-sm bg-white border border-gray-100 text-gray-900 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-gray-900 disabled:hover:border-gray-100 transition-all duration-300 shadow-sm cursor-pointer"
               aria-label="Previous slide"
             >
               <ChevronLeft size={24} />
@@ -115,7 +115,7 @@ export default function Testimonials() {
             <button
               onClick={scrollNext}
               disabled={!canScrollNext}
-              className="w-12 h-12 rounded-2xl bg-white border border-gray-100 text-gray-900 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-gray-900 disabled:hover:border-gray-100 transition-all duration-300 shadow-sm cursor-pointer"
+              className="w-12 h-12 rounded-sm bg-white border border-gray-100 text-gray-900 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-gray-900 disabled:hover:border-gray-100 transition-all duration-300 shadow-sm cursor-pointer"
               aria-label="Next slide"
             >
               <ChevronRight size={24} />
@@ -131,7 +131,7 @@ export default function Testimonials() {
                 key={index}
                 className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0"
               >
-                <div className="h-full flex flex-col bg-white border border-gray-100 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 group relative">
+                <div className="h-full flex flex-col bg-white border border-gray-100 rounded-sm p-8 md:p-10 shadow-sm hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 group relative">
                   <Quote className="absolute top-8 right-8 text-blue-50 size-12 group-hover:text-blue-100 transition-colors" />
 
                   {/* Rating */}
@@ -148,7 +148,7 @@ export default function Testimonials() {
 
                   {/* Author */}
                   <div className="flex items-center gap-4 pt-6 border-t border-gray-50">
-                    <div className={`size-12 rounded-full ${item.color} flex items-center justify-center text-white font-black text-sm shrink-0 shadow-lg shadow-black/5`}>
+                    <div className={`size-12 rounded-sm ${item.color} flex items-center justify-center text-white font-black text-sm shrink-0 shadow-lg shadow-black/5`}>
                       {item.initials}
                     </div>
                     <div className="flex flex-col">
@@ -170,7 +170,7 @@ export default function Testimonials() {
             <button
               key={index}
               onClick={() => emblaApi?.scrollTo(index)}
-              className={`h-1.5 transition-all duration-300 rounded-full ${selectedIndex === index ? 'w-8 bg-primary' : 'w-2 bg-gray-200'
+              className={`h-1.5 transition-all duration-300 rounded-sm ${selectedIndex === index ? 'w-8 bg-primary' : 'w-2 bg-gray-200'
                 }`}
               aria-label={`Go to slide ${index + 1}`}
             />

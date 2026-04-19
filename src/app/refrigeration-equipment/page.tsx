@@ -59,10 +59,10 @@ export default function RefrigerationEquipmentPage() {
               <Link
                 key={index}
                 href={`/refrigeration-equipment/${product.slug}`}
-                className="group flex flex-col bg-white border border-gray-100 rounded-xl hover:shadow-lg hover:shadow-gray-200/40 transition-all duration-300 overflow-hidden text-center items-center p-3 sm:p-4"
+                className="group flex flex-col bg-white border border-gray-100 rounded-sm hover:shadow-lg hover:shadow-gray-200/40 transition-all duration-300 overflow-hidden text-center items-center p-3 sm:p-4"
               >
                 {/* Image Area */}
-                <div className="w-full relative pt-[90%] rounded-lg bg-gray-50/80 overflow-hidden mb-4 border border-gray-50">
+                <div className="w-full relative pt-[90%] rounded-sm bg-gray-50/80 overflow-hidden mb-4 border border-gray-50">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -98,12 +98,12 @@ export default function RefrigerationEquipmentPage() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10">
+              <div className="bg-gray-50 border border-gray-100 rounded-sm p-8 md:p-10">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Why Choose ICEMANZ?</h2>
                 <ul className="space-y-4">
                   {reasons.slice(0, 6).map((reason, i) => (
                     <li key={i} className="flex gap-3 items-start">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-sm bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                         <CheckCircle2 className="text-primary w-4 h-4" />
                       </div>
                       <span className="text-base text-gray-800">{reason}</span>
@@ -114,15 +114,15 @@ export default function RefrigerationEquipmentPage() {
             </div>
 
             {/* Types Banner */}
-            <div className="bg-[#004a99] bg-gradient-to-r from-primary to-blue-800 rounded-3xl p-8 md:p-16 text-white overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="bg-[#004a99] bg-gradient-to-r from-primary to-blue-800 rounded-sm p-8 md:p-16 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-sm blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative z-10 grid md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
                   <h2 className="text-2xl font-bold md:text-3xl mb-6 leading-tight text-white">Types of Refrigeration Equipment We Offer</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                     {equipmentTypes.map((type, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                        <div className="w-1.5 h-1.5 rounded-sm bg-accent"></div>
                         <span className="text-base font-medium text-blue-50">{type}</span>
                       </div>
                     ))}
@@ -132,7 +132,7 @@ export default function RefrigerationEquipmentPage() {
                   <p className="text-blue-100 text-base sm:text-lg">
                     Need technical advice on your next system upgrade?
                   </p>
-                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-semibold text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
+                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-sm font-semibold text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
                     Get Expert Advice <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
                   </Link>
                 </div>

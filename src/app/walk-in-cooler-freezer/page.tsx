@@ -59,11 +59,11 @@ export default function WalkInCoolerFreezerPage() {
               <Link
                 key={index}
                 href={`/walk-in-cooler-freezer/${product.name.toLowerCase().replace(/ \/ /g, '-').replace(/ /g, '-')}`}
-                className="group flex flex-col bg-white border border-gray-100 rounded-2xl hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden text-center items-center"
+                className="group flex flex-col bg-white border border-gray-100 rounded-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden text-center items-center"
               >
                 {/* Image Area */}
                 <div className="p-3 bg-white w-full">
-                  <div className="relative pt-[100%] rounded-xl bg-gray-50 overflow-hidden border border-gray-50">
+                  <div className="relative pt-[100%] rounded-sm bg-gray-50 overflow-hidden border border-gray-50">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -100,12 +100,12 @@ export default function WalkInCoolerFreezerPage() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10">
+              <div className="bg-gray-50 border border-gray-100 rounded-sm p-8 md:p-10">
                 <h2 className="text-2xl font-black text-gray-900 mb-6 uppercase tracking-tight">Why Choose ICEMANZ?</h2>
                 <ul className="space-y-4">
                   {reasons.slice(0, 6).map((reason, i) => (
                     <li key={i} className="flex gap-3 items-start">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-sm bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                         <CheckCircle2 className="text-primary w-4 h-4" />
                       </div>
                       <span className="text-[15px] text-gray-700 font-bold">{reason}</span>
@@ -115,15 +115,15 @@ export default function WalkInCoolerFreezerPage() {
               </div>
             </div>
 
-            <div className="bg-[#004a99] bg-gradient-to-r from-primary to-blue-800 rounded-3xl p-8 md:p-16 text-white overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="bg-[#004a99] bg-gradient-to-r from-primary to-blue-800 rounded-sm p-8 md:p-16 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-sm blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative z-10 grid md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
                   <h2 className="text-2xl md:text-4xl font-black mb-6 uppercase tracking-tight leading-tight">Types of Commercial Coolers We Offer</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                     {coolerTypes.map((type, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                        <div className="w-1.5 h-1.5 rounded-sm bg-accent"></div>
                         <span className="text-[15px] font-bold text-blue-50">{type}</span>
                       </div>
                     ))}
@@ -133,7 +133,7 @@ export default function WalkInCoolerFreezerPage() {
                   <p className="text-blue-100 font-medium text-lg leading-relaxed">
                     Need a personalized solution? Our experts help you find the perfect fit.
                   </p>
-                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-black uppercase tracking-widest text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
+                  <Link href="/quote" className="inline-flex items-center justify-center gap-2 bg-white text-primary px-8 py-4 rounded-sm font-black uppercase tracking-widest text-sm shadow-xl shadow-black/20 hover:bg-blue-50 transition-all active:scale-95 group">
                     Get a Custom Quote <ArrowRight className="group-hover:translate-x-1 transition-transform w-5 h-5" />
                   </Link>
                 </div>
@@ -153,12 +153,12 @@ export default function WalkInCoolerFreezerPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-6">
-                <div className="p-6 border border-gray-100 rounded-3xl bg-white shadow-sm hover:shadow-xl transition-all group">
+                <div className="p-6 border border-gray-100 rounded-sm bg-white shadow-sm hover:shadow-xl transition-all group">
                   <Zap className="size-8 text-primary mb-4" />
                   <h4 className="text-base font-black text-gray-900 mb-2 uppercase tracking-tight">Fast Installation</h4>
                   <p className="text-sm text-gray-500 font-medium">Modular designs that can be set up in any space quickly.</p>
                 </div>
-                <div className="p-6 border border-gray-100 rounded-3xl bg-white shadow-sm hover:shadow-xl transition-all group">
+                <div className="p-6 border border-gray-100 rounded-sm bg-white shadow-sm hover:shadow-xl transition-all group">
                   <ShieldCheck className="size-8 text-primary mb-4" />
                   <h4 className="text-base font-black text-gray-900 mb-2 uppercase tracking-tight">Quality Tested</h4>
                   <p className="text-sm text-gray-500 font-medium">All used equipment undergoes rigorous testing before sale.</p>

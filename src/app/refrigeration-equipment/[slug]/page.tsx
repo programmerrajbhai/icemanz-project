@@ -142,6 +142,7 @@ export default function RefrigerationSubcategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [expandedItems, setExpandedItems] = useState<string[]>(['condensing-units', 'low-profile-evaporator']);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const toggleExpand = (e: React.MouseEvent, itemSlug: string) => {
     e.preventDefault();
@@ -180,7 +181,19 @@ export default function RefrigerationSubcategoryPage() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar - Consistent with Walk-in page */}
             <aside className="lg:w-72 xl:w-[320px] shrink-0">
-              <div className="space-y-6">
+              {/* Mobile Toggle Button */}
+              <button
+                onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4"
+              >
+                <div className="flex items-center gap-2">
+                  <Filter size={18} className="text-gray-900" />
+                  <span className="font-semibold text-gray-900 text-lg">Categories</span>
+                </div>
+                {isMobileSidebarOpen ? <Minus size={20} className="text-gray-900" /> : <Plus size={20} className="text-gray-900" />}
+              </button>
+
+              <div className={`space-y-6 ${isMobileSidebarOpen ? 'block' : 'hidden'} lg:block`}>
                 {/* Subcategories Section */}
                 <div className="flex flex-col bg-white border rounded-sm border-gray-200 ">
                   <div className="px-5 py-4 border-b border-gray-200">
@@ -268,7 +281,7 @@ export default function RefrigerationSubcategoryPage() {
                     Showing 1–{products.length} of 6 results
                   </p>
                 </div>
-                <div className="flex items-center gap-4 sm:ml-auto">
+                <div className="flex items-center gap-4 w-full justify-between sm:w-auto sm:justify-end sm:ml-auto">
                   {/* Sorting */}
                   <div className="relative">
                     <select className="appearance-none bg-transparent pr-8 py-1.5 border-b border-gray-300 text-gray-500  font-medium  text-sm focus:outline-none focus:border-gray-300 cursor-pointer min-w-[180px] transition-colors">
@@ -285,11 +298,11 @@ export default function RefrigerationSubcategoryPage() {
                   {/* View Toggles */}
                   <div className="flex items-center gap-1.5">
                     {/* Grid View (Active) */}
-                    <button className="size-[30px]   bg-[#003d80] rounded flex items-center justify-center cursor-pointer " aria-label="Grid view">
+                    <button className="size-[30px]   bg-[#003d80] rounded-sm flex items-center justify-center cursor-pointer " aria-label="Grid view">
                       <LayoutGrid size={14} className="text-white" strokeWidth={2.5} />
                     </button>
                     {/* List View (Inactive) */}
-                    <button className="size-[30px] bg-[#f1f5f9] rounded flex items-center justify-center cursor-pointer transition-colors hover:bg-[#e2e8f0]" aria-label="List view">
+                    <button className="size-[30px] bg-[#f1f5f9] rounded-sm flex items-center justify-center cursor-pointer transition-colors hover:bg-[#e2e8f0]" aria-label="List view">
                       <Menu size={14} className="text-gray-500" strokeWidth={2.5} />
                     </button>
                   </div>
@@ -311,7 +324,7 @@ export default function RefrigerationSubcategoryPage() {
                     rounded-sm p-2 overflow-hidden hover:-translate-y-1 transition-all duration-500 flex flex-col"
                   >
                     {/* Image Area */}
-                    <div className=" border-b border-gray-200  w-full  rounded-none bg-gray-50 overflow-hidden mb-3">
+                    <div className=" border-b border-gray-200  w-full  rounded-sm bg-gray-50 overflow-hidden mb-3">
                       <img
                         src={product.image}
                         alt={product.name}
@@ -326,13 +339,13 @@ export default function RefrigerationSubcategoryPage() {
                       </h3>
 
                       <div className="flex items-center justify-center gap-1.5 mb-4">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#00C853]"></div>
+                        <div className="w-1.5 h-1.5 rounded-sm bg-[#00C853]"></div>
                         <span className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest">In Stock</span>
                       </div>
 
                       {/* Action Button */}
                       <div className="w-full mt-auto pb-1">
-                        <div className="cursor-pointer w-full py-2.5 px-3 border-[1.5px] border-gray-200 rounded-none flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-black text-[#0f172a] uppercase tracking-[0.2em] group-hover:border-gray-300 group-hover:bg-gray-50 transition-all duration-300 shadow-sm group-hover:shadow">
+                        <div className="cursor-pointer w-full py-2.5 px-3 border-[1.5px] border-gray-200 rounded-sm flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-black text-[#0f172a] uppercase tracking-[0.2em] group-hover:border-gray-300 group-hover:bg-gray-50 transition-all duration-300 shadow-sm group-hover:shadow">
                           View Details
                           <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-[#0f172a]" />
                         </div>
@@ -345,7 +358,7 @@ export default function RefrigerationSubcategoryPage() {
               {/* Pagination */}
               <div className="flex  items-center justify-center gap-4 py-5">
 
-                <button className=' bg-[#003d80] text-center uppercase  font-semibold text-sm cursor-pointer text-white py-2 px-4  rounded-md'>
+                <button className=' bg-[#003d80] text-center uppercase  font-semibold text-sm cursor-pointer text-white py-2 px-4  rounded-sm'>
                   Load More
                 </button>
               </div>

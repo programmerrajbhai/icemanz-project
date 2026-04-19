@@ -152,7 +152,7 @@ export default function Header() {
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               {/* Mega Dropdown for Walk-in Cooler & Freezer */}
-              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
                 <div className="flex gap-8">
                   {/* Links Column */}
                   <div className="flex flex-col gap-1.5 flex-1">
@@ -177,12 +177,12 @@ export default function Header() {
                     ))}
                   </div>
                   {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-3 overflow-hidden min-h-[180px] max-h-[220px]">
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-sm p-3 overflow-hidden min-h-[180px] max-h-[220px]">
                     <img
                       key={hoveredWalkInItem}
                       src={hoveredWalkInItem}
                       alt="Walk-in Cooler Preview"
-                      className="max-w-full h-auto rounded-lg shadow-sm"
+                      className="max-w-full h-auto rounded-sm shadow-sm"
                     />
                   </div>
                 </div>
@@ -193,7 +193,7 @@ export default function Header() {
                 Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
               {/* Mega Dropdown for Glassdoor Walk-in Cooler */}
-              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
                 <div className="flex gap-8">
                   {/* Links Column */}
                   <div className="flex flex-col gap-1.5 flex-1">
@@ -214,12 +214,12 @@ export default function Header() {
                     ))}
                   </div>
                   {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-3 overflow-hidden min-h-[180px] max-h-[220px]">
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-sm p-3 overflow-hidden min-h-[180px] max-h-[220px]">
                     <img
                       key={hoveredGlassdoorItem}
                       src={hoveredGlassdoorItem}
                       alt="Glassdoor Cooler Preview"
-                      className="max-w-full h-auto rounded-lg shadow-sm"
+                      className="max-w-full h-auto rounded-sm shadow-sm"
                     />
                   </div>
                 </div>
@@ -231,7 +231,7 @@ export default function Header() {
                 Refrigeration Equipment <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               {/* Mega Dropdown for Refrigeration Equipment */}
-              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
                 <div className="flex gap-8">
                   {/* Links Column */}
                   <div className="flex flex-col gap-1.5 flex-1">
@@ -251,12 +251,12 @@ export default function Header() {
                     ))}
                   </div>
                   {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-xl p-3 overflow-hidden min-h-[180px] max-h-[220px]">
+                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-sm p-3 overflow-hidden min-h-[180px] max-h-[220px]">
                     <img
                       key={hoveredRefrigerationItem}
                       src={hoveredRefrigerationItem}
                       alt="Refrigeration Equipment Preview"
-                      className="max-w-full h-auto rounded-lg shadow-sm"
+                      className="max-w-full h-auto rounded-sm shadow-sm"
                     />
                   </div>
                 </div>
@@ -271,25 +271,25 @@ export default function Header() {
           {/* Actions */}
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-1 mr-2">
-              <button className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-700 hover:text-primary cursor-pointer">
+              <button className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary cursor-pointer">
                 <Search size={20} />
               </button>
-              <button className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-700 hover:text-primary relative group cursor-pointer">
+              <button className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary relative group cursor-pointer">
                 <ShoppingCart size={20} />
-                <span className="absolute top-1.5 right-1.5 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold shadow-sm group-hover:scale-110 transition-transform">0</span>
+                <span className="absolute top-1.5 right-1.5 bg-accent text-white text-[10px] w-4 h-4 rounded-sm flex items-center justify-center font-bold shadow-sm group-hover:scale-110 transition-transform">0</span>
               </button>
             </div>
 
             <Link
               href="/quote"
-              className="hidden md:inline-flex items-center gap-x-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-xl font-bold text-[14px] transition-all focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer"
+              className="hidden md:inline-flex items-center gap-x-2 bg-primary hover:bg-blue-700 text-white px-7 py-3 rounded-sm font-bold text-[14px] transition-all focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transform hover:shadow-xl active:scale-95 shadow-lg shadow-primary/20 cursor-pointer"
             >
               <FileText size={18} />
               Get a Quote
             </Link>
 
             <button
-              className="lg:hidden p-3 hover:bg-gray-100 rounded-xl transition-all text-gray-900 cursor-pointer active:scale-90 border border-gray-100 shadow-sm bg-white"
+              className="lg:hidden p-3 hover:bg-gray-100 rounded-sm transition-all text-gray-900 cursor-pointer active:scale-90 border border-gray-100 shadow-sm bg-white"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open menu"
             >
@@ -315,7 +315,7 @@ export default function Header() {
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer active:scale-90"
+              className="p-2.5 hover:bg-gray-100 rounded-sm transition-colors cursor-pointer active:scale-90"
               aria-label="Close menu"
             >
               <X size={28} className="text-gray-900" />
@@ -354,7 +354,7 @@ export default function Header() {
                             className="px-10 py-4 text-[14px] font-bold text-gray-500 hover:text-primary hover:bg-white transition-all flex items-center justify-between group"
                           >
                             {item.label}
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20 group-hover:bg-primary transition-colors"></div>
+                            <div className="w-1.5 h-1.5 rounded-sm bg-primary/20 group-hover:bg-primary transition-colors"></div>
                           </Link>
                         ))}
                       </div>
@@ -378,22 +378,22 @@ export default function Header() {
               <Link
                 href="/quote"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center inline-flex items-center justify-center gap-x-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-all"
+                className="w-full bg-primary text-white py-4 rounded-sm font-bold text-center inline-flex items-center justify-center gap-x-2 mb-8 shadow-xl shadow-primary/20 cursor-pointer active:scale-95 transition-all"
               >
                 <FileText size={20} />
                 Get a Quote
               </Link>
 
-              <div className="space-y-5 bg-gray-50 p-6 rounded-2xl">
+              <div className="space-y-5 bg-gray-50 p-6 rounded-sm">
                 <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Info</p>
                 <a href="tel:929-451-7665" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-sm bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     <Phone size={18} className="text-primary" />
                   </div>
                   <span className="font-bold text-sm">929-451-7665</span>
                 </a>
                 <a href="mailto:sales@icemanz.com" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-sm bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     <Mail size={18} className="text-primary" />
                   </div>
                   <span className="font-bold text-sm">sales@icemanz.com</span>

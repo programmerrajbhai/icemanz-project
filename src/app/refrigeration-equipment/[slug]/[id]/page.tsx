@@ -134,7 +134,7 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
                     setActiveImageIndex(i);
                     handleResetZoom();
                   }}
-                  className={`cursor-pointer  md:w-full md:aspect-square bg-white border rounded-md overflow-hidden transition-all focus:outline-none p-1.5 ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
+                  className={`cursor-pointer  md:w-full md:aspect-square bg-white border rounded-sm overflow-hidden transition-all focus:outline-none p-1.5 ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   <img src={img} alt={`View ${i + 1}`} className="size-full object-contain" />
                 </button>
@@ -176,18 +176,18 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
               {/* Image Controls */}
               <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
                 <div className="flex items-center gap-2">
-                  <button onClick={handleResetZoom} className="size-8 cursor-pointer bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-full flex items-center justify-center transition-colors shadow-sm">
+                  <button onClick={handleResetZoom} className="size-8 cursor-pointer bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
                     <RotateCcw size={14} />
                   </button>
-                  <button onClick={handleZoomIn} className="size-8 bg-white cursor-pointer border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-full flex items-center justify-center transition-colors shadow-sm">
+                  <button onClick={handleZoomIn} className="size-8 bg-white cursor-pointer border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
                     <ZoomIn size={14} />
                   </button>
-                  <button onClick={handleZoomOut} className="size-8 bg-white border cursor-pointer border-gray-200 hover:bg-gray-50 text-gray-600 rounded-full flex items-center justify-center transition-colors shadow-sm">
+                  <button onClick={handleZoomOut} className="size-8 bg-white border cursor-pointer border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
                     <ZoomOut size={14} />
                   </button>
                 </div>
 
-                <button onClick={handleFullscreen} className="size-8 bg-white border cursor-pointer border-gray-200 hover:bg-gray-50 text-gray-600 rounded-full flex items-center justify-center transition-colors shadow-sm">
+                <button onClick={handleFullscreen} className="size-8 bg-white border cursor-pointer border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
                   <Maximize size={14} />
                 </button>
               </div>
@@ -199,74 +199,74 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
             {/* Right: Product Info - Redesigned to match reference */}
             <div className="flex flex-col lg:col-span-1 px-0 lg:pl-8">
               {/* Title */}
-              <div className="mb-5 mt-3">
-                <h1 className="text-md md:text-2xl font-bold text-[#1f2937] tracking-tight ">
+              <div className="mb-8 mt-3">
+                <h1 className="text-2xl md:text-3xl font-bold text-[#1f2937] tracking-tight">
                   {product.title}
                 </h1>
               </div>
 
-
-
               {/* Key Features Section */}
-              <div className="">
-                <h3 className=" text-md font-bold text-[#1f2937] mb-4">Key Features</h3>
-                <p className="text-gray-600  pl-2 text-sm leading-relaxed mb-3">
-                  {product.keyFeatures}
-                </p>
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-lg font-bold text-[#1f2937] mb-4">Key Features</h3>
+                  <p className="text-gray-600 pl-4 text-[15px] leading-relaxed">
+                    {product.keyFeatures}
+                  </p>
+                </div>
 
                 {/* Warranty Section */}
-                <h3 className=" text-md font-bold text-[#1f2937] mb-4">Warranty</h3>
-
-                <ul className="space-y-2 mb-4 pl-2">
-                  {product.warranty.map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 text-gray-600  pl-2 text-sm leading-relaxed">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                <div>
+                  <h3 className="text-lg font-bold text-[#1f2937] mb-4">Warranty</h3>
+                  <ul className="space-y-4 pl-4">
+                    {product.warranty.map((item, i) => (
+                      <li key={i} className="text-gray-600 text-[15px] leading-relaxed">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 {/* Documents Section */}
-                <h3 className="text-md font-bold text-[#1f2937] ">Documents</h3>
-
-                <div className="flex flex-wrap gap-x-6 gap-y-4 mb-4  p-6 ">
-                  {product.documents.map((doc, i) => (
-                    <a
-                      key={i}
-                      href={doc.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 text-[15px] font-semibold text-gray-600 hover:text-[#004a99] transition-colors group/doc"
-                    >
-                      <div className="size-8 rounded-sm bg-white border border-gray-200 flex items-center justify-center text-gray-400 transition-colors">
-                        <FileDown size={16} strokeWidth={1.5} />
-                      </div>
-                      <span className="underline decoration-1 underline-offset-4 decoration-gray-300 hover:decoration-[#004a99]">
-                        {doc.name}
-                      </span>
-                    </a>
-                  ))}
+                <div>
+                  <h3 className="text-lg font-bold text-[#1f2937] mb-4">Documents</h3>
+                  <div className="flex flex-wrap gap-x-6 gap-y-4 pl-4">
+                    {product.documents.map((doc, i) => (
+                      <a
+                        key={i}
+                        href={doc.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 text-[15px] font-semibold text-[#1f2937] hover:text-[#004a99] transition-colors group/doc"
+                      >
+                        <div className="size-9 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-400 transition-colors shadow-sm">
+                          <FileDown size={18} strokeWidth={1.5} />
+                        </div>
+                        <span className="underline decoration-1 underline-offset-4 decoration-gray-300 hover:decoration-[#004a99]">
+                          {doc.name}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-
               {/* Main Actions */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-14">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 mb-14">
                 <Link
                   href={`/request-invoice?product=${encodeURIComponent(product.title)}`}
-                  className="flex-1 py-3.5 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-sm border border-transparent bg-[#004a99] text-white hover:bg-blue-800 transition-colors shadow-sm"
+                  className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-transparent bg-[#004a99] text-white hover:bg-blue-800 transition-colors shadow-sm"
                 >
                   <FileText size={18} />
                   Request for Invoice
                 </Link>
                 <a
                   href="tel:929-451-7665"
-                  className="flex-1 py-3.5 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-sm border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors shadow-sm"
+                  className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-gray-200 bg-white text-[#1f2937] hover:bg-gray-50 transition-colors shadow-sm"
                 >
                   <PhoneCall size={18} />
                   Call Specialist
                 </a>
               </div>
-
             </div>
           </div>
 
@@ -314,30 +314,44 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
                 <div className="space-y-8">
 
 
-                  <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
-                    {[
-                      "Blue anti-corrosion-fin increases the life span of the coil.",
-                      "Seamless inner groove copper tube increases the heat exchange rate by reducing the space between the fin and copper tube.",
-                      "Highest quality compressor in the world.",
-                      "Head pressure control stabilizes the freezing of liquid line, minimizes formation of flash gas to increase efficiency of the system, and prevents compressor damage by controlling high pressure.",
-                      "Experienced engineers have designed the system for maximum efficiency.",
-                      "Fan Blades: Specifically matched with motors and coil for maximum air movement and cooling.",
-                      "Control box is designed for easy installation.",
-                      "Low pressure control is adjustable.",
-                      "All the parts are compliant with industry standards and interchangeable with readily available parts.",
-                      "Wiring: Easily accessible. Compressor comes with a wiring harness that is manufactured with connections that will not come loose with vibration.",
-                      "Control box and service valves are located outside for easy service.",
-                      "Base: Heavy duty steel. Legs are 2-1/6\" tall.",
-                      "Cabinet: Prepainted with galvanized body. Protects against corrosion.",
-                      "All products carry UL, CUL, ISO 9001 approvals."
-                    ].map((feature, idx) => (
-                      <div key={idx} className="flex items-start gap-3">
-                        <CheckCircle2 className="text-[#004a99] shrink-0 mt-0.5" size={20} />
-                        <p className="text-gray-600 text-[15px] leading-relaxed">
-                          {feature}
-                        </p>
-                      </div>
-                    ))}
+                  <div className="grid md:grid-cols-2 gap-x-16 gap-y-10">
+                    <div className="space-y-5">
+                      {[
+                        "Blue anti-corrosion-fin increases the life span of the coil.",
+                        "Highest quality compressor in the world.",
+                        "Experienced engineers have designed the system for maximum efficiency.",
+                        "Control box is designed for easy installation.",
+                        "All the parts are compliant with industry standards and interchangeable with readily available parts.",
+                        "Control box and service valves are located outside for easy service.",
+                        "Cabinet: Prepainted with galvanized body. Protects against corrosion."
+                      ].map((feature, idx) => (
+                        <div key={`left-${idx}`} className="flex items-start gap-4">
+                          <CheckCircle2 className="text-[#004a99] shrink-0 mt-0.5" size={22} strokeWidth={2} />
+                          <p className="text-gray-600 text-[15px] leading-relaxed">
+                            {feature}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="space-y-5 mt-10 md:mt-0">
+                      {[
+                        "Seamless inner groove copper tube increases the heat exchange rate by reducing the space between the fin and copper tube.",
+                        "Head pressure control stabilizes the freezing of liquid line, minimizes formation of flash gas to increase efficiency of the system, and prevents compressor damage by controlling high pressure.",
+                        "Fan Blades: Specifically matched with motors and coil for maximum air movement and cooling.",
+                        "Low pressure control is adjustable.",
+                        "Wiring: Easily accessible. Compressor comes with a wiring harness that is manufactured with connections that will not come loose with vibration.",
+                        "Base: Heavy duty steel. Legs are 2-1/6\" tall.",
+                        "All products carry UL, CUL, ISO 9001 approvals."
+                      ].map((feature, idx) => (
+                        <div key={`right-${idx}`} className="flex items-start gap-4">
+                          <CheckCircle2 className="text-[#004a99] shrink-0 mt-0.5" size={22} strokeWidth={2} />
+                          <p className="text-gray-600 text-[15px] leading-relaxed">
+                            {feature}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
 
@@ -374,7 +388,7 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
                 <div className="space-y-6">
                   <h3 className="text-2xl font-bold text-[#1f2937] tracking-tight mb-6">1 review for {product.title}</h3>
                   <div className="flex gap-4 border-b border-gray-100 pb-6">
-                    <div className="size-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-lg shrink-0">
+                    <div className="size-12 rounded-sm bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-lg shrink-0">
                       J
                     </div>
                     <div>
@@ -415,7 +429,7 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
                   className="group bg-white border border-gray-200 rounded-sm p-2 overflow-hidden hover:-translate-y-1 transition-all duration-500 flex flex-col"
                 >
                   {/* Image Area */}
-                  <div className="border-b border-gray-200 w-full rounded-none bg-gray-50 overflow-hidden mb-3">
+                  <div className="border-b border-gray-200 w-full rounded-sm bg-gray-50 overflow-hidden mb-3">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -430,7 +444,7 @@ export default function RefrigerationProductDetailsPage({ params }: { params: Pr
                     </h3>
 
                     <div className="flex items-center justify-center gap-1.5 mb-4">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#00C853]"></div>
+                      <div className="w-1.5 h-1.5 rounded-sm bg-[#00C853]"></div>
                       <span className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest">In Stock</span>
                     </div>
 

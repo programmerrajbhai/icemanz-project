@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Category {
+  id            String     @id @default(uuid())
+  name          String
+  slug          String     @unique
+  parentId      String?
+  parent        Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  subcategories Category[] @relation("CategoryToCategory")
+  products      Product[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Product {
+  id               String   @id @default(uuid())
+  title            String
+  slug             String   @unique
+  badge            String?
+  description      String?  @db.Text
+  keyFeatures      String?  @db.Text
+  condition        String?
+  type             String?
+  price            String?
+  
+  // Arrays for Supabase image URLs and lists
+  images           String[]
+  warranty         String[]
+  detailedFeatures String[]
+  
+  // Storing complex/variable data as JSON
+  specs            Json?    
+  documents        Json?    
+
+  categoryId       String?
+  category         Category? @relation(fields: [categoryId], references: [id])
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model InvoiceRequest {
+  id          String   @id @default(uuid())
+  projectName String?
+  fullName    String
+  email       String
+  phone       String?
+  address     String?
+  description String?  @db.Text
+  
+  // Box & Temp fields
+  width       String?
+  length      String?
+  height      String?
+  tempRange   String?
+  customTemp  String?
+  quantity    String?
+
+  // Products added to quote
+  products    Json?
+
+  status      String   @default("PENDING") // PENDING, REVIEWED, COMPLETED
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

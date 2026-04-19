@@ -22,7 +22,7 @@ export default function ScrollingTicker() {
               <span className="text-white text-[10px] md:text-[12px] font-black tracking-[0.2em] uppercase mx-6 md:mx-10">
                 {item}
               </span>
-              <div className="size-1 rounded-full bg-white/40 mx-2 md:mx-4"></div>
+              <div className="size-1 rounded-sm bg-white/40 mx-2 md:mx-4"></div>
             </div>
           ))}
         </div>
@@ -33,7 +33,7 @@ export default function ScrollingTicker() {
               <span className="text-white text-[10px] md:text-[12px] font-black tracking-[0.2em] uppercase mx-6 md:mx-10">
                 {item}
               </span>
-              <div className="size-1 rounded-full bg-white/40 mx-2 md:mx-4"></div>
+              <div className="size-1 rounded-sm bg-white/40 mx-2 md:mx-4"></div>
             </div>
           ))}
         </div>

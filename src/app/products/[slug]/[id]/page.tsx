@@ -62,15 +62,15 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                   <button
                     key={i}
                     onClick={() => setActiveImageIndex(i)}
-                    className={`flex-shrink-0 size-16 md:size-20 bg-gray-50 border-2 rounded-xl overflow-hidden transition-all focus:outline-none p-1.5 ${i === activeImageIndex ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-300'}`}
+                    className={`flex-shrink-0 size-16 md:size-20 bg-gray-50 border-2 rounded-sm overflow-hidden transition-all focus:outline-none p-1.5 ${i === activeImageIndex ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-300'}`}
                   >
-                    <img src={img} alt={`View ${i + 1}`} className="size-full object-cover rounded-lg" />
+                    <img src={img} alt={`View ${i + 1}`} className="size-full object-cover rounded-sm" />
                   </button>
                 ))}
               </div>
 
               {/* Main Image View */}
-              <div className="flex-1 bg-gray-50 border border-gray-200 rounded-3xl overflow-hidden aspect-[4/3] flex items-center justify-center p-6 md:p-12 relative">
+              <div className="flex-1 bg-gray-50 border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center p-6 md:p-12 relative">
                 <div className="absolute top-4 left-4 z-10">
                   <span className="inline-block bg-[#cc0000] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm">
                     {product.badge}
@@ -88,10 +88,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
             <div className="flex flex-col h-full">
               <div className="mb-4 md:mb-8">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="py-1 px-2.5 inline-flex items-center text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary rounded-lg">
+                  <span className="py-1 px-2.5 inline-flex items-center text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary rounded-sm">
                     {product.type}
                   </span>
-                  <span className="py-1 px-2.5 inline-flex items-center text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 rounded-lg">
+                  <span className="py-1 px-2.5 inline-flex items-center text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 rounded-sm">
                     {product.condition}
                   </span>
                 </div>
@@ -104,13 +104,13 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                 <div className="mb-4 md:mb-8 flex flex-col sm:flex-row gap-4">
                   <Link
                     href="/quote"
-                    className="flex-1 py-4 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-xl border border-transparent bg-primary text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-all shadow-xl shadow-blue-500/20 cursor-pointer active:scale-95"
+                    className="flex-1 py-4 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-sm border border-transparent bg-primary text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-all shadow-xl shadow-blue-500/20 cursor-pointer active:scale-95"
                   >
                     <FileText size={18} /> Request Pricing
                   </Link>
                   <a
                     href="tel:929-451-7665"
-                    className="flex-1 py-4 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-xl border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer active:scale-95"
+                    className="flex-1 py-4 px-8 inline-flex justify-center items-center gap-x-3 text-sm font-black uppercase tracking-widest rounded-sm border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer active:scale-95"
                   >
                     <PhoneCall size={18} /> Call Specialist
                   </a>
@@ -122,7 +122,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
               </div>
 
               {/* Specs Table - Preline Table Pattern */}
-              <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mb-8">
+              <div className="bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm mb-8">
                 <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-200">
                   <h3 className="text-sm font-black text-gray-800 uppercase tracking-wider">Technical Specifications</h3>
                 </div>
@@ -138,12 +138,12 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
 
               {/* Action Cards - Preline Card Pattern */}
               <div className="grid sm:grid-cols-2 gap-4 mt-auto">
-                <div className="p-5 border border-gray-200 rounded-2xl bg-white hover:border-primary transition-colors group">
+                <div className="p-5 border border-gray-200 rounded-sm bg-white hover:border-primary transition-colors group">
                   <Truck className="size-6 text-primary mb-3" />
                   <h4 className="text-sm font-bold text-gray-800 mb-1 uppercase tracking-wider">Fast Shipping</h4>
                   <p className="text-xs text-gray-500">Nationwide delivery within 36-48 hours for in-stock units.</p>
                 </div>
-                <div className="p-5 border border-gray-200 rounded-2xl bg-white hover:border-primary transition-colors group">
+                <div className="p-5 border border-gray-200 rounded-sm bg-white hover:border-primary transition-colors group">
                   <ShieldCheck className="size-6 text-primary mb-3" />
                   <h4 className="text-sm font-bold text-gray-800 mb-1 uppercase tracking-wider">Expert Support</h4>
                   <p className="text-xs text-gray-500">Dedicated assistance for design and installation queries.</p>

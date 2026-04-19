@@ -111,13 +111,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-10 items-start">
             {/* Left Column: Gallery (6/12 width) */}
             <div className="lg:col-span-6 flex flex-col gap-8">
-              <div className="relative w-full h-[450px] bg-white rounded-2xl overflow-hidden border border-slate-100 group shadow-sm flex items-center justify-center">
+              <div className="relative w-full h-[450px] bg-white rounded-sm overflow-hidden border border-slate-100 group shadow-sm flex items-center justify-center">
                 <img
                   src={product.images[activeImage]}
                   alt={product.title}
                   className="max-w-full max-h-full object-contain p-6 transition-transform duration-700 group-hover:scale-105"
                 />
-                <button className="absolute bottom-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors cursor-pointer">
+                <button className="absolute bottom-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-sm shadow-sm hover:bg-white transition-colors cursor-pointer">
                   <Maximize2 size={16} className="text-slate-600" />
                 </button>
               </div>
@@ -128,7 +128,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                     <button
                       key={idx}
                       onClick={() => setActiveImage(idx)}
-                      className={`relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${activeImage === idx ? 'border-blue-600 shadow-md ring-2 ring-blue-50/50' : 'border-slate-100 hover:border-slate-300'
+                      className={`relative w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden border-2 transition-all duration-300 cursor-pointer ${activeImage === idx ? 'border-blue-600 shadow-md ring-2 ring-blue-50/50' : 'border-slate-100 hover:border-slate-300'
                         }`}
                     >
                       <img src={img} alt="" className="w-full h-full object-cover" />
@@ -165,7 +165,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   ))}
                 </div>
 
-                <div className="mb-8 py-2 px-4 bg-red-50 rounded-lg border border-red-100 inline-block">
+                <div className="mb-8 py-2 px-4 bg-red-50 rounded-sm border border-red-100 inline-block">
                   <span className="text-[14px] font-black text-[#ff1a43] tracking-wide">
                     {product.inStockText}
                   </span>
@@ -173,7 +173,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
                 {/* Primary CTA */}
                 <div className="space-y-4 mb-8">
-                  <Link href="/quote" className="group w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl font-black text-[12px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 hover:shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+                  <Link href="/quote" className="group w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-sm font-black text-[12px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-100 hover:shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
                     Get A Customized Quote
                     <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -204,7 +204,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 >
                   {tab.label}
                   {activeTab === tab.id && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-600 rounded-full" />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-600 rounded-sm" />
                   )}
                 </button>
               ))}
@@ -214,7 +214,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               {activeTab === 'features' && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                   <section>
-                    <div className="bg-slate-50/50 p-8 rounded-2xl border border-slate-100">
+                    <div className="bg-slate-50/50 p-8 rounded-sm border border-slate-100">
                       <p className="text-[13px] font-black text-green-600 uppercase tracking-widest mb-6 flex items-center gap-2">
                         <CheckCircle2 size={16} />
                         In Stock - Ready to Ship!
@@ -227,7 +227,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       <ul className="space-y-5">
                         {product.features.map((f, i) => (
                           <li key={i} className="flex items-start gap-4">
-                            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 shadow-sm shadow-blue-200" />
+                            <div className="mt-1.5 w-1.5 h-1.5 rounded-sm bg-blue-600 shrink-0 shadow-sm shadow-blue-200" />
                             <span className="text-[14px] font-medium text-slate-600 leading-relaxed">
                               {f.split(/(new|NSF\/ANSI 7 Approved)/i).map((part, index) =>
                                 /new|NSF\/ANSI 7 Approved/i.test(part) ? <strong key={index} className="text-slate-900 font-black">{part}</strong> : part
@@ -244,7 +244,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               {activeTab === 'specifications' && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                   <section>
-                    <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+                    <div className="overflow-hidden rounded-sm border border-slate-100 bg-white shadow-sm">
                       <table className="w-full border-collapse">
                         <tbody>
                           {product.specs.map((spec, i) => (
@@ -261,7 +261,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                       </table>
                     </div>
 
-                    <div className="mt-8 p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center gap-4">
+                    <div className="mt-8 p-6 bg-blue-50/50 rounded-sm border border-blue-100 flex items-center gap-4">
                       <Info size={24} className="text-blue-600 shrink-0" />
                       <p className="text-[12px] font-bold text-blue-700 leading-relaxed uppercase tracking-wider">
                         Please note: Electrical voltage requirements must be confirmed at the time of order to ensure proper equipment matching.

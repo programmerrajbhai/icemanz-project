@@ -85,7 +85,7 @@ export default function Services() {
               key={index}
               className={`${service.gridArea} group relative flex flex-col rounded-[2.5rem] overflow-hidden transition-all duration-700 p-8 md:p-10 bg-linear-to-br ${service.variant === 'primary' ? 'from-primary/5 via-white to-white border border-primary/20 hover:border-primary/40 hover:shadow-2xl' : 'from-slate-50 via-white to-white border border-slate-100 hover:border-primary/20 hover:shadow-xl'}`}
             >
-              <div className={`size-16 inline-flex justify-center items-center rounded-2xl ${service.color} ${service.iconColor} mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:-translate-y-1`}>
+              <div className={`size-16 inline-flex justify-center items-center rounded-sm ${service.color} ${service.iconColor} mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:-translate-y-1`}>
                 <service.icon className="size-8 stroke-[1.5px]" />
               </div>
 

@@ -26,11 +26,11 @@ export default function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`bg-white p-6 md:p-7 rounded-2xl shadow-lg shadow-gray-200/60 border border-gray-100 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl ${index === 1 ? 'transform md:-translate-y-3' : ''}`}>
+              className={`bg-white p-6 md:p-7 rounded-sm shadow-lg shadow-gray-200/60 border border-gray-100 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl ${index === 1 ? 'transform md:-translate-y-3' : ''}`}>
 
-              <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${index === 1 ? 'bg-primary text-white' : 'bg-gray-100 text-primary'}`}>
+              <div className={`relative w-14 h-14 rounded-sm flex items-center justify-center mb-5 ${index === 1 ? 'bg-primary text-white' : 'bg-gray-100 text-primary'}`}>
                 <feature.icon size={28} strokeWidth={2} />
-                {index === 1 && <div className="absolute -top-1.5 w-6 h-1 bg-accent rounded-full"></div>}
+                {index === 1 && <div className="absolute -top-1.5 w-6 h-1 bg-accent rounded-sm"></div>}
               </div>
 
               <h3 className="font-bold text-base md:text-lg text-gray-900 uppercase tracking-wider mb-2">

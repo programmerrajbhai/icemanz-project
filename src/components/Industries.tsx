@@ -51,8 +51,8 @@ export default function Industries() {
           </h2>
 
           <div className="flex justify-center">
-            <div className="size-8 rounded-full border border-primary/10 flex items-center justify-center">
-              <div className="size-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(0,74,153,0.3)]"></div>
+            <div className="size-8 rounded-sm border border-primary/10 flex items-center justify-center">
+              <div className="size-1.5 rounded-sm bg-primary animate-pulse shadow-[0_0_10px_rgba(0,74,153,0.3)]"></div>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function Industries() {
               key={index}
               className="flex flex-col items-center text-center p-6 md:p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:border-primary/20 hover:bg-white hover:shadow-xl transition-all duration-500 group"
             >
-              <div className="size-16 rounded-3xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 border border-primary/20 group-hover:bg-primary group-hover:text-white shadow-sm shadow-primary/5 group-hover:shadow-xl group-hover:shadow-primary/20">
+              <div className="size-16 rounded-sm bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 border border-primary/20 group-hover:bg-primary group-hover:text-white shadow-sm shadow-primary/5 group-hover:shadow-xl group-hover:shadow-primary/20">
                 <item.icon className="size-7 text-primary group-hover:text-white transition-colors" strokeWidth={2} />
               </div>
 
@@ -81,8 +81,8 @@ export default function Industries() {
       </div>
 
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 size-[600px] bg-primary/[0.03] rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 size-[600px] bg-accent/[0.03] rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 size-[600px] bg-primary/[0.03] rounded-sm blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 size-[600px] bg-accent/[0.03] rounded-sm blur-[120px] pointer-events-none"></div>
     </section>
   );
 }
