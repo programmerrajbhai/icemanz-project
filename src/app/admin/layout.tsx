@@ -19,6 +19,7 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Invoice Requests', href: '/admin/invoices', icon: FileText },
+  { name: 'Quote Requests', href: '/admin/quotes', icon: FileText },
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
@@ -46,9 +47,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0b1120] text-slate-300 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} flex flex-col border-r border-slate-800`}>
         {/* Logo */}
         <div className="flex items-center h-20 px-8 bg-[#0f172a] border-b border-slate-800 shrink-0 justify-between">
-          <Link href="/admin/dashboard" className="flex items-center gap-3">
-            <img src="/logo.png" alt="ICEMANZ Logo" className="h-9 w-auto object-contain" />
-            <span className="text-[10px] font-black bg-blue-600/20 text-blue-400 border border-blue-500/20 px-2 py-1 rounded-md uppercase tracking-wider">Admin</span>
+          <Link href="/admin/dashboard" className="flex items-center">
+            <img src="/logo.png" alt="ICEMANZ Logo" className="h-11 w-auto object-contain brightness-0 invert" />
           </Link>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white cursor-pointer">
             <X size={20} />

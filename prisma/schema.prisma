@@ -73,3 +73,32 @@ model InvoiceRequest {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model CustomQuoteRequest {
+  id                  String   @id @default(uuid())
+  date                String?
+  jobName             String
+  address             String
+  ambientTemp         String?
+  voltage             String?
+  phase               String?
+  
+  coolerSystemType    String?
+  coolerRequiredTemp  String?
+  coolerDimension     String?
+  coolerNoOfDoors     String?
+  coolerDoorSize      String?
+  
+  freezerSystemType   String?
+  freezerRequiredTemp String?
+  freezerDimension    String?
+  freezerNoOfDoors    String?
+  freezerDoorSize     String?
+  
+  additionalInfo      String?  @db.Text
+  
+  status              String   @default("PENDING") // PENDING, REVIEWED, COMPLETED
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
