@@ -1,6 +1,8 @@
 import prisma from '@/lib/prisma';
 import InvoicesClient from './InvoicesClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function InvoicesPage() {
   const invoices = await prisma.invoiceRequest.findMany({
     orderBy: { createdAt: 'desc' },

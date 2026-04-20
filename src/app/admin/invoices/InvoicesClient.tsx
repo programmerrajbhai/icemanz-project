@@ -106,6 +106,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
       </div>
     ), { 
       duration: Infinity, 
+      position: 'top-center',
       id: `delete-confirm-${id}`,
       style: { maxWidth: '400px' } 
     });

@@ -111,6 +111,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
       </div>
     ), { 
       duration: Infinity, 
+      position: 'top-center',
       id: `delete-confirm-${id}`,
       style: { maxWidth: '400px' } 
     });

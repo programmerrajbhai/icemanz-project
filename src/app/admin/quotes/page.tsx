@@ -5,6 +5,8 @@ export const metadata = {
   title: 'Quote Requests | Admin Dashboard',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function QuotesPage() {
   const quotes = await prisma.customQuoteRequest.findMany({
     orderBy: { createdAt: 'desc' }
