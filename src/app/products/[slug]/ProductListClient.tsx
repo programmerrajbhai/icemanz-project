@@ -17,18 +17,19 @@ import { Product, Category } from '@prisma/client';
 
 type CategoryWithSubs = Category & { subcategories: CategoryWithSubs[] };
 
-export default function ProductListClient({ 
-  products, 
-  categories, 
-  slug 
-}: { 
-  products: (Product & { category: Category | null })[], 
+export default function ProductListClient({
+  products,
+  categories,
+  slug
+}: {
+  products: (Product & { category: Category | null })[],
   categories: CategoryWithSubs[],
-  slug: string 
+  slug: string
 }) {
   const [openMenus, setOpenMenus] = useState<string[]>(
     categories.map(c => c.name) // Open root categories by default
   );
+  const [visibleCount, setVisibleCount] = useState(8);
 
   const toggleMenu = (name: string) => {
     setOpenMenus(prev =>
@@ -128,7 +129,7 @@ export default function ProductListClient({
                     <p className="text-slate-500 font-medium">No products found in this category.</p>
                   </div>
                 ) : (
-                  products.map((product) => (
+                  products.slice(0, visibleCount).map((product) => (
                     <div
                       key={product.id}
                       className="group flex flex-col bg-white border border-gray-100 rounded-sm hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 overflow-hidden"
@@ -139,7 +140,7 @@ export default function ProductListClient({
                             <img
                               src={product.images[0]}
                               alt={product.title}
-                              className="size-full absolute top-0 start-0 object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out p-4"
+                              className="size-full absolute top-0 start-0 object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out p-4"
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center text-slate-300">No Image</div>
@@ -175,6 +176,17 @@ export default function ProductListClient({
                   ))
                 )}
               </div>
+
+              {products.length > visibleCount && (
+                <div className="mt-12 flex justify-center">
+                  <button
+                    onClick={() => setVisibleCount(products.length)}
+                    className="py-3 px-8 inline-flex justify-center items-center gap-x-2 text-[13px] font-black uppercase tracking-widest rounded-sm border border-transparent bg-[#004a99] text-white hover:bg-[#003366] transition-colors shadow-md active:scale-95 cursor-pointer"
+                  >
+                    Load More
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

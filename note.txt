@@ -43,9 +43,9 @@ Combo Units/Package Units
 
 Services page in footer  https://www.icemanz.com/services
 
-
 REFRIGERATION EQUIPMENT :   EXCLUDE 
 Condensing Units
+
 HTTPS://WWW.TURBOAIRINC.COM/REFRIGERATIONSYSTEM/PRODUCT-CATEGORY/2021/UNIT-COOLERS/CENTER-MOUNT-EVAPORATOR-LOW-VELOCITY/ΩΩ
 
 
@@ -75,3 +75,34 @@ https://www.figma.com/design/uME58llNtfpsy4tjoCgQdB/Untitled?node-id=2001-12&t=w
 
 
 https://demo.gloriathemes.com/gromark/demo/product/chex-mix-traditional-large-crunchy-savory-snack-mix-13-5oz/
+
+
+
+
+[
+  {
+    "title": "ADR060AE",
+    "description": "6,000 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "features": "6,000 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "imageUrl": "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/03/fan1_side-1.jpg"
+  },
+  {
+    "title": "ADR112AE",[
+  {
+    "title": "ADR060AE",
+    "description": "6,000 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "features": "6,000 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "imageUrl": "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/03/fan1_side-1.jpg"
+  },
+  {
+    "title": "ADR112AE",
+    "description": "11,200 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "features": "11,200 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "imageUrl": "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/03/fan2_side-1.jpg"
+  }
+]
+    "description": "11,200 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "features": "11,200 BTU, Low Profile Unit Cooler, Air Defrost with EC Motor (Dual Speed & Voltage), 115V/1Ph/60Hz",
+    "imageUrl": "https://www.turboairinc.com/refrigerationsystem/wp-content/uploads/sites/8/2021/03/fan2_side-1.jpg"
+  }
+]

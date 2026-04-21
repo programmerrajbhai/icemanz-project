@@ -38,6 +38,7 @@ export default function RefrigerationEquipmentClient({
 }) {
   const [expandedItems, setExpandedItems] = useState<string[]>(['condensing-units', 'low-profile-evaporator']);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
 
   const toggleExpand = (e: React.MouseEvent, itemSlug: string) => {
     e.preventDefault();
@@ -193,7 +194,7 @@ export default function RefrigerationEquipmentClient({
                     No products found in this category!
                   </div>
                 ) : (
-                  products.map((product) => (
+                  products.slice(0, visibleCount).map((product) => (
                     <Link
                       key={product.id}
                       href={`/refrigeration-equipment/${slug}/${product.id}`}
@@ -207,7 +208,7 @@ export default function RefrigerationEquipmentClient({
                           <img
                             src={product.images[0]}
                             alt={product.title}
-                            className="size-full absolute top-0 left-0 object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="size-full absolute top-0 left-0 object-contain p-2 transition-transform duration-700 group-hover:scale-105"
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-semibold bg-gray-100">No Image</div>
@@ -245,9 +246,11 @@ export default function RefrigerationEquipmentClient({
                 )}
               </div>
 
-              {products.length > 0 && (
+              {products.length > visibleCount && (
                 <div className="flex  items-center justify-center gap-4 py-5">
-                  <button className=' bg-[#003d80] text-center uppercase  font-semibold text-sm cursor-pointer text-white py-2 px-4  rounded-sm'>
+                  <button
+                    onClick={() => setVisibleCount(products.length)}
+                    className=' bg-[#003d80] text-center uppercase  font-semibold text-sm cursor-pointer text-white py-2 px-4  rounded-sm'>
                     Load More
                   </button>
                 </div>
