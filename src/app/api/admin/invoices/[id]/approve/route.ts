@@ -41,6 +41,9 @@ export async function POST(
 
       const amount = parseFloat(totalAmount);
 
+      // Determine the base URL for redirects and images
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
       // Create Stripe checkout session
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -58,8 +61,8 @@ export async function POST(
           },
         ],
         mode: 'payment',
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/completed-projects?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/request-invoice?canceled=true`,
+        success_url: `${baseUrl}/completed-projects?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/request-invoice?canceled=true`,
         metadata: {
           invoiceId: invoice.id,
           customerName: invoice.fullName,
@@ -81,7 +84,7 @@ export async function POST(
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
           <div style="text-align: center; margin-bottom: 25px;">
-            <img src="${process.env.NEXT_PUBLIC_APP_URL}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+            <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
           </div>
           
           <h2 style="color: #004a99; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Invoice Approved</h2>
@@ -125,6 +128,9 @@ export async function POST(
       return NextResponse.json(updatedInvoice);
 
     } else if (action === 'DECLINE') {
+      // Determine the base URL for redirects and images
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
       const updatedInvoice = await prisma.invoiceRequest.update({
         where: { id },
         data: { status: 'DECLINED' },
@@ -134,7 +140,7 @@ export async function POST(
       const emailHtml = `
        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
          <div style="text-align: center; margin-bottom: 25px;">
-           <img src="${process.env.NEXT_PUBLIC_APP_URL}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+           <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
          </div>
          
          <h2 style="color: #dc2626; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Invoice Request Declined</h2>

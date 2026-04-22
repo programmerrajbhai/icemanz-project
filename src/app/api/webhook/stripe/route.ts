@@ -47,6 +47,9 @@ export async function POST(req: Request) {
         const amountPaid = session.amount_total ? session.amount_total / 100 : 0;
 
         if (invoiceId) {
+          // Determine the base URL for redirects and images
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
           // Update InvoiceRequest status to PAID
           await prisma.invoiceRequest.update({
             where: { id: invoiceId },
@@ -71,7 +74,7 @@ export async function POST(req: Request) {
           const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
               <div style="text-align: center; margin-bottom: 25px;">
-                <img src="${process.env.NEXT_PUBLIC_APP_URL}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+                <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
               </div>
               
               <h2 style="color: #10b981; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Payment Successful!</h2>
