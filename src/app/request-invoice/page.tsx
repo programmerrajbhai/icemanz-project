@@ -10,6 +10,8 @@ export default async function RequestInvoicePage({
   const { productId } = await searchParams;
 
   let initialAddedProduct = null;
+  let categoryId = null;
+
   if (productId) {
     const product = await prisma.product.findUnique({
       where: { id: productId },
@@ -19,6 +21,7 @@ export default async function RequestInvoicePage({
         images: true,
         price: true,
         badge: true,
+        categoryId: true,
         category: {
           select: { name: true }
         }
@@ -26,6 +29,7 @@ export default async function RequestInvoicePage({
     });
 
     if (product) {
+      categoryId = product.categoryId;
       initialAddedProduct = {
         id: product.id,
         brand: product.category?.name || 'ICEMANZ',
@@ -39,18 +43,37 @@ export default async function RequestInvoicePage({
     }
   }
 
-  // Fetch some random/recent products for the suggested sidebar
-  const dbProducts = await prisma.product.findMany({
-    take: 6,
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      title: true,
-      images: true,
-      price: true,
-      category: { select: { name: true } }
-    }
-  });
+  // Fetch products for the suggested sidebar
+  let dbProducts = [];
+
+  if (categoryId) {
+    dbProducts = await prisma.product.findMany({
+      where: {
+        categoryId: categoryId,
+        ...(productId ? { id: { not: productId } } : {})
+      },
+      take: 6,
+      select: {
+        id: true,
+        title: true,
+        images: true,
+        price: true,
+        category: { select: { name: true } }
+      }
+    });
+  } else {
+    dbProducts = await prisma.product.findMany({
+      take: 6,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        images: true,
+        price: true,
+        category: { select: { name: true } }
+      }
+    });
+  }
 
   const initialSuggestedProducts = dbProducts
     .filter(p => p.id !== productId) // Don't suggest the one we are already requesting
@@ -66,9 +89,9 @@ export default async function RequestInvoicePage({
     }));
 
   return (
-    <RequestInvoiceClient 
-      initialAddedProduct={initialAddedProduct} 
-      initialSuggestedProducts={initialSuggestedProducts} 
+    <RequestInvoiceClient
+      initialAddedProduct={initialAddedProduct}
+      initialSuggestedProducts={initialSuggestedProducts}
     />
   );
 }

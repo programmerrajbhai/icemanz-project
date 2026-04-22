@@ -126,13 +126,18 @@ function StepConnector({ filled }: { filled: boolean }) {
 /* ─────────────────────────────────────────────
    Product Card (shared across all steps)
 ───────────────────────────────────────────── */
-function ProductCard({ product, onRemove }: { product: ProductSummary; onRemove: () => void }) {
+function ProductCard({ product, onRemove, isMain }: { product: ProductSummary; onRemove: () => void; isMain?: boolean }) {
   return (
-    <div className="relative bg-white border border-gray-100 rounded-sm p-3.5 pr-14 flex items-center gap-5 group hover:border-[#004a99]/30 hover:shadow-sm transition-all duration-300">
-      <div className="size-[72px] rounded-sm bg-white border border-gray-50 overflow-hidden shrink-0 flex items-center justify-center p-1">
+    <div className={`relative bg-white border ${isMain ? 'border-[#004a99] shadow-sm bg-blue-50/10' : 'border-gray-100'} rounded-sm p-3.5 pr-14 flex items-center gap-5 group hover:border-[#004a99]/30 hover:shadow-sm transition-all duration-300`}>
+      {isMain && (
+        <div className="absolute top-0 right-0 bg-[#004a99] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-bl-sm rounded-tr-sm tracking-wider shadow-sm z-10">
+          Main Product
+        </div>
+      )}
+      <div className={`size-[72px] rounded-sm bg-white border ${isMain ? 'border-[#004a99]/20' : 'border-gray-50'} overflow-hidden shrink-0 flex items-center justify-center p-1`}>
         <img src={product.image} className="w-full h-full object-contain mix-blend-multiply" alt="Product" />
       </div>
-      <div className="space-y-0.5 text-left flex-1 min-w-0">
+      <div className="space-y-0.5 text-left flex-1 min-w-0 mt-1">
         <p className="text-[10px] font-black text-[#004a99] uppercase tracking-widest">{product.brand}</p>
         <h3 className="text-[15px] font-bold text-[#0f172a] leading-tight truncate">{product.title}</h3>
         {product.id === 0 ? (
@@ -551,17 +556,17 @@ export default function RequestInvoiceClient({
       toast.error("Please add at least one product to your quote before submitting.");
       return;
     }
-    
+
     if (!formData.projectName || !formData.fullName || !formData.email || !formData.phone || !formData.address) {
       toast.error("Please fill in all required fields (marked with *) in Project Info.");
       return;
     }
-    
+
     if (!formData.width || !formData.length || !formData.height || !formData.tempRange || !formData.quantity) {
       toast.error("Please fill in all required fields (marked with *) in Box & Temperature.");
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/invoice', {
@@ -569,7 +574,7 @@ export default function RequestInvoiceClient({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formData, addedProducts }),
       });
-      
+
       if (res.ok) {
         setSubmitted(true);
       } else {
@@ -633,7 +638,12 @@ export default function RequestInvoiceClient({
                   <div className="p-6 md:p-10 space-y-10">
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 max-h-[240px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
                       {addedProducts.map(p => (
-                        <ProductCard key={p.id} product={p} onRemove={() => removeFromQuote(p)} />
+                        <ProductCard
+                          key={p.id}
+                          product={p}
+                          onRemove={() => removeFromQuote(p)}
+                          isMain={initialAddedProduct !== null && p.id === initialAddedProduct.id}
+                        />
                       ))}
                     </div>
 

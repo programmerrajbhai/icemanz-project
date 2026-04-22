@@ -44,6 +44,9 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [totalAmount, setTotalAmount] = useState('');
+  const [adminMessage, setAdminMessage] = useState('');
 
   const filteredInvoices = invoices.filter(inv =>
     inv.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,17 +55,58 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   );
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
-    const loadingToast = toast.loading('Updating status...');
-    const result = await updateInvoiceStatus(id, newStatus);
+    if (newStatus === 'APPROVED') {
+      setShowApproveModal(true);
+      return;
+    }
 
-    if (result.success) {
+    const loadingToast = toast.loading('Updating status...');
+    try {
+      const response = await fetch(`/api/admin/invoices/${id}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: newStatus }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update status');
+
+      const updatedData = await response.json();
       setInvoices(invoices.map(inv => inv.id === id ? { ...inv, status: newStatus } : inv));
       toast.success(`Status updated to ${newStatus}`, { id: loadingToast });
       if (selectedInvoice && selectedInvoice.id === id) {
         setSelectedInvoice({ ...selectedInvoice, status: newStatus });
       }
-    } else {
-      toast.error(result.error || 'Failed to update', { id: loadingToast });
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update', { id: loadingToast });
+    }
+  };
+
+  const submitApproval = async () => {
+    if (!selectedInvoice || !totalAmount) return;
+
+    const loadingToast = toast.loading('Creating invoice and sending email...');
+    try {
+      const response = await fetch(`/api/admin/invoices/${selectedInvoice.id}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'APPROVE',
+          totalAmount: totalAmount,
+          message: adminMessage
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to approve invoice');
+
+      const updatedData = await response.json();
+      setInvoices(invoices.map(inv => inv.id === selectedInvoice.id ? { ...inv, status: 'APPROVED' } : inv));
+      setSelectedInvoice({ ...selectedInvoice, status: 'APPROVED' });
+      setShowApproveModal(false);
+      setTotalAmount('');
+      setAdminMessage('');
+      toast.success('Invoice approved and email sent to client!', { id: loadingToast });
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to approve', { id: loadingToast });
     }
   };
 
@@ -87,13 +131,13 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
         <p className="text-sm font-bold text-gray-900 leading-snug">Are you sure you want to delete this invoice request?</p>
         <p className="text-xs font-medium text-gray-500 mb-1">This action cannot be undone.</p>
         <div className="flex justify-end gap-2 mt-1">
-          <button 
+          <button
             onClick={() => toast.dismiss(t.id)}
             className="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors cursor-pointer"
           >
             Cancel
           </button>
-          <button 
+          <button
             onClick={() => {
               toast.dismiss(t.id);
               executeDelete(id);
@@ -104,11 +148,11 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
           </button>
         </div>
       </div>
-    ), { 
-      duration: Infinity, 
+    ), {
+      duration: Infinity,
       position: 'top-center',
       id: `delete-confirm-${id}`,
-      style: { maxWidth: '400px' } 
+      style: { maxWidth: '400px' }
     });
   };
 
@@ -271,7 +315,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                   <div className="h-full flex flex-col">
                     <h3 className="text-[12px] font-bold text-[#004a99] uppercase tracking-[0.15em] border-b border-gray-100 pb-4 mb-5">Client Information</h3>
                     <div className="space-y-4">
-                      
+
                       <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-gray-100/80 shadow-sm group cursor-pointer transition-colors hover:border-[#004a99]/30">
                         <div className="text-gray-400 group-hover:text-[#004a99] transition-colors"><User size={16} /></div>
                         <div>
@@ -379,6 +423,65 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                 </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Approve Modal Overlay */}
+      {showApproveModal && selectedInvoice && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Approve Invoice Request</h3>
+            <p className="text-sm text-gray-500 mb-6">Enter the total amount for this project to generate a payment link.</p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Total Amount (USD)</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                  <input
+                    type="number"
+                    value={totalAmount}
+                    onChange={(e) => setTotalAmount(e.target.value)}
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                    className="block w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Admin Message (Optional)</label>
+                <textarea
+                  value={adminMessage}
+                  onChange={(e) => setAdminMessage(e.target.value)}
+                  placeholder="Any additional notes for the client..."
+                  rows={3}
+                  className="block w-full p-2 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-8">
+              <button
+                onClick={() => {
+                  setShowApproveModal(false);
+                  setTotalAmount('');
+                  setAdminMessage('');
+                }}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitApproval}
+                disabled={!totalAmount || parseFloat(totalAmount) <= 0}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#004a99] hover:bg-[#004a99]/90 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Approve & Send Email
+              </button>
             </div>
           </div>
         </div>

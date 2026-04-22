@@ -18,6 +18,7 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { name: 'Orders', href: '/admin/orders', icon: Package },
   { name: 'Invoice Requests', href: '/admin/invoices', icon: FileText },
   { name: 'Quote Requests', href: '/admin/quotes', icon: FileText },
   { name: 'Products', href: '/admin/products', icon: Package },

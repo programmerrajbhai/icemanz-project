@@ -68,10 +68,36 @@ model InvoiceRequest {
   // Products added to quote
   products    Json?
 
-  status      String   @default("PENDING") // PENDING, REVIEWED, COMPLETED
+  status      String   @default("PENDING") // PENDING, APPROVED, DECLINED, COMPLETED, PAID
   
+  // Payment Details
+  totalAmount Float?
+  stripeSessionId String?
+  paymentLink String?
+
+  order       Order?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  invoiceId       String   @unique
+  invoice         InvoiceRequest @relation(fields: [invoiceId], references: [id])
+  
+  customerName    String
+  customerEmail   String
+  amountPaid      Float
+  currency        String   @default("usd")
+  
+  stripeSessionId String   @unique
+  stripePaymentId String?
+  
+  status          String   @default("PAID") // PAID, REFUNDED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model CustomQuoteRequest {
