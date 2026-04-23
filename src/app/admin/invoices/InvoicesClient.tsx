@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import useSWR from 'swr';
+import { getInvoices, updateInvoiceStatus, deleteInvoiceRequest } from './actions';
 import {
   Eye,
   Trash2,
@@ -19,7 +21,6 @@ import {
   User
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { updateInvoiceStatus, deleteInvoiceRequest } from './actions';
 
 type Invoice = {
   id: string;
@@ -41,14 +42,14 @@ type Invoice = {
 };
 
 export default function InvoicesClient({ initialInvoices }: { initialInvoices: Invoice[] }) {
-  const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
+  const { data: invoices, mutate } = useSWR<Invoice[]>('invoices', getInvoices as any, { fallbackData: initialInvoices, refreshInterval: 10000 });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [totalAmount, setTotalAmount] = useState('');
   const [adminMessage, setAdminMessage] = useState('');
 
-  const filteredInvoices = invoices.filter(inv =>
+  const filteredInvoices = (invoices || []).filter(inv =>
     inv.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     inv.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (inv.projectName && inv.projectName.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -71,7 +72,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
       if (!response.ok) throw new Error('Failed to update status');
 
       const updatedData = await response.json();
-      setInvoices(invoices.map(inv => inv.id === id ? { ...inv, status: newStatus } : inv));
+      mutate();
       toast.success(`Status updated to ${newStatus}`, { id: loadingToast });
       if (selectedInvoice && selectedInvoice.id === id) {
         setSelectedInvoice({ ...selectedInvoice, status: newStatus });
@@ -99,7 +100,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
       if (!response.ok) throw new Error('Failed to approve invoice');
 
       const updatedData = await response.json();
-      setInvoices(invoices.map(inv => inv.id === selectedInvoice.id ? { ...inv, status: 'APPROVED' } : inv));
+      mutate();
       setSelectedInvoice({ ...selectedInvoice, status: 'APPROVED' });
       setShowApproveModal(false);
       setTotalAmount('');
@@ -115,7 +116,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
     const result = await deleteInvoiceRequest(id);
 
     if (result.success) {
-      setInvoices(invoices.filter(inv => inv.id !== id));
+      mutate();
       toast.success('Invoice request deleted', { id: loadingToast });
       if (selectedInvoice && selectedInvoice.id === id) {
         setSelectedInvoice(null);

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import useSWR from 'swr';
+import { getQuotes, updateQuoteStatus, deleteQuoteRequest } from './actions';
 import {
   Eye,
   Trash2,
@@ -18,7 +20,6 @@ import {
   Info
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { updateQuoteStatus, deleteQuoteRequest } from './actions';
 
 export type Quote = {
   id: string;
@@ -28,30 +29,30 @@ export type Quote = {
   ambientTemp?: string | null;
   voltage?: string | null;
   phase?: string | null;
-  
+
   coolerSystemType?: string | null;
   coolerRequiredTemp?: string | null;
   coolerDimension?: string | null;
   coolerNoOfDoors?: string | null;
   coolerDoorSize?: string | null;
-  
+
   freezerSystemType?: string | null;
   freezerRequiredTemp?: string | null;
   freezerDimension?: string | null;
   freezerNoOfDoors?: string | null;
   freezerDoorSize?: string | null;
-  
+
   additionalInfo?: string | null;
   status: string;
   createdAt: Date;
 };
 
 export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[] }) {
-  const [quotes, setQuotes] = useState<Quote[]>(initialQuotes);
+  const { data: quotes, mutate } = useSWR<Quote[]>('quotes', getQuotes as any, { fallbackData: initialQuotes, refreshInterval: 10000 });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
 
-  const filteredQuotes = quotes.filter(quote =>
+  const filteredQuotes = (quotes || []).filter(quote =>
     quote.jobName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     quote.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -61,7 +62,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
     const result = await updateQuoteStatus(id, newStatus);
 
     if (result.success) {
-      setQuotes(quotes.map(q => q.id === id ? { ...q, status: newStatus } : q));
+      mutate();
       toast.success(`Status updated to ${newStatus}`, { id: loadingToast });
       if (selectedQuote && selectedQuote.id === id) {
         setSelectedQuote({ ...selectedQuote, status: newStatus });
@@ -76,7 +77,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
     const result = await deleteQuoteRequest(id);
 
     if (result.success) {
-      setQuotes(quotes.filter(q => q.id !== id));
+      mutate();
       toast.success('Quote request deleted', { id: loadingToast });
       if (selectedQuote && selectedQuote.id === id) {
         setSelectedQuote(null);
@@ -92,13 +93,13 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
         <p className="text-sm font-bold text-gray-900 leading-snug">Are you sure you want to delete this quote request?</p>
         <p className="text-xs font-medium text-gray-500 mb-1">This action cannot be undone.</p>
         <div className="flex justify-end gap-2 mt-1">
-          <button 
+          <button
             onClick={() => toast.dismiss(t.id)}
             className="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors cursor-pointer"
           >
             Cancel
           </button>
-          <button 
+          <button
             onClick={() => {
               toast.dismiss(t.id);
               executeDelete(id);
@@ -109,11 +110,11 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
           </button>
         </div>
       </div>
-    ), { 
-      duration: Infinity, 
+    ), {
+      duration: Infinity,
       position: 'top-center',
       id: `delete-confirm-${id}`,
-      style: { maxWidth: '400px' } 
+      style: { maxWidth: '400px' }
     });
   };
 
@@ -270,12 +271,12 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
 
               {/* Detail Cards */}
               <div className="grid md:grid-cols-2 gap-6">
-                
+
                 {/* General Info */}
                 <div className="space-y-6">
                   <div className="h-full flex flex-col">
                     <h3 className="text-[12px] font-bold text-[#004a99] uppercase tracking-[0.15em] border-b border-gray-100 pb-4 mb-5">General Information</h3>
-                    
+
                     <div className="bg-white p-5 rounded-xl border border-[#004a99]/30 mb-5 shadow-sm transition-shadow hover:shadow-md cursor-pointer">
                       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Job Name</p>
                       <p className="text-[18px] font-bold text-[#004a99] leading-tight">{selectedQuote.jobName}</p>
@@ -289,7 +290,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
                           <p className="text-[13px] font-bold text-gray-900 mt-0.5">{selectedQuote.address}</p>
                         </div>
                       </div>
-                      
+
                       {selectedQuote.date && (
                         <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-gray-100/80 shadow-sm">
                           <Calendar size={16} className="text-gray-400" />
@@ -330,7 +331,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
                 <div className="space-y-6">
                   <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm h-full flex flex-col">
                     <h3 className="text-[12px] font-bold text-emerald-600 uppercase tracking-[0.15em] border-b border-gray-50 pb-4 mb-5">Cooler Specs</h3>
-                    
+
                     {selectedQuote.coolerSystemType || selectedQuote.coolerDimension ? (
                       <div className="space-y-4 mb-8">
                         {selectedQuote.coolerSystemType && (
@@ -363,7 +364,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
                     )}
 
                     <h3 className="text-[12px] font-bold text-blue-600 uppercase tracking-[0.15em] border-b border-gray-50 pb-4 mb-5">Freezer Specs</h3>
-                    
+
                     {selectedQuote.freezerSystemType || selectedQuote.freezerDimension ? (
                       <div className="space-y-4">
                         {selectedQuote.freezerSystemType && (

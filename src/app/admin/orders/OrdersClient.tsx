@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import useSWR from 'swr';
+import { getOrders } from './actions';
 import {
   Eye,
   CheckCircle2,
@@ -32,11 +34,11 @@ type Order = {
 };
 
 export default function OrdersClient({ initialOrders }: { initialOrders: Order[] }) {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const { data: orders } = useSWR<Order[]>('orders', getOrders as any, { fallbackData: initialOrders, refreshInterval: 10000 });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const filteredOrders = orders.filter(ord =>
+  const filteredOrders = (orders || []).filter(ord =>
     ord.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ord.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ord.id.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -42,10 +42,10 @@ export default function Footer() {
             <ul className="space-y-4 text-[15px]">
               {[
                 { name: 'Home', href: '/' },
-                { name: 'Products', href: '/products' },
+                { name: 'Products', href: '/refrigeration-equipment' },
                 { name: 'Services', href: '/services' },
                 { name: 'Portfolio', href: '/completed-projects' },
-                { name: 'About Us', href: '/about-us' }
+                { name: 'About Us', href: '/#about' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link href={item.href} className="text-gray-400 hover:text-white hover:underline decoration-primary underline-offset-4 transition-all cursor-pointer">
@@ -61,10 +61,10 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-6">Solutions</h4>
             <ul className="space-y-4 text-[15px]">
               {[
-                { name: 'Walk-In Coolers', href: '/products/walk-in-coolers' },
-                { name: 'Walk-In Freezers', href: '/products/walk-in-freezers' },
-                { name: 'Combo Units', href: '/products/combo-units' },
-                { name: 'Glass Doors', href: '/products/glass-doors' },
+                { name: 'Walk-In Coolers', href: '/walk-in-cooler-freezer/walk-in-coolers' },
+                { name: 'Walk-In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
+                { name: 'Combo Units', href: '/walk-in-cooler-freezer/combo-units' },
+                { name: 'Glass Doors', href: '/refrigeration-equipment/glass-door-walk-in-cooler' },
                 { name: 'Custom Build', href: '/quote' }
               ].map((item) => (
                 <li key={item.name}>
@@ -86,7 +86,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-[13px] text-gray-500 font-medium mb-0.5">Voice Support</p>
-                  <p className="text-white font-medium group-hover:text-primary transition-colors">929-451-7665</p>
+                  <p className="text-white font-medium  transition-colors">929-451-7665</p>
                 </div>
               </a>
 
@@ -96,7 +96,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-[13px] text-gray-500 font-medium mb-0.5">Digital Enquiry</p>
-                  <p className="text-white font-medium group-hover:text-primary transition-colors">sales@icemanz.com</p>
+                  <p className="text-white font-medium transition-colors">sales@icemanz.com</p>
                 </div>
               </a>
 

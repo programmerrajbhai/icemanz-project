@@ -3,6 +3,13 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
+export async function getQuotes() {
+  const quotes = await prisma.customQuoteRequest.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
+  return quotes;
+}
+
 export async function updateQuoteStatus(id: string, status: string) {
   try {
     const updated = await prisma.customQuoteRequest.update({

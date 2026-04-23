@@ -3,6 +3,13 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
+export async function getInvoices() {
+  const invoices = await prisma.invoiceRequest.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+  return invoices;
+}
+
 export async function updateInvoiceStatus(id: string, status: string) {
   try {
     await prisma.invoiceRequest.update({

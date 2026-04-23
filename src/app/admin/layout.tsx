@@ -3,17 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Package, 
-  Settings, 
-  LogOut, 
+import {
+  LayoutDashboard,
+  FileText,
+  Package,
+  Settings,
+  LogOut,
   Menu,
   X,
   Bell,
   Search,
-  User
+  User,
+  MessageSquare
 } from "lucide-react";
 
 const navigation = [
@@ -21,6 +22,7 @@ const navigation = [
   { name: 'Orders', href: '/admin/orders', icon: Package },
   { name: 'Invoice Requests', href: '/admin/invoices', icon: FileText },
   { name: 'Quote Requests', href: '/admin/quotes', icon: FileText },
+  { name: 'General Enquiry', href: '/admin/enquiries', icon: MessageSquare },
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
@@ -38,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -65,11 +67,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-blue-600 text-white font-medium shadow-lg shadow-blue-900/20' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                  ? 'bg-blue-600 text-white font-medium shadow-lg shadow-blue-900/20'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  }`}
               >
                 <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-400'} />
                 {item.name}
@@ -98,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Top Header */}
         <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-30">
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
             >
@@ -106,14 +107,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
             <div className="hidden sm:flex items-center gap-2 bg-slate-100 px-4 py-2.5 rounded-full text-slate-500 w-64 focus-within:w-80 focus-within:ring-2 focus-within:ring-blue-100 focus-within:bg-white transition-all">
               <Search size={18} />
-              <input 
-                type="text" 
-                placeholder="Search anything..." 
+              <input
+                type="text"
+                placeholder="Search anything..."
                 className="bg-transparent border-none outline-none w-full text-sm text-slate-800 placeholder-slate-400"
               />
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3 sm:gap-5">
             <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
               <Bell size={20} />
