@@ -54,7 +54,7 @@ export default function Header() {
       subItems: [
         { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
         { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
-        { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' }
+        { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-unitspackage-units' }
       ]
     }
   ];
@@ -85,18 +85,18 @@ export default function Header() {
   };
 
   const refrigerationImages: { [key: string]: string } = {
-    'Condensing units': '/slider/s_1.jpeg',
-    'Medium profile (Scroll compressor)': '/slider/s_2.jpeg',
-    'Evaporation units': '/slider/s_3.jpeg',
-    'Combo units / package unit': '/slider/s_1.jpeg',
-    'Low profile evaporator': '/slider/s_2.jpeg',
-    'Medium profile': '/slider/s_3.jpeg',
-    'Center mount': '/slider/s_1.jpeg',
-    'Thin profile evaporator': '/slider/s_2.jpeg',
-    'Refrigeration Equipment': '/slider/s_1.jpeg'
+    'Condensing units': '/category/refrigerationEquipment/condensingUnit.jpg',
+    'Medium profile (Scroll compressor)': '/category/refrigerationEquipment/mediumProfile.jpg',
+    'Evaporation units': '/category/refrigerationEquipment/evaporationUnit.jpg',
+    'Combo units / package unit': '/category/refrigerationEquipment/packageUnit.jpg',
+    'Low profile evaporator': '/category/refrigerationEquipment/lowProfileEvaporator.jpg',
+    'Medium profile': '/category/refrigerationEquipment/mediumProfile.jpg',
+    'Center mount': '/category/refrigerationEquipment/centerMount.jpg',
+    'Thin profile evaporator': '/category/refrigerationEquipment/thinProfileEvaporator.jpg',
+    'Refrigeration Equipment': '/category/refrigerationEquipment/condensingUnit.jpg'
   };
 
-  const [hoveredRefrigerationItem, setHoveredRefrigerationItem] = useState('/slider/s_1.jpeg');
+  const [hoveredRefrigerationItem, setHoveredRefrigerationItem] = useState('/category/refrigerationEquipment/condensingUnit.jpg');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -238,7 +238,7 @@ export default function Header() {
                     {[
                       { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
                       { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
-                      { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-units-package-unit' }
+                      { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-unitspackage-units' }
                     ].map((item) => (
                       <Link
                         key={item.label}

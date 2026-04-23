@@ -9,7 +9,7 @@ const productCategories = [
   { name: 'Condensing units', image: '/category/refrigerationEquipment/condensingUnit.jpg', slug: 'condensing-units' },
   { name: 'Medium profile (Scroll compressor)', image: '/category/refrigerationEquipment/mediumProfile.jpg', slug: 'medium-profile-scroll-compressor' },
   { name: 'Evaporation units', image: '/category/refrigerationEquipment/evaporationUnit.jpg', slug: 'evaporation-units' },
-  { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/packageUnit.jpg', slug: 'combo-units-package-unit' },
+  { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/packageUnit.jpg', slug: 'combo-unitspackage-units' },
   { name: 'Low profile evaporator', image: '/category/refrigerationEquipment/lowProfileEvaporator.jpg', slug: 'low-profile-evaporator' },
   { name: 'Medium profile', image: '/category/refrigerationEquipment/mediumProfile.jpg', slug: 'medium-profile' },
   { name: 'Center mount', image: '/category/refrigerationEquipment/centerMount.jpg', slug: 'center-mount' },
