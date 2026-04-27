@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect, useCallback } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -67,12 +68,15 @@ function ProductCard({ product }: { product: typeof products[0] }) {
       {/* Internal Slider */}
       <div className="relative h-64 overflow-hidden">
         {product.images.map((img, idx) => (
-          <img
+          <Image
             key={idx}
             src={img}
             alt={`${product.title} ${idx + 1}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${idx === currentImage ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+            fill
+            className={`object-cover transition-all duration-1000 ease-in-out ${idx === currentImage ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
               }`}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={idx === 0}
           />
         ))}
 

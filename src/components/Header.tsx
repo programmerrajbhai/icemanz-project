@@ -15,8 +15,11 @@ import {
   FileText,
   ArrowRight
 } from 'lucide-react';
+import FloatingCart from './FloatingCart';
+import { useCart } from '@/context/CartContext';
 
 export default function Header() {
+  const { cartItems, isCartOpen, setIsCartOpen } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMobileCategories, setExpandedMobileCategories] = useState<string[]>([]);
@@ -274,10 +277,20 @@ export default function Header() {
               <button className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary cursor-pointer">
                 <Search size={20} />
               </button>
-              <button className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary relative group cursor-pointer">
-                <ShoppingCart size={20} />
-                <span className="absolute top-1.5 right-1.5 bg-accent text-white text-[10px] w-4 h-4 rounded-sm flex items-center justify-center font-bold shadow-sm group-hover:scale-110 transition-transform">0</span>
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setIsCartOpen(!isCartOpen)}
+                  className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary relative group cursor-pointer"
+                >
+                  <ShoppingCart size={20} />
+                  {cartItems.length > 0 && (
+                    <span className="absolute top-1.5 right-1.5 bg-accent text-white text-[10px] w-4 h-4 rounded-sm flex items-center justify-center font-bold shadow-sm group-hover:scale-110 transition-transform">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </button>
+                <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+              </div>
             </div>
 
             <Link

@@ -3,9 +3,7 @@ import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-03-25.dahlia' as any,
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 

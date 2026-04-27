@@ -8,9 +8,7 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2026-03-25.dahlia' as any,
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
 // Demo data for completed projects
 const demoProjects = [

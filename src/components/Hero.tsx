@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ArrowRight, Search, FileText, ChevronLeft, ChevronRight, Phone } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const sliderImages = [
   {
@@ -44,10 +45,13 @@ export default function Hero() {
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
           >
-            <img
+            <Image
               src={slide.url}
               alt={slide.title}
-              className="w-full h-full object-cover object-center scale-105"
+              fill
+              priority={index === 0}
+              className="object-cover object-center scale-105"
+              sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/40"></div>
           </div>

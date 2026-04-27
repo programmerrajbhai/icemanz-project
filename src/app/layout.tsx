@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import PrelineScript from "@/components/PrelineScript";
 import { Toaster } from 'react-hot-toast';
+import TopLoader from "@/components/TopLoader";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-primary/20 selection:text-primary`}
       >
-        {children}
-        <Toaster position="bottom-right" />
-        <PrelineScript />
+        <CartProvider>
+          <TopLoader />
+          {children}
+          <Toaster position="bottom-right" />
+          <PrelineScript />
+        </CartProvider>
       </body>
     </html>
   );

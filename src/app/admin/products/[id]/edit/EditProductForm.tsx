@@ -34,9 +34,9 @@ function findCategoryPath(allCategories: CategoryWithSubs[], categoryId: string 
 export default function EditProductForm({ product, allCategories }: { product: ProductWithCategory, allCategories: CategoryWithSubs[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [existingImages, setExistingImages] = useState<string[]>(product.images || []);
-  const [newImages, setNewImages] = useState<{file: File, preview: string}[]>([]);
+  const [newImages, setNewImages] = useState<{ file: File, preview: string }[]>([]);
 
   // Cascading category state
   const initialPath = useMemo(() => findCategoryPath(allCategories, product.categoryId), [allCategories, product.categoryId]);
@@ -173,7 +173,7 @@ export default function EditProductForm({ product, allCategories }: { product: P
               </button>
             </div>
           ))}
-          
+
           <label htmlFor="image" className="block cursor-pointer group h-full">
             <div className="w-full aspect-square rounded-xl border-2 border-dashed border-slate-300 group-hover:border-[#004a99] bg-slate-50 group-hover:bg-[#004a99]/[0.03] transition-all duration-200 flex flex-col items-center justify-center gap-2">
               <div className="size-10 rounded-full bg-[#004a99]/10 group-hover:bg-[#004a99]/20 flex items-center justify-center transition-colors">
@@ -192,81 +192,81 @@ export default function EditProductForm({ product, allCategories }: { product: P
       <div>
         <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Basic Information</h3>
         <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="title" className={labelClasses}>Title *</label>
-                <input type="text" id="title" name="title" required defaultValue={product.title} className={inputClasses} placeholder="e.g. TS060MR404A3-T" />
-              </div>
-              <div>
-                <label htmlFor="slug" className={labelClasses}>Slug</label>
-                <input type="text" id="slug" name="slug" defaultValue={product.slug} className={inputClasses} placeholder="Auto-generated if empty" />
-              </div>
-            </div>
-
-            {/* Category Selector */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className={`${labelClasses} mb-2`}>Category</label>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+              <label htmlFor="title" className={labelClasses}>Title *</label>
+              <input type="text" id="title" name="title" required defaultValue={product.title} className={inputClasses} placeholder="e.g. TS060MR404A3-T" />
+            </div>
+            <div>
+              <label htmlFor="slug" className={labelClasses}>Slug</label>
+              <input type="text" id="slug" name="slug" defaultValue={product.slug} className={inputClasses} placeholder="Auto-generated if empty" />
+            </div>
+          </div>
+
+          {/* Category Selector */}
+          <div>
+            <label className={`${labelClasses} mb-2`}>Category</label>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+              <div className="flex items-start sm:items-center gap-3">
+                <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
+                  <select value={selectedLevel1} onChange={(e) => { setSelectedLevel1(e.target.value); setSelectedLevel2(''); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel1 ? 'border-[#004a99]/40 bg-[#004a99]/[0.03]' : ''}`}>
+                    <option value="">Select category...</option>
+                    {topCategories.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                  </select>
+                </div>
+              </div>
+              {level2Options.length > 0 && (
                 <div className="flex items-start sm:items-center gap-3">
-                  <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
+                  <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
                   <div className="flex-1">
-                    <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
-                    <select value={selectedLevel1} onChange={(e) => { setSelectedLevel1(e.target.value); setSelectedLevel2(''); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel1 ? 'border-[#004a99]/40 bg-[#004a99]/[0.03]' : ''}`}>
-                      <option value="">Select category...</option>
-                      {topCategories.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                    <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
+                    <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
+                      <option value="">Select subcategory...</option>
+                      {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
                     </select>
                   </div>
                 </div>
-                {level2Options.length > 0 && (
-                  <div className="flex items-start sm:items-center gap-3">
-                    <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
-                    <div className="flex-1">
-                      <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
-                      <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
-                        <option value="">Select subcategory...</option>
-                        {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                      </select>
-                    </div>
+              )}
+              {level3Options.length > 0 && (
+                <div className="flex items-start sm:items-center gap-3">
+                  <span className="shrink-0 size-6 rounded-full bg-[#0891b2] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">3</span>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-slate-500 mb-1">Type</p>
+                    <select value={selectedLevel3} onChange={(e) => setSelectedLevel3(e.target.value)} className={`${selectClasses} ${selectedLevel3 ? 'border-[#0891b2]/40 bg-[#0891b2]/[0.03]' : ''}`}>
+                      <option value="">Select type...</option>
+                      {level3Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                    </select>
                   </div>
-                )}
-                {level3Options.length > 0 && (
-                  <div className="flex items-start sm:items-center gap-3">
-                    <span className="shrink-0 size-6 rounded-full bg-[#0891b2] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">3</span>
-                    <div className="flex-1">
-                      <p className="text-xs font-medium text-slate-500 mb-1">Type</p>
-                      <select value={selectedLevel3} onChange={(e) => setSelectedLevel3(e.target.value)} className={`${selectClasses} ${selectedLevel3 ? 'border-[#0891b2]/40 bg-[#0891b2]/[0.03]' : ''}`}>
-                        <option value="">Select type...</option>
-                        {level3Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <input type="hidden" name="categoryId" value={finalCategoryId} />
+                </div>
+              )}
             </div>
+            <input type="hidden" name="categoryId" value={finalCategoryId} />
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="price" className={labelClasses}>Price</label>
-                <input type="text" id="price" name="price" defaultValue={product.price || ''} className={inputClasses} placeholder="e.g. $1,299.00" />
-              </div>
-              <div>
-                <label htmlFor="badge" className={labelClasses}>Badge</label>
-                <input type="text" id="badge" name="badge" defaultValue={product.badge || ''} className={inputClasses} placeholder="e.g. IN STOCK" />
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="price" className={labelClasses}>Price</label>
+              <input type="text" id="price" name="price" defaultValue={product.price || ''} className={inputClasses} placeholder="e.g. $1,299.00" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="condition" className={labelClasses}>Condition</label>
-                <input type="text" id="condition" name="condition" defaultValue={product.condition || ''} className={inputClasses} placeholder="e.g. New" />
-              </div>
-              <div>
-                <label htmlFor="type" className={labelClasses}>Type</label>
-                <input type="text" id="type" name="type" defaultValue={product.type || ''} className={inputClasses} placeholder="e.g. Compressor" />
-              </div>
+            <div>
+              <label htmlFor="badge" className={labelClasses}>Badge</label>
+              <input type="text" id="badge" name="badge" defaultValue={product.badge || ''} className={inputClasses} placeholder="e.g. IN STOCK" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="condition" className={labelClasses}>Condition</label>
+              <input type="text" id="condition" name="condition" defaultValue={product.condition || ''} className={inputClasses} placeholder="e.g. New" />
+            </div>
+            <div>
+              <label htmlFor="type" className={labelClasses}>Type</label>
+              <input type="text" id="type" name="type" defaultValue={product.type || ''} className={inputClasses} placeholder="e.g. Compressor" />
             </div>
           </div>
         </div>
+      </div>
 
       {/* ===== SECTION 2: Product Details ===== */}
       <div>

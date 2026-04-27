@@ -1,27 +1,27 @@
 import prisma from '@/lib/prisma';
 import RefrigerationEquipmentClient from './RefrigerationEquipmentClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Revalidate every hour
 
 export default async function RefrigerationSubcategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  // Find category by slug
-  const category = await prisma.category.findUnique({
-    where: { slug }
-  });
-
-  // Fetch all root categories with their subcategories for the sidebar
-  const dbCategories = await prisma.category.findMany({
-    where: { parentId: null },
-    include: {
-      subcategories: {
-        include: {
-          subcategories: true
+  // Fetch category and all root categories in parallel
+  const [category, dbCategories] = await Promise.all([
+    prisma.category.findUnique({
+      where: { slug }
+    }),
+    prisma.category.findMany({
+      where: { parentId: null },
+      include: {
+        subcategories: {
+          include: {
+            subcategories: true
+          }
         }
       }
-    }
-  });
+    })
+  ]);
 
   let products: any[] = [];
   let title = slug

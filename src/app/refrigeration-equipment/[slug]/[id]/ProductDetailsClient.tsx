@@ -3,6 +3,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useRef } from 'react';
 import {
   PhoneCall,
@@ -107,9 +108,15 @@ export default function ProductDetailsClient({
                   <button
                     key={i}
                     onClick={() => { setActiveImageIndex(i); handleResetZoom(); }}
-                    className={`cursor-pointer md:w-full md:aspect-square bg-white border rounded-sm overflow-hidden transition-all focus:outline-none p-1.5 ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer md:w-full md:aspect-square bg-white border rounded-sm overflow-hidden transition-all focus:outline-none p-1.5 relative ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
                   >
-                    <img src={img} alt={`View ${i + 1}`} className="size-full object-contain" />
+                    <Image
+                      src={img}
+                      alt={`View ${i + 1}`}
+                      fill
+                      className="object-contain p-1"
+                      sizes="(max-width: 1024px) 80px, 100px"
+                    />
                   </button>
                 ))}
 
@@ -142,13 +149,16 @@ export default function ProductDetailsClient({
                 </div>
               )}
 
-              <div className="w-full h-full flex items-center justify-center overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
                 {product.images.length > 0 ? (
-                  <img
+                  <Image
                     src={product.images[activeImageIndex]}
                     alt={product.title}
+                    fill
+                    priority
                     style={{ transform: `scale(${zoomLevel})` }}
-                    className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out"
+                    className="object-contain transition-transform duration-300 ease-out"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 ) : (
                   <div className="text-gray-400 font-semibold text-lg">No Image</div>

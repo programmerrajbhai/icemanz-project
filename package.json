@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@prisma/client": "5",
+    "@stripe/react-stripe-js": "^6.2.0",
+    "@stripe/stripe-js": "^9.3.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
     "cheerio": "^1.2.0",
@@ -18,6 +20,7 @@
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.577.0",
     "next": "16.1.6",
+    "nextjs-toploader": "^3.9.17",
     "nodemailer": "^8.0.5",
     "preline": "^4.1.3",
     "react": "19.2.3",

@@ -1,8 +1,7 @@
-"use client";
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronRight, ShieldCheck, Zap, Clock, Snowflake, ArrowRight, CheckCircle2, Settings } from 'lucide-react';
 
 const productCategories = [
@@ -63,10 +62,12 @@ export default function RefrigerationEquipmentPage() {
               >
                 {/* Image Area */}
                 <div className="w-full relative pt-[90%] rounded-sm bg-gray-50/80 overflow-hidden mb-4 border border-gray-50">
-                  <img
+                  <Image
                     src={product.image}
                     alt={product.name}
-                    className="size-full absolute top-0 start-0 object-contain transition-transform duration-500 ease-in-out p-4 group-hover:scale-110"
+                    fill
+                    className="object-contain transition-transform duration-500 ease-in-out p-4 group-hover:scale-110"
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                   />
                 </div>
 

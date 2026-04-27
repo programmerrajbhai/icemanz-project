@@ -3,9 +3,7 @@ import prisma from '@/lib/prisma';
 import Stripe from 'stripe';
 import nodemailer from 'nodemailer';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-03-25.dahlia' as any,
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

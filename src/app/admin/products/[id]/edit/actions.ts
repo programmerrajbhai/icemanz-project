@@ -7,11 +7,11 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 function slugify(text: string) {
   return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')           
-    .replace(/[^\w\-]+/g, '')       
-    .replace(/\-\-+/g, '-')         
-    .replace(/^-+/, '')             
-    .replace(/-+$/, '');            
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 }
 
 function getSupabase() {
@@ -25,7 +25,7 @@ async function uploadFile(file: File, bucket: string): Promise<string | null> {
   const supabase = getSupabase();
   const fileExt = file.name.split('.').pop();
   const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-  
+
   const { data, error } = await supabase.storage
     .from(bucket)
     .upload(fileName, file, {
@@ -113,7 +113,7 @@ export async function updateProduct(productId: string, formData: FormData) {
   });
 
   const previouslyStoredImages = existingProduct?.images || [];
-  
+
   // Find images that were deleted
   const imagesToDelete = previouslyStoredImages.filter(img => !existingImages.includes(img));
 
@@ -145,7 +145,7 @@ export async function updateProduct(productId: string, formData: FormData) {
   // Upload new PDFs
   const docFiles = formData.getAll('documents') as File[];
   const docNames = formData.getAll('documentNames') as string[];
-  
+
   for (let i = 0; i < docFiles.length; i++) {
     const file = docFiles[i];
     if (file && file.size > 0) {

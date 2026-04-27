@@ -3,6 +3,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ChevronRight,
   ChevronLeft,
@@ -205,10 +206,12 @@ export default function RefrigerationEquipmentClient({
                       {/* Image Area */}
                       <div className=" border-b border-gray-200  w-full  rounded-sm bg-gray-50 overflow-hidden mb-3 relative pt-[100%]">
                         {product.images && product.images[0] ? (
-                          <img
+                          <Image
                             src={product.images[0]}
                             alt={product.title}
-                            className="size-full absolute top-0 left-0 object-contain p-2 transition-transform duration-700 group-hover:scale-105"
+                            fill
+                            className="object-contain p-2 transition-transform duration-700 group-hover:scale-105"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-semibold bg-gray-100">No Image</div>

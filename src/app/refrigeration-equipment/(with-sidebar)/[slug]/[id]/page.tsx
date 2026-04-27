@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import ProductDetailsClient from './ProductDetailsClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Revalidate every hour
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ slug: string, id: string }> }) {
   const { slug, id } = await params;
