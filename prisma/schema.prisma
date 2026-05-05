@@ -42,27 +42,34 @@ model Product {
 }
 
 model InvoiceRequest {
-  id              String   @id @default(uuid())
-  email           String
-  phone           String?
-  status          String   @default("PENDING")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  address         String?
-  customTemp      String?
-  description     String?
-  fullName        String
-  height          String?
-  length          String?
-  products        Json?
-  projectName     String?
-  quantity        String?
-  tempRange       String?
-  width           String?
-  paymentLink     String?
+  id                String   @id @default(uuid())
+  email             String
+  phone             String?
+  status            String   @default("PENDING")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  address           String?
+  customTemp        String?
+  description       String?
+  fullName          String
+  height            String?
+  length            String?
+  products          Json?
+  projectName       String?
+  quantity          String?
+  tempRange         String?
+  width             String?
+  paymentLink       String?
   stripeSessionId String?
-  totalAmount     Float?
-  order           Order?
+  totalAmount       Float?
+  order             Order?
+  additionalWarranty Boolean? @default(false)
+  deliveryTime      String?
+  offerDiscount     Float?
+  tax               Float?
+  deliveryCost      Float?
+  totalWithTax      Float?
+  deliveryNotes     String?
 }
 
 model Order {

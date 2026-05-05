@@ -19,7 +19,7 @@ const demoProjects = [
         location: 'Downtown District',
         date: 'March 2026',
         description: 'Complete installation of a custom 20x30ft walk-in freezer with remote condensing units for a major supermarket chain.',
-        image: '/Walk-inCooler&Freezer/walk-infreezerunits.jpg',
+        image: '/Walk-in-Cooler-Freezer/walk-infreezerunits.jpg',
         tags: ['Walk-in Freezer', 'Custom Build', 'Retail']
     },
     {
@@ -39,7 +39,7 @@ const demoProjects = [
         location: 'Industrial Park',
         date: 'January 2026',
         description: 'Designed and built a large-scale cold storage facility utilizing combo units for efficient space management.',
-        image: '/Walk-inCooler&Freezer/combounits.jpg',
+        image: '/Walk-in-Cooler-Freezer/combounits.jpg',
         tags: ['Cold Storage', 'Industrial', 'Combo System']
     },
     {
@@ -48,7 +48,7 @@ const demoProjects = [
         client: 'Sweet Delights Bakery',
         location: 'Westside Mall',
         date: 'December 2025',
-        description: 'Upgraded aging refrigeration units with modern, energy-efficient condensing units and freezers for a busy bakery.',
+        description: 'Upgraded aging refrigeration units with modern, energy-efficient condensing units and freezers for a bakery.',
         image: '/category/refrigerationEquipment/condensingUnit.jpg',
         tags: ['Upgrade', 'Condensing Unit', 'Energy Efficient']
     },
@@ -59,7 +59,7 @@ const demoProjects = [
         location: 'North Highway',
         date: 'November 2025',
         description: 'Installed a continuous lineup of new coolers for grab-and-go beverages and snacks.',
-        image: '/Walk-inCooler&Freezer/NewCooler.jpg',
+        image: '/Walk-in-Cooler-Freezer/NewCooler.jpg',
         tags: ['Merchandiser', 'Convenience Store', 'Retail']
     },
     {
@@ -69,7 +69,7 @@ const demoProjects = [
         location: 'Eastside Market',
         date: 'October 2025',
         description: 'Custom refrigeration solution for a meat preparation room, ensuring compliance with health and safety temperature regulations.',
-        image: '/Walk-inCooler&Freezer/walkincoolers.jpg',
+        image: '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
         tags: ['Prep Room', 'Custom Cooling', 'Butcher']
     }
 ];
@@ -226,7 +226,7 @@ export default async function CompletedProjectsPage({
                                     <div key={project.id} className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 cursor-pointer">
                                         {/* Image Container */}
                                         <div className="relative h-48 w-full bg-slate-50 overflow-hidden flex items-center justify-center p-6">
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-end p-6">
+                                            <div className="absolute inset-0  from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-end p-6">
                                                 <span className="text-white font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                                     View Details <ExternalLink size={16} />
                                                 </span>

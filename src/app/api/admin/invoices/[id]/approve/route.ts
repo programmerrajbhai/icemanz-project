@@ -22,7 +22,7 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await req.json();
-    const { action, totalAmount, message } = body;
+    const { action, totalAmount, message, deliveryTime, offerDiscount, tax, deliveryCost, totalWithTax, deliveryNotes } = body;
 
     const invoice = await prisma.invoiceRequest.findUnique({
       where: { id },
@@ -38,6 +38,7 @@ export async function POST(
       }
 
       const amount = parseFloat(totalAmount);
+      const finalTotalAmount = totalWithTax ? parseFloat(totalWithTax) : amount;
 
       // Determine the base URL for redirects and images
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
@@ -53,7 +54,7 @@ export async function POST(
                 name: `Invoice for Project: ${invoice.projectName || 'Custom Project'}`,
                 description: `Requested by ${invoice.fullName}`,
               },
-              unit_amount: Math.round(amount * 100), // Stripe expects amounts in cents
+              unit_amount: Math.round(finalTotalAmount * 100),
             },
             quantity: 1,
           },
@@ -75,12 +76,18 @@ export async function POST(
           totalAmount: amount,
           stripeSessionId: session.id,
           paymentLink: session.url,
+          deliveryTime,
+          offerDiscount,
+          tax,
+          deliveryCost,
+          totalWithTax: finalTotalAmount,
+          deliveryNotes,
         },
       });
 
       // Send Email with Payment Link
       const emailHtml = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
           <div style="text-align: center; margin-bottom: 25px;">
             <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
           </div>
@@ -92,14 +99,56 @@ export async function POST(
             <p>Great news! Your invoice request for the project <strong>${invoice.projectName || 'Custom Project'}</strong> has been reviewed and approved.</p>
           </div>
           
-          <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #004a99;">
-            <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 18px;">Invoice Details</h3>
-            <p style="margin: 0 0 10px 0; font-size: 16px;"><strong>Total Amount:</strong> <span style="color: #004a99; font-weight: bold;">$${amount.toFixed(2)}</span></p>
-            ${message ? `<p style="margin: 0; font-size: 15px; color: #475569;"><strong>Admin Note:</strong> ${message}</p>` : ''}
+          <div style="background-color: #f8fafc; padding: 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #004a99;">
+            <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a; font-size: 18px;">Invoice Details</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+              <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Total Amount:</strong></p>
+              <p style="margin: 0; font-size: 14px; text-align: right; font-weight: 600; color: #0f172a;">$${amount.toFixed(2)}</p>
+              
+              ${offerDiscount !== null && offerDiscount !== undefined ? `
+                <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Offer/Discount:</strong></p>
+                <p style="margin: 0; font-size: 14px; text-align: right; font-weight: 600; color: #059669;">-$${parseFloat(offerDiscount).toFixed(2)}</p>
+              ` : ''}
+              
+              ${tax !== null && tax !== undefined ? `
+                <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Tax:</strong></p>
+                <p style="margin: 0; font-size: 14px; text-align: right; font-weight: 600; color: #0f172a;">$${parseFloat(tax).toFixed(2)}</p>
+              ` : ''}
+              
+              ${deliveryCost !== null && deliveryCost !== undefined ? `
+                <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Delivery Cost:</strong></p>
+                <p style="margin: 0; font-size: 14px; text-align: right; font-weight: 600; color: #0f172a;">$${parseFloat(deliveryCost).toFixed(2)}</p>
+              ` : ''}
+              
+              ${deliveryTime ? `
+                <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Delivery Time:</strong></p>
+                <p style="margin: 0; font-size: 14px; text-align: right; font-weight: 500; color: #0f172a;">${deliveryTime}</p>
+              ` : ''}
+            </div>
+            
+            <div style="border-top: 2px solid #e2e8f0; padding-top: 15px; margin-top: 10px;">
+              <p style="margin: 0; font-size: 16px; color: #0f172a;"><strong>Grand Total:</strong></p>
+              <p style="margin: 5px 0 0 0; font-size: 22px; font-weight: bold; color: #004a99;">$${finalTotalAmount.toFixed(2)}</p>
+            </div>
+            
+            ${deliveryNotes ? `
+              <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #475569;">Delivery Notes:</p>
+                <p style="margin: 0; font-size: 14px; color: #334155;">${deliveryNotes}</p>
+              </div>
+            ` : ''}
+            
+            ${message ? `
+              <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #475569;">Admin Note:</p>
+                <p style="margin: 0; font-size: 14px; color: #334155;">${message}</p>
+              </div>
+            ` : ''}
           </div>
 
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${session.url}" style="background-color: #004a99; color: white; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 2px 4px rgba(0,74,153,0.2);">Pay Invoice Now</a>
+            <a href="${session.url}" style="background-color: #004a99; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 2px 4px rgba(0,74,153,0.2);">Pay Invoice Now</a>
           </div>
 
           <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
@@ -120,13 +169,11 @@ export async function POST(
         });
       } catch (emailError) {
         console.error("Failed to send email:", emailError);
-        // Continue even if email fails, so we don't break the approval process
       }
 
       return NextResponse.json(updatedInvoice);
 
     } else if (action === 'DECLINE') {
-      // Determine the base URL for redirects and images
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
       const updatedInvoice = await prisma.invoiceRequest.update({
@@ -134,7 +181,6 @@ export async function POST(
         data: { status: 'DECLINED' },
       });
 
-      // Send Decline Email
       const emailHtml = `
        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
          <div style="text-align: center; margin-bottom: 25px;">

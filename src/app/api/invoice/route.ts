@@ -20,7 +20,8 @@ export async function POST(req: Request) {
         tempRange: formData.tempRange,
         customTemp: formData.customTemp,
         quantity: formData.quantity,
-        products: addedProducts, // JSON Array of added products
+        additionalWarranty: formData.additionalWarranty || false,
+        products: addedProducts,
       },
     });
 

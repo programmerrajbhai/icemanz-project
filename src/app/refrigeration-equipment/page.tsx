@@ -2,17 +2,17 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, ShieldCheck, Zap, Clock, Snowflake, ArrowRight, CheckCircle2, Settings } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const productCategories = [
   { name: 'Condensing units', image: '/category/refrigerationEquipment/condensingUnit.jpg', slug: 'condensing-units' },
-  { name: 'Medium profile (Scroll compressor)', image: '/category/refrigerationEquipment/mediumProfile.jpg', slug: 'medium-profile-scroll-compressor' },
-  { name: 'Evaporation units', image: '/category/refrigerationEquipment/evaporationUnit.jpg', slug: 'evaporation-units' },
+  { name: 'Medium profile', image: '/category/refrigerationEquipment/ADM-2.webp', slug: 'medium-profile-scroll-compressor' },
+  { name: 'Evaporation units', image: '/category/refrigerationEquipment/fan4_side-1.webp', slug: 'evaporation-units' },
   { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/packageUnit.jpg', slug: 'combo-unitspackage-units' },
-  { name: 'Low profile evaporator', image: '/category/refrigerationEquipment/lowProfileEvaporator.jpg', slug: 'low-profile-evaporator' },
-  { name: 'Medium profile', image: '/category/refrigerationEquipment/mediumProfile.jpg', slug: 'medium-profile' },
-  { name: 'Center mount', image: '/category/refrigerationEquipment/centerMount.jpg', slug: 'center-mount' },
-  { name: 'Thin profile evaporator', image: '/category/refrigerationEquipment/thinProfileEvaporator.jpg', slug: 'thin-profile-evaporator' },
+  { name: 'Low profile evaporator', image: '/category/refrigerationEquipment/lowProfileEvaporator.jpg', slug: 'low-profile-evaporator-uk7wb' },
+  { name: 'Medium profile', image: '/category/refrigerationEquipment/ADM-3-1.webp', slug: 'medium-profile-j131rj' },
+  { name: 'Center mount', image: '/category/refrigerationEquipment/centerMount.jpg', slug: 'center-mount-evaporator-low-velocity-y4ukrt' },
+  { name: 'Thin profile evaporator', image: '/category/refrigerationEquipment/thinProfileEvaporator.jpg', slug: 'thin-profile-evaporator-reach-in-ltzs2' },
 ];
 
 const reasons = [
@@ -46,14 +46,15 @@ export default function RefrigerationEquipmentPage() {
       <div className="pt-32 pb-20 md:pt-44 md:pb-24">
         <div className="container px-4">
           {/* Header Bar */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="flex flex-col md:flex-row   md:items-center gap-4 mb-8">
             <h1 className="text-2xl md:text-[28px] font-bold text-[#1f2937] tracking-tight">
               Refrigeration <span className="text-[#004a99]">Equipment</span>
             </h1>
+            <Image src="/turboair_logo_hr.jpg" alt="logo" width={180} height={180} />
           </div>
 
           {/* Main Grid Section */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 md:gap-5 lg:gap-6 mb-24 max-w-7xl">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-5 lg:gap-6 mb-24 max-w-7xl">
             {productCategories.map((product, index) => (
               <Link
                 key={index}
@@ -61,7 +62,7 @@ export default function RefrigerationEquipmentPage() {
                 className="group flex flex-col bg-white border border-gray-100 rounded-sm hover:shadow-lg hover:shadow-gray-200/40 transition-all duration-300 overflow-hidden text-center items-center p-3 sm:p-4"
               >
                 {/* Image Area */}
-                <div className="w-full relative pt-[90%] rounded-sm bg-gray-50/80 overflow-hidden mb-4 border border-gray-50">
+                <div className="w-full relative pt-[90%] rounded-sm overflow-hidden mb-4 border-2 border-gray-50">
                   <Image
                     src={product.image}
                     alt={product.name}

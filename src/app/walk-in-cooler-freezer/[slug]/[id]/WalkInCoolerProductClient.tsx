@@ -8,16 +8,24 @@ import { useState } from 'react';
 import {
   PhoneCall,
   FileText,
-  Truck,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
   ZoomIn,
   Minus,
   Plus,
-  ShoppingCart,
-  ArrowRight
+  Facebook,
+  Twitter,
+  Mail,
+  Info,
+  Truck,
+  ArrowRight,
+  Share2,
+  Star,
+  ShieldCheck,
+  CreditCard
 } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 type ProductOption = {
   label: string;
@@ -32,6 +40,7 @@ type Product = {
   price: string;
   images: string[];
   badge?: string;
+  brand?: string;
   description?: string;
   keyFeatures?: string;
   condition?: string;
@@ -65,17 +74,62 @@ export default function WalkInCoolerProductClient({
   product: Product;
   relatedProducts: RelatedProduct[];
 }) {
+  const { addToCart } = useCart();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showZoom, setShowZoom] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    refrigeration: false,
+    payment: true,
+    additional: true,
+    faqs: true,
+    warranty: false
+  });
 
   const handleOptionChange = (optionName: string, value: string) => {
     setSelectedOptions(prev => ({ ...prev, [optionName]: value }));
   };
 
-  const basePrice = parseFloat(product.price.replace(/[^0-9.]/g, '')) || 0;
+  const toggleSection = (key: string) => {
+    setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const panelFeatures = product.features?.panels ?? [
+    '4" thick bonded panels with foamed-in-place insulation',
+    'Tongue-and-groove panel locking assembly',
+    'NSF approved embossed stucco finish',
+    'Made in USA'
+  ];
+
+  const doorFeatures = product.features?.doors ?? [
+    'Heavy-duty flush-mounted door with spring-loaded hinges',
+    'Self-closing cam-lift hinges and positive latch',
+    'Magnetic gasket for superior seal'
+  ];
+
+  const topMountFeatures = product.features?.topMount ?? [
+    'Factory installed indoor condensing unit',
+    'Digital temperature control with automatic defrost',
+    'R-448A refrigerant and pre-charged lines'
+  ];
+
+  const remoteFeatures = product.features?.remote ?? [
+    'Outdoor ready remote condensing option',
+    'Long line-set flexibility for difficult installs',
+    'Optional low ambient controls available'
+  ];
+
+  const faqItems = product.faqs?.length
+    ? product.faqs
+    : [
+      { question: 'What is a walk-in cooler or freezer?', answer: 'A walk-in cooler or freezer is an enclosed, refrigerated storage space used primarily in commercial settings to store perishable goods at safe temperatures.' },
+      { question: 'What sizes are available for walk-in coolers?', answer: 'Walk-in coolers are available in a variety of standard sizes starting from 5\'x5\', and can also be custom-built to fit specific layout requirements.' },
+      { question: 'What are the benefits of a walk-in cooler?', answer: 'Benefits include large storage capacity, customizable shelving, reliable temperature control, and the ability to buy and store inventory in bulk.' },
+      { question: 'How do I maintain a walk-in cooler?', answer: 'Regular maintenance involves cleaning the condenser coils, checking door seals, monitoring temperature settings, and scheduling annual professional inspections.' },
+      { question: 'Are walk-in coolers energy-efficient?', answer: 'Yes, modern walk-in coolers are designed with high-density insulation and energy-efficient refrigeration systems to minimize power consumption.' }
+    ];
 
   return (
     <main className="min-h-screen bg-white">
@@ -84,380 +138,546 @@ export default function WalkInCoolerProductClient({
       <div className="pt-32 pb-20 md:pt-40 md:pb-24 bg-white">
         <div className="container px-4 mx-auto">
           {/* Breadcrumb */}
-          <nav className="text-sm text-gray-500 mb-6">
+          <nav className="text-xs text-gray-500 mb-6">
             <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-in Coolers</Link>
             <span className="mx-2">/</span>
             <span className="text-gray-800">{product.title}</span>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Left: Image Gallery */}
-            <div className="space-y-4">
-              {/* Main Image */}
-              <div
-                className="relative aspect-square bg-gray-50 border border-gray-200 rounded-sm overflow-hidden cursor-zoom-in"
-                onClick={() => setShowZoom(true)}
-              >
-                {product.images[activeImageIndex] ? (
-                  <Image
-                    src={product.images[activeImageIndex]}
-                    alt={product.title}
-                    fill
-                    className="object-contain p-4"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    priority
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">No Image</div>
-                )}
-                <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-sm border border-gray-200">
-                  <ZoomIn size={16} className="text-gray-600" />
-                  <span className="text-xs font-medium text-gray-600">Click to zoom</span>
-                </div>
-              </div>
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
 
-              {/* Thumbnails */}
-              {product.images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-2">
-                  {product.images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImageIndex(idx)}
-                      className={`relative w-20 h-20 shrink-0 border-2 rounded-sm overflow-hidden transition-all ${
-                        idx === activeImageIndex ? 'border-primary' : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <Image
-                        src={img}
-                        alt={`${product.title} ${idx + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="80px"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
+            {/* Product Info */}
+            <div className="w-full lg:w-[100%] border border-gray-200 p-4 flex flex-col gap-4">
 
-              {/* Lead Time & Stock Info */}
-              <div className="flex items-center gap-3 text-sm">
-                <Truck size={18} className="text-[#004a99]" />
-                <span className="text-gray-600">Usually Ships in 2 - 5 Days</span>
-              </div>
-            </div>
+              <div>
+                {/* description */}
+                <section className="border border-gray-200 bg-white p-8 mt-4">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Description</h2>
 
-            {/* Right: Product Info */}
-            <div className="flex flex-col">
-              {/* Badge */}
-              {product.badge && (
-                <span className="inline-block bg-[#cc0000] text-white px-3 py-1 text-xs font-bold uppercase tracking-widest w-fit mb-3">
-                  {product.badge}
-                </span>
-              )}
+                  <div className="space-y-6">
+                    <p className="text-[15px] text-gray-800 leading-relaxed">
+                      <span className="font-bold">Astra® Quick-Ship Walk-In Coolers & Freezers</span> deliver quality and speed with modular cam-lock panels, sizes 5'-40', and top-mount or remote options. Ships in 48 hours, NSF, UL, DOE compliant, with 10-year panel warranty. Ready when you are!
+                    </p>
 
-              {/* Title */}
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-3">
-                {product.title}
-              </h1>
-
-              {/* Price */}
-              <div className="mb-6">
-                <p className="text-2xl font-bold text-[#004a99]">${product.price}</p>
-              </div>
-
-              {/* Key Features */}
-              {product.keyFeatures && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-sm border border-gray-200">
-                  <div className="flex items-start gap-2 mb-3">
-                    <CheckCircle2 size={20} className="text-[#00C853] shrink-0 mt-0.5" />
-                    <span className="text-sm font-semibold text-gray-800">Quick-Ship Program</span>
+                    <ul className="space-y-4">
+                      {[
+                        'Ships within 48 hours',
+                        'Several Variations Available',
+                        'Top-Mount or Remote Refrigeration',
+                        'Modular design with all cam-lock panels',
+                        '10 year panel warranty, 1 year parts warranty on doors',
+                        '2 year parts and 1 labor warranty on top-mount refrigeration',
+                        'NSF, UL, DOE, ASTM Test 518, and ASTM Test E84 Compliant',
+                        'UL723 Flame Spread and Smoke Development Compliant'
+                      ].map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-700">
+                          <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-[#00C853]" />
-                      Ships within 48 hours
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-[#00C853]" />
-                      NSF, UL, DOE compliant
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-[#00C853]" />
-                      10-year panel warranty
-                    </li>
-                  </ul>
-                </div>
-              )}
+                </section>
 
-              {/* Product Options */}
-              {product.productOptions && product.productOptions.length > 0 && (
-                <div className="space-y-4 mb-6">
-                  {product.productOptions.map((option) => (
-                    <div key={option.name}>
-                      <label className="block text-sm font-semibold text-gray-800 mb-2">
-                        {option.label} <span className="text-red-500">*</span>
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {option.options.map((opt) => (
-                          <button
-                            key={opt.label}
-                            onClick={() => handleOptionChange(option.name, opt.label)}
-                            className={`px-4 py-2 text-sm border rounded-sm transition-all ${
-                              selectedOptions[option.name] === opt.label
-                                ? 'border-primary bg-primary text-white'
-                                : 'border-gray-300 hover:border-primary'
-                            }`}
-                          >
-                            {opt.label}
-                            {opt.price && <span className="ml-2 text-xs opacity-80">{opt.price}</span>}
-                          </button>
+                {/* Standard Features */}
+                <section className="border border-gray-200 bg-white p-8 mt-4">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-8">Standard Features</h2>
+
+                  <div className="space-y-10 pb-5">
+                    {/* Panels */}
+                    <div className="flex flex-col md:flex-row gap-8 items-start">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6">Panels</h3>
+                        <ul className="space-y-4">
+                          {[
+                            '4" Thick Foamed-In-Place Polyurethane Insulation',
+                            'Cam-Lock Panels, Tongue & Groove Design',
+                            '24 Gauge Pre-Painted White Galvanized Steel',
+                            'R27 for Coolers and R33 for Freezers',
+                            'CFC and HFC Free Materials',
+                            '10 Year Panel Warranty'
+                          ].map((feature, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-800">
+                              <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="w-full md:w-[280px] shrink-0 border border-gray-200 rounded-sm overflow-hidden bg-white p-4">
+                        <div className="relative w-full aspect-square">
+                          <Image src="/Walk-in-Cooler-Freezer/combounits.jpg" alt="Panels" fill className="object-contain" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full h-px bg-gray-100"></div>
+
+                    {/* Doors */}
+                    <div className="flex flex-col md:flex-row gap-8 items-start">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6">Doors</h3>
+                        <ul className="space-y-4">
+                          {[
+                            '30" or 36" wide doors (left or right hinged)',
+                            'Self-Closing, Flush-Mounted Doors',
+                            'Keyed Locking Door Handle',
+                            '120V/1P/1A Heating Wire and Pressure Relief Vent on Freezers',
+                            'Heavy-Duty Hinges and Durable Handles'
+                          ].map((feature, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-800">
+                              <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="w-full md:w-[280px] shrink-0   overflow-hidden  p-4">
+                        <div className="relative w-full ">
+                          <Image src="/Walk-in-Cooler-Freezer/combounits.jpg" alt="Doors" fill className="object-contain" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full h-px bg-gray-100"></div>
+
+                    {/* Features Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-2">
+                      {[
+                        { name: 'Keyed Locking Door Handle', image: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                        { name: 'Heavy-Duty Door Hinge', image: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                        { name: 'Self-Closing Door Mechanism', image: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                        { name: 'Vapor Proof Light', image: '/Walk-in-Cooler-Freezer/combounits.jpg' }
+                      ].map((feat, idx) => (
+                        <div key={idx} className="flex flex-col items-center">
+                          <div className="w-full aspect-square  mb-4 relative overflow-hidden bg-[#e0dfd5] flex items-center justify-center">
+                            <Image src={feat.image} alt={feat.name} fill className="object-contain" />
+                          </div>
+                          <span className=" text-xs font-semibold text-gray-900 text-center  leading-tight max-w-[160px]">{feat.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+
+
+
+
+
+                {/* Refrigeration Options */}
+                <section className="border border-gray-200 bg-white mt-4">
+                  <button
+                    onClick={() => toggleSection('refrigeration')}
+                    className="w-full flex items-center justify-between cursor-pointer p-6 hover:bg-gray-50 transition-colors"
+                  >
+                    <h2 className="text-xl font-bold text-gray-900">Refrigeration Options</h2>
+                    {expandedSections.refrigeration ? <ChevronUp size={24} className="text-gray-500" /> : <Plus size={24} className="text-gray-500" />}
+                  </button>
+
+                  {expandedSections.refrigeration && (
+                    <div className="p-6 md:p-8 border-t border-gray-200">
+                      <div className="grid md:grid-cols-2 gap-8">
+                        {/* Top Mount */}
+                        <div className="p-6 rounded-sm bg-white border border-gray-200">
+                          <div className="relative w-full h-48 mb-6 rounded-sm overflow-hidden">
+                            <Image src="/category/refrigerationEquipment/packageUnit.jpg" alt="Top Mount Refrigeration" fill className="object-contain p-4" />
+                          </div>
+                          <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Top Mount Refrigeration</h3>
+                          <ul className="space-y-3">
+                            {topMountFeatures.map((feature, idx) => (
+                              <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
+                                <CheckCircle2 size={16} className="text-[#00C853] shrink-0 mt-0.5" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* Remote */}
+                        <div className="p-6 rounded-sm bg-white border border-gray-200">
+                          <div className="relative w-full h-48 mb-6   rounded-sm overflow-hidden">
+                            <Image src="/category/refrigerationEquipment/condensingUnit.jpg" alt="Remote Refrigeration" fill className="object-contain p-4" />
+                          </div>
+                          <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Remote Refrigeration</h3>
+                          <ul className="space-y-3">
+                            {remoteFeatures.map((feature, idx) => (
+                              <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
+                                <CheckCircle2 size={16} className="text-[#00C853] shrink-0 mt-0.5" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </section>
+
+                {/* Additional Options */}
+                <section className="border border-gray-200 bg-white mt-4">
+                  <button
+                    onClick={() => toggleSection('additional')}
+                    className="w-full flex items-center justify-between cursor-pointer p-6 hover:bg-gray-50 transition-colors"
+                  >
+                    <h2 className="text-xl font-bold text-gray-900">Additional Options</h2>
+                    {expandedSections.additional ? <Minus size={24} className="text-gray-900" /> : <Plus size={24} className="text-gray-900" />}
+                  </button>
+
+                  {expandedSections.additional && (
+                    <div className="p-6 md:p-8 pt-0">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {[
+                          { name: 'LED Light', image: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                          { name: 'Exterior Ramp', image: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                          { name: 'Aluminum Diamond Plate', image: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                          { name: 'Kick Plate', image: '/Walk-in-Cooler-Freezer/combounits.jpg' }
+                        ].map((opt, idx) => (
+                          <div key={idx} className="flex flex-col items-center">
+                            <div className="w-full aspect-square border border-gray-200 rounded-sm mb-4 relative overflow-hidden bg-white  flex items-center justify-center p-4">
+                              <Image src={opt.image} alt={opt.name} fill className="object-contain p-4" />
+                            </div>
+                            <span className="text-sm font-semibold text-gray-900 text-center leading-snug max-w-[140px]">{opt.name}</span>
+                          </div>
                         ))}
                       </div>
                     </div>
+                  )}
+                </section>
+                {/* FAQ Section */}
+                <section className="border border-gray-200 bg-white mt-4">
+                  <button
+                    onClick={() => toggleSection('faqs')}
+                    className="w-full flex items-center justify-between cursor-pointer p-6 hover:bg-gray-50 transition-colors"
+                  >
+                    <h2 className="text-xl font-bold text-gray-900">FAQ's</h2>
+                    {expandedSections.faqs ? <Minus size={24} className="text-gray-900" /> : <Plus size={24} className="text-gray-900" />}
+                  </button>
+
+                  {expandedSections.faqs && (
+                    <div className="p-6 md:p-8 pt-0">
+                      <h3 className="text-lg font-bold text-gray-900 text-center mb-6">
+                        Astra Walk-In Coolers and Freezers
+                      </h3>
+                      <div className="border border-gray-200 rounded-md overflow-hidden">
+                        {faqItems.map((faq, index) => (
+                          <div
+                            key={index}
+                            className={`border-b border-gray-200 last:border-b-0 ${expandedFaq === index ? 'bg-gray-100' : 'bg-gray-50'
+                              }`}
+                          >
+                            <button
+                              onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                              className="w-full text-left p-4 hover:bg-gray-100 transition-colors"
+                            >
+                              <span className="font-bold text-[15px] text-gray-900">
+                                {faq.question}
+                              </span>
+                            </button>
+                            {expandedFaq === index && (
+                              <div className="p-4 pt-0 text-sm text-gray-700 bg-gray-100">
+                                {faq.answer}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </section>
+
+                {/* Warranty Section */}
+                <section className="border border-gray-200 bg-white mt-4">
+                  <button
+                    onClick={() => toggleSection('warranty')}
+                    className="w-full flex items-center justify-between cursor-pointer p-6 hover:bg-gray-50 transition-colors"
+                  >
+                    <h2 className="text-xl font-bold text-gray-900">Warranty</h2>
+                    {expandedSections.warranty ? <Minus size={24} className="text-gray-900" /> : <Plus size={24} className="text-gray-900" />}
+                  </button>
+
+                  {expandedSections.warranty && (
+                    <div className="p-6 md:p-8 pt-0">
+                      <ul className="space-y-4">
+                        {[
+                          { bold: '10-Year', text: 'Panel Warranty' },
+                          { bold: '2-Year', text: 'Top Mount Refrigeration Parts' },
+                          { bold: '1-Year', text: 'Top Mount Refrigeration Labor' },
+                          { bold: '1-Year', text: 'Remote Refrigeration Parts' },
+                          { bold: '1-Year', text: 'Door Warranty' }
+                        ].map((item, idx) => (
+                          <li key={idx} className="flex items-center gap-3 text-[15px] text-gray-800">
+                            <span className="size-1.5 rounded-full bg-gray-400 shrink-0"></span>
+                            <span>
+                              <span className="font-bold">{item.bold}</span> {item.text}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </section>
+              </div>
+
+            </div>
+
+            {/* Right: Product Info */}
+            <div className="w-full lg:w-[38%] border border-gray-200 p-4 flex flex-col gap-4">
+              {/* Title */}
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight mb-2">
+                {product.title}
+              </h1>
+
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((item) => (
+                    <Star key={item} size={12} className="fill-[#f59e0b] text-[#f59e0b]" />
                   ))}
                 </div>
-              )}
+                <span className="text-[11px] text-gray-500">5 Reviews</span>
+              </div>
 
-              {/* Quantity */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-gray-800 mb-2">Quantity</label>
-                <div className="flex items-center gap-3">
+              {/* Brand, SKU & Social Share */}
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider">
+                  <span className="text-[#004a99]">ASTRA</span>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-gray-500">SKU: {product.id.substring(0, 8).toUpperCase()}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                    <Facebook size={14} />
+                  </button>
+                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                    <Share2 size={14} />
+                  </button>
+                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                    <Twitter size={14} />
+                  </button>
+                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                    <Mail size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Service Badges */}
+              <div className="space-y-2 mb-5">
+                <div className="flex items-center gap-3 bg-[#e8f4fd] border border-[#b8daff] px-3 py-2 rounded-sm">
+                  <Truck size={18} className="text-[#004a99]" />
+                  <p className="text-xs font-bold text-[#004a99]">
+                    🚚 Lead Time - Usually Ships in 2 - 5 Days
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 bg-[#e8f4fd] border border-[#b8daff] px-3 py-2 rounded-sm">
+                  <CheckCircle2 size={18} className="text-[#00C853]" />
+                  <p className="text-xs font-bold text-[#004a99]">
+                    ✅ Price Match - Call Us For Best Price!
+                  </p>
+                </div>
+              </div>
+
+              {/* Price Section */}
+              <div className="flex items-start gap-4 mb-5">
+                <span className="text-xs font-bold text-gray-800 mt-1 uppercase">Price:</span>
+                <div className="flex flex-col">
+                  <p className="text-2xl font-bold text-[#004a99] leading-none mb-1">${product.price}</p>
+                  <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                    From <span className="font-bold text-gray-900">$290.63/mo</span> with
+                    <span className="px-1.5 py-0.5 bg-[#5c2d91] text-white rounded-[4px] font-black italic text-[10px]">shop Pay</span>
+                    <button className="text-gray-400 underline hover:text-gray-600">View sample plans</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quantity Selector */}
+              <div className="flex items-center gap-4 mb-6">
+                <span className="text-xs font-bold text-gray-800 uppercase">Quantity:</span>
+                <div className="flex items-center border border-gray-300 rounded-sm">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-sm hover:bg-gray-50 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
                   >
                     <Minus size={16} />
                   </button>
-                  <span className="text-lg font-semibold w-12 text-center">{quantity}</span>
+                  <div className="w-10 h-9 flex items-center justify-center border-x border-gray-300 text-sm font-bold">
+                    {quantity}
+                  </div>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-sm hover:bg-gray-50 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
                   >
                     <Plus size={16} />
                   </button>
                 </div>
               </div>
 
+              {/* Customization Alert */}
+              <div className="bg-[#f0f9ff] border border-[#bae6fd] p-3 rounded-sm mb-6">
+                <p className="text-xs font-medium text-[#0369a1] leading-relaxed">
+                  Don't see the Layout or Option you need? <Link href="/contact" className="font-bold underline">Contact Us to customize your QuickShip Walk-In.</Link>
+                </p>
+              </div>
+
+              {/* Product Options */}
+              <div className="space-y-5 mb-6">
+                {/* Layout Option */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <label className="text-sm font-bold text-gray-900">Layout</label>
+                    <Info size={14} className="text-gray-400" />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: '1A', img: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                      { id: '1B', img: '/Walk-in-Cooler-Freezer/combounits.jpg' },
+                      { id: '2A', img: '/Walk-in-Cooler-Freezer/combounits.jpg' }
+                    ].map((layout) => (
+                      <button
+                        key={layout.id}
+                        className={`group relative border-2 rounded-sm p-1 transition-all ${selectedOptions['layout'] === layout.id ? 'border-gray-900' : 'border-gray-200 hover:border-gray-300'}`}
+                        onClick={() => handleOptionChange('layout', layout.id)}
+                      >
+                        <div className="aspect-4/3 bg-gray-50 relative overflow-hidden mb-1">
+                          <Image src={layout.img} alt={layout.id} fill className="object-contain p-1" />
+                        </div>
+                        <span className="text-[10px] font-bold text-gray-500 group-hover:text-gray-900">{layout.id}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dropdown Options */}
+                {[
+                  { label: 'LED Lights', name: 'led_lights' },
+                  { label: 'Kick Plate', name: 'kick_plate' },
+                  { label: 'External Ramp', name: 'external_ramp' }
+                ].map((option) => (
+                  <div key={option.name}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <label className="text-sm font-bold text-gray-900">{option.label}</label>
+                      <Info size={14} className="text-gray-400" />
+                    </div>
+                    <div className="relative">
+                      <select
+                        className="w-full appearance-none bg-white border border-gray-200 rounded-sm px-4 py-3 text-sm text-gray-500 focus:outline-none focus:border-gray-900"
+                        onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                      >
+                        <option value="">Choose {option.label}</option>
+                        <option value="standard">Standard</option>
+                        <option value="premium">Premium</option>
+                      </select>
+                      <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total Price Bar */}
+              <div className="border border-gray-900 p-3 mb-4">
+                <p className="text-xs font-bold text-gray-900 uppercase">
+                  Total price is <span className="text-[#cc0000] ml-2">${product.price}</span>
+                </p>
+              </div>
+
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <button className="flex-1 py-4 px-6 bg-[#004a99] text-white font-bold rounded-sm hover:bg-blue-800 transition-colors flex items-center justify-center gap-2">
-                  <ShoppingCart size={20} />
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                <button
+                  onClick={() => addToCart({
+                    id: product.id,
+                    name: product.title,
+                    brand: product.brand || 'ICEMANZ',
+                    price: product.price,
+                    image: product.images[0] || '/placeholder.png',
+                    quantity: quantity
+                  })}
+                  className="bg-[#cc3300] cursor-pointer text-white py-3 px-4 font-bold rounded-sm hover:bg-[#b32d00] transition-colors uppercase tracking-wider text-xs"
+                >
                   Add to Cart
                 </button>
-                <Link
-                  href={`/request-invoice?productId=${product.id}`}
-                  className="flex-1 py-4 px-6 bg-white border border-gray-300 text-gray-800 font-bold rounded-sm hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
-                >
-                  <FileText size={20} />
-                  Request Quote
-                </Link>
+                <button className="bg-[#5c2d91] cursor-pointer text-white py-3 px-4 font-bold rounded-sm hover:bg-[#4d2579] transition-colors flex items-center justify-center gap-1 text-xs">
+                  Buy with <span className="font-black italic">shop Pay</span>
+                </button>
               </div>
+              <button className="text-[11px] font-bold text-[#004a99] hover:underline mb-5 text-center block w-full">
+                More payment options
+              </button>
 
-              {/* Call Specialist */}
-              <a
-                href="tel:929-451-7665"
-                className="flex items-center justify-center gap-2 py-3 text-sm font-semibold text-[#004a99] hover:text-blue-800 transition-colors mb-6"
-              >
-                <PhoneCall size={18} />
-                Call a Specialist: 929-451-7665
-              </a>
+              {/* Pickup & Support */}
+              <div className="space-y-4">
+                {/* Pickup Info */}
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 size={18} className="text-[#00C853] shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <p className="text-xs font-bold text-gray-900">Pickup available at 899 NEWARK TPKE</p>
+                    <p className="text-[11px] text-gray-500 mb-1">Usually ready in 2-4 days</p>
+                    <button className="text-xs text-[#004a99] font-bold hover:underline w-fit">View store information</button>
+                  </div>
+                </div>
 
-              {/* Payment Methods */}
-              <div className="flex items-center justify-center gap-4 py-4 border-t border-b border-gray-200">
-                <span className="text-xs text-gray-500 uppercase tracking-wider">Payment Methods:</span>
-                <div className="flex items-center gap-3 text-gray-400">
-                  <span className="text-sm font-medium">Visa</span>
-                  <span className="text-sm font-medium">Mastercard</span>
-                  <span className="text-sm font-medium">PayPal</span>
-                  <span className="text-sm font-medium">Apple Pay</span>
+                {/* Expert Support Card */}
+                <div className="bg-white border border-gray-100 rounded-xl p-3 shadow-sm flex items-center justify-between group cursor-pointer hover:border-gray-200 transition-all">
+                  <div className="flex items-center gap-4">
+                    <div className="size-10 rounded-full bg-[#004a99]/10 flex items-center justify-center text-[#004a99]">
+                      <div className="relative">
+                        <PhoneCall size={18} />
+                        <div className="absolute -top-1 -right-1 size-3 bg-[#00C853] border-2 border-white rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <div className="size-1.5 rounded-full bg-[#00C853]"></div>
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Team Online</span>
+                      </div>
+                      <p className="text-xs font-bold text-gray-900">Speak with a Walk-In Expert</p>
+                      <p className="text-[11px] text-gray-500">We'll contact you as soon as possible.</p>
+                    </div>
+                  </div>
+                  <div className="size-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[#004a99] group-hover:text-white transition-all">
+                    <ArrowRight size={16} />
+                  </div>
+                </div>
+
+                {/* Attachments */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-bold text-gray-900 mb-2">Product Attachments</h3>
+                  {[
+                    { name: 'CNF5X6 - Spec Sheet', size: '1.44 MB' },
+                    { name: 'California 65 Statement', size: '53.2 KB' }
+                  ].map((doc, idx) => (
+                    <div key={idx} className="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl group cursor-pointer hover:border-gray-200 transition-all">
+                      <div className="size-9 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-gray-100 transition-colors">
+                        <FileText size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-gray-900 truncate">{doc.name}</p>
+                        <p className="text-[11px] text-gray-400">({doc.size})</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-center gap-4 pt-1">
+                  <ShieldCheck size={16} className="text-[#1f2937]" />
+                  <CreditCard size={16} className="text-[#1f2937]" />
+                  <span className="text-[10px] text-gray-500 uppercase tracking-wide">Secure Checkout</span>
                 </div>
               </div>
             </div>
+
           </div>
 
-          {/* Product Features Sections */}
-          {product.features && (
-            <div className="mt-16 grid md:grid-cols-2 gap-8">
-              {product.features.panels && (
-                <div className="bg-gray-50 rounded-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Panels</h3>
-                  <ul className="space-y-2">
-                    {product.features.panels.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <CheckCircle2 size={16} className="text-[#004a99] shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
 
-              {product.features.doors && (
-                <div className="bg-gray-50 rounded-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Doors</h3>
-                  <ul className="space-y-2">
-                    {product.features.doors.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <CheckCircle2 size={16} className="text-[#004a99] shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
 
-              {product.features.topMount && (
-                <div className="bg-gray-50 rounded-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Top Mount Refrigeration</h3>
-                  <ul className="space-y-2">
-                    {product.features.topMount.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <CheckCircle2 size={16} className="text-[#004a99] shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
 
-              {product.features.remote && (
-                <div className="bg-gray-50 rounded-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Remote Refrigeration</h3>
-                  <ul className="space-y-2">
-                    {product.features.remote.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <CheckCircle2 size={16} className="text-[#004a99] shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Detailed Features */}
-          {product.detailedFeatures && product.detailedFeatures.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Features</h2>
-              <div className="grid md:grid-cols-2 gap-x-16 gap-y-4">
-                {product.detailedFeatures.map((feature, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="text-[#004a99] shrink-0 mt-1" size={20} />
-                    <span className="text-gray-600">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Specifications */}
-          {product.specs && product.specs.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Specifications</h2>
-              <table className="w-full text-left text-sm border border-gray-200 rounded-sm overflow-hidden">
-                <tbody>
-                  {product.specs.map((spec, i) => (
-                    <tr key={i} className={`border-b border-gray-200 ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                      <th className="py-3 px-4 font-semibold text-gray-800 w-1/3">{spec.label}</th>
-                      <td className="py-3 px-4 text-gray-600">{spec.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {/* Documents */}
-          {product.documents && product.documents.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Documents</h2>
-              <div className="flex flex-wrap gap-4">
-                {product.documents.map((doc, i) => (
-                  <a
-                    key={i}
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:border-gray-300 transition-all"
-                  >
-                    <FileText size={18} className="text-[#004a99]" />
-                    {doc.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* FAQ Section */}
-          {product.faqs && product.faqs.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
-              <div className="space-y-3">
-                {product.faqs.map((faq, i) => (
-                  <div key={i} className="border border-gray-200 rounded-sm overflow-hidden">
-                    <button
-                      onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
-                      className="w-full flex items-center justify-between p-4 text-left bg-white hover:bg-gray-50 transition-colors"
-                    >
-                      <span className="font-semibold text-gray-800">{faq.question}</span>
-                      {expandedFaq === i ? (
-                        <ChevronUp size={20} className="text-gray-500 shrink-0" />
-                      ) : (
-                        <ChevronDown size={20} className="text-gray-500 shrink-0" />
-                      )}
-                    </button>
-                    {expandedFaq === i && (
-                      <div className="p-4 bg-gray-50 border-t border-gray-200">
-                        <p className="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Related Products */}
-          {relatedProducts.length > 0 && (
-            <div className="mt-20">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {relatedProducts.map((rp) => (
-                  <Link
-                    key={rp.id}
-                    href={`/walk-in-cooler-freezer/all/${rp.id}`}
-                    className="group bg-white border border-gray-200 rounded-sm p-3 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="relative aspect-square bg-gray-50 rounded-sm overflow-hidden mb-3">
-                      {rp.images[0] ? (
-                        <Image
-                          src={rp.images[0]}
-                          alt={rp.title}
-                          fill
-                          className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-gray-400 text-xs">No Image</div>
-                      )}
-                    </div>
-                    <h3 className="text-sm font-semibold text-gray-800 group-hover:text-primary transition-colors line-clamp-2 mb-2">
-                      {rp.title}
-                    </h3>
-                    {rp.price && (
-                      <p className="text-sm font-bold text-[#004a99]">${rp.price}</p>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
+
+
+
+
+
       </div>
 
       <Footer />
-
       {/* Zoom Modal */}
       {showZoom && (
         <div

@@ -14,7 +14,9 @@ import {
   Bell,
   Search,
   User,
-  MessageSquare
+  MessageSquare,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
 
 const navigation = [
@@ -23,13 +25,22 @@ const navigation = [
   { name: 'Invoice Requests', href: '/admin/invoices', icon: FileText },
   { name: 'Quote Requests', href: '/admin/quotes', icon: FileText },
   { name: 'General Enquiry', href: '/admin/enquiries', icon: MessageSquare },
-  { name: 'Products', href: '/admin/products', icon: Package },
+  { 
+    name: 'Products', 
+    href: '/admin/products', 
+    icon: Package,
+    subItems: [
+      { name: 'Refrigeration Equipment', href: '/admin/products/refrigeration-equipment' },
+      { name: 'Walk-in Cooler & Freezer', href: '/admin/products/walk-in-cooler-freezer' }
+    ]
+  },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [productsDropdownOpen, setProductsDropdownOpen] = useState(true);
 
   // Do not render the admin wrapper on the login page
   if (pathname === '/admin/login') {
@@ -63,6 +74,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Menu</p>
           {navigation.map((item) => {
             const isActive = pathname === item.href;
+            const hasSubItems = 'subItems' in item && item.subItems;
+
+            if (hasSubItems) {
+              return (
+                <div key={item.name}>
+                  <button
+                    onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+                    className={`flex items-center justify-between w-full gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                      ? 'bg-blue-600 text-white font-medium shadow-lg shadow-blue-900/20'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-400'} />
+                      {item.name}
+                    </div>
+                    {productsDropdownOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                  </button>
+
+                  {productsDropdownOpen && (
+                    <div className="mt-1 ml-4 space-y-1 border-l border-slate-700 pl-4">
+                      {item.subItems?.map((subItem) => {
+                        const isSubActive = pathname === subItem.href ||
+                          (subItem.href.includes('?') && pathname === subItem.href.split('?')[0]);
+
+                        return (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className={`block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${isSubActive
+                              ? 'text-blue-400 bg-slate-800/50 font-medium'
+                              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/30'
+                              }`}
+                          >
+                            {subItem.name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={item.name}

@@ -5,7 +5,9 @@ import { ArrowLeft } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-export default async function NewProductPage() {
+export default async function NewProductPage({ searchParams }: { searchParams: { category?: string } }) {
+  const categorySlug = searchParams.category;
+
   // Fetch ALL categories with their hierarchy
   const allCategories = await prisma.category.findMany({
     include: {
@@ -19,6 +21,14 @@ export default async function NewProductPage() {
       name: 'asc'
     }
   });
+
+  // Find pre-selected category if slug is provided
+  const preselectedCategory = categorySlug 
+    ? await prisma.category.findFirst({ 
+        where: { slug: categorySlug },
+        include: { parent: true }
+      })
+    : null;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">

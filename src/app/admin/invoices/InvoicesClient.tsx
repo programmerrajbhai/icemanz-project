@@ -39,6 +39,13 @@ type Invoice = {
   products: any;
   status: string;
   createdAt: Date;
+  additionalWarranty: boolean | null;
+  deliveryTime: string | null;
+  offerDiscount: number | null;
+  tax: number | null;
+  deliveryCost: number | null;
+  totalWithTax: number | null;
+  deliveryNotes: string | null;
 };
 
 export default function InvoicesClient({ initialInvoices }: { initialInvoices: Invoice[] }) {
@@ -47,6 +54,12 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [totalAmount, setTotalAmount] = useState('');
+  const [deliveryTime, setDeliveryTime] = useState('');
+  const [offerDiscount, setOfferDiscount] = useState('');
+  const [tax, setTax] = useState('');
+  const [deliveryCost, setDeliveryCost] = useState('');
+  const [totalWithTax, setTotalWithTax] = useState('');
+  const [deliveryNotes, setDeliveryNotes] = useState('');
   const [adminMessage, setAdminMessage] = useState('');
 
   const filteredInvoices = (invoices || []).filter(inv =>
@@ -93,6 +106,12 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
         body: JSON.stringify({
           action: 'APPROVE',
           totalAmount: totalAmount,
+          deliveryTime,
+          offerDiscount: offerDiscount ? parseFloat(offerDiscount) : null,
+          tax: tax ? parseFloat(tax) : null,
+          deliveryCost: deliveryCost ? parseFloat(deliveryCost) : null,
+          totalWithTax: totalWithTax ? parseFloat(totalWithTax) : null,
+          deliveryNotes,
           message: adminMessage
         }),
       });
@@ -101,9 +120,15 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
 
       const updatedData = await response.json();
       mutate();
-      setSelectedInvoice({ ...selectedInvoice, status: 'APPROVED' });
+      setSelectedInvoice(updatedData);
       setShowApproveModal(false);
       setTotalAmount('');
+      setDeliveryTime('');
+      setOfferDiscount('');
+      setTax('');
+      setDeliveryCost('');
+      setTotalWithTax('');
+      setDeliveryNotes('');
       setAdminMessage('');
       toast.success('Invoice approved and email sent to client!', { id: loadingToast });
     } catch (error: any) {
@@ -371,6 +396,21 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                       <p className="text-[18px] font-bold text-emerald-700 leading-tight">{selectedInvoice.projectName || 'Not provided'}</p>
                     </div>
 
+                    {/* Additional Warranty */}
+                    <div className="bg-white p-4 rounded-xl border border-gray-100 mb-6 flex items-center gap-3">
+                      <div className={`w-5 h-5 border rounded-sm flex items-center justify-center ${selectedInvoice.additionalWarranty ? 'bg-emerald-600 border-emerald-600' : 'border-gray-300'}`}>
+                        {selectedInvoice.additionalWarranty && (
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-sm font-semibold text-gray-700">Additional 4 years warranty for compressor</span>
+                      <span className={`text-xs font-bold uppercase ${selectedInvoice.additionalWarranty ? 'text-emerald-600' : 'text-gray-400'}`}>
+                        {selectedInvoice.additionalWarranty ? 'YES' : 'NO'}
+                      </span>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4 mb-6">
                       <div className="flex flex-col gap-1.5 bg-gray-50/60 p-4 rounded-xl border border-gray-100 transition-colors hover:bg-gray-50 cursor-pointer">
                         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Dimensions (ft)</p>
@@ -404,7 +444,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                           selectedInvoice.products.map((prod: any, idx: number) => (
                             <div key={idx} className="flex items-center gap-4 p-3 border border-gray-100 rounded-xl bg-white shadow-sm hover:shadow-md transition-all cursor-pointer group">
                               <div className="size-12 bg-gray-50 rounded-lg overflow-hidden shrink-0 border border-gray-100 flex items-center justify-center p-1.5 group-hover:border-emerald-600/20 transition-colors">
-                                <img src={prod.image || '/Walk-inCooler&Freezer/combounits.jpg'} alt={prod.title} className="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
+                                <img src={prod.image || '/Walk-in-Cooler-Freezer/combounits.jpg'} alt={prod.title} className="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">{prod.brand}</p>
@@ -431,36 +471,151 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
 
       {/* Approve Modal Overlay */}
       {showApproveModal && selectedInvoice && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Approve Invoice Request</h3>
-            <p className="text-sm text-gray-500 mb-6">Enter the total amount for this project to generate a payment link.</p>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Approve Invoice Request</h3>
+            <p className="text-sm text-gray-500 mb-8">Enter the invoice details to generate a payment link.</p>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Total Amount (USD)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Total Amount (USD) *</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
                   <input
                     type="number"
                     value={totalAmount}
-                    onChange={(e) => setTotalAmount(e.target.value)}
+                    onChange={(e) => {
+                      setTotalAmount(e.target.value);
+                      // Auto-calculate total with tax
+                      const base = parseFloat(e.target.value) || 0;
+                      const discount = parseFloat(offerDiscount) || 0;
+                      const taxAmount = parseFloat(tax) || 0;
+                      const delivery = parseFloat(deliveryCost) || 0;
+                      const total = base - discount + taxAmount + delivery;
+                      setTotalWithTax(total.toString());
+                    }}
                     placeholder="0.00"
                     min="0"
                     step="0.01"
-                    className="block w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                    className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
                   />
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Time</label>
+                  <input
+                    type="text"
+                    value={deliveryTime}
+                    onChange={(e) => setDeliveryTime(e.target.value)}
+                    placeholder="e.g. 3-5 business days"
+                    className="block w-full px-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Offer/Discount (USD)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                    <input
+                      type="number"
+                      value={offerDiscount}
+                      onChange={(e) => {
+                        setOfferDiscount(e.target.value);
+                        // Auto-recalculate total
+                        const base = parseFloat(totalAmount) || 0;
+                        const discount = parseFloat(e.target.value) || 0;
+                        const taxAmount = parseFloat(tax) || 0;
+                        const delivery = parseFloat(deliveryCost) || 0;
+                        const total = base - discount + taxAmount + delivery;
+                        setTotalWithTax(total.toString());
+                      }}
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tax (USD)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                    <input
+                      type="number"
+                      value={tax}
+                      onChange={(e) => {
+                        setTax(e.target.value);
+                        // Auto-recalculate total
+                        const base = parseFloat(totalAmount) || 0;
+                        const discount = parseFloat(offerDiscount) || 0;
+                        const taxAmount = parseFloat(e.target.value) || 0;
+                        const delivery = parseFloat(deliveryCost) || 0;
+                        const total = base - discount + taxAmount + delivery;
+                        setTotalWithTax(total.toString());
+                      }}
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Cost (USD)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                    <input
+                      type="number"
+                      value={deliveryCost}
+                      onChange={(e) => {
+                        setDeliveryCost(e.target.value);
+                        // Auto-recalculate total
+                        const base = parseFloat(totalAmount) || 0;
+                        const discount = parseFloat(offerDiscount) || 0;
+                        const taxAmount = parseFloat(tax) || 0;
+                        const delivery = parseFloat(e.target.value) || 0;
+                        const total = base - discount + taxAmount + delivery;
+                        setTotalWithTax(total.toString());
+                      }}
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-100 rounded-md px-4 py-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-gray-700">Total Price (including tax)</span>
+                  <span className="text-xl font-black text-[#004a99]">${parseFloat(totalWithTax || '0').toFixed(2)}</span>
+                </div>
+              </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Admin Message (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Notes</label>
+                <textarea
+                  value={deliveryNotes}
+                  onChange={(e) => setDeliveryNotes(e.target.value)}
+                  placeholder="Any delivery-related notes..."
+                  rows={2}
+                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Admin Message (Optional)</label>
                 <textarea
                   value={adminMessage}
                   onChange={(e) => setAdminMessage(e.target.value)}
                   placeholder="Any additional notes for the client..."
-                  rows={3}
-                  className="block w-full p-2 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
+                  rows={2}
+                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
                 />
               </div>
             </div>
@@ -470,16 +625,22 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                 onClick={() => {
                   setShowApproveModal(false);
                   setTotalAmount('');
+                  setDeliveryTime('');
+                  setOfferDiscount('');
+                  setTax('');
+                  setDeliveryCost('');
+                  setTotalWithTax('');
+                  setDeliveryNotes('');
                   setAdminMessage('');
                 }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={submitApproval}
                 disabled={!totalAmount || parseFloat(totalAmount) <= 0}
-                className="px-4 py-2 text-sm font-medium text-white bg-[#004a99] hover:bg-[#004a99]/90 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 text-sm font-medium text-white bg-[#004a99] hover:bg-[#004a99]/90 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Approve & Send Email
               </button>

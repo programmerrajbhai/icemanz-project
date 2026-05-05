@@ -18,7 +18,7 @@ const products = [
     id: 2,
     title: 'Glassdoor Walk-in Cooler',
     description: 'Premium glass-door display coolers and freezers perfect for retail and grocery stores. These high-visibility units combine elegant design with advanced cooling performance, including custom shelving solutions and energy-efficient glass panels.',
-    images: ['/products/product_2.jpg', '/slider/s_3.jpeg', '/slider/s_1.jpeg'],
+    images: ['/slider/s_3.jpeg', '/slider/s_1.jpeg'],
     tag: 'Retail Special',
     href: '/walk-in-cooler-freezer/walk-in-coolers'
   },

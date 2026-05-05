@@ -86,7 +86,7 @@ export default function ProductDetailsClient({
       <div className="pt-32 pb-20 md:pt-44 md:pb-24">
         <div className="container px-4">
 
-          <div className="grid lg:grid-cols-[100px_1fr_1fr] gap-4 items-start bg-white p-0">
+          <div className="grid lg:grid-cols-[100px_6fr_4fr] gap-4 items-start bg-white p-0">
             {/* Left: Product Gallery - Vertical Thumbnails */}
             {product.images.length > 0 ? (
               <div className="flex md:flex-col gap-2 w-full lg:col-span-1 h-auto max-h-[600px] overflow-x-auto md:overflow-y-auto no-scrollbar">

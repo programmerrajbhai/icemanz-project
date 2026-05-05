@@ -166,9 +166,29 @@ function ProductCard({ product, onRemove, isMain }: { product: ProductSummary; o
 /* ─────────────────────────────────────────────
    STEP 1 — Project Info
 ───────────────────────────────────────────── */
-function Step1({ data, errors, onChange }: { data: FormData; errors: Record<string, string>; onChange: (k: keyof FormData, v: string) => void }) {
+function Step1({ data, errors, onChange }: { data: FormData; errors: Record<string, string>; onChange: (k: keyof FormData, v: any) => void }) {
   return (
     <div className="space-y-8">
+      {/* Additional Warranty Checkbox */}
+      <div className="bg-gray-50 border border-gray-100 rounded-sm px-4 py-4">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div className="relative">
+            <input
+              type="checkbox"
+              checked={data.additionalWarranty}
+              onChange={(e) => onChange('additionalWarranty', e.target.checked)}
+              className="w-5 h-5 border border-gray-300 rounded-sm appearance-none cursor-pointer checked:bg-[#004a99] checked:border-[#004a99] transition-colors"
+            />
+            {data.additionalWarranty && (
+              <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </div>
+          <span className="text-sm font-semibold text-gray-800">Do you want additional 4 years warranty for compressor?</span>
+        </label>
+      </div>
+
       <div>
         <label htmlFor="projectName" className={LABEL}>Project Name *</label>
         <input
@@ -328,10 +348,10 @@ function Step2({ data, errors, addedProducts, onChange }: { data: FormData; erro
               className={`${getInputClass(errors.tempRange)} appearance-none text-gray-600`}
             >
               <option value="" disabled>Select a range...</option>
-              <option value="Cooler: 35°F – 41°F">Cooler: 35°F – 41°F (2°C – 5°C)</option>
-              <option value="Freezer: 0°F">Freezer: 0°F (-18°C)</option>
-              <option value="Deep Freeze: -10°F">Deep Freeze: -10°F (-23°C)</option>
-              <option value="Deep Freeze: -20°F">Deep Freeze: -20°F (-29°C)</option>
+              <option value="Cooler: 35°F – 41°F">Cooler: 35°F – 41°F</option>
+              <option value="Freezer: 0°F">Freezer: 0°F</option>
+              <option value="Deep Freeze: -10°F">Deep Freeze: -10°F</option>
+              <option value="Deep Freeze: -20°F">Deep Freeze: -20°F</option>
               <option value="Floral: 34°F – 38°F">Floral: 34°F – 38°F</option>
               <option value="Deli / Meat: 28°F – 34°F">Deli / Meat: 28°F – 34°F</option>
               <option value="Custom">Custom (specify below)</option>
@@ -343,7 +363,7 @@ function Step2({ data, errors, addedProducts, onChange }: { data: FormData; erro
             <input
               type="text"
               id="customTemp"
-              placeholder="e.g. -5°F / -20°C"
+              placeholder="e.g. -5°F"
               value={data.customTemp}
               onChange={e => onChange('customTemp', e.target.value)}
               className={getInputClass()}
@@ -448,6 +468,7 @@ function Step3({ data }: { data: FormData }) {
 ───────────────────────────────────────────── */
 type FormData = {
   // Step 1
+  additionalWarranty: boolean;
   projectName: string;
   fullName: string;
   email: string;
@@ -464,6 +485,7 @@ type FormData = {
 };
 
 const defaultData: FormData = {
+  additionalWarranty: false,
   projectName: '', fullName: '', email: '', phone: '', address: '', description: '',
   width: '', length: '', height: '', tempRange: '', customTemp: '', quantity: '1',
 };

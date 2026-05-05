@@ -23,7 +23,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMobileCategories, setExpandedMobileCategories] = useState<string[]>([]);
-  const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/Walk-inCooler&Freezer/walkincoolers.jpg');
+  const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/Walk-in-Cooler-Freezer/walkincoolers.jpg');
   const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
 
   const mobileMenuData = [
@@ -69,14 +69,14 @@ export default function Header() {
   };
 
   const walkInImages: { [key: string]: string } = {
-    'Walk In Coolers': '/Walk-inCooler&Freezer/walkincoolers.jpg',
-    'Coolers With Floor': '/Walk-inCooler&Freezer/coolerswithfloor.jpg',
-    'Walk In Freezers': '/Walk-inCooler&Freezer/walk-infreezerunits.jpg',
-    'Freezers With Floor': '/Walk-inCooler&Freezer/freezerswithfloor.jpg',
-    'Combo Units': '/Walk-inCooler&Freezer/combounits.jpg',
-    'Portable Refrigeration': '/Walk-inCooler&Freezer/portableRefrigeration.jpg',
-    'Drive-in Coolers Freezers': '/Walk-inCooler&Freezer/drive-inCoolersFreezers.jpg',
-    'Doors and Parts': '/Walk-inCooler&Freezer/NewCooler.jpg',
+    'Walk In Coolers': '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
+    'Coolers With Floor': '/Walk-in-Cooler-Freezer/coolerswithfloor.jpg',
+    'Walk In Freezers': '/Walk-in-Cooler-Freezer/walk-infreezerunits.jpg',
+    'Freezers With Floor': '/Walk-in-Cooler-Freezer/freezerswithfloor.jpg',
+    'Combo Units': '/Walk-in-Cooler-Freezer/combounits.jpg',
+    'Portable Refrigeration': '/Walk-in-Cooler-Freezer/portableRefrigeration.jpg',
+    'Drive-in Coolers Freezers': '/Walk-in-Cooler-Freezer/drive-inCoolersFreezers.jpg',
+    'Doors and Parts': '/Walk-in-Cooler-Freezer/NewCooler.jpg',
     'Refrigeration Equipment': '/slider/s_1.jpeg'
   };
 
