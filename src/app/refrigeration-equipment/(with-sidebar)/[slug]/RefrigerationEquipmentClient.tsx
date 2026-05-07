@@ -200,12 +200,10 @@ export default function RefrigerationEquipmentClient({
                     <Link
                       key={product.id}
                       href={`/refrigeration-equipment/${slug}/${product.id}`}
-                      className="group bg-white border  border-gray-200 
-                      
-                      rounded-sm p-2 overflow-hidden hover:-translate-y-1 transition-all duration-500 flex flex-col"
+                      className="group bg-white border border-gray-200 rounded-sm p-2 overflow-hidden hover:-translate-y-1 transition-all duration-500 flex flex-col cursor-pointer block"
                     >
                       {/* Image Area */}
-                      <div className=" border-b border-gray-200  w-full  rounded-sm bg-gray-50 overflow-hidden mb-3 relative pt-[100%]">
+                      <div className="border-b border-gray-200 w-full rounded-sm bg-gray-50 overflow-hidden mb-3 relative pt-[100%]">
                         {product.images && product.images[0] ? (
                           <Image
                             src={product.images[0]}
@@ -220,8 +218,8 @@ export default function RefrigerationEquipmentClient({
                       </div>
 
                       {/* Content Area */}
-                      <div className="flex flex-col  text-center items-center px-1 mt-2">
-                        <h3 className="text-sm  font-semibold text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors line-clamp-2">
+                      <div className="flex flex-col text-center items-center px-1 mt-2">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors line-clamp-2">
                           {product.title}
                         </h3>
 
@@ -239,9 +237,9 @@ export default function RefrigerationEquipmentClient({
 
                         {/* Action Button */}
                         <div className="w-full mt-auto pb-1">
-                          <div className="cursor-pointer w-full py-2.5 px-3 border-[1.5px] border-gray-200 rounded-sm flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-black text-[#0f172a] uppercase tracking-[0.2em] group-hover:border-gray-300 group-hover:bg-gray-50 transition-all duration-300 shadow-sm group-hover:shadow">
+                          <div className="cursor-pointer w-full py-2.5 px-3 border-[1.5px] border-gray-200 rounded-sm flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-black text-[#0f172a] uppercase tracking-[0.2em] group-hover:border-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
                             View Details
-                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-[#0f172a]" />
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                           </div>
                         </div>
                       </div>

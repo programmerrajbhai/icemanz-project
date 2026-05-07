@@ -194,7 +194,7 @@ export default async function SubCategoryPage({ params }: { params: { slug: stri
                   <Link
                     key={product.id}
                     href={`/walk-in-cooler-freezer/${slug}/${product.id}`}
-                    className="group flex flex-col bg-white border border-gray-200 rounded-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
+                    className="group flex-col bg-white border border-gray-200 rounded-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer block"
                   >
                     {/* Compact Image Area */}
                     <div className="relative pt-[65%] bg-gray-50 overflow-hidden">

@@ -31,14 +31,11 @@ export default function Header() {
       label: 'Walk-in Cooler & Freezer',
       href: '/walk-in-cooler-freezer',
       subItems: [
-        { label: 'Walk In Coolers', href: '/walk-in-cooler-freezer/walk-in-coolers' },
-        { label: 'Coolers With Floor', href: '/walk-in-cooler-freezer/coolers-with-floor' },
-        { label: 'Walk In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
-        { label: 'Freezers With Floor', href: '/walk-in-cooler-freezer/freezers-with-floor' },
-        { label: 'Combo Units', href: '/walk-in-cooler-freezer/combo-units' },
-        { label: 'Portable Refrigeration', href: '/walk-in-cooler-freezer/portable-refrigeration' },
-        { label: 'Drive-in Coolers Freezers', href: '/walk-in-cooler-freezer/drive-in-coolers-freezers' },
-        { label: 'Doors and Parts', href: '/walk-in-cooler-freezer/new-cooler-freezer-doors' }
+        { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
+        { label: 'Custom Walk-Ins & Combos', href: '/walk-in-cooler-freezer/custom-walk-ins-combos' },
+        { label: 'Custom Refrigerated Warehouse', href: '/walk-in-cooler-freezer/custom-refrigerated-warehouse' },
+        { label: 'Shop By Brand', href: '/walk-in-cooler-freezer/shop-by-brand' },
+        { label: 'Walk-In Refrigeration Units', href: '/walk-in-cooler-freezer/walk-in-refrigeration-units' }
       ]
     },
     {
@@ -69,14 +66,11 @@ export default function Header() {
   };
 
   const walkInImages: { [key: string]: string } = {
-    'Walk In Coolers': '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
-    'Coolers With Floor': '/Walk-in-Cooler-Freezer/coolerswithfloor.jpg',
-    'Walk In Freezers': '/Walk-in-Cooler-Freezer/walk-infreezerunits.jpg',
-    'Freezers With Floor': '/Walk-in-Cooler-Freezer/freezerswithfloor.jpg',
-    'Combo Units': '/Walk-in-Cooler-Freezer/combounits.jpg',
-    'Portable Refrigeration': '/Walk-in-Cooler-Freezer/portableRefrigeration.jpg',
-    'Drive-in Coolers Freezers': '/Walk-in-Cooler-Freezer/drive-inCoolersFreezers.jpg',
-    'Doors and Parts': '/Walk-in-Cooler-Freezer/NewCooler.jpg',
+    'Quick Ship Walk-Ins': '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
+    'Custom Walk-Ins & Combos': '/Walk-in-Cooler-Freezer/combounits.jpg',
+    'Custom Refrigerated Warehouse': '/slider/s_1.jpeg',
+    'Shop By Brand': '/products/product_2.jpg',
+    'Walk-In Refrigeration Units': '/category/refrigerationEquipment/condensingUnit.jpg',
     'Refrigeration Equipment': '/slider/s_1.jpeg'
   };
 
@@ -155,39 +149,25 @@ export default function Header() {
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               {/* Mega Dropdown for Walk-in Cooler & Freezer */}
-              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
-                <div className="flex gap-8">
-                  {/* Links Column */}
-                  <div className="flex flex-col gap-1.5 flex-1">
-                    {[
-                      { label: 'Walk In Coolers', href: '/walk-in-cooler-freezer/walk-in-coolers' },
-                      { label: 'Coolers With Floor', href: '/walk-in-cooler-freezer/coolers-with-floor' },
-                      { label: 'Walk In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
-                      { label: 'Freezers With Floor', href: '/walk-in-cooler-freezer/freezers-with-floor' },
-                      { label: 'Combo Units', href: '/walk-in-cooler-freezer/combo-units' },
-                      { label: 'Portable Refrigeration', href: '/walk-in-cooler-freezer/portable-refrigeration' },
-                      { label: 'Drive-in Coolers Freezers', href: '/walk-in-cooler-freezer/drive-in-coolers-freezers' },
-                      { label: 'Doors and Parts', href: '/walk-in-cooler-freezer/new-cooler-freezer-doors' }
-                    ].map((item, index) => (
-                      <Link
-                        key={item.label}
-                        href={item.href}
-                        onMouseEnter={() => setHoveredWalkInItem(walkInImages[item.label])}
-                        className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                  {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-sm p-3 overflow-hidden min-h-[180px] max-h-[220px]">
-                    <img
-                      key={hoveredWalkInItem}
-                      src={hoveredWalkInItem}
-                      alt="Walk-in Cooler Preview"
-                      className="max-w-full h-auto rounded-sm shadow-sm"
-                    />
-                  </div>
+              <div className="absolute top-full left-0 w-[400px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+                {/* Links Column */}
+                <div className="flex flex-col gap-1.5">
+                  {[
+                    { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
+                    { label: 'Custom Walk-Ins & Combos', href: '/walk-in-cooler-freezer/custom-walk-ins-combos' },
+                    { label: 'Custom Refrigerated Warehouse', href: '/walk-in-cooler-freezer/custom-refrigerated-warehouse' },
+                    { label: 'Shop By Brand', href: '/walk-in-cooler-freezer/shop-by-brand' },
+                    { label: 'Walk-In Refrigeration Units', href: '/walk-in-cooler-freezer/walk-in-refrigeration-units' }
+                  ].map((item, index) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                    >
+                      {item.label}
+                      {index >= 3 && <ChevronRight size={14} className="inline-block ml-2" />}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
