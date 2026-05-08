@@ -80,6 +80,8 @@ export default function WalkInCoolerProductClient({
   const [quantity, setQuantity] = useState(1);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showZoom, setShowZoom] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     refrigeration: false,
     payment: true,
@@ -134,28 +136,85 @@ export default function WalkInCoolerProductClient({
   return (
     <main className="min-h-screen bg-white">
       <Header />
-
-      <div className="pt-32 pb-20 md:pt-40 md:pb-24 bg-white">
+      <div className="pt-32 pb-20 md:pt-40 md:pb-24 bg-white  transition-all duration-300">
         <div className="container px-4 mx-auto">
           {/* Breadcrumb */}
-          <nav className="text-xs text-gray-500 mb-6">
+          {/* <nav className="text-xs text-gray-500 mb-6">
             <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-in Coolers</Link>
             <span className="mx-2">/</span>
             <span className="text-gray-800">{product.title}</span>
-          </nav>
+          </nav> */}
+          <div className="flex flex-col lg:flex-row gap-2 ">
 
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Left: Product Gallery & Info */}
+            <div className="w-full lg:w-[60%]   flex flex-col ">
 
-            {/* Product Info */}
-            <div className="w-full lg:w-[100%] border border-gray-200 p-4 flex flex-col gap-4">
+              {/* products featured image */}
+              <div className="grid grid-cols-[80px_1fr] border border-gray-200 pl-4 pt-4 gap-4">
+                {/* Left: Vertical Thumbnails */}
+                <div className="flex flex-col gap-2">
+                  {product.images.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImageIndex(i)}
+                      className={`cursor-pointer w-full aspect-square bg-white border rounded-sm overflow-hidden transition-all focus:outline-none p-1 relative ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
+                    >
+                      <Image
+                        src={img}
+                        alt={`View ${i + 1}`}
+                        fill
+                        className="object-contain p-1"
+                        sizes="80px"
+                      />
+                    </button>
+                  ))}
+                </div>
+
+                {/* Main Image */}
+                <div className="flex items-center justify-center bg-white rounded-sm overflow-hidden relative">
+                  <div
+                    className="relative w-full h-[600px] cursor-crosshair overflow-hidden"
+                    onMouseMove={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setMousePosition({
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                      });
+                    }}
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                  >
+                    <Image
+                      src={product.images[activeImageIndex]}
+                      alt={product.title}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 60vw"
+                    />
+
+                    {/* Square Zoom Lens */}
+                    {isHovering && (
+                      <div
+                        className="absolute border border-blue-500 bg-white/30 pointer-events-none z-20"
+                        style={{
+                          left: mousePosition.x - 100,
+                          top: mousePosition.y - 100,
+                          width: '200px',
+                          height: '200px',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
 
               <div>
                 {/* description */}
                 <section className="border border-gray-200 bg-white p-8 mt-4">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Description</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-6">Description</h2>
 
                   <div className="space-y-6">
-                    <p className="text-[15px] text-gray-800 leading-relaxed">
+                    <p className="text-sm text-gray-800 leading-relaxed">
                       <span className="font-bold">Astra® Quick-Ship Walk-In Coolers & Freezers</span> deliver quality and speed with modular cam-lock panels, sizes 5'-40', and top-mount or remote options. Ships in 48 hours, NSF, UL, DOE compliant, with 10-year panel warranty. Ready when you are!
                     </p>
 
@@ -170,7 +229,7 @@ export default function WalkInCoolerProductClient({
                         'NSF, UL, DOE, ASTM Test 518, and ASTM Test E84 Compliant',
                         'UL723 Flame Spread and Smoke Development Compliant'
                       ].map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-700">
+                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
                           <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
                           <span>{feature}</span>
                         </li>
@@ -181,7 +240,7 @@ export default function WalkInCoolerProductClient({
 
                 {/* Standard Features */}
                 <section className="border border-gray-200 bg-white p-8 mt-4">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-8">Standard Features</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-8">Standard Features</h2>
 
                   <div className="space-y-10 pb-5">
                     {/* Panels */}
@@ -197,7 +256,7 @@ export default function WalkInCoolerProductClient({
                             'CFC and HFC Free Materials',
                             '10 Year Panel Warranty'
                           ].map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-800">
+                            <li key={idx} className="flex items-start gap-3 text-sm text-gray-800">
                               <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
                               <span>{feature}</span>
                             </li>
@@ -216,7 +275,7 @@ export default function WalkInCoolerProductClient({
                     {/* Doors */}
                     <div className="flex flex-col md:flex-row gap-8 items-start">
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-900 mb-6">Doors</h3>
+                        <h3 className="text-lg font-bold text-gray-900 mb-6">Doors</h3>
                         <ul className="space-y-4">
                           {[
                             '30" or 36" wide doors (left or right hinged)',
@@ -225,7 +284,7 @@ export default function WalkInCoolerProductClient({
                             '120V/1P/1A Heating Wire and Pressure Relief Vent on Freezers',
                             'Heavy-Duty Hinges and Durable Handles'
                           ].map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-800">
+                            <li key={idx} className="flex items-start gap-3 text-sm text-gray-800">
                               <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
                               <span>{feature}</span>
                             </li>
@@ -250,10 +309,10 @@ export default function WalkInCoolerProductClient({
                         { name: 'Vapor Proof Light', image: '/Walk-in-Cooler-Freezer/combounits.jpg' }
                       ].map((feat, idx) => (
                         <div key={idx} className="flex flex-col items-center">
-                          <div className="w-full aspect-square  mb-4 relative overflow-hidden bg-[#e0dfd5] flex items-center justify-center">
+                          <div className="w-full  h-50 mb-4 relative overflow-hidden bg-[#e0dfd5] flex items-center justify-center">
                             <Image src={feat.image} alt={feat.name} fill className="object-contain" />
                           </div>
-                          <span className=" text-xs font-semibold text-gray-900 text-center  leading-tight max-w-[160px]">{feat.name}</span>
+                          <span className=" text-sm font-semibold text-gray-900 text-center  leading-tight max-w-[160px]">{feat.name}</span>
                         </div>
                       ))}
                     </div>
@@ -370,7 +429,7 @@ export default function WalkInCoolerProductClient({
                               onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
                               className="w-full text-left p-4 hover:bg-gray-100 transition-colors"
                             >
-                              <span className="font-bold text-[15px] text-gray-900">
+                              <span className="font-bold text-sm text-gray-900">
                                 {faq.question}
                               </span>
                             </button>
@@ -406,7 +465,7 @@ export default function WalkInCoolerProductClient({
                           { bold: '1-Year', text: 'Remote Refrigeration Parts' },
                           { bold: '1-Year', text: 'Door Warranty' }
                         ].map((item, idx) => (
-                          <li key={idx} className="flex items-center gap-3 text-[15px] text-gray-800">
+                          <li key={idx} className="flex items-center gap-3 text-sm text-gray-800">
                             <span className="size-1.5 rounded-full bg-gray-400 shrink-0"></span>
                             <span>
                               <span className="font-bold">{item.bold}</span> {item.text}
@@ -422,55 +481,50 @@ export default function WalkInCoolerProductClient({
             </div>
 
             {/* Right: Product Info */}
-            <div className="w-full lg:w-[38%] border border-gray-200 p-4 flex flex-col gap-4">
+            <div className="w-full lg:w-[35%] lg:sticky lg:top-24 self-start border border-gray-200 p-4 flex flex-col gap-4">
+
+              {/* Right: Zoom Preview Box (Outside Gallery) */}
+              {isHovering && <div className=" absolute  border border-black  w-full  top-0 left-0  z-10">
+                <div className="  top-0  bg-white  rounded-sm overflow-hidden relative h-[600px]">
+                  <div
+                    className="w-full h-full"
+                    style={{
+                      backgroundImage: `url(${product.images[activeImageIndex]})`,
+                      backgroundSize: '250% 250%',
+                      backgroundPosition: `${(mousePosition.x / 600) * 100}% ${(mousePosition.y / 600) * 100}%`,
+                      backgroundRepeat: 'no-repeat',
+                    }}
+                  />
+
+                </div>
+              </div>}
+
               {/* Title */}
               <h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight mb-2">
                 {product.title}
               </h1>
 
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-0.5">
-                  {[1, 2, 3, 4, 5].map((item) => (
-                    <Star key={item} size={12} className="fill-[#f59e0b] text-[#f59e0b]" />
-                  ))}
-                </div>
-                <span className="text-[11px] text-gray-500">5 Reviews</span>
-              </div>
-
               {/* Brand, SKU & Social Share */}
               <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-wider">
                   <span className="text-[#004a99]">ASTRA</span>
                   <span className="text-gray-300">|</span>
                   <span className="text-gray-500">SKU: {product.id.substring(0, 8).toUpperCase()}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-                    <Facebook size={14} />
-                  </button>
-                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-                    <Share2 size={14} />
-                  </button>
-                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-                    <Twitter size={14} />
-                  </button>
-                  <button className="size-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
-                    <Mail size={14} />
-                  </button>
-                </div>
+
               </div>
 
               {/* Service Badges */}
               <div className="space-y-2 mb-5">
                 <div className="flex items-center gap-3 bg-[#e8f4fd] border border-[#b8daff] px-3 py-2 rounded-sm">
                   <Truck size={18} className="text-[#004a99]" />
-                  <p className="text-xs font-bold text-[#004a99]">
+                  <p className="text-sm font-bold text-[#004a99]">
                     🚚 Lead Time - Usually Ships in 2 - 5 Days
                   </p>
                 </div>
                 <div className="flex items-center gap-3 bg-[#e8f4fd] border border-[#b8daff] px-3 py-2 rounded-sm">
                   <CheckCircle2 size={18} className="text-[#00C853]" />
-                  <p className="text-xs font-bold text-[#004a99]">
+                  <p className="text-sm font-bold text-[#004a99]">
                     ✅ Price Match - Call Us For Best Price!
                   </p>
                 </div>
@@ -478,20 +532,16 @@ export default function WalkInCoolerProductClient({
 
               {/* Price Section */}
               <div className="flex items-start gap-4 mb-5">
-                <span className="text-xs font-bold text-gray-800 mt-1 uppercase">Price:</span>
+                <span className="text-sm font-bold text-gray-800 mt-1 uppercase">Price:</span>
                 <div className="flex flex-col">
                   <p className="text-2xl font-bold text-[#004a99] leading-none mb-1">${product.price}</p>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                    From <span className="font-bold text-gray-900">$290.63/mo</span> with
-                    <span className="px-1.5 py-0.5 bg-[#5c2d91] text-white rounded-[4px] font-black italic text-[10px]">shop Pay</span>
-                    <button className="text-gray-400 underline hover:text-gray-600">View sample plans</button>
-                  </div>
+
                 </div>
               </div>
 
               {/* Quantity Selector */}
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-xs font-bold text-gray-800 uppercase">Quantity:</span>
+                <span className="text-sm font-bold text-gray-800 uppercase">Quantity:</span>
                 <div className="flex items-center border border-gray-300 rounded-sm">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -513,7 +563,7 @@ export default function WalkInCoolerProductClient({
 
               {/* Customization Alert */}
               <div className="bg-[#f0f9ff] border border-[#bae6fd] p-3 rounded-sm mb-6">
-                <p className="text-xs font-medium text-[#0369a1] leading-relaxed">
+                <p className="text-sm font-medium text-[#0369a1] leading-relaxed">
                   Don't see the Layout or Option you need? <Link href="/contact" className="font-bold underline">Contact Us to customize your QuickShip Walk-In.</Link>
                 </p>
               </div>
@@ -580,7 +630,7 @@ export default function WalkInCoolerProductClient({
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-2 mb-2">
+              <div className="grid  mb-2">
                 <button
                   onClick={() => addToCart({
                     id: product.id,
@@ -590,17 +640,13 @@ export default function WalkInCoolerProductClient({
                     image: product.images[0] || '/placeholder.png',
                     quantity: quantity
                   })}
-                  className="bg-[#cc3300] cursor-pointer text-white py-3 px-4 font-bold rounded-sm hover:bg-[#b32d00] transition-colors uppercase tracking-wider text-xs"
+                  className="bg-[#cc3300] w-full cursor-pointer text-white py-3 px-4 font-bold rounded-sm hover:bg-[#b32d00] transition-colors uppercase tracking-wider text-xs"
                 >
                   Add to Cart
                 </button>
-                <button className="bg-[#5c2d91] cursor-pointer text-white py-3 px-4 font-bold rounded-sm hover:bg-[#4d2579] transition-colors flex items-center justify-center gap-1 text-xs">
-                  Buy with <span className="font-black italic">shop Pay</span>
-                </button>
+
               </div>
-              <button className="text-[11px] font-bold text-[#004a99] hover:underline mb-5 text-center block w-full">
-                More payment options
-              </button>
+
 
               {/* Pickup & Support */}
               <div className="space-y-4">
@@ -655,52 +701,16 @@ export default function WalkInCoolerProductClient({
                     </div>
                   ))}
                 </div>
-
-                <div className="flex items-center justify-center gap-4 pt-1">
-                  <ShieldCheck size={16} className="text-[#1f2937]" />
-                  <CreditCard size={16} className="text-[#1f2937]" />
-                  <span className="text-[10px] text-gray-500 uppercase tracking-wide">Secure Checkout</span>
-                </div>
               </div>
             </div>
-
           </div>
 
 
 
-
         </div>
-
-
-
-
-
       </div>
 
       <Footer />
-      {/* Zoom Modal */}
-      {showZoom && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center cursor-zoom-out"
-          onClick={() => setShowZoom(false)}
-        >
-          <div className="relative w-full h-full max-w-4xl max-h-4xl p-4">
-            <Image
-              src={product.images[activeImageIndex]}
-              alt={product.title}
-              fill
-              className="object-contain"
-              sizes="100vw"
-            />
-          </div>
-          <button
-            onClick={() => setShowZoom(false)}
-            className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-800 hover:bg-gray-100 transition-colors"
-          >
-            ✕
-          </button>
-        </div>
-      )}
     </main>
   );
 }

@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'www.turboairinc.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.atlanticse.com',
+      },
     ],
   },
 };

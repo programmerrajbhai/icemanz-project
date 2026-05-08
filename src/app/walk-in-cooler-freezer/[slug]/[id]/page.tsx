@@ -9,7 +9,12 @@ const mockProductsDetails: Record<string, any> = {
     title: 'Astra 6 x 6 Walk-In Cooler No Floor',
     slug: 'astra-6-x-6-walk-in-cooler-no-floor',
     price: '2,903.00',
-    images: ['/Walk-in-Cooler-Freezer/walkincoolers.jpg'],
+    images: [
+      '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
+      '/Walk-in-Cooler-Freezer/box-type/walk_in_cooler_1.avif',
+      '/Walk-in-Cooler-Freezer/box-type/walk_in_combo_1.avif',
+      '/Walk-in-Cooler-Freezer/Layout-CoolerFreezer.webp'
+    ],
     badge: 'Best Seller',
     description: 'Astra Walk-In Coolers are designed for durability and efficiency. This 6x6 model without floor is perfect for existing concrete floors.',
     keyFeatures: 'High-density insulation, Easy assembly, Energy efficient',
@@ -129,7 +134,12 @@ const mockProductsDetails: Record<string, any> = {
     title: 'Astra 6 x 8 Walk-In Cooler No Floor',
     slug: 'astra-6-x-8-walk-in-cooler-no-floor',
     price: '3,156.00',
-    images: ['/Walk-in-Cooler-Freezer/walkincoolers.jpg'],
+    images: [
+      '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
+      '/Walk-in-Cooler-Freezer/box-type/walk_in_freezer_1.avif',
+      '/Walk-in-Cooler-Freezer/box-type/beer_cave.avif',
+      '/Walk-in-Cooler-Freezer/Layout-CoolerFreezer.webp'
+    ],
     badge: 'Best Seller',
     description: 'Astra Walk-In Coolers are designed for durability and efficiency. This 6x8 model without floor is perfect for existing concrete floors.',
     keyFeatures: 'High-density insulation, Easy assembly, Energy efficient',
@@ -158,7 +168,12 @@ const mockProductsDetails: Record<string, any> = {
     title: 'Astra 6 x 6 Walk-In Cooler with Floor',
     slug: 'astra-6-x-6-walk-in-cooler-with-floor',
     price: '3,165.00',
-    images: ['/Walk-in-Cooler-Freezer/coolerswithfloor.jpg'],
+    images: [
+      '/Walk-in-Cooler-Freezer/coolerswithfloor.jpg',
+      '/Walk-in-Cooler-Freezer/box-type/custom_walk_in_cooler_48458996-e588-449c-b300-188f07f6326d.avif',
+      '/Walk-in-Cooler-Freezer/box-type/cold_refrigerated_warehouse.webp',
+      '/Walk-in-Cooler-Freezer/Layout-CoolerFreezer.webp'
+    ],
     badge: 'Popular',
     description: 'Astra Walk-In Coolers are designed for durability and efficiency. This 6x6 model includes a heavy-duty floor for better insulation.',
     keyFeatures: 'Includes floor, High-density insulation, Easy assembly',
