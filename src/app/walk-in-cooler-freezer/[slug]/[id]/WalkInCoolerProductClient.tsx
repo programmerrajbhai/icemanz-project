@@ -710,7 +710,6 @@ export default function WalkInCoolerProductClient({
         </div>
       </div>
 
-      <Footer />
     </main>
   );
 }

@@ -23,7 +23,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMobileCategories, setExpandedMobileCategories] = useState<string[]>([]);
-  const [hoveredWalkInItem, setHoveredWalkInItem] = useState('/Walk-in-Cooler-Freezer/walkincoolers.jpg');
+  const [hoveredWalkInItem, setHoveredWalkInItem] = useState<string | null>('Quick Ship Walk-Ins');
   const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
 
   const mobileMenuData = [
@@ -32,6 +32,10 @@ export default function Header() {
       href: '/walk-in-cooler-freezer',
       subItems: [
         { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
+        { label: 'Walk-In Cooler No Floor', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
+        { label: 'Walk-In Cooler with Floor', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
+        { label: 'Walk-In Freezer With Floor', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
+        { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
         { label: 'Custom Walk-Ins & Combos', href: '/walk-in-cooler-freezer/custom-walk-ins-combos' },
         { label: 'Custom Refrigerated Warehouse', href: '/walk-in-cooler-freezer/custom-refrigerated-warehouse' },
         { label: 'Shop By Brand', href: '/walk-in-cooler-freezer/shop-by-brand' },
@@ -149,25 +153,114 @@ export default function Header() {
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </Link>
               {/* Mega Dropdown for Walk-in Cooler & Freezer */}
-              <div className="absolute top-full left-0 w-[400px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
-                {/* Links Column */}
-                <div className="flex flex-col gap-1.5">
-                  {[
-                    { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
-                    { label: 'Custom Walk-Ins & Combos', href: '/walk-in-cooler-freezer/custom-walk-ins-combos' },
-                    { label: 'Custom Refrigerated Warehouse', href: '/walk-in-cooler-freezer/custom-refrigerated-warehouse' },
-                    { label: 'Shop By Brand', href: '/walk-in-cooler-freezer/shop-by-brand' },
-                    { label: 'Walk-In Refrigeration Units', href: '/walk-in-cooler-freezer/walk-in-refrigeration-units' }
-                  ].map((item, index) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
-                    >
-                      {item.label}
-                      {index >= 3 && <ChevronRight size={14} className="inline-block ml-2" />}
-                    </Link>
-                  ))}
+              <div
+                className="absolute top-full left-0 w-[600px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-0 z-50 overflow-hidden"
+              >
+                <div className="flex h-full">
+                  {/* Links Column */}
+                  <div className="w-1/2 p-6 flex flex-col gap-1.5 border-r border-gray-50 transition-all duration-300">
+                    {[
+                      { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins', hasSub: true },
+                      { label: 'Custom Walk-Ins & Combos', href: '/walk-in-cooler-freezer/custom-walk-ins-combos', hasSub: true },
+                      { label: 'Custom Refrigerated Warehouse', href: '/walk-in-cooler-freezer/custom-refrigerated-warehouse' },
+                      { label: 'Shop By Brand', href: '/walk-in-cooler-freezer/shop-by-brand', hasSub: true },
+                      { label: 'Walk-In Refrigeration Units', href: '/walk-in-cooler-freezer/walk-in-refrigeration-units', hasSub: true }
+                    ].map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        onMouseEnter={() => setHoveredWalkInItem(item.label)}
+                        className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 flex items-center justify-between group/item ${hoveredWalkInItem === item.label ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                      >
+                        {item.label}
+                        {item.hasSub && <ChevronRight size={14} className={`transition-all ${hoveredWalkInItem === item.label ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}`} />}
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Submenu Column */}
+                  <div className="w-1/2 bg-gray-50/50 p-6 animate-in fade-in slide-in-from-left-4 duration-300">
+                    {hoveredWalkInItem === 'Quick Ship Walk-Ins' && (
+                      <div className="flex flex-col gap-3">
+                        {[
+                          'Walk-In Cooler No Floor',
+                          'Walk-In Cooler with Floor',
+                          'Walk-In Freezer With Floor',
+                          'Walk-In Combo (Cooler & Freezer)'
+                        ].map((sub) => (
+                          <Link
+                            key={sub}
+                            href="/walk-in-cooler-freezer/quick-ship-walk-ins"
+                            className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors flex items-center gap-2 group/sub"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20 group-hover/sub:bg-primary transition-colors"></div>
+                            {sub}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    {hoveredWalkInItem === 'Custom Walk-Ins & Combos' && (
+                      <div className="flex flex-col gap-3">
+                        {[
+                          'Custom Walk-In Cooler',
+                          'Custom Walk-In Freezer',
+                          'Custom Combo Units',
+                          'Indoor/Outdoor Solutions'
+                        ].map((sub) => (
+                          <Link
+                            key={sub}
+                            href="/walk-in-cooler-freezer/custom-walk-ins-combos"
+                            className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors flex items-center gap-2 group/sub"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20 group-hover/sub:bg-primary transition-colors"></div>
+                            {sub}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    {hoveredWalkInItem === 'Shop By Brand' && (
+                      <div className="flex flex-col gap-3">
+                        {[
+                          'ICEMANZ',
+                          'Amerikooler',
+                          'Astra'
+                        ].map((sub) => (
+                          <Link
+                            key={sub}
+                            href="/walk-in-cooler-freezer/shop-by-brand"
+                            className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors flex items-center gap-2 group/sub"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20 group-hover/sub:bg-primary transition-colors"></div>
+                            {sub}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    {hoveredWalkInItem === 'Walk-In Refrigeration Units' && (
+                      <div className="flex flex-col gap-3">
+                        {[
+                          'Condensing Units',
+                          'Evaporator Coils',
+                          'Pre-Assembled Systems',
+                          'Remote Systems'
+                        ].map((sub) => (
+                          <Link
+                            key={sub}
+                            href="/walk-in-cooler-freezer/walk-in-refrigeration-units"
+                            className="text-[13px] font-bold text-gray-600 hover:text-primary transition-colors flex items-center gap-2 group/sub"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20 group-hover/sub:bg-primary transition-colors"></div>
+                            {sub}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    {hoveredWalkInItem === 'Custom Refrigerated Warehouse' && (
+                      <div className="h-full flex items-center justify-center text-gray-400 text-[12px] font-bold italic text-center px-4">
+                        Details for {hoveredWalkInItem} coming soon...
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
