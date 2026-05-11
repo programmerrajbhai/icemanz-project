@@ -193,15 +193,15 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const walkInTypes = [
     {
       name: 'Walk-In Box Only',
-      image: '/Walk-in-Cooler-Freezer/box-only.jpg'
+      image: '/Walk-in-Cooler-Freezer/category/Box_Only.webp'
     },
     {
       name: 'Walk-In Box with Top Mount',
-      image: '/Walk-in-Cooler-Freezer/top-mount.jpg'
+      image: '/Walk-in-Cooler-Freezer/category/Top_Mount_refrigeration_and_Box.webp'
     },
     {
       name: 'Walk-In Box with Remote',
-      image: '/Walk-in-Cooler-Freezer/remote.jpg'
+      image: '/Walk-in-Cooler-Freezer/category/Remote_refrigeration_and_Box.webp'
     }
   ];
 
