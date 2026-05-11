@@ -1,19 +1,50 @@
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import WalkInCoolerProductClient from './[id]/WalkInCoolerProductClient';
+import WalkInCoolerFreezerClient from '../WalkInCoolerFreezerClient';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default async function WalkInCoolerProductPage({ params }: { params: Promise<{ slug: string }> }) {
+const subcategoryTitles: Record<string, string> = {
+  'walk-in-cooler-no-floor': 'Walk-In Cooler No Floor',
+  'walk-in-cooler-with-floor': 'Walk-In Cooler with Floor',
+  'walk-in-freezer-with-floor': 'Walk-In Freezer With Floor',
+  'walk-in-combo-cooler-freezer': 'Walk-In Combo (Cooler & Freezer)'
+};
+
+export default async function WalkInCoolerSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
+  // Check if this is a subcategory page
+  if (subcategoryTitles[slug]) {
+    const products = await prisma.product.findMany({
+      where: {
+        category: {
+          slug: 'walk-in-cooler-freezer'
+        }
+      }
+    });
+
+    return (
+      <main className="min-h-screen bg-white selection:bg-primary selection:text-white">
+        <Header />
+        <div className="pt-24 lg:pt-32">
+          <WalkInCoolerFreezerClient 
+            initialProducts={products} 
+            title={subcategoryTitles[slug]} 
+          />
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  // Otherwise, treat as product page
   const product = await prisma.product.findUnique({
     where: { slug }
   });
 
   if (!product) {
-    // If not found in DB, maybe it's a subcategory? 
-    // But user wants real products from server, so if not found, it's 404
     notFound();
   }
 

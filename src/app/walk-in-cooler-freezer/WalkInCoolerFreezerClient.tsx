@@ -108,7 +108,12 @@ const boxTypes = [
   }
 ];
 
-export default function WalkInCoolerFreezerClient({ initialProducts }: { initialProducts: Product[] }) {
+interface WalkInCoolerFreezerClientProps {
+  initialProducts: Product[];
+  title?: string;
+}
+
+export default function WalkInCoolerFreezerClient({ initialProducts, title = "Walk-In Cooler & Freezer" }: WalkInCoolerFreezerClientProps) {
   const { addToCart } = useCart();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'depth']);
@@ -132,7 +137,9 @@ export default function WalkInCoolerFreezerClient({ initialProducts }: { initial
     });
 
     // Get brand list from products
-    const brandList = Object.entries(brandMap).map(([name, count]) => ({ name, count }));
+    const brandList = Object.entries(brandMap)
+      .map(([name, count]) => ({ name, count }))
+      .filter(b => b.name.toUpperCase() !== 'ASTRA'); // Exclude Astra
 
     // Ensure ICEMANZ is always at the top even if it has 0 products
     const hasIcemanz = brandList.some(b => b.name.toUpperCase() === 'ICEMANZ');
@@ -180,10 +187,12 @@ export default function WalkInCoolerFreezerClient({ initialProducts }: { initial
     setVisibleProductCount(prevCount => prevCount + 5); // Load 5 more products
   };
 
+  const [isReadMoreOpen, setIsReadMoreOpen] = useState(false);
+
   return (
     <div className=" bg-white min-h-screen">
-      <div className="container mx-auto px-4 pt-8 ">
-        <div className="flex flex-col lg:flex-row gap-2   pb-8 ">
+      <div className="container mx-auto px-4 ">
+        <div className="flex flex-col lg:flex-row gap-4 pt-8 pb-8 ">
 
           {/* Sidebar Filters */}
           <aside className="lg:w-60 xl:w-64 border border-gray-200 shadow-sm ">
@@ -285,83 +294,39 @@ export default function WalkInCoolerFreezerClient({ initialProducts }: { initial
           {/* Main Content - Product Grid */}
           <div className="flex-1">
 
-            {/* Box Type Filter Section */}
-            <div className="mb-2 w-full px-6 border border-gray-200 border-b-0">
-              {activeBoxType && activeRefrigerationType ? (
-                <div>
-                  <button
-                    onClick={() => setActiveRefrigerationType(null)}
-                    className="flex items-center gap-1 pt-4 text-gray-900 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    <ChevronLeft size={16} strokeWidth={2.5} />
-                    <span className="text-[15px] font-bold underline underline-offset-4 decoration-2">Back to Refrigeration Type</span>
-                  </button>
-                  <h3 className="text-sm font-bold text-gray-900 mt-4 uppercase tracking-wider">BOX DEPTH</h3>
-                  <div className="flex items-center justify-start gap-3 mt-4 overflow-x-auto pb-4">
-                    {['5', '6', '8', '10', '12'].map((depth, index) => (
-                      <button
-                        key={index}
-                        className="px-8 py-3 rounded-full border border-blue-200 bg-white hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer text-gray-800 font-semibold text-sm"
-                      >
-                        {depth}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : activeBoxType ? (
-                <div>
-                  <button
-                    onClick={() => setActiveBoxType(null)}
-                    className="flex items-center gap-1 pt-4 text-gray-900 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    <ChevronLeft size={16} strokeWidth={2.5} />
-                    <span className="text-[15px] font-bold underline underline-offset-4 decoration-2">Back to Box Type</span>
-                  </button>
-                  <h3 className="text-sm font-bold text-gray-900 mt-4 uppercase tracking-wider">REFRIGERATION TYPE</h3>
-                  <div className="flex items-center justify-start gap-3 mt-4 overflow-x-auto pb-4">
-                    {boxTypes.find(b => b.name === activeBoxType)?.submenu.map((subType, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setActiveRefrigerationType(subType.name)}
-                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer w-[110px] h-[110px] p-2 flex-shrink-0"
-                      >
-                        <div className="flex items-center h-12 w-12 justify-center">
-                          <img
-                            src={boxTypes.find(b => b.name === activeBoxType)?.image}
-                            alt={subType.name}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                        <span className="text-[13px] font-normal leading-tight text-center text-gray-800">{subType.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <h3 className="text-sm font-bold text-gray-900 pt-4 self-start uppercase tracking-wider">BOX TYPE</h3>
-                  <div className="flex items-center justify-start gap-3 mt-4 overflow-x-auto pb-4">
-                    {boxTypes.map((type, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setActiveBoxType(type.name)}
-                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer w-[110px] h-[110px] p-2 flex-shrink-0"
-                      >
-                        <div className="flex items-center h-12 w-12 justify-center">
-                          <img
-                            src={type.image}
-                            alt={type.name}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                        <span className="text-[13px] font-normal leading-tight text-center text-gray-800">{type.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+            {/* Page Heading inside Main Content */}
+            <div className="bg-white border border-gray-200 border-b-0 p-6">
+              <h1 className="text-3xl  font-semibold text-gray-900 mb-2 tracking-tight">{title}</h1>
+
             </div>
 
+            {/* Toolbar Section */}
+            {/* <div className="bg-white p-4 border border-gray-200 border-b-0 flex flex-wrap items-center justify-between text-[13px] text-gray-700 font-medium gap-4">
+              <div>Showing 1 - {Math.min(visibleProductCount, products.length)} of {products.length} products</div>
+
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 hidden sm:flex">
+                  <span>Display:</span>
+                  <select className="bg-transparent border-none outline-none font-semibold cursor-pointer text-gray-900">
+                    <option>24 per page</option>
+                    <option>48 per page</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>Sort by:</span>
+                  <select className="bg-transparent border-none outline-none font-semibold cursor-pointer text-gray-900">
+                    <option>Price, low to high</option>
+                    <option>Price, high to low</option>
+                    <option>Relevance</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
+                  <span className="mr-1">View</span>
+                  <button className="p-1 hover:text-primary text-gray-900"><Grid3X3 size={16} /></button>
+                  <button className="p-1 hover:text-primary text-gray-400"><LayoutList size={16} /></button>
+                </div>
+              </div>
+            </div> */}
 
             {/* Controls Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 shadow-sm lg:grid-cols-5 gap-0 border border-gray-200 bg-white">
