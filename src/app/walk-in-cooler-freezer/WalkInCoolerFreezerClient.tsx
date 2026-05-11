@@ -221,17 +221,17 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
         {/* Walk-In Type Selection Section */}
         <div className="mb-8">
-          <div className="flex justify-center gap-8 flex-wrap">
+          <div className="flex justify-center gap-6 flex-wrap">
             {walkInTypes.map((type) => (
-              <div key={type.name} className="flex flex-col items-center gap-4 cursor-pointer group">
-                <div className="w-[280px] h-[200px] bg-[#0066cc] rounded-2xl p-2 border-4 border-blue-100 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <div key={type.name} className="flex flex-col items-center gap-2 cursor-pointer group">
+                <div className="w-[160px] h-[120px] bg-[#0066cc] rounded-xl p-1 border-3 border-blue-100 shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                   <img
                     src={type.image}
                     alt={type.name}
-                    className="w-full h-full object-cover rounded-xl"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 text-center group-hover:text-primary transition-colors">
+                <h3 className="text-[12px] font-bold text-gray-800 text-center group-hover:text-primary transition-colors">
                   {type.name}
                 </h3>
               </div>
