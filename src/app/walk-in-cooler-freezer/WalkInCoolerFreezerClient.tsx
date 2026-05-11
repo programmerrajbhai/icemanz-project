@@ -9,7 +9,8 @@ import {
   Grid3X3,
   LayoutList,
   ChevronDown,
-  ChevronLeft
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
@@ -189,9 +190,55 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
   const [isReadMoreOpen, setIsReadMoreOpen] = useState(false);
 
+  const walkInTypes = [
+    {
+      name: 'Walk-In Box Only',
+      image: '/Walk-in-Cooler-Freezer/walkincoolers.jpg'
+    },
+    {
+      name: 'Walk-In Box with Top Mount',
+      image: '/Walk-in-Cooler-Freezer/coolerswithfloor.jpg'
+    },
+    {
+      name: 'Walk-In Box with Remote',
+      image: '/Walk-in-Cooler-Freezer/freezerswithfloor.jpg'
+    }
+  ];
+
   return (
     <div className=" bg-white min-h-screen">
       <div className="container mx-auto px-4 ">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-6 pb-4">
+          <div className="flex items-center gap-2 text-[12px] text-gray-500">
+            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <ChevronRight size={12} className="text-gray-400" />
+            <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-In Cooler & Freezer</Link>
+            <ChevronRight size={12} className="text-gray-400" />
+            <span className="text-gray-900 font-medium">{title}</span>
+          </div>
+        </div>
+
+        {/* Walk-In Type Selection Section */}
+        <div className="mb-8">
+          <div className="flex justify-center gap-8 flex-wrap">
+            {walkInTypes.map((type) => (
+              <div key={type.name} className="flex flex-col items-center gap-4 cursor-pointer group">
+                <div className="w-[280px] h-[200px] bg-[#0066cc] rounded-2xl p-2 border-4 border-blue-100 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                  <img
+                    src={type.image}
+                    alt={type.name}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 text-center group-hover:text-primary transition-colors">
+                  {type.name}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-4 pt-8 pb-8 ">
 
           {/* Sidebar Filters */}
@@ -296,25 +343,32 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
             {/* Page Heading inside Main Content */}
             <div className="bg-white border border-gray-200 border-b-0 p-6">
-              <h1 className="text-3xl  font-semibold text-gray-900 mb-2 tracking-tight">{title}</h1>
-
+              <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">{title}</h1>
+              <p className="text-sm text-gray-600">
+                At Atlantic Supermarket Equipment we have Walk-In Coolers in stock & ready to ship! We offer attractive financing options, ship nationwide, and have great prices!
+                <button
+                  onClick={() => setIsReadMoreOpen(!isReadMoreOpen)}
+                  className="ml-2 text-gray-900 font-bold underline cursor-pointer hover:text-primary transition-colors"
+                >
+                  Read more
+                </button>
+              </p>
             </div>
 
             {/* Toolbar Section */}
-            {/* <div className="bg-white p-4 border border-gray-200 border-b-0 flex flex-wrap items-center justify-between text-[13px] text-gray-700 font-medium gap-4">
+            <div className="bg-white p-4 border border-gray-200 border-b-0 flex flex-wrap items-center justify-between text-[13px] text-gray-700 font-medium gap-4">
               <div>Showing 1 - {Math.min(visibleProductCount, products.length)} of {products.length} products</div>
-
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2 hidden sm:flex">
                   <span>Display:</span>
-                  <select className="bg-transparent border-none outline-none font-semibold cursor-pointer text-gray-900">
+                  <select className="bg-transparent border border-gray-300 rounded px-2 py-1 outline-none font-semibold cursor-pointer text-gray-900">
                     <option>24 per page</option>
                     <option>48 per page</option>
                   </select>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>Sort by:</span>
-                  <select className="bg-transparent border-none outline-none font-semibold cursor-pointer text-gray-900">
+                  <select className="bg-transparent border border-gray-300 rounded px-2 py-1 outline-none font-semibold cursor-pointer text-gray-900">
                     <option>Price, low to high</option>
                     <option>Price, high to low</option>
                     <option>Relevance</option>
@@ -326,7 +380,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                   <button className="p-1 hover:text-primary text-gray-400"><LayoutList size={16} /></button>
                 </div>
               </div>
-            </div> */}
+            </div>
 
             {/* Controls Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 shadow-sm lg:grid-cols-5 gap-0 border border-gray-200 bg-white">
