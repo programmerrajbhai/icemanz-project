@@ -59,100 +59,12 @@ export default function RefrigerationEquipmentClient({
         <div className="container px-4">
 
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar */}
-            <aside className="lg:w-72 xl:w-[320px] shrink-0">
-              {/* Mobile Toggle Button */}
-              <button
-                onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-                className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4"
-              >
-                <div className="flex items-center gap-2">
-                  <Filter size={18} className="text-gray-900" />
-                  <span className="font-semibold text-gray-900 text-lg">Categories</span>
-                </div>
-                {isMobileSidebarOpen ? <Minus size={20} className="text-gray-900" /> : <Plus size={20} className="text-gray-900" />}
-              </button>
-
-              <div className={`space-y-6 ${isMobileSidebarOpen ? 'block' : 'hidden'} lg:block`}>
-                <div className="flex flex-col bg-white border rounded-sm border-gray-200 ">
-                  <div className="px-5 py-4 border-b border-gray-200">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className=" text-xl font-semibold text-gray-900">Product Categories</h3>
-                    </div>
-                  </div>
-                  <div className="p-5">
-                    <nav className="flex flex-col space-y-4">
-                      {categories.map((cat) => (
-                        <div key={cat.slug} className="space-y-4">
-                          <div className="flex items-center justify-between group">
-                            <Link
-                              href={`/refrigeration-equipment/${cat.slug}`}
-                              className={`text-md font-semibold transition-colors  ${slug === cat.slug ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
-                            >
-                              {cat.name}
-                            </Link>
-                            {cat.subcategories && cat.subcategories.length > 0 && (
-                              <button
-                                onClick={(e) => toggleExpand(e, cat.slug)}
-                                className="p-1 cursor-pointer transition-colors"
-                              >
-                                {expandedItems.includes(cat.slug) ? <Minus size={14} className="text-gray-800" /> : <Plus size={14} className="text-gray-800" />}
-                              </button>
-                            )}
-                          </div>
-
-                          {cat.subcategories && cat.subcategories.length > 0 && expandedItems.includes(cat.slug) && (
-                            <div className="pl-4 space-y-4 border-l border-gray-100 ml-1">
-                              {cat.subcategories.map((sub) => (
-                                <div key={sub.slug} className="space-y-4">
-                                  <div className="flex items-center justify-between group">
-                                    <Link
-                                      href={`/refrigeration-equipment/${sub.slug}`}
-                                      className={`text-[13px] font-semibold transition-colors ${slug === sub.slug ? 'text-primary' : 'text-gray-600 hover:text-primary'}`}
-                                    >
-                                      {sub.name}
-                                    </Link>
-                                    {sub.subcategories && sub.subcategories.length > 0 && (
-                                      <button
-                                        onClick={(e) => toggleExpand(e, sub.slug)}
-                                        className="p-1 cursor-pointer transition-colors"
-                                      >
-                                        {expandedItems.includes(sub.slug) ? <Minus size={12} className="text-gray-600" /> : <Plus size={12} className="text-gray-600" />}
-                                      </button>
-                                    )}
-                                  </div>
-
-                                  {sub.subcategories && sub.subcategories.length > 0 && expandedItems.includes(sub.slug) && (
-                                    <div className="pl-4 space-y-3 border-l border-gray-100 ml-1">
-                                      {sub.subcategories.map((deepSub) => (
-                                        <Link
-                                          key={deepSub.slug}
-                                          href={`/refrigeration-equipment/${deepSub.slug}`}
-                                          className={`text-[12px] font-medium transition-colors block ${slug === deepSub.slug ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
-                                        >
-                                          {deepSub.name}
-                                        </Link>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </nav>
-                  </div>
-                </div>
-              </div>
-            </aside>
-
             {/* Main Content Area */}
             <div className="flex-1">
               <div className=" flex mb-8 flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
 
                 <div>
-                  <h1 className="text-xl sm:text-xl  font-semibold text-primary tracking-tight">
+                  <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
                     {title}
                   </h1>
                   <p className="text-sm pt-2  block font-medium text-gray-500">
