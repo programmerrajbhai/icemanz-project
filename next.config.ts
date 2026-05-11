@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'www.atlanticse.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'p16-cc-image-search-sign-sg.ibyteimg.com',
+      },
     ],
   },
 };

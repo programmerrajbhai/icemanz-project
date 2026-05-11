@@ -208,23 +208,14 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   return (
     <div className=" bg-white min-h-screen">
       <div className="container mx-auto px-4 ">
-        {/* Breadcrumb Navigation */}
-        <div className="pt-6 pb-4">
-          <div className="flex items-center gap-2 text-[12px] text-gray-500">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-            <ChevronRight size={12} className="text-gray-400" />
-            <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-In Cooler & Freezer</Link>
-            <ChevronRight size={12} className="text-gray-400" />
-            <span className="text-gray-900 font-medium">{title}</span>
-          </div>
-        </div>
+        
 
         {/* Walk-In Type Selection Section */}
-        <div className="mb-8">
+        <div className="  pt-10 pb-20">
           <div className="flex justify-center gap-6 flex-wrap">
             {walkInTypes.map((type) => (
-              <div key={type.name} className="flex flex-col items-center gap-2 cursor-pointer group">
-                <div className="w-[160px] h-[120px] bg-[#0066cc] rounded-xl   shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+              <div key={type.name} className="flex w-[130px] h-[100px] flex-col items-center gap-2 cursor-pointer group">
+                <div className="  rounded-xl   shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                   <img
                     src={type.image}
                     alt={type.name}
@@ -355,32 +346,6 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
               </p>
             </div>
 
-            {/* Toolbar Section */}
-            <div className="bg-white p-4 border border-gray-200 border-b-0 flex flex-wrap items-center justify-between text-[13px] text-gray-700 font-medium gap-4">
-              <div>Showing 1 - {Math.min(visibleProductCount, products.length)} of {products.length} products</div>
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2 hidden sm:flex">
-                  <span>Display:</span>
-                  <select className="bg-transparent border border-gray-300 rounded px-2 py-1 outline-none font-semibold cursor-pointer text-gray-900">
-                    <option>24 per page</option>
-                    <option>48 per page</option>
-                  </select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>Sort by:</span>
-                  <select className="bg-transparent border border-gray-300 rounded px-2 py-1 outline-none font-semibold cursor-pointer text-gray-900">
-                    <option>Price, low to high</option>
-                    <option>Price, high to low</option>
-                    <option>Relevance</option>
-                  </select>
-                </div>
-                <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
-                  <span className="mr-1">View</span>
-                  <button className="p-1 hover:text-primary text-gray-900"><Grid3X3 size={16} /></button>
-                  <button className="p-1 hover:text-primary text-gray-400"><LayoutList size={16} /></button>
-                </div>
-              </div>
-            </div>
 
             {/* Controls Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 shadow-sm lg:grid-cols-5 gap-0 border border-gray-200 bg-white">
