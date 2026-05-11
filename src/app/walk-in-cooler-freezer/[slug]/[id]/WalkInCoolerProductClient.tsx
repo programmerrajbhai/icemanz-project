@@ -251,35 +251,6 @@ export default function WalkInCoolerProductClient({
                   </div>
                 </section>
 
-                {/* Visual Features Section */}
-                <section className="bg-gray-50/30 py-16 px-8 mt-4 border border-gray-200">
-                  <div className="space-y-16 max-w-2xl mx-auto">
-                    {[
-                      { title: "Heavy-Duty Deadbolt Handle Latch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                      { title: "Modular Panel Construction", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                      { title: "Spring Assisted Hinges", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                      { title: "Digital LED Thermometer & Switch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                      { title: "Heated Pressure-Relief Vent", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                      { title: "Long-Life Extruded Polystyrene Foam", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                      { title: "Door Closer", image: "/Walk-in-Cooler-Freezer/combounits.jpg" }
-                    ].map((feature, index) => (
-                      <div key={index} className={`flex items-center justify-center gap-12 md:gap-24 ${index % 2 !== 0 ? 'flex-row-reverse' : 'flex-row'}`}>
-                        {/* Image Container */}
-                        <div className="relative w-40 h-40 md:w-48 md:h-48 shrink-0 rounded-full overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-8 border-white bg-white flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                          <Image src={feature.image} alt={feature.title} fill className="object-cover" />
-                        </div>
-
-                        {/* Text */}
-                        <div className={`flex-1 max-w-[200px] ${index % 2 !== 0 ? 'text-right' : 'text-left'}`}>
-                          <h3 className="text-base md:text-lg font-extrabold text-gray-900 leading-snug">
-                            {feature.title}
-                          </h3>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
                 {/* FAQ Section */}
                 <section className="bg-white p-8 mt-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-8">
@@ -463,7 +434,37 @@ export default function WalkInCoolerProductClient({
             </div>
           </div>
 
+          {/* Bottom Full-Width Sections */}
+          <div className="w-full mt-12 flex flex-col gap-8">
+            {/* Visual Features Section */}
+            <section className="bg-gray-50/50 py-20 px-8 rounded-3xl">
+              <div className="space-y-20 max-w-3xl mx-auto">
+                {[
+                  { title: "Heavy-Duty Deadbolt Handle Latch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                  { title: "Modular Panel Construction", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                  { title: "Spring Assisted Hinges", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                  { title: "Digital LED Thermometer & Switch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                  { title: "Heated Pressure-Relief Vent", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                  { title: "Long-Life Extruded Polystyrene Foam", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                  { title: "Door Closer", image: "/Walk-in-Cooler-Freezer/combounits.jpg" }
+                ].map((feature, index) => (
+                  <div key={index} className={`flex items-center justify-center gap-16 md:gap-32 ${index % 2 !== 0 ? 'flex-row-reverse' : 'flex-row'}`}>
+                    {/* Image Container */}
+                    <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 rounded-full overflow-hidden shadow-2xl bg-white flex items-center justify-center transition-transform hover:scale-105 hover:-translate-y-2 duration-500 ease-out">
+                      <Image src={feature.image} alt={feature.title} fill className="object-cover hover:scale-110 transition-transform duration-700" />
+                    </div>
 
+                    {/* Text */}
+                    <div className={`flex-1 max-w-[280px] ${index % 2 !== 0 ? 'text-right' : 'text-left'}`}>
+                      <h3 className="text-xl md:text-2xl font-black text-gray-900 leading-tight tracking-tight">
+                        {feature.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
 
         </div>
       </div>
