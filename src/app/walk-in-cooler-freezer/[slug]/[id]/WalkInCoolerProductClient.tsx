@@ -251,59 +251,73 @@ export default function WalkInCoolerProductClient({
                   </div>
                 </section>
 
+                {/* Visual Features Section */}
+                <section className="bg-gray-50/30 py-16 px-8 mt-4 border border-gray-200">
+                  <div className="space-y-16 max-w-2xl mx-auto">
+                    {[
+                      { title: "Heavy-Duty Deadbolt Handle Latch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                      { title: "Modular Panel Construction", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                      { title: "Spring Assisted Hinges", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                      { title: "Digital LED Thermometer & Switch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                      { title: "Heated Pressure-Relief Vent", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                      { title: "Long-Life Extruded Polystyrene Foam", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
+                      { title: "Door Closer", image: "/Walk-in-Cooler-Freezer/combounits.jpg" }
+                    ].map((feature, index) => (
+                      <div key={index} className={`flex items-center justify-center gap-12 md:gap-24 ${index % 2 !== 0 ? 'flex-row-reverse' : 'flex-row'}`}>
+                        {/* Image Container */}
+                        <div className="relative w-40 h-40 md:w-48 md:h-48 shrink-0 rounded-full overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-8 border-white bg-white flex items-center justify-center transition-transform hover:scale-105 duration-300">
+                          <Image src={feature.image} alt={feature.title} fill className="object-cover" />
+                        </div>
 
-
-
-
-                {/* FAQ Section */}
-                <section className="border border-gray-200 bg-white mt-4">
-                  <button
-                    onClick={() => toggleSection('faqs')}
-                    className="w-full flex items-center justify-between cursor-pointer p-6 hover:bg-gray-50 transition-colors"
-                  >
-                    <h2 className="text-xl font-bold text-gray-900">FAQ's</h2>
-                    {expandedSections.faqs ? <Minus size={24} className="text-gray-900" /> : <Plus size={24} className="text-gray-900" />}
-                  </button>
-
-                  {expandedSections.faqs && (
-                    <div className="p-6 md:p-8 pt-0">
-                      <h3 className="text-lg font-bold text-gray-900 text-center mb-6">
-                        Astra Walk-In Coolers and Freezers
-                      </h3>
-                      <div className="border border-gray-200 rounded-md overflow-hidden">
-                        {faqItems.map((faq, index) => (
-                          <div
-                            key={index}
-                            className={`border-b border-gray-200 last:border-b-0 ${expandedFaq === index ? 'bg-gray-100' : 'bg-gray-50'
-                              }`}
-                          >
-                            <button
-                              onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                              className="w-full text-left p-4 hover:bg-gray-100 transition-colors"
-                            >
-                              <span className="font-bold text-sm text-gray-900">
-                                {faq.question}
-                              </span>
-                            </button>
-                            {expandedFaq === index && (
-                              <div className="p-4 pt-0 text-sm text-gray-700 bg-gray-100">
-                                {faq.answer}
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                        {/* Text */}
+                        <div className={`flex-1 max-w-[200px] ${index % 2 !== 0 ? 'text-right' : 'text-left'}`}>
+                          <h3 className="text-base md:text-lg font-extrabold text-gray-900 leading-snug">
+                            {feature.title}
+                          </h3>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </section>
 
+                {/* FAQ Section */}
+                <section className="bg-white p-8 mt-4 border border-gray-200">
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-xl font-bold text-gray-900">FAQ's</h2>
+                    <Minus size={24} className="text-gray-900" />
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 text-center mb-6">
+                    Walk-In Coolers and Freezers
+                  </h3>
+                  <div className="border border-gray-200 rounded-md overflow-hidden bg-gray-50">
+                    {[
+                      'What is a walk-in cooler or freezer?',
+                      'What sizes are available for walk-in coolers?',
+                      'What are the benefits of a walk-in cooler?',
+                      'How do I maintain a walk-in cooler?',
+                      'Are walk-in coolers energy-efficient?'
+                    ].map((question, index) => (
+                      <div
+                        key={index}
+                        className="border-b border-gray-200 last:border-b-0"
+                      >
+                        <div className="p-4">
+                          <span className="font-bold text-sm text-gray-900">
+                            {question}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
 
               </div>
 
             </div>
 
             {/* Right: Product Info */}
-            <div className="w-full lg:w-[35%] lg:sticky lg:top-24 self-start p-4 flex flex-col gap-6">
+            <div className="w-full lg:w-[35%] border border-gray-200 bg-white lg:sticky lg:top-24 self-start p-4 flex flex-col gap-6">
 
               {/* Title */}
               <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
