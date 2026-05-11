@@ -210,31 +210,76 @@ export default function WalkInCoolerProductClient({
 
               <div>
                 {/* description */}
-                <section className="border border-gray-200 bg-white p-8 mt-4">
+                <section className="bg-white p-8 mt-4">
                   <h2 className="text-xl font-bold text-gray-900 mb-6">Description</h2>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <p className="text-sm text-gray-800 leading-relaxed">
-                      <span className="font-bold">Astra® Quick-Ship Walk-In Coolers & Freezers</span> deliver quality and speed with modular cam-lock panels, sizes 5'-40', and top-mount or remote options. Ships in 48 hours, NSF, UL, DOE compliant, with 10-year panel warranty. Ready when you are!
+                      Quick Ship Indoor Walk-In Cooler, 6' W x 6' L x 7-2 1/4" H, Without Floor, 4" thick AK-XPS4 insulation providing R-29 for coolers and R-32 for freezers, ceiling & doors, insulation with 50 Year R-value warranty, 26 gauge stucco embossed corrosion resistant acrylic coated Acrylume® on all interior & exterior surfaces, NSF vinyl screed, flush self-closing door, digital LED thermometer with pilot light switch, super cam-rise spring assisted hinges & door closer, ships in 48 hours - subject to terms & conditions, UL, Made in USA
                     </p>
 
-                    <ul className="space-y-4">
-                      {[
-                        'Ships within 48 hours',
-                        'Several Variations Available',
-                        'Top-Mount or Remote Refrigeration',
-                        'Modular design with all cam-lock panels',
-                        '10 year panel warranty, 1 year parts warranty on doors',
-                        '2 year parts and 1 labor warranty on top-mount refrigeration',
-                        'NSF, UL, DOE, ASTM Test 518, and ASTM Test E84 Compliant',
-                        'UL723 Flame Spread and Smoke Development Compliant'
-                      ].map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                          <span className="mt-2 size-1.5 rounded-full bg-gray-400 shrink-0"></span>
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div>
+                      <h3 className="text-sm font-bold text-gray-900 mb-3">Features:</h3>
+                      <ul className="space-y-2">
+                        {[
+                          '4" Thick AK-XPS4 insulation, providing R-29 for coolers and R-32 for freezers',
+                          '26 Gauge Acrylume® coated corrosion resistant stucco embossed Galvalume on all interior and exterior surfaces',
+                          '30"W x 76"H or 36"W x 76"H flush mounted door with spring actuated door closer',
+                          '2 Super cam-rise spring assisted hinges',
+                          'Deadbolt keyed handle latch',
+                          'Interior safety lock release handle',
+                          'Digital LED thermometer with on and off pilot light switch',
+                          'Vapor proof light fixture centered on interior door jamb',
+                          'Floorless walk-ins have NSF vinyl screed'
+                        ].map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
+                            <span className="mt-2 size-1.5 rounded-full bg-gray-800 shrink-0"></span>
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3">Spec Sheet</h3>
+                      <img 
+                        src="/products/product_1.jpg" 
+                        alt="Spec Sheet" 
+                        className="w-20 h-auto" 
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                {/* FAQ Section */}
+                <section className="bg-white p-8 mt-4">
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-xl font-bold text-gray-900">FAQ's</h2>
+                    <Minus size={24} className="text-gray-900" />
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 text-center mb-4">
+                    Walk-In Coolers and Freezers
+                  </h3>
+                  <div className="border border-gray-200 rounded-md overflow-hidden">
+                    {[
+                      'What is a walk-in cooler or freezer?',
+                      'What sizes are available for walk-in coolers?',
+                      'What are the benefits of a walk-in cooler?',
+                      'How do I maintain a walk-in cooler?',
+                      'Are walk-in coolers energy-efficient?'
+                    ].map((question, index) => (
+                      <div
+                        key={index}
+                        className="border-b border-gray-200 last:border-b-0 bg-gray-50"
+                      >
+                        <div className="p-4">
+                          <span className="font-bold text-sm text-gray-900">
+                            {question}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </section>
 
