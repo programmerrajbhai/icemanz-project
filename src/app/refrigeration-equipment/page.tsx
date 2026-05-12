@@ -6,13 +6,8 @@ import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const productCategories = [
   { name: 'Condensing units', image: '/category/refrigerationEquipment/condensingUnit.jpg', slug: 'condensing-units' },
-  { name: 'Medium profile', image: '/category/refrigerationEquipment/ADM-2.webp', slug: 'medium-profile-scroll-compressor' },
   { name: 'Evaporation units', image: '/category/refrigerationEquipment/fan4_side-1.webp', slug: 'evaporation-units' },
   { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/packageUnit.jpg', slug: 'combo-unitspackage-units' },
-  { name: 'Low profile evaporator', image: '/category/refrigerationEquipment/lowProfileEvaporator.jpg', slug: 'low-profile-evaporator-uk7wb' },
-  { name: 'Medium profile', image: '/category/refrigerationEquipment/ADM-3-1.webp', slug: 'medium-profile-j131rj' },
-  { name: 'Center mount', image: '/category/refrigerationEquipment/centerMount.jpg', slug: 'center-mount-evaporator-low-velocity-y4ukrt' },
-  { name: 'Thin profile evaporator', image: '/category/refrigerationEquipment/thinProfileEvaporator.jpg', slug: 'thin-profile-evaporator-reach-in-ltzs2' },
 ];
 
 const reasons = [
