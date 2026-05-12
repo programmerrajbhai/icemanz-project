@@ -19,6 +19,24 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+function extractProductInfo(text: string | null | undefined) {
+  if (!text) return null;
+  const hpMatch = text.match(/(\d+(?:\.\d+)?)\s*HP/i);
+  const tempMatch = text.match(/(Medium|Low)(?:\s+Temperature)?/i);
+  if (hpMatch) {
+    const hp = hpMatch[1];
+    const temp = tempMatch ? `${tempMatch[1]} Temp` : 'Medium Temp';
+    return `${hp} HP, ${temp}`;
+  }
+  const btuMatch = text.match(/([\d,]+)\s*BTU/i);
+  if (btuMatch) {
+    const btu = btuMatch[1].replace(/,/g, '');
+    const formattedBtu = btu.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return `${formattedBtu} BTU`;
+  }
+  return null;
+}
+
 type ProductType = {
   id: string;
   title: string;
@@ -54,6 +72,7 @@ export default function ProductDetailsClient({
   relatedProducts: RelatedProduct[];
   slug: string;
 }) {
+  const formattedInfo = extractProductInfo(product.keyFeatures) || extractProductInfo(product.description) || null;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('features');
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -154,7 +173,7 @@ export default function ProductDetailsClient({
                 {product.images.length > 0 ? (
                   <Image
                     src={product.images[activeImageIndex]}
-                    alt={product.title}
+                    alt={formattedInfo || product.title}
                     fill
                     priority
                     style={{ transform: `scale(${zoomLevel})` }}
@@ -191,7 +210,7 @@ export default function ProductDetailsClient({
             <div className="flex flex-col lg:col-span-1 px-0 lg:pl-8">
               <div className="mb-8 mt-3">
                 <h1 className="text-2xl md:text-3xl font-bold text-[#1f2937] tracking-tight">
-                  {product.title}
+                  {formattedInfo ? `${formattedInfo} ${product.title}` : product.title}
                 </h1>
                 {product.price && (
                   <p className="text-xl font-bold text-[#004a99] mt-3">
@@ -202,11 +221,11 @@ export default function ProductDetailsClient({
 
               <div className="space-y-8">
                 {/* Key Features */}
-                {product.keyFeatures && (
+                {product.description && (
                   <div>
                     <h3 className="text-lg font-bold text-[#1f2937] mb-4">Key Features</h3>
                     <p className="text-gray-600 pl-4 text-[15px] leading-relaxed">
-                      {product.keyFeatures}
+                      {product.description}
                     </p>
                   </div>
                 )}
@@ -368,11 +387,12 @@ export default function ProductDetailsClient({
                   </div>
                 )}
 
-                {activeTab === 'description' && product.description && (
+                {activeTab === 'description' && (
                   <div className="space-y-6">
                     <h3 className="text-2xl font-bold text-[#1f2937] tracking-tight mb-6">Product Description</h3>
                     <div className="text-gray-600 text-[15px] leading-relaxed whitespace-pre-line">
-                      {product.description}
+                      {formattedInfo}
+                      {product.description && <><br /><br />{product.description}</>}
                     </div>
                   </div>
                 )}

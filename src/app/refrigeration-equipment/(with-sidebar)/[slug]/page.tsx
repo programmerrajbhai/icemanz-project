@@ -33,7 +33,7 @@ export default async function RefrigerationSubcategoryPage({ params }: { params:
     title = category.name;
     // Collect all category IDs (this category + its subcategories + sub-subcategories)
     const categoryIdsToFetch = [category.id];
-    
+
     const subCategories = await prisma.category.findMany({
       where: { parentId: category.id },
       include: { subcategories: true }
@@ -67,9 +67,9 @@ export default async function RefrigerationSubcategoryPage({ params }: { params:
   }
 
   return (
-    <RefrigerationEquipmentClient 
-      products={products} 
-      categories={dbCategories as any} 
+    <RefrigerationEquipmentClient
+      products={products}
+      categories={dbCategories as any}
       slug={slug}
       title={title}
     />

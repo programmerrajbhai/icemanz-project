@@ -5,9 +5,9 @@ import Image from 'next/image';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const productCategories = [
-  { name: 'Condensing units', image: '/category/refrigerationEquipment/condensingUnit.jpg', slug: 'condensing-units' },
-  { name: 'Evaporation units', image: '/category/refrigerationEquipment/fan4_side-1.webp', slug: 'evaporation-units' },
-  { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/packageUnit.jpg', slug: 'combo-unitspackage-units' },
+  { name: 'Condensing units', image: '/category/refrigerationEquipment/Make_mockup_refrigeration_item_202605120945.jpeg', slug: 'condensing-units' },
+  { name: 'Evaporation units', image: '/category/refrigerationEquipment/just_make_it_mockup_202605120945.jpeg', slug: 'evaporation-units' },
+  { name: 'Combo units / package unit', image: '/category/refrigerationEquipment/just_make_it_mockup_202605121524.jpeg', slug: 'combo-unitspackage-units' },
 ];
 
 const reasons = [

@@ -208,7 +208,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   return (
     <div className=" bg-white min-h-screen">
       <div className="container mx-auto px-4 ">
-        
+
 
         {/* Walk-In Type Selection Section */}
         <div className="  pt-10 pb-20">
@@ -333,7 +333,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
           <div className="flex-1">
 
             {/* Page Heading inside Main Content */}
-            <div className="bg-white border border-gray-200 border-b-0 p-6">
+            <div className="bg-white  border-b-0 p-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">{title}</h1>
               <p className="text-sm text-gray-600">
                 At Atlantic Supermarket Equipment we have Walk-In Coolers in stock & ready to ship! We offer attractive financing options, ship nationwide, and have great prices!
@@ -348,12 +348,12 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
 
             {/* Controls Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 shadow-sm lg:grid-cols-5 gap-0 border border-gray-200 bg-white">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 shadow-sm lg:grid-cols-5  bg-white">
               {products.slice(0, visibleProductCount).map((product) => (
                 <Link
                   key={product.id}
                   href={`/walk-in-cooler-freezer/${product.slug}`}
-                  className="bg-white border-r border-b border-gray-200 py-2 flex flex-col cursor-pointer hover:shadow-lg transition-all duration-300 group"
+                  className="bg-white   shadow-md py-2 flex flex-col cursor-pointer  transition-all duration-300 group"
                 >
                   {/* Image */}
 
@@ -371,8 +371,11 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                     <div className="text-[10px] text-black font-bold mb-0.5 uppercase">
                       {product.brand || product.title.split(' ')[0]}
                     </div>
-                    <h3 className="text-xs font-semibold text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors">{product.title}</h3>
+
+                    <h3 className="text-xs  font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-3">{product.title}</h3>
+
                     <div className="text-lg font-semibold text-[#004a99] mb-1 ">${product.price}</div>
+
                     <div className="flex items-center justify-center gap-1.5 mb-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                       <span className="text-[9px] font-black text-gray-500 uppercase">{product.badge || 'IN STOCK'}</span>
