@@ -12,26 +12,41 @@ const subcategoryTitles: Record<string, string> = {
   'walk-in-combo-cooler-freezer': 'Walk-In Combo (Cooler & Freezer)'
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function WalkInCoolerSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   // Check if this is a subcategory page
   if (subcategoryTitles[slug]) {
-    const products = await prisma.product.findMany({
+    let products = await prisma.product.findMany({
       where: {
         category: {
-          slug: 'walk-in-cooler-freezer'
+          slug: slug
         }
       }
     });
+
+    // Fallback: If no products found in the specific subcategory,
+    // load the original products from the main 'walk-in-cooler-freezer' category
+    // or the 'walk-in-cooler-no-floor' category as requested ("ager product guloi show korby")
+    if (products.length === 0) {
+      products = await prisma.product.findMany({
+        where: {
+          category: {
+            slug: 'walk-in-cooler-no-floor'
+          }
+        }
+      });
+    }
 
     return (
       <main className="min-h-screen bg-white selection:bg-primary selection:text-white">
         <Header />
         <div className="pt-24 lg:pt-32">
-          <WalkInCoolerFreezerClient 
-            initialProducts={products} 
-            title={subcategoryTitles[slug]} 
+          <WalkInCoolerFreezerClient
+            initialProducts={products}
+            title={subcategoryTitles[slug]}
           />
         </div>
         <Footer />

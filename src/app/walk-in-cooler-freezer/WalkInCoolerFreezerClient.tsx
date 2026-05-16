@@ -21,7 +21,8 @@ interface Product {
   images: string[];
   slug: string;
   badge?: string | null;
-  brand?: string; // Add brand field
+  brand?: string | null; // Add brand field
+  type?: string | null; // Add type field for refrigeration type
 }
 
 const FilterSection = ({ id, title, children, expandedFilters, toggleFilter }: { id: string, title: string, children: React.ReactNode, expandedFilters: string[], toggleFilter: (id: string) => void }) => (
@@ -117,54 +118,118 @@ interface WalkInCoolerFreezerClientProps {
 export default function WalkInCoolerFreezerClient({ initialProducts, title = "Walk-In Cooler & Freezer" }: WalkInCoolerFreezerClientProps) {
   const { addToCart } = useCart();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'depth']);
+  const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'custom-product']);
   const [selectedBoxType, setSelectedBoxType] = useState<string | null>(null);
   const [visibleProductCount, setVisibleProductCount] = useState(40); // Increased initial count to show more products
   const [activeBoxType, setActiveBoxType] = useState<string | null>(null);
   const [activeRefrigerationType, setActiveRefrigerationType] = useState<string | null>(null);
 
-  // Dynamic Brand Filter State
+  // Derive filter counts from products
+  const filterCounts = useMemo(() => {
+    const counts = {
+      brands: {
+        'Amerikooler': 0,
+        'Icemanz': 0
+      } as Record<string, number>,
+      sizes: {
+        "6' x 6'": 0,
+        "6' x 8'": 0,
+        "6' x 10'": 0,
+        "6' x 12'": 0,
+        "8' x 8'": 0,
+        "8' x 10'": 0,
+        "8' x 12'": 0,
+        "10' x 10'": 0
+      } as Record<string, number>,
+      refrigeration: {
+        'No Refrigeration': 0,
+        'Top-Mount Refrigeration': 0
+      } as Record<string, number>,
+      walkInTypes: {
+        'Cooler (Refrigerator) No Floor': 0
+      } as Record<string, number>,
+      productTypes: {
+        'Walk-In Boxes': 0
+      } as Record<string, number>,
+      customProducts: {
+        'Yes': 0
+      } as Record<string, number>
+    };
+
+    initialProducts.forEach(product => {
+      // Brand
+      const brand = product.brand || product.title.split(' ')[0];
+      if (brand === 'Amerikooler' || brand === 'Icemanz') {
+        counts.brands[brand] = (counts.brands[brand] || 0) + 1;
+      }
+
+      // Size
+      const sizeMatch = product.title.match(/(\d+')\s*x\s*(\d+')/);
+      if (sizeMatch) {
+        const size = `${sizeMatch[1]} x ${sizeMatch[2]}`;
+        if (counts.sizes[size] !== undefined) {
+          counts.sizes[size] += 1;
+        } else {
+          // If a product has a size not in the predefined list, we can add it or ignore it.
+          // For now, let's just add it so no products are missed.
+          counts.sizes[size] = 1;
+        }
+      }
+
+      // Refrigeration
+      if (product.type) {
+        counts.refrigeration[product.type] = (counts.refrigeration[product.type] || 0) + 1;
+      }
+
+      // We can infer walkInTypes from title or just increment for all if we want to mock it
+      // For now, let's assume if it has 'Cooler' and 'No Floor'
+      if (product.title.includes('Cooler') && (product.title.includes('No Floor') || product.title.includes('Floorless'))) {
+        counts.walkInTypes['Cooler (Refrigerator) No Floor']++;
+      }
+
+      counts.productTypes['Walk-In Boxes']++;
+      counts.customProducts['Yes']++;
+    });
+
+    return counts;
+  }, [initialProducts]);
+
+  // Dynamic Filter States
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedRefrigerationTypes, setSelectedRefrigerationTypes] = useState<string[]>([]);
+  const [selectedWalkInTypes, setSelectedWalkInTypes] = useState<string[]>([]);
+  const [selectedProductTypes, setSelectedProductTypes] = useState<string[]>([]);
+  const [selectedCustomProducts, setSelectedCustomProducts] = useState<string[]>([]);
 
   // Derive brands and counts from products
   const brands = useMemo(() => {
-    const brandMap: Record<string, number> = {};
+    return Object.entries(filterCounts.brands).map(([name, count]) => ({ name, count }));
+  }, [filterCounts.brands]);
 
-    // Always ensure ICEMANZ is present if needed, but here we derive from products
-    initialProducts.forEach(product => {
-      // Extract brand from title (e.g., "Astra 6 x 6" -> "Astra")
-      const brand = product.title.split(' ')[0];
-      brandMap[brand] = (brandMap[brand] || 0) + 1;
-    });
+  // Helper to extract size from product title
+  const extractSize = (title: string) => {
+    const match = title.match(/(\d+')\s*x\s*(\d+')/);
+    return match ? `${match[1]} x ${match[2]}` : '';
+  };
 
-    // Get brand list from products
-    const brandList = Object.entries(brandMap)
-      .map(([name, count]) => ({ name, count }))
-      .filter(b => b.name.toUpperCase() !== 'ASTRA'); // Exclude Astra
-
-    // Ensure ICEMANZ is always at the top even if it has 0 products
-    const hasIcemanz = brandList.some(b => b.name.toUpperCase() === 'ICEMANZ');
-    if (!hasIcemanz) {
-      brandList.push({ name: 'ICEMANZ', count: 0 });
-    }
-
-    return brandList.sort((a, b) => {
-      const nameA = a.name.toUpperCase();
-      const nameB = b.name.toUpperCase();
-      if (nameA === 'ICEMANZ') return -1;
-      if (nameB === 'ICEMANZ') return 1;
-      return nameA.localeCompare(nameB);
-    });
-  }, [initialProducts]);
-
-  // Filter products based on selected brands
+  // Filter products based on selected filters
   const filteredProducts = useMemo(() => {
-    if (selectedBrands.length === 0) return initialProducts;
     return initialProducts.filter(product => {
       const brand = product.title.split(' ')[0];
-      return selectedBrands.includes(brand);
+      const size = extractSize(product.title);
+
+      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand);
+      const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(size);
+      const refrigerationMatch = selectedRefrigerationTypes.length === 0 || selectedRefrigerationTypes.includes(product.type || '');
+      const walkInTypeMatch = selectedWalkInTypes.length === 0 ||
+        selectedWalkInTypes.some(type => product.title.includes(type.split(' ')[0]));
+      const productTypeMatch = selectedProductTypes.length === 0 || selectedProductTypes.includes("Walk-In Boxes");
+      const customProductMatch = selectedCustomProducts.length === 0 || selectedCustomProducts.includes("Yes");
+
+      return brandMatch && sizeMatch && refrigerationMatch && walkInTypeMatch && productTypeMatch && customProductMatch;
     });
-  }, [initialProducts, selectedBrands]);
+  }, [initialProducts, selectedBrands, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes, selectedProductTypes, selectedCustomProducts]);
 
   const products = filteredProducts;
 
@@ -174,8 +239,43 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     );
   };
 
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev =>
+      prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
+    );
+  };
+
+  const toggleRefrigerationType = (type: string) => {
+    setSelectedRefrigerationTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
+  const toggleWalkInType = (type: string) => {
+    setSelectedWalkInTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
+  const toggleProductType = (type: string) => {
+    setSelectedProductTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
+  const toggleCustomProduct = (type: string) => {
+    setSelectedCustomProducts(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
   const clearAllFilters = () => {
     setSelectedBrands([]);
+    setSelectedSizes([]);
+    setSelectedRefrigerationTypes([]);
+    setSelectedWalkInTypes([]);
+    setSelectedProductTypes([]);
+    setSelectedCustomProducts([]);
   };
 
   const toggleFilter = (id: string) => {
@@ -250,8 +350,63 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                       </button>
                     </div>
                   ))}
+                  {selectedSizes.map(size => (
+                    <div key={size} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                      Size: {size}
+                      <button
+                        onClick={() => toggleSize(size)}
+                        className="hover:text-primary cursor-pointer transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                  {selectedRefrigerationTypes.map(type => (
+                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                      Refrigeration: {type}
+                      <button
+                        onClick={() => toggleRefrigerationType(type)}
+                        className="hover:text-primary cursor-pointer transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                  {selectedWalkInTypes.map(type => (
+                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                      Walk In Type: {type}
+                      <button
+                        onClick={() => toggleWalkInType(type)}
+                        className="hover:text-primary cursor-pointer transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                  {selectedProductTypes.map(type => (
+                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                      Product Type: {type}
+                      <button
+                        onClick={() => toggleProductType(type)}
+                        className="hover:text-primary cursor-pointer transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                  {selectedCustomProducts.map(type => (
+                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                      Custom Product: {type}
+                      <button
+                        onClick={() => toggleCustomProduct(type)}
+                        className="hover:text-primary cursor-pointer transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
-                {selectedBrands.length > 0 && (
+                {(selectedBrands.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0 || selectedProductTypes.length > 0 || selectedCustomProducts.length > 0) && (
                   <button
                     onClick={clearAllFilters}
                     className="text-sm mt-5 cursor-pointer font-normal underline text-black decoration-gray-900 underline-offset-2 hover:text-primary hover:decoration-primary transition-all"
@@ -276,54 +431,54 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                 </FilterSection>
 
                 <FilterSection id="size" title="Size W x L" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="5' x 6'" count={9} checked={false} onChange={() => { }} />
-                  <Checkbox label="5' x 8'" count={9} checked={false} onChange={() => { }} />
-                  <Checkbox label="5' x 10'" count={11} checked={false} onChange={() => { }} />
-                  <Checkbox label="5' x 12'" count={10} checked={false} onChange={() => { }} />
+                  {Object.entries(filterCounts.sizes).map(([size, count]) => (
+                    <Checkbox
+                      key={size}
+                      label={size}
+                      count={count}
+                      checked={selectedSizes.includes(size)}
+                      onChange={() => toggleSize(size)}
+                    />
+                  ))}
                 </FilterSection>
 
                 <FilterSection id="refrigeration" title="Refrigeration" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="No Refrigeration" count={378} checked={false} onChange={() => { }} />
-                  <Checkbox label="Top-Mount Refrigeration" count={229} checked={false} onChange={() => { }} />
-                  <Checkbox label="Remote Refrigeration" count={188} checked={false} onChange={() => { }} />
+                  {Object.entries(filterCounts.refrigeration).map(([type, count]) => (
+                    <Checkbox
+                      key={type}
+                      label={type}
+                      count={count}
+                      checked={selectedRefrigerationTypes.includes(type)}
+                      onChange={() => toggleRefrigerationType(type)}
+                    />
+                  ))}
                 </FilterSection>
 
                 <FilterSection id="walk-in-type" title="Walk In Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="Combo (Cooler & Freezer)" count={101} checked={false} onChange={() => { }} />
-                  <Checkbox label="Cooler" count={1} checked={false} onChange={() => { }} />
+                  <Checkbox
+                    label="Cooler (Refrigerator) No Floor"
+                    count={filterCounts.walkInTypes['Cooler (Refrigerator) No Floor']}
+                    checked={selectedWalkInTypes.includes("Cooler (Refrigerator) No Floor")}
+                    onChange={() => toggleWalkInType("Cooler (Refrigerator) No Floor")}
+                  />
                 </FilterSection>
 
                 <FilterSection id="product-type" title="Product Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="Indoor" count={45} checked={false} onChange={() => { }} />
-                  <Checkbox label="Outdoor" count={32} checked={false} onChange={() => { }} />
-                </FilterSection>
-
-                <FilterSection id="power-type" title="Power Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="Electric" count={500} checked={false} onChange={() => { }} />
-                  <Checkbox label="Gas" count={50} checked={false} onChange={() => { }} />
+                  <Checkbox
+                    label="Walk-In Boxes"
+                    count={filterCounts.productTypes['Walk-In Boxes']}
+                    checked={selectedProductTypes.includes("Walk-In Boxes")}
+                    onChange={() => toggleProductType("Walk-In Boxes")}
+                  />
                 </FilterSection>
 
                 <FilterSection id="custom-product" title="Custom Product" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="Yes" count={200} checked={false} onChange={() => { }} />
-                  <Checkbox label="No" count={400} checked={false} onChange={() => { }} />
-                </FilterSection>
-
-                <FilterSection id="depth" title="Depth" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="4'" count={12} checked={false} onChange={() => { }} />
-                  <Checkbox label="5'" count={28} checked={false} onChange={() => { }} />
-                  <Checkbox label="6'" count={15} checked={false} onChange={() => { }} />
-                </FilterSection>
-
-                <FilterSection id="wattage" title="Wattage" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="1000W" count={50} checked={false} onChange={() => { }} />
-                  <Checkbox label="1500W" count={75} checked={false} onChange={() => { }} />
-                  <Checkbox label="2000W" count={100} checked={false} onChange={() => { }} />
-                </FilterSection>
-
-                <FilterSection id="number-of-wells" title="Number of Wells" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox label="2 Wells" count={50} checked={false} onChange={() => { }} />
-                  <Checkbox label="3 Wells" count={75} checked={false} onChange={() => { }} />
-                  <Checkbox label="4 Wells" count={100} checked={false} onChange={() => { }} />
+                  <Checkbox
+                    label="Yes"
+                    count={filterCounts.customProducts['Yes']}
+                    checked={selectedCustomProducts.includes("Yes")}
+                    onChange={() => toggleCustomProduct("Yes")}
+                  />
                 </FilterSection>
               </div>
             </div>
