@@ -50,16 +50,6 @@ const demoProjects = [
     }
 ];
 
-const filters = [
-    'ALL PROJECTS',
-    'WALK-IN COOLERS',
-    'WALK-IN FREEZERS',
-    'COMBO UNITS',
-    'GLASSDOOR',
-    'DRIVE-IN',
-    'COMMERCIAL',
-    'HEALTHCARE'
-];
 
 const stats = [
     { label: 'PROJECTS DELIVERED', value: '140+' },

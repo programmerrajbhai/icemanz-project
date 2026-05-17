@@ -42,37 +42,37 @@ export default function RefrigerationEquipmentPage() {
         <div className="container px-4">
           {/* Header Bar */}
           <div className="flex flex-col md:flex-row   md:items-center gap-4 mb-8">
-            <h1 className="text-2xl md:text-[28px] font-bold text-[#1f2937] tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#1f2937] tracking-tight">
               Refrigeration <span className="text-[#004a99]">Equipment</span>
             </h1>
             <Image src="/turboair_logo_hr.jpg" alt="logo" width={180} height={180} />
           </div>
 
           {/* Main Grid Section */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-5 lg:gap-6 mb-24 max-w-7xl">
+          <div className="grid  grid-cols-2 sm:grid-cols-3   justify-center items-center gap-4 md:gap-5 lg:gap-6 mb-24 ">
             {productCategories.map((product, index) => (
               <Link
                 key={index}
                 href={`/refrigeration-equipment/${product.slug}`}
-                className="group flex flex-col bg-white border border-gray-100 rounded-sm hover:shadow-lg hover:shadow-gray-200/40 transition-all duration-300 overflow-hidden text-center items-center p-3 sm:p-4"
+                className='block w-full h-full'
               >
                 {/* Image Area */}
-                <div className="w-full relative pt-[90%] rounded-sm overflow-hidden mb-4 border-2 border-gray-50">
+                <div className="w-full relative aspect-square rounded-sm overflow-hidden mb-4 ">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-contain transition-transform duration-500 ease-in-out p-4 group-hover:scale-110"
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                    className="object-contain transition-transform duration-500 ease-in-out  group-hover:scale-110"
+
                   />
                 </div>
 
                 {/* Content Area */}
-                <div className="px-1 pb-1 flex flex-col justify-center min-h-[44px]">
-                  <h3 className="text-[13px] sm:text-[14px] font-semibold text-gray-800 group-hover:text-[#004a99] transition-colors leading-snug">
+                 <div className="px-1 pb-1 flex flex-col justify-center ">
+                  <h3 className="text-[13px] uppercase sm:text-xl font-bold text-gray-800 group-hover:text-[#004a99] transition-colors leading-snug">
                     {product.name}
                   </h3>
-                </div>
+                </div> 
               </Link>
             ))}
           </div>

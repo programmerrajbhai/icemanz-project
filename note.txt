@@ -31,3 +31,25 @@ so ei filter wise products gulo database a add korby onno kono kisu jano change 
 
 
 
+
+
+
+
+keep all the product butoon choose option insted of add to cart and if user click on this button go inside the detials page not addin to cart from this page
+
+
+
+ekhnay suggeted product section a alternate way tay kj korby 
+many Condensing Units er products jodi cart a add kora thaky 
+taholy Evaporation Units er products suggested products hisaby 
+dekhaby same vaby  Evaporation Units cart a thakly Condensing Units er 
+products show korby suggested products a
+
+exe : 
+Condensing Units > Low Profile - in cart 
+
+Evaporation Units > Low Profile - in suggested products
+
+Evaporation Units > Medium Profile - in cart 
+
+Condensing Units > Medium Profile (Scroll Compressor) - in suggested products

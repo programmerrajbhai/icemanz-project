@@ -2,18 +2,65 @@ import prisma from '@/lib/prisma';
 import RequestInvoiceClient from './RequestInvoiceClient';
 import { notFound } from 'next/navigation';
 
-// Category mapping for alternate products
-const getAlternateCategorySlug = (slug: string): string | null => {
-  const mappings: Record<string, string> = {
-    'condensing-units': 'evaporation-units',
-    'evaporation-units': 'condensing-units',
-    'scroll-compressor': 'low-profile-evaporator',
-    'low-profile-evaporator': 'scroll-compressor',
-    'semi-hermetic': 'reach-in-evaporator',
-    'reach-in-evaporator': 'semi-hermetic',
-  };
-  return mappings[slug] || null;
-};
+async function getAlternateCategoryIds(categoryId: string): Promise<string[] | null> {
+  const allCategories = await prisma.category.findMany();
+
+  let current = allCategories.find(c => c.id === categoryId);
+  if (!current) return null;
+
+  // Find profile level and top level
+  let profileLevel = null;
+  let topLevel = current;
+
+  if (current.parentId !== null) {
+    let parent = allCategories.find(c => c.id === current.parentId);
+    if (parent && parent.parentId !== null) {
+      // current is level 3 (e.g. Scroll Compressor)
+      profileLevel = parent;
+      topLevel = allCategories.find(c => c.id === parent.parentId) || topLevel;
+    } else {
+      // current is level 2
+      profileLevel = current;
+      topLevel = parent || topLevel;
+    }
+  }
+
+  // Determine alternate top level
+  let altTopLevelName = null;
+  if (topLevel.name === 'Condensing Units') altTopLevelName = 'Evaporation Units';
+  else if (topLevel.name === 'Evaporation Units') altTopLevelName = 'Condensing Units';
+
+  if (!altTopLevelName) return null;
+
+  const altTopLevel = allCategories.find(c => c.name === altTopLevelName);
+  if (!altTopLevel) return null;
+
+  let altProfileCategory = null;
+  if (profileLevel) {
+    if (profileLevel.name.includes('Low Profile')) {
+      const altName = altTopLevelName === 'Evaporation Units' ? 'Low Profile Evaporator' : 'Low Profile';
+      altProfileCategory = allCategories.find(c => c.name === altName && c.parentId === altTopLevel.id);
+    } else if (profileLevel.name.includes('Medium Profile')) {
+      const altName = altTopLevelName === 'Evaporation Units' ? 'Medium Profile' : 'Medium Profile (Scroll Compressor)';
+      altProfileCategory = allCategories.find(c => c.name === altName && c.parentId === altTopLevel.id);
+    }
+  }
+
+  const targetCategory = altProfileCategory || altTopLevel;
+
+  // Get all descendent category IDs so we can fetch all products under it
+  const ids = [targetCategory.id];
+  const children = allCategories.filter(c => c.parentId === targetCategory.id);
+  ids.push(...children.map(c => c.id));
+
+  // Get grandchildren if any
+  for (const child of children) {
+    const grandchildren = allCategories.filter(c => c.parentId === child.id);
+    ids.push(...grandchildren.map(c => c.id));
+  }
+
+  return ids;
+}
 
 export default async function RequestInvoicePage({
   searchParams,
@@ -24,7 +71,7 @@ export default async function RequestInvoicePage({
 
   let initialAddedProduct = null;
   let categoryId = null;
-  let alternateCategoryId = null;
+  let alternateCategoryIds: string[] | null = null;
   let initialCategory = null;
 
   if (productId) {
@@ -51,31 +98,8 @@ export default async function RequestInvoicePage({
         href: '#'
       };
 
-      // Find alternate category
-      if (product.category) {
-        // First try mapping the current category's slug
-        let alternateSlug = getAlternateCategorySlug(product.category.slug);
-        
-        // If not found, check parent category
-        if (!alternateSlug && product.category.parentId) {
-          const parentCategory = await prisma.category.findUnique({
-            where: { id: product.category.parentId },
-            select: { slug: true }
-          });
-          if (parentCategory) {
-            alternateSlug = getAlternateCategorySlug(parentCategory.slug);
-          }
-        }
-
-        if (alternateSlug) {
-          // Find the alternate category
-          const alternateCategory = await prisma.category.findFirst({
-            where: { slug: alternateSlug }
-          });
-          if (alternateCategory) {
-            alternateCategoryId = alternateCategory.id;
-          }
-        }
+      if (product.categoryId) {
+        alternateCategoryIds = await getAlternateCategoryIds(product.categoryId);
       }
     }
   }
@@ -83,11 +107,11 @@ export default async function RequestInvoicePage({
   // Fetch products for the suggested sidebar
   let dbProducts = [];
 
-  if (alternateCategoryId) {
-    // If we found an alternate category, use it for suggestions
+  if (alternateCategoryIds && alternateCategoryIds.length > 0) {
+    // If we found alternate categories, use them for suggestions
     dbProducts = await prisma.product.findMany({
       where: {
-        categoryId: alternateCategoryId,
+        categoryId: { in: alternateCategoryIds },
         ...(productId ? { id: { not: productId } } : {})
       },
       take: 6,

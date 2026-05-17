@@ -118,6 +118,8 @@ interface WalkInCoolerFreezerClientProps {
 export default function WalkInCoolerFreezerClient({ initialProducts, title = "Walk-In Cooler & Freezer" }: WalkInCoolerFreezerClientProps) {
   const { addToCart } = useCart();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
   const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'custom-product']);
   const [selectedBoxType, setSelectedBoxType] = useState<string | null>(null);
   const [visibleProductCount, setVisibleProductCount] = useState(40); // Increased initial count to show more products
@@ -128,8 +130,9 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const filterCounts = useMemo(() => {
     const counts = {
       brands: {
-        'Amerikooler': 0,
-        'Icemanz': 0
+        'Icemanz': 0,
+        'Amerikooler': 0
+
       } as Record<string, number>,
       sizes: {
         "6' x 6'": 0,
@@ -233,40 +236,49 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
   const products = filteredProducts;
 
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const currentProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const toggleBrand = (brand: string) => {
     setSelectedBrands(prev =>
       prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
     );
+    setCurrentPage(1);
   };
 
   const toggleSize = (size: string) => {
     setSelectedSizes(prev =>
       prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
     );
+    setCurrentPage(1);
   };
 
   const toggleRefrigerationType = (type: string) => {
     setSelectedRefrigerationTypes(prev =>
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
+    setCurrentPage(1);
   };
 
   const toggleWalkInType = (type: string) => {
     setSelectedWalkInTypes(prev =>
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
+    setCurrentPage(1);
   };
 
   const toggleProductType = (type: string) => {
     setSelectedProductTypes(prev =>
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
+    setCurrentPage(1);
   };
 
   const toggleCustomProduct = (type: string) => {
     setSelectedCustomProducts(prev =>
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
+    setCurrentPage(1);
   };
 
   const clearAllFilters = () => {
@@ -276,6 +288,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     setSelectedWalkInTypes([]);
     setSelectedProductTypes([]);
     setSelectedCustomProducts([]);
+    setCurrentPage(1);
   };
 
   const toggleFilter = (id: string) => {
@@ -309,7 +322,6 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     <div className=" bg-white min-h-screen">
       <div className="container mx-auto px-4 ">
 
-
         {/* Walk-In Type Selection Section */}
         <div className="  pt-10 pb-20">
           <div className="flex justify-center gap-6 flex-wrap">
@@ -333,7 +345,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
         <div className="flex flex-col lg:flex-row gap-4 pt-8 pb-8 ">
 
           {/* Sidebar Filters */}
-          <aside className="lg:w-60 xl:w-64 border border-gray-200 shadow-sm ">
+          <aside className="lg:w-60 xl:w-64 border  h-fit border-gray-200 shadow-sm ">
             <div className="space-y-0">
               {/* Active Filters / Selected Filters */}
               <div className=" bg-white  py-2 px-4">
@@ -415,9 +427,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                   </button>
                 )}
               </div>
-
               <div className="  bg-white p-2">
-
                 <FilterSection id="brand" title="Brand" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
                   {brands.map((brand) => (
                     <Checkbox
@@ -483,10 +493,8 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
               </div>
             </div>
           </aside>
-
           {/* Main Content - Product Grid */}
           <div className="flex-1">
-
             {/* Page Heading inside Main Content */}
             <div className="bg-white  border-b-0 p-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">{title}</h1>
@@ -504,7 +512,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
             {/* Controls Row */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 shadow-sm lg:grid-cols-5  bg-white">
-              {products.slice(0, visibleProductCount).map((product) => (
+              {currentProducts.map((product) => (
                 <Link
                   key={product.id}
                   href={`/walk-in-cooler-freezer/${product.slug}`}
@@ -527,7 +535,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                       {product.brand || product.title.split(' ')[0]}
                     </div>
 
-                    <h3 className="text-xs  font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-3">{product.title}</h3>
+                    <h3 className="text-xs  font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-2">{product.title}</h3>
 
                     <div className="text-lg font-semibold text-[#004a99] mb-1 ">${product.price}</div>
 
@@ -536,21 +544,11 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                       <span className="text-[9px] font-black text-gray-500 uppercase">{product.badge || 'IN STOCK'}</span>
                     </div>
 
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        addToCart({
-                          id: product.id,
-                          name: product.title,
-                          price: parseFloat(product.price?.replace(/,/g, '') || '0'),
-                          image: product.images[0],
-                          quantity: 1
-                        })
-                      }}
+                    <div
                       className="w-full py-2 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
                     >
-                      <ShoppingCart size={12} /> Add to Cart
-                    </button>
+                      Choose Option
+                    </div>
 
                   </div>
 
@@ -560,14 +558,38 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
               ))}
             </div>
 
-            {/* Load More Button */}
-            {products.length > visibleProductCount && (
-              <div className="flex justify-center mt-8 mb-12">
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center mt-8 mb-12 gap-2">
                 <button
-                  onClick={handleLoadMore}
-                  className="px-8 py-3 bg-white border-2 border-[#004a99] text-[#004a99] font-bold rounded-sm hover:bg-[#004a99] hover:text-white transition-all duration-300 cursor-pointer uppercase tracking-wider text-sm"
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="p-2 border border-gray-300 cursor-pointer rounded-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Load More Products ({products.length - visibleProductCount} remaining)
+                  <ChevronLeft size={20} className="text-gray-600" />
+                </button>
+
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-10 h-10 flex items-center cursor-pointer justify-center rounded-sm text-sm font-medium transition-colors ${currentPage === i + 1
+                        ? 'bg-[#004a99] text-white border border-[#004a99]'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                        }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="p-2 border border-gray-300 cursor-pointer rounded-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight size={20} className="text-gray-600" />
                 </button>
               </div>
             )}

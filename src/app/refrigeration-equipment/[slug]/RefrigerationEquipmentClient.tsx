@@ -239,8 +239,9 @@ export default function RefrigerationEquipmentClient({
                         </div>
 
                         {/* Content Area */}
-                        <div className="flex flex-col  text-center items-center px-1 mt-2">
-                          <h3 className="text-sm  font-semibold text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors line-clamp-2">
+                        <div className="flex flex-col flex-grow items-center text-center">
+                          {/* Title / Description */}
+                          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-1 group-hover:text-blue-700 transition-colors">
                             {formattedInfo}
                           </h3>
 

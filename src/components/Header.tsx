@@ -29,7 +29,7 @@ export default function Header() {
   const mobileMenuData = [
     {
       label: 'Walk-in Cooler & Freezer',
-      href: '/walk-in-cooler-freezer',
+      href: '*',
       subItems: [
         { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
         { label: 'Walk-In Cooler No Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
@@ -149,9 +149,9 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex gap-10 items-center">
             <div className="relative group py-2">
-              <Link href="/walk-in-cooler-freezer" className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
+              <span className="text-[15px] font-bold text-gray-800 hover:text-primary transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap">
                 Walk-in Cooler & Freezer <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
-              </Link>
+              </span>
               {/* Mega Dropdown for Walk-in Cooler & Freezer */}
               <div
                 className="absolute top-full left-0 w-[320px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-0 z-50 overflow-hidden"

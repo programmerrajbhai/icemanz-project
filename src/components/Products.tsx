@@ -136,7 +136,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 
 export default function Products() {
   return (
-    <section id="products" className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50/50 relative overflow-hidden">
+    <section id="products" className="py-16 md:py-24  from-white to-gray-50/50 relative overflow-hidden">
       {/* Background patterns */}
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none">
         <svg className="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -149,7 +149,7 @@ export default function Products() {
 
       <div className="container px-4 md:px-6 relative z-10">
         <div className="text-center max-w-4xl mx-auto mb-12 md:mb-20">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight uppercase flex flex-wrap items-center justify-center gap-2 md:gap-3">
+          <h2 className="text-3xl sm:text-4xl md:text-[40px] font-black tracking-tight uppercase flex flex-wrap items-center justify-center gap-2 md:gap-3">
             <span className="text-[#171717]">Featured</span>
             <span className="text-primary">Products</span>
           </h2>

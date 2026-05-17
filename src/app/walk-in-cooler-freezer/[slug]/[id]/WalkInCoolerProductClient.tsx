@@ -81,6 +81,7 @@ export default function WalkInCoolerProductClient({
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showZoom, setShowZoom] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [containerSize, setContainerSize] = useState({ width: 600, height: 600 });
   const [isHovering, setIsHovering] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     refrigeration: false,
@@ -171,7 +172,7 @@ export default function WalkInCoolerProductClient({
                 </div>
 
                 {/* Main Image */}
-                <div className="flex items-center justify-center bg-white rounded-sm overflow-hidden relative">
+                <div className="flex items-center justify-center bg-white rounded-sm relative">
                   <div
                     className="relative w-full h-[600px] cursor-crosshair overflow-hidden"
                     onMouseMove={(e) => {
@@ -179,6 +180,10 @@ export default function WalkInCoolerProductClient({
                       setMousePosition({
                         x: e.clientX - rect.left,
                         y: e.clientY - rect.top
+                      });
+                      setContainerSize({
+                        width: rect.width,
+                        height: rect.height
                       });
                     }}
                     onMouseEnter={() => setIsHovering(true)}
@@ -197,14 +202,29 @@ export default function WalkInCoolerProductClient({
                       <div
                         className="absolute border border-blue-500 bg-white/30 pointer-events-none z-20"
                         style={{
-                          left: mousePosition.x - 100,
-                          top: mousePosition.y - 100,
+                          left: Math.max(0, Math.min(mousePosition.x - 100, containerSize.width - 200)),
+                          top: Math.max(0, Math.min(mousePosition.y - 100, containerSize.height - 200)),
                           width: '200px',
                           height: '200px',
                         }}
                       />
                     )}
                   </div>
+
+                  {/* Zoom Preview Panel */}
+                  {isHovering && (
+                    <div
+                      className="hidden lg:block absolute top-0 left-full ml-4 z-50 bg-white border border-gray-200 shadow-2xl pointer-events-none"
+                      style={{
+                        width: '500px',
+                        height: '500px',
+                        backgroundImage: `url(${product.images[activeImageIndex]})`,
+                        backgroundPosition: `${(mousePosition.x / containerSize.width) * 100}% ${(mousePosition.y / containerSize.height) * 100}%`,
+                        backgroundSize: `${containerSize.width * 2.5}px ${containerSize.height * 2.5}px`,
+                        backgroundRepeat: 'no-repeat'
+                      }}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -243,9 +263,9 @@ export default function WalkInCoolerProductClient({
                     <div className="mt-6">
                       <h3 className="text-sm font-bold text-gray-900 mb-3">Spec Sheet</h3>
                       <img
-                        src="/products/product_1.jpg"
+                        src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
                         alt="Spec Sheet"
-                        className="w-20 h-auto"
+                        className="w-20 h-auto cursor-pointer hover:opacity-80 transition-opacity"
                       />
                     </div>
                   </div>
@@ -434,37 +454,53 @@ export default function WalkInCoolerProductClient({
             </div>
           </div>
 
+
+
+
+
           {/* Bottom Full-Width Sections */}
           <div className="w-full mt-12 flex flex-col gap-8">
+            <h2 className="text-2xl  text-center font-bold text-gray-900">Standard Features</h2>
+
+
+
             {/* Visual Features Section */}
-            <section className="bg-gray-50/50 py-20 px-8 rounded-3xl">
-              <div className="space-y-20 max-w-3xl mx-auto">
+            <section className="   px-32 p-10 rounded-3xl">
+              <h2 className="text-xl font-bold text-gray-900">More Walk-In Options!</h2>
+
+              <div className="  mx-auto mt-10">
                 {[
-                  { title: "Heavy-Duty Deadbolt Handle Latch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                  { title: "Modular Panel Construction", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                  { title: "Spring Assisted Hinges", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                  { title: "Digital LED Thermometer & Switch", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                  { title: "Heated Pressure-Relief Vent", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                  { title: "Long-Life Extruded Polystyrene Foam", image: "/Walk-in-Cooler-Freezer/combounits.jpg" },
-                  { title: "Door Closer", image: "/Walk-in-Cooler-Freezer/combounits.jpg" }
+                  { title: "Heavy-Duty Deadbolt Handle Latch", image: "/Walk-in-Cooler-Freezer/details/handle-round_1.webp" },
+                  { title: "Modular Panel Construction", image: "/Walk-in-Cooler-Freezer/details/Walkin-ModularPanelConstruction.webp" },
+                  { title: "Spring Assisted Hinges", image: "/Walk-in-Cooler-Freezer/details/walkin-SpringHinge-Kason.webp" },
+                  { title: "Digital LED Thermometer & Switch", image: "/Walk-in-Cooler-Freezer/details/Walk-in-DigitalTherm-Switch.webp" },
+                  { title: "Heated Pressure-Relief Vent", image: "/Walk-in-Cooler-Freezer/details/Walkin-HeatPressureReliefVent.webp" },
+                  { title: "Long-Life Extruded Polystyrene Foam", image: "/Walk-in-Cooler-Freezer/details/Walkin-PolystyreneFoam.webp" },
+                  { title: "Door Closer", image: "/Walk-in-Cooler-Freezer/details/Door_Closer.webp" }
                 ].map((feature, index) => (
-                  <div key={index} className={`flex items-center justify-center gap-16 md:gap-32 ${index % 2 !== 0 ? 'flex-row-reverse' : 'flex-row'}`}>
+
+                  <div key={index} className={`flex items-center justify-center gap-16  ${index % 2 !== 0 ? 'flex-row-reverse' : 'flex-row'}`}>
+
                     {/* Image Container */}
-                    <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 rounded-full overflow-hidden shadow-2xl bg-white flex items-center justify-center transition-transform hover:scale-105 hover:-translate-y-2 duration-500 ease-out">
-                      <Image src={feature.image} alt={feature.title} fill className="object-cover hover:scale-110 transition-transform duration-700" />
+                    <div className="relative w-100 h-100  overflow-hidden   flex items-center justify-center ">
+                      <Image src={feature.image} alt={feature.title} fill className="object-cover " />
                     </div>
 
                     {/* Text */}
-                    <div className={`flex-1 max-w-[280px] ${index % 2 !== 0 ? 'text-right' : 'text-left'}`}>
-                      <h3 className="text-xl md:text-2xl font-black text-gray-900 leading-tight tracking-tight">
+                    <div className={`flex-1  ${index % 2 !== 0 ? 'text-right' : 'text-left'}`}>
+                      <h3 className="text-xl md:text-2xl  font-semibold text-gray-900 leading-tight tracking-tight">
                         {feature.title}
                       </h3>
                     </div>
+
                   </div>
+
                 ))}
               </div>
             </section>
           </div>
+
+
 
         </div>
       </div>
