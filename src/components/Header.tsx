@@ -117,6 +117,8 @@ export default function Header() {
 
   return (
     <header className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'lg:-top-[37px]' : 'top-0'}`}>
+
+      
       {/* Top Bar - Refined Blue */}
       <div className="hidden lg:flex bg-[#003d80] text-white py-2.5 h-[37px] items-center border-b border-white/5">
         <div className="container flex justify-between items-center text-[12px] font-bold uppercase tracking-wider leading-none">

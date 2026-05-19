@@ -323,7 +323,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
       <div className="container mx-auto px-4 ">
 
         {/* Walk-In Type Selection Section */}
-        <div className="  pt-10 pb-20">
+        {/* <div className="  pt-10 pb-20">
           <div className="flex justify-center gap-6 flex-wrap">
             {walkInTypes.map((type) => (
               <div key={type.name} className="flex w-[130px] h-[100px] flex-col items-center gap-2 cursor-pointer group">
@@ -340,7 +340,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col lg:flex-row gap-4 pt-8 pb-8 ">
 
@@ -508,10 +508,8 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                 </button>
               </p>
             </div>
-
-
             {/* Controls Row */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 shadow-sm lg:grid-cols-5  bg-white">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5  bg-white">
               {currentProducts.map((product) => (
                 <Link
                   key={product.id}
@@ -557,10 +555,9 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
               ))}
             </div>
-
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-8 mb-12 gap-2">
+              <div className="flex justify-center items-center my-12 gap-2">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}

@@ -5,6 +5,7 @@ import PrelineScript from "@/components/PrelineScript";
 import { Toaster } from 'react-hot-toast';
 import TopLoader from "@/components/TopLoader";
 import { CartProvider } from "@/context/CartContext";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
         <CartProvider>
           <TopLoader />
           {children}
+          <Footer />
           <Toaster position="bottom-right" />
           <PrelineScript />
         </CartProvider>

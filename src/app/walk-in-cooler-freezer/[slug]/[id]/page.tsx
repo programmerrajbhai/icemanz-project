@@ -228,19 +228,33 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   // Fetch related products
   let relatedProducts: any[] = [];
   if (product.categoryId) {
+    // Try to fetch from the same category first
     relatedProducts = await prisma.product.findMany({
       where: {
         categoryId: product.categoryId,
         id: { not: product.id }
       },
-      take: 5,
+      take: 20,
       include: { category: true }
     });
+
+    // If we don't have enough, fetch other walk-in products
+    if (relatedProducts.length < 10) {
+      const moreProducts = await prisma.product.findMany({
+        where: {
+          id: { notIn: [product.id, ...relatedProducts.map(p => p.id)] },
+          title: { contains: 'Walk-In', mode: 'insensitive' }
+        },
+        take: 20 - relatedProducts.length,
+        include: { category: true }
+      });
+      relatedProducts = [...relatedProducts, ...moreProducts];
+    }
   } else {
     // Fallback related products from mock data
     relatedProducts = Object.values(mockProductsDetails)
       .filter(p => p.id !== id)
-      .slice(0, 5);
+      .slice(0, 20);
   }
 
   return (

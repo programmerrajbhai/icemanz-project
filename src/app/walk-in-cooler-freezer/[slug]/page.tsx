@@ -63,7 +63,7 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
     notFound();
   }
 
-  // Fetch related products from the same category only
+  // Fetch related products from the same category
   let relatedProducts: any[] = [];
   if (product.categoryId) {
     relatedProducts = await prisma.product.findMany({
@@ -71,9 +71,22 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
         categoryId: product.categoryId,
         id: { not: product.id }
       },
-      take: 5,
+      take: 20,
       include: { category: true }
     });
+    
+    // If we don't have enough, fetch other walk-in products
+    if (relatedProducts.length < 10) {
+      const moreProducts = await prisma.product.findMany({
+        where: {
+          id: { notIn: [product.id, ...relatedProducts.map(p => p.id)] },
+          title: { contains: 'Walk-In', mode: 'insensitive' }
+        },
+        take: 20 - relatedProducts.length,
+        include: { category: true }
+      });
+      relatedProducts = [...relatedProducts, ...moreProducts];
+    }
   }
 
   // Map the product to the format expected by the client component

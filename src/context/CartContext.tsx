@@ -63,7 +63,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     toast.success(`${product.name} added to cart!`);
-    setIsCartOpen(true); // Automatically open cart modal
   };
 
   const removeFromCart = (id: string) => {
