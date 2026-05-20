@@ -448,8 +448,6 @@ export default function ProductDetailsClient({
 
         </div>
       </div>
-
-      <Footer />
     </main>
   );
 }

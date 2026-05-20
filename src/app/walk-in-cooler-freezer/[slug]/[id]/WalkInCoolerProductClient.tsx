@@ -1,7 +1,6 @@
 "use client";
 
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -98,6 +97,7 @@ export default function WalkInCoolerProductClient({
     warranty: false,
     description: true
   });
+  const [activeTab, setActiveTab] = useState<string>('spec-sheet');
 
   const relatedProductsSliderRef = useRef<HTMLDivElement>(null);
   const recentlyViewedSliderRef = useRef<HTMLDivElement>(null);
@@ -311,6 +311,9 @@ export default function WalkInCoolerProductClient({
                     </div>
                   </div>
                 </section>
+
+          
+
                 {/* FAQ Section */}
                 <section className="bg-white p-8 mt-4 border border-gray-200">
                   <button
@@ -484,7 +487,8 @@ export default function WalkInCoolerProductClient({
                       brand: product.brand || 'ICEMANZ',
                       price: product.price,
                       image: product.images[0] || '/placeholder.png',
-                      quantity: quantity
+                      quantity: quantity,
+                      category: 'walk-in-cooler-freezer'
                     });
                     router.push('/cart');
                   }}

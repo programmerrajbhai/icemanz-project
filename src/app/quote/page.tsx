@@ -22,12 +22,12 @@ import {
 import toast from 'react-hot-toast';
 
 function ErrorMsg({ msg }: { msg?: string }) {
-  if (!msg) return null;
-  return (
-    <p className="text-red-500 text-xs font-semibold mt-1.5 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
-      <AlertCircle size={14} /> {msg}
-    </p>
-  );
+    if (!msg) return null;
+    return (
+        <p className="text-red-500 text-xs font-semibold mt-1.5 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
+            <AlertCircle size={14} /> {msg}
+        </p>
+    );
 }
 
 export default function QuotePage() {
@@ -80,11 +80,11 @@ export default function QuotePage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         const newErrors: Record<string, string> = {};
         if (!formData.jobName) newErrors.jobName = 'Job name is required';
         if (!formData.address) newErrors.address = 'Installation address is required';
-        
+
         // Ensure at least one system type is selected
         if (!formData.coolerSystemType && !formData.freezerSystemType) {
             newErrors.systemType = 'Please provide details for either a Cooler or a Freezer (System Type).';
@@ -130,7 +130,7 @@ export default function QuotePage() {
                         </div>
                         <h2 className="text-2xl font-black text-gray-900 mb-3">Quote Request Sent!</h2>
                         <p className="text-gray-500 mb-8 font-medium">Thank you for your interest. Our team will review your requirements and get back to you with a custom quotation shortly.</p>
-                        <button 
+                        <button
                             onClick={() => window.location.reload()}
                             className="w-full py-3 px-4 bg-[#004a99] hover:bg-blue-800 text-white rounded-lg font-bold transition-colors shadow-sm cursor-pointer"
                         >
@@ -138,7 +138,6 @@ export default function QuotePage() {
                         </button>
                     </div>
                 </div>
-                <Footer />
             </main>
         );
     }
@@ -269,7 +268,7 @@ export default function QuotePage() {
                                                         { id: 'package', label: 'Package', sub: 'Top mount' }
                                                     ].map(type => (
                                                         <label key={type.id} className={`flex p-3 w-full bg-white border ${errors.systemType ? 'border-red-500 bg-red-50/30' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} rounded-sm text-sm cursor-pointer transition-all ${formData.coolerSystemType === type.label ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' : ''}`}>
-                                                            <input type="radio" name="coolerSystemType" value={type.label} checked={formData.coolerSystemType === type.label} onChange={(e) => { handleChange(e); setErrors(prev => { const n = {...prev}; delete n.systemType; return n; }) }} className="shrink-0 mt-0.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
+                                                            <input type="radio" name="coolerSystemType" value={type.label} checked={formData.coolerSystemType === type.label} onChange={(e) => { handleChange(e); setErrors(prev => { const n = { ...prev }; delete n.systemType; return n; }) }} className="shrink-0 mt-0.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
                                                             <span className="text-sm text-gray-500 ms-3">
                                                                 <span className="block font-bold text-gray-800">{type.label}</span>
                                                                 <span className="block text-xs">{type.sub}</span>
@@ -324,7 +323,7 @@ export default function QuotePage() {
                                                         { id: 'f-package', label: 'Package', sub: 'Top mount' }
                                                     ].map(type => (
                                                         <label key={type.id} className={`flex p-3 w-full bg-white border ${errors.systemType ? 'border-red-500 bg-red-50/30' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} rounded-sm text-sm cursor-pointer transition-all ${formData.freezerSystemType === type.label ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50' : ''}`}>
-                                                            <input type="radio" name="freezerSystemType" value={type.label} checked={formData.freezerSystemType === type.label} onChange={(e) => { handleChange(e); setErrors(prev => { const n = {...prev}; delete n.systemType; return n; }) }} className="shrink-0 mt-0.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
+                                                            <input type="radio" name="freezerSystemType" value={type.label} checked={formData.freezerSystemType === type.label} onChange={(e) => { handleChange(e); setErrors(prev => { const n = { ...prev }; delete n.systemType; return n; }) }} className="shrink-0 mt-0.5 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none cursor-pointer" />
                                                             <span className="text-sm text-gray-500 ms-3">
                                                                 <span className="block font-bold text-gray-800">{type.label}</span>
                                                                 <span className="block text-xs">{type.sub}</span>
@@ -376,8 +375,8 @@ export default function QuotePage() {
 
                                 {/* Submit Button */}
                                 <div className="mt-6 flex justify-end">
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         disabled={isSubmitting}
                                         className="py-3 px-8 inline-flex items-center gap-x-2 text-sm font-black uppercase tracking-widest rounded-sm border border-transparent bg-[#004a99] text-white hover:bg-blue-800 focus:outline-none focus:bg-blue-800 disabled:opacity-50 disabled:pointer-events-none transition-all shadow-lg shadow-blue-900/20 active:scale-95 cursor-pointer"
                                     >
@@ -391,7 +390,6 @@ export default function QuotePage() {
                 </div>
             </div>
 
-            <Footer />
         </main>
     );
 }

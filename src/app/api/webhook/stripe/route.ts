@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
   port: parseInt(process.env.SMTP_PORT || '587'),
   secure: process.env.SMTP_SECURE === 'true',
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.SMTP_USERNAME || process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD || process.env.SMTP_PASS,
   },
 });
 
@@ -35,23 +35,49 @@ export async function POST(req: Request) {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
+      case 'checkout.session.completed':
+      case 'payment_intent.succeeded': {
+        let invoiceId: string | undefined;
+        let customerName: string = 'Customer';
+        let customerEmail: string = '';
+        let amountPaid: number = 0;
+        let currency: string = 'usd';
+        let stripeSessionId: string = '';
+        let stripePaymentId: string = '';
 
-        // Retrieve metadata we set during session creation
-        const invoiceId = session.metadata?.invoiceId;
-        const customerName = session.metadata?.customerName || 'Customer';
-        const customerEmail = session.metadata?.customerEmail || session.customer_details?.email || '';
-        const amountPaid = session.amount_total ? session.amount_total / 100 : 0;
+        if (event.type === 'checkout.session.completed') {
+          const session = event.data.object as Stripe.Checkout.Session;
+          invoiceId = session.metadata?.invoiceId;
+          customerName = session.metadata?.customerName || 'Customer';
+          customerEmail = session.metadata?.customerEmail || session.customer_details?.email || '';
+          amountPaid = session.amount_total ? session.amount_total / 100 : 0;
+          currency = session.currency || 'usd';
+          stripeSessionId = session.id;
+          stripePaymentId = session.payment_intent as string;
+        } else {
+          const paymentIntent = event.data.object as Stripe.PaymentIntent;
+          invoiceId = paymentIntent.metadata?.invoiceId;
+          customerName = paymentIntent.metadata?.customerName || 'Customer';
+          customerEmail = paymentIntent.metadata?.customerEmail || '';
+          amountPaid = paymentIntent.amount / 100;
+          currency = paymentIntent.currency;
+          stripePaymentId = paymentIntent.id;
+          stripeSessionId = paymentIntent.id;
+        }
 
         if (invoiceId) {
-          // Determine the base URL for redirects and images
-          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+          // Determine the base URL for redirects and images - use a public URL for emails
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://icemanz.com');
 
           // Update InvoiceRequest status to PAID
           await prisma.invoiceRequest.update({
             where: { id: invoiceId },
             data: { status: 'PAID' }
+          });
+
+          // Get the invoice to get the category
+          const invoice = await prisma.invoiceRequest.findUnique({
+            where: { id: invoiceId }
           });
 
           // Create Order entry
@@ -61,10 +87,11 @@ export async function POST(req: Request) {
               customerName,
               customerEmail,
               amountPaid,
-              currency: session.currency || 'usd',
-              stripeSessionId: session.id,
-              stripePaymentId: session.payment_intent as string,
-              status: 'PAID'
+              currency,
+              stripeSessionId,
+              stripePaymentId,
+              status: 'PAID',
+              category: invoice?.category
             }
           });
 
@@ -72,7 +99,7 @@ export async function POST(req: Request) {
           const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
               <div style="text-align: center; margin-bottom: 25px;">
-                <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+                <h1 style="color: #2563eb; margin: 0; font-size: 32px; font-weight: bold;">ICEMANZ</h1>
               </div>
               
               <h2 style="color: #10b981; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Payment Successful!</h2>
@@ -99,15 +126,25 @@ export async function POST(req: Request) {
             </div>
           `;
 
+          console.log("[WEBHOOK] Attempting to send email to:", customerEmail);
+          console.log("[WEBHOOK] SMTP config:", {
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT,
+            secure: process.env.SMTP_SECURE,
+            user: process.env.SMTP_USERNAME || process.env.SMTP_USER,
+            from: process.env.SMTP_FROM || process.env.SMTP_USERNAME || process.env.SMTP_USER
+          });
+
           try {
-            await transporter.sendMail({
-              from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+            const info = await transporter.sendMail({
+              from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME || process.env.SMTP_USER}>`,
               to: customerEmail,
               subject: `Payment Receipt - Order #${newOrder.id}`,
               html: emailHtml,
             });
+            console.log("[WEBHOOK] Email sent successfully! Message ID:", info.messageId);
           } catch (emailError) {
-            console.error("Failed to send receipt email:", emailError);
+            console.error("[WEBHOOK] Failed to send receipt email:", emailError);
           }
         }
         break;

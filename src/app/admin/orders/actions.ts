@@ -11,3 +11,10 @@ export async function getOrders() {
     });
     return orders;
 }
+
+export async function deleteOrder(orderId: string) {
+    await prisma.order.delete({
+        where: { id: orderId },
+    });
+    return { success: true };
+}

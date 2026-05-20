@@ -286,8 +286,6 @@ export default function RefrigerationEquipmentClient({
           </div>
         </div>
       </div>
-
-      <Footer />
     </main>
   );
 }

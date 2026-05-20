@@ -1,7 +1,6 @@
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import WalkInCoolerProductClient from './WalkInCoolerProductClient';
-
 // Mock data for fallback when not in database
 const mockProductsDetails: Record<string, any> = {
   '1': {
@@ -201,7 +200,6 @@ const mockProductsDetails: Record<string, any> = {
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ slug: string, id: string }> }) {
   const { slug, id } = await params;
-
   // 1. Try to fetch from database
   let product = await prisma.product.findUnique({
     where: { id },
@@ -215,16 +213,13 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
       }
     }
   });
-
   // 2. If not found in DB, check mock data
   if (!product && mockProductsDetails[id]) {
     product = mockProductsDetails[id];
   }
-
   if (!product) {
     notFound();
   }
-
   // Fetch related products
   let relatedProducts: any[] = [];
   if (product.categoryId) {

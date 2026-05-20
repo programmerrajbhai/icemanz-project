@@ -70,6 +70,7 @@ model InvoiceRequest {
   deliveryCost      Float?
   totalWithTax      Float?
   deliveryNotes     String?
+  category          String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
 }
 
 model Order {
@@ -85,6 +86,7 @@ model Order {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   invoice         InvoiceRequest @relation(fields: [invoiceId], references: [id])
+  category        String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
 }
 
 model CustomQuoteRequest {

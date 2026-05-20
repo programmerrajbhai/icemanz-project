@@ -21,13 +21,21 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Orders', href: '/admin/orders', icon: Package },
+  {
+    name: 'Orders',
+    href: '/admin/orders',
+    icon: Package,
+    subItems: [
+      { name: 'Refrigeration Equipment', href: '/admin/orders/refrigeration-equipment' },
+      { name: 'Walk-in Cooler & Freezer', href: '/admin/orders/walk-in-cooler-freezer' }
+    ]
+  },
   { name: 'Invoice Requests', href: '/admin/invoices', icon: FileText },
   { name: 'Quote Requests', href: '/admin/quotes', icon: FileText },
   { name: 'General Enquiry', href: '/admin/enquiries', icon: MessageSquare },
-  { 
-    name: 'Products', 
-    href: '/admin/products', 
+  {
+    name: 'Products',
+    href: '/admin/products',
     icon: Package,
     subItems: [
       { name: 'Refrigeration Equipment', href: '/admin/products/refrigeration-equipment' },
@@ -41,6 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [productsDropdownOpen, setProductsDropdownOpen] = useState(true);
+  const [ordersDropdownOpen, setOrdersDropdownOpen] = useState(true);
 
   // Do not render the admin wrapper on the login page
   if (pathname === '/admin/login') {
@@ -77,10 +86,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             const hasSubItems = 'subItems' in item && item.subItems;
 
             if (hasSubItems) {
+              const isProducts = item.name === 'Products';
+              const isOrders = item.name === 'Orders';
+              const isDropdownOpen = isProducts ? productsDropdownOpen : ordersDropdownOpen;
+              const setDropdownOpen = isProducts ? setProductsDropdownOpen : setOrdersDropdownOpen;
+
               return (
                 <div key={item.name}>
                   <button
-                    onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+                    onClick={() => setDropdownOpen(!isDropdownOpen)}
                     className={`flex items-center justify-between w-full gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-blue-600 text-white font-medium shadow-lg shadow-blue-900/20'
                       : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
@@ -90,14 +104,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-400'} />
                       {item.name}
                     </div>
-                    {productsDropdownOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                    {isDropdownOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                   </button>
 
-                  {productsDropdownOpen && (
+                  {isDropdownOpen && (
                     <div className="mt-1 ml-4 space-y-1 border-l border-slate-700 pl-4">
                       {item.subItems?.map((subItem) => {
                         const isSubActive = pathname === subItem.href ||
-                          (subItem.href.includes('?') && pathname === subItem.href.split('?')[0]);
+                          (subItem.href.includes('?') && pathname === subItem.href.split('?')[0]) ||
+                          (isOrders && pathname === '/admin/orders' && subItem.name === 'Refrigeration Equipment');
 
                         return (
                           <Link

@@ -1,19 +1,5 @@
-import prisma from '@/lib/prisma';
-import OrdersClient from './OrdersClient';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
-
-export default async function OrdersPage() {
-  const orders = await prisma.order.findMany({
-    include: {
-      invoice: true,
-    },
-    orderBy: { createdAt: 'desc' },
-  });
-  
-  return (
-    <div className="w-full">
-      <OrdersClient initialOrders={orders} />
-    </div>
-  );
+export default function OrdersMainPage() {
+  redirect('/admin/orders/refrigeration-equipment');
 }

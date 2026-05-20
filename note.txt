@@ -1,43 +1,28 @@
 https://www.atlanticse.com/collections/walk-in-coolers
 
-
 -Submenu
 -Submenu Details Page
-
 
 =============
 
 Evaporation Units : 17,100 BTU 
-
 combo : 13,000 BTU
-
 Condensing Unit
 10 HP, Medium Temp
-
 10 HP, Medium Temp
 
-
 amader project er ei page http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer
-
 
 amader walk-in-cooler-freezer er ekta sub category walk-in-cooler-no-floor category page er Amerikooler brand er under a ei https://www.atlanticse.com/a/search/astra-walk-in-combo-cooler-freezer-with-floor?filter_brand=Amerikooler link thyky product fatch kory database a add koro mone rakhby 
 
 
 Refrigeration filter a 
- 
 only Top-Mount Refrigeration (42) er 42 ta products 
-
 so ei filter wise products gulo database a add korby onno kono kisu jano change na hoy 
 
 
 
-
-
-
-
 keep all the product butoon choose option insted of add to cart and if user click on this button go inside the detials page not addin to cart from this page
-
-
 
 ekhnay suggeted product section a alternate way tay kj korby 
 many Condensing Units er products jodi cart a add kora thaky 
@@ -58,6 +43,27 @@ Condensing Units > Medium Profile (Scroll Compressor) - in suggested products
 
 =====Home Page 
 * Featured Products - Details Page 
-=====Details Page 
-* Top Filters link up 
-* 
+
+=====http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
+
+* http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer | ei page er size responsive korty hoby 
+
+=====http://localhost:3000/walk-in-cooler-freezer/amerikooler-dw101277f-6-6-sc-10-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration
+
+*Data gulo dynamic hobe 
+*Product Attachments add korty hoby
+*Mobile responsive hobe 
+
+=====Search Funtionality add hobe
+=====Dashboard thyky dynamically walking cooler er products add kora jaby 
+=====Email gulo check korty hoby
+=====Mobile menu tay problem asy check korty hoby
+=====Full website ekbar overview korty hoby 
+=====unnessary function file dlr kory site optimized korty hoby 
+
+
+
+http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor ei category er products gulo home page er ei section a add koro real content jano thaky and coose option button rakho same oi category er real product er moto kory
+
+
+Mobile navigation bar a amader update menu gulo add koro ekhany ager onk manu add hoye asy 

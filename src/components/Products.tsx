@@ -12,7 +12,7 @@ const products = [
     description: 'Custom walk-in coolers, freezers, and combo units built for maximum efficiency and durability. Our systems are engineered for restaurants, supermarkets, and warehouses, featuring standard or floor-mounted options with premium doors and reliable insulation.',
     images: ['/products/product_1.jpg', '/slider/s_1.jpeg', '/slider/s_2.jpeg'],
     tag: 'Best Seller',
-    href: '/walk-in-cooler-freezer'
+    href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor'
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const products = [
     description: 'Premium glass-door display coolers and freezers perfect for retail and grocery stores. These high-visibility units combine elegant design with advanced cooling performance, including custom shelving solutions and energy-efficient glass panels.',
     images: ['/slider/s_3.jpeg', '/slider/s_1.jpeg'],
     tag: 'Retail Special',
-    href: '/walk-in-cooler-freezer/walk-in-coolers'
+    href: '/walk-in-cooler-freezer'
   },
   {
     id: 3,
@@ -83,21 +83,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
         {/* Overlay for depth */}
         <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        {/* Slider Controls */}
-        <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button
-            onClick={prevImage}
-            className="w-9 h-9 rounded-sm bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            onClick={handleNextClick}
-            className="w-9 h-9 rounded-sm bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-primary transition-all cursor-pointer shadow-lg"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
+
 
         {/* Indicators */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">

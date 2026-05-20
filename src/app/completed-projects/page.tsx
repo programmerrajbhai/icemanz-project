@@ -216,8 +216,6 @@ export default async function CompletedProjectsPage({
             </div>
 
             {!paymentSuccessful && <CTA />}
-
-            <Footer />
         </main>
     );
 }

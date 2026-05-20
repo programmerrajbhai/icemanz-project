@@ -713,8 +713,6 @@ export default function RequestInvoiceClient({
 
         </div>
       </div>
-
-      <Footer />
     </main>
   );
 }

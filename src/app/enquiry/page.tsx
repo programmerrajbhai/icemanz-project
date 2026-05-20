@@ -135,7 +135,7 @@ export default function EnquiryPage() {
                         </button>
                     </div>
                 </div>
-                <Footer />
+             
             </main>
         );
     }
@@ -292,7 +292,6 @@ export default function EnquiryPage() {
                 </div>
             </div>
 
-            <Footer />
         </main>
     );
 }

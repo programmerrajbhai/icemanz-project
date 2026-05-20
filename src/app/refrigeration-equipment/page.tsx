@@ -138,8 +138,6 @@ export default function RefrigerationEquipmentPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </main>
   );
 }

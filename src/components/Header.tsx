@@ -29,37 +29,18 @@ export default function Header() {
   const mobileMenuData = [
     {
       label: 'Walk-in Cooler & Freezer',
-      href: '*',
-      subItems: [
-        { label: 'Quick Ship Walk-Ins', href: '/walk-in-cooler-freezer/quick-ship-walk-ins' },
-        { label: 'Walk-In Cooler No Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-        { label: 'Walk-In Cooler with Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-with-floor' },
-        { label: 'Walk-In Freezer With Floor', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-        { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' },
-        { label: 'Custom Walk-Ins & Combos', href: '/walk-in-cooler-freezer/custom-walk-ins-combos' },
-        { label: 'Custom Refrigerated Warehouse', href: '/walk-in-cooler-freezer/custom-refrigerated-warehouse' },
-        { label: 'Shop By Brand', href: '/walk-in-cooler-freezer/shop-by-brand' },
-        { label: 'Walk-In Refrigeration Units', href: '/walk-in-cooler-freezer/walk-in-refrigeration-units' }
-      ]
+      href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor',
+      subItems: [] as { label: string, href: string }[]
     },
     {
       label: 'Glassdoor Walk-in Cooler',
       href: '/walk-in-cooler-freezer',
-      subItems: [
-        { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-coolers' },
-        { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
-        { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
-        { label: 'Shelving', href: '/refrigeration-equipment' }
-      ]
+      subItems: [] as { label: string, href: string }[]
     },
     {
       label: 'Refrigeration Equipment',
       href: '/refrigeration-equipment',
-      subItems: [
-        { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
-        { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
-        { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-unitspackage-units' }
-      ]
+      subItems: [] as { label: string, href: string }[]
     }
   ];
 
@@ -118,7 +99,7 @@ export default function Header() {
   return (
     <header className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'lg:-top-[37px]' : 'top-0'}`}>
 
-      
+
       {/* Top Bar - Refined Blue */}
       <div className="hidden lg:flex bg-[#003d80] text-white py-2.5 h-[37px] items-center border-b border-white/5">
         <div className="container flex justify-between items-center text-[12px] font-bold uppercase tracking-wider leading-none">
@@ -331,32 +312,13 @@ export default function Header() {
               <div className="py-2 border-t border-gray-50">
                 {mobileMenuData.map((category) => (
                   <div key={category.label} className="border-b border-gray-50">
-                    <button
-                      onClick={() => toggleMobileCategory(category.label)}
+                    <Link
+                      href={category.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer group"
                     >
                       <span className="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">{category.label}</span>
-                      <ChevronDown
-                        size={18}
-                        className={`text-gray-400 transition-transform duration-300 ${expandedMobileCategories.includes(category.label) ? 'rotate-180' : ''}`}
-                      />
-                    </button>
-
-                    {expandedMobileCategories.includes(category.label) && (
-                      <div className="bg-gray-50/50 flex flex-col">
-                        {category.subItems.map((item) => (
-                          <Link
-                            key={item.label}
-                            href={item.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="px-10 py-4 text-sm font-bold text-gray-500 hover:text-primary hover:bg-white transition-all flex items-center justify-between group"
-                          >
-                            {item.label}
-                            <div className="w-1.5 h-1.5 rounded-sm bg-primary/20 group-hover:bg-primary transition-colors"></div>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+                    </Link>
                   </div>
                 ))}
               </div>

@@ -49,7 +49,6 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
             title={subcategoryTitles[slug]}
           />
         </div>
-        <Footer />
       </main>
     );
   }
@@ -74,7 +73,7 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
       take: 20,
       include: { category: true }
     });
-    
+
     // If we don't have enough, fetch other walk-in products
     if (relatedProducts.length < 10) {
       const moreProducts = await prisma.product.findMany({
@@ -137,13 +136,11 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
   };
 
   return (
-    <main className="min-h-screen bg-white">
-      <Header />
+    <>
       <WalkInCoolerProductClient
         product={JSON.parse(JSON.stringify(productData))}
         relatedProducts={JSON.parse(JSON.stringify(relatedProducts))}
       />
-      <Footer />
-    </main>
+    </>
   );
 }

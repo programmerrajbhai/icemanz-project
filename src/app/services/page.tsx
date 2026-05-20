@@ -129,7 +129,6 @@ export default function ServicesPage() {
       </section>
 
       <CTA />
-      <Footer />
     </main>
   );
 }

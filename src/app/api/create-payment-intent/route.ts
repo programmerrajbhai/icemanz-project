@@ -1,34 +1,65 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import prisma from '@/lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: Request) {
-    try {
-        const { amount, items } = await request.json();
+  try {
+    const { amount, items, email, fullName, phone, address } = await request.json();
+    console.log("[CREATE-PAYMENT-INTENT] Received data:", { email, fullName, phone, address });
 
-        // Create a PaymentIntent with the order amount and currency
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount * 100), // Stripe expects amount in cents
-            currency: 'usd',
-            payment_method_types: ['card'],
-            metadata: {
-                items: JSON.stringify(items.map((item: any) => ({
-                    id: item.id,
-                    name: item.name,
-                    quantity: item.quantity
-                }))),
-            },
-        });
+    // Determine the category from the cart items
+    const category = items.some((item: any) => item.category === 'walk-in-cooler-freezer')
+      ? 'walk-in-cooler-freezer'
+      : 'refrigeration-equipment';
 
-        return NextResponse.json({
-            clientSecret: paymentIntent.client_secret,
-        });
-    } catch (error: any) {
-        console.error('Stripe error:', error);
-        return NextResponse.json(
-            { error: error.message },
-            { status: 500 }
-        );
-    }
+    // Create InvoiceRequest in database
+    const invoiceRequest = await prisma.invoiceRequest.create({
+      data: {
+        email: email || 'customer@example.com',
+        phone: phone || '',
+        fullName: fullName || 'Customer',
+        address: address || '',
+        totalAmount: amount,
+        totalWithTax: amount,
+        products: items,
+        category: category,
+        status: 'PENDING'
+      }
+    });
+    console.log("[CREATE-PAYMENT-INTENT] InvoiceRequest created with email:", invoiceRequest.email);
+
+    // Create Stripe Payment Intent for inline payment
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100),
+      currency: 'usd',
+      payment_method_types: ['card'],
+      metadata: {
+        invoiceId: invoiceRequest.id,
+        customerName: fullName || 'Customer',
+        customerEmail: email || 'customer@example.com',
+      },
+    });
+    console.log("[CREATE-PAYMENT-INTENT] Stripe payment intent created with metadata:", paymentIntent.metadata);
+
+    // Update invoiceRequest with paymentIntentId
+    await prisma.invoiceRequest.update({
+      where: { id: invoiceRequest.id },
+      data: {
+        stripeSessionId: paymentIntent.id,
+        status: 'APPROVED'
+      }
+    });
+
+    return NextResponse.json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error: any) {
+    console.error('Stripe error:', error);
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
 }

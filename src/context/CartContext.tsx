@@ -10,6 +10,7 @@ export interface CartItem {
   price: number;
   image: string;
   quantity: number;
+  category?: string;
 }
 
 interface CartContextType {
@@ -17,6 +18,7 @@ interface CartContextType {
   addToCart: (product: any) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, amount: number) => void;
+  clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
   subtotal: number;
@@ -39,7 +41,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       const quantityToAdd = product.quantity || 1;
-      
+
       if (existingItem) {
         return prevItems.map(item =>
           item.id === product.id
@@ -48,8 +50,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
       }
 
-      const price = typeof product.price === 'string' 
-        ? parseFloat(product.price.replace(/,/g, '')) 
+      const price = typeof product.price === 'string'
+        ? parseFloat(product.price.replace(/,/g, ''))
         : product.price;
 
       return [...prevItems, {
@@ -58,7 +60,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         brand: product.brand,
         price: price,
         image: product.image,
-        quantity: quantityToAdd
+        quantity: quantityToAdd,
+        category: product.category
       }];
     });
 
@@ -81,12 +84,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   return (
     <CartContext.Provider value={{
       cartItems,
       addToCart,
       removeFromCart,
       updateQuantity,
+      clearCart,
       isCartOpen,
       setIsCartOpen,
       subtotal

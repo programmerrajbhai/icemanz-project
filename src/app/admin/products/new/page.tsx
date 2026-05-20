@@ -5,8 +5,9 @@ import { ArrowLeft } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-export default async function NewProductPage({ searchParams }: { searchParams: { category?: string } }) {
-  const categorySlug = searchParams.category;
+export default async function NewProductPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+  const params = await searchParams;
+  const categorySlug = params.category;
 
   // Fetch ALL categories with their hierarchy
   const allCategories = await prisma.category.findMany({

@@ -140,8 +140,6 @@ const CartClient = () => {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 };

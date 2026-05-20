@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import useSWR from 'swr';
-import { getOrders } from './actions';
+import { getOrders, deleteOrder } from './actions';
 import {
   Eye,
   CheckCircle2,
@@ -15,7 +15,8 @@ import {
   Mail,
   User,
   Calendar,
-  DollarSign
+  DollarSign,
+  Trash2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -34,9 +35,23 @@ type Order = {
 };
 
 export default function OrdersClient({ initialOrders }: { initialOrders: Order[] }) {
-  const { data: orders } = useSWR<Order[]>('orders', getOrders as any, { fallbackData: initialOrders, refreshInterval: 10000 });
+  const { data: orders, mutate } = useSWR<Order[]>('orders', getOrders as any, { fallbackData: initialOrders, refreshInterval: 10000 });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [deleteConfirmOrder, setDeleteConfirmOrder] = useState<Order | null>(null);
+
+  const handleDelete = async () => {
+    if (!deleteConfirmOrder) return;
+    try {
+      await deleteOrder(deleteConfirmOrder.id);
+      mutate();
+      toast.success('Order deleted successfully!');
+      setDeleteConfirmOrder(null);
+    } catch (error) {
+      toast.error('Failed to delete order');
+      console.error(error);
+    }
+  };
 
   const filteredOrders = (orders || []).filter(ord =>
     ord.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -116,10 +131,17 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
                         onClick={() => setSelectedOrder(order)}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 cursor-pointer rounded-sm transition-colors inline-block"
+                        className="p-1.5 text-blue-600 hover:bg-blue-50 cursor-pointer rounded-sm transition-colors inline-block mr-2"
                         title="View Details"
                       >
                         <Eye size={18} />
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirmOrder(order)}
+                        className="p-1.5 text-red-600 hover:bg-red-50 cursor-pointer rounded-sm transition-colors inline-block"
+                        title="Delete Order"
+                      >
+                        <Trash2 size={18} />
                       </button>
                     </td>
                   </tr>
@@ -235,14 +257,50 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                 </div>
               </div>
 
+              {selectedOrder.invoice?.products && selectedOrder.invoice.products.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-sm font-bold text-gray-900 border-b pb-2 mb-4">Products</h3>
+                  <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="divide-y divide-gray-100">
+                      {(selectedOrder.invoice.products as any[]).map((product: any, index: number) => (
+                        <div key={index} className="p-4">
+                          <div className="flex gap-4">
+                            {product.image && (
+                              <img
+                                src={product.image}
+                                alt={product.name || 'Product'}
+                                className="w-20 h-20 object-cover rounded border border-gray-200"
+                              />
+                            )}
+                            <div className="flex-1">
+                              <p className="text-sm font-bold text-gray-900">{product.name || 'Product'}</p>
+                              <p className="text-xs text-gray-500 mt-1">{product.brand || 'ICEMANZ'}</p>
+                              <div className="flex gap-4 mt-2 text-sm">
+                                <span className="text-gray-600">Qty: <span className="font-semibold">{product.quantity || 1}</span></span>
+                                <span className="text-gray-600">Price: <span className="font-semibold">{product.price}</span></span>
+                                {product.category && (
+                                  <span className="text-gray-600">Category: <span className="font-semibold">{product.category}</span></span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {selectedOrder.invoice && (
                 <div className="mt-6">
                   <h3 className="text-sm font-bold text-gray-900 border-b pb-2 mb-4">Project Details</h3>
                   <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                     <p className="text-sm font-bold text-[#004a99] mb-2">{selectedOrder.invoice.projectName || 'Custom Project'}</p>
                     <div className="text-sm text-gray-600 grid grid-cols-2 gap-2">
-                      <p><span className="font-semibold">Dimensions:</span> {selectedOrder.invoice.width}x{selectedOrder.invoice.length}x{selectedOrder.invoice.height}</p>
-                      <p><span className="font-semibold">Temp Range:</span> {selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp}</p>
+                      {(selectedOrder.invoice.width && selectedOrder.invoice.length && selectedOrder.invoice.height) && (
+                        <p><span className="font-semibold">Dimensions:</span> {selectedOrder.invoice.width}x{selectedOrder.invoice.length}x{selectedOrder.invoice.height}</p>
+                      )}
+                      <p><span className="font-semibold">Temp Range:</span> {selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp || 'N/A'}</p>
                     </div>
                     {selectedOrder.invoice.description && (
                       <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-700">
@@ -252,6 +310,45 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmOrder && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <Trash2 className="text-red-600" size={24} />
+                <h2 className="text-xl font-black text-gray-900 tracking-tight">Delete Order</h2>
+              </div>
+              <button
+                onClick={() => setDeleteConfirmOrder(null)}
+                className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-all cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete this order? This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setDeleteConfirmOrder(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-sm font-medium hover:bg-red-700 transition-colors cursor-pointer"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
