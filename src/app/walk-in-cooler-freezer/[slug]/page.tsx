@@ -91,7 +91,18 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
   // Map the product to the format expected by the client component
   const productData = {
     ...product,
-    description: product.description || undefined,
+    description: product.description || 'Quick Ship Indoor Walk-In Cooler, 6\' W x 6\' L x 7\'-2 1/4" H, Without Floor, 4" thick AK-XPS4 insulation providing R-29 for coolers and R-32 for freezers, ceiling & doors, insulation with 50 Year R-value warranty, 26 gauge stucco embossed corrosion resistant acrylic coated Acrylume on all interior & exterior surfaces, NSF vinyl screed, flush self-closing door, digital LED thermometer with pilot light switch, super cam-rise spring assisted hinges & door closer, ships in 48 hours - subject to terms & conditions, UL, Made in USA',
+    detailedFeatures: (product.detailedFeatures && Array.isArray(product.detailedFeatures) && product.detailedFeatures.length > 0) ? product.detailedFeatures : [
+      '4" Thick AK-XPS4 insulation, providing R-29 for coolers and R-32 for freezers',
+      '26 Gauge Acrylume® coated corrosion resistant stucco embossed Galvalume on all interior and exterior surfaces',
+      '30"W x 76"H or 36"W x 76"H flush mounted door with spring actuated door closer',
+      '2 Super cam-rise spring assisted hinges',
+      'Deadbolt keyed handle latch',
+      'Interior safety lock release handle',
+      'Digital LED thermometer with on and off pilot light switch',
+      'Vapor proof light fixture centered on interior door jamb',
+      'Floorless walk-ins have NSF vinyl screed'
+    ],
     keyFeatures: product.keyFeatures || undefined,
     condition: product.condition || undefined,
     type: product.type || undefined,
@@ -129,9 +140,11 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
       { label: 'Condition', value: 'New' },
       { label: 'Lead Time', value: 'Usually Ships in 2 - 5 Days' }
     ],
-    documents: [
-      { name: 'Installation Manual', url: '#' },
-      { name: 'Specifications Sheet', url: '#' }
+    documents: (product.documents && Array.isArray(product.documents) && product.documents.length > 0) ? product.documents : [
+      { name: 'Spec Sheet', url: 'https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062' },
+      { name: 'Warranty', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042' },
+      { name: 'About Amerikooler', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546' },
+      { name: 'California 65 Statement', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453' }
     ]
   };
 

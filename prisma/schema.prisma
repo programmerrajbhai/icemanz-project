@@ -24,6 +24,8 @@ model Product {
   id               String    @id @default(uuid())
   title            String
   slug             String    @unique
+  brand            String?
+  sku              String?
   badge            String?
   description      String?
   keyFeatures      String?
@@ -35,6 +37,9 @@ model Product {
   detailedFeatures String[]
   specs            Json?
   documents        Json?
+  faqs             Json?
+  productOptions   Json?
+  features         Json?
   categoryId       String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt

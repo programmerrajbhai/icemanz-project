@@ -274,45 +274,48 @@ export default function WalkInCoolerProductClient({
 
                   <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedSections.description ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="space-y-4">
-                      <p className="text-sm text-gray-800 leading-relaxed">
-                        Quick Ship Indoor Walk-In Cooler, 6' W x 6' L x 7-2 1/4" H, Without Floor, 4" thick AK-XPS4 insulation providing R-29 for coolers and R-32 for freezers, ceiling & doors, insulation with 50 Year R-value warranty, 26 gauge stucco embossed corrosion resistant acrylic coated Acrylume® on all interior & exterior surfaces, NSF vinyl screed, flush self-closing door, digital LED thermometer with pilot light switch, super cam-rise spring assisted hinges & door closer, ships in 48 hours - subject to terms & conditions, UL, Made in USA
-                      </p>
+                      <p className="text-sm text-gray-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: product.description || '' }} />
 
-                      <div>
-                        <h3 className="text-sm font-bold text-gray-900 mb-3">Features:</h3>
-                        <ul className="space-y-2">
-                          {[
-                            '4" Thick AK-XPS4 insulation, providing R-29 for coolers and R-32 for freezers',
-                            '26 Gauge Acrylume® coated corrosion resistant stucco embossed Galvalume on all interior and exterior surfaces',
-                            '30"W x 76"H or 36"W x 76"H flush mounted door with spring actuated door closer',
-                            '2 Super cam-rise spring assisted hinges',
-                            'Deadbolt keyed handle latch',
-                            'Interior safety lock release handle',
-                            'Digital LED thermometer with on and off pilot light switch',
-                            'Vapor proof light fixture centered on interior door jamb',
-                            'Floorless walk-ins have NSF vinyl screed'
-                          ].map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                              <span className="mt-2 size-1.5 rounded-full bg-gray-800 shrink-0"></span>
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      {product.detailedFeatures && product.detailedFeatures.length > 0 && (
+                        <div>
+                          <h3 className="text-sm font-bold text-gray-900 mb-3">Features:</h3>
+                          <ul className="space-y-2">
+                            {product.detailedFeatures.map((feature, idx) => (
+                              <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
+                                <span className="mt-2 size-1.5 rounded-full bg-gray-800 shrink-0"></span>
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-                      <div className="mt-6">
-                        <h3 className="text-sm font-bold text-gray-900 mb-3">Spec Sheet</h3>
-                        <img
-                          src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
-                          alt="Spec Sheet"
-                          className="w-14 h-auto cursor-pointer hover:opacity-80 transition-opacity"
-                        />
-                      </div>
+                      {product.documents && product.documents.length > 0 && (
+                        <div>
+                          {product.documents.map((doc, idx) => {
+                            if (doc.name === 'Spec Sheet') {
+                              return (
+                                <div key={idx} className="mt-6">
+                                  <h3 className="text-sm font-bold text-gray-900 mb-4">{doc.name}</h3>
+                                  <a href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-block">
+                                    <img
+                                      src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
+                                      alt="Download PDF"
+                                      className="h-12 object-contain"
+                                    />
+                                  </a>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </section>
 
-          
+
 
                 {/* FAQ Section */}
                 <section className="bg-white p-8 mt-4 border border-gray-200">
@@ -512,24 +515,26 @@ export default function WalkInCoolerProductClient({
               </div> */}
 
               {/* Product Attachments */}
-              <div className="space-y-3">
-                <h3 className="text-base font-bold text-gray-900">Product Attachments</h3>
-                {[
-                  { name: 'Warranty', size: '2.99 MB' },
-                  { name: 'About Amerikooler', size: '182.99 KB' },
-                  { name: 'California 65 Statement', size: '53.2 KB' }
-                ].map((doc, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition-all shadow-sm">
-                    <div className="size-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                      <FileText size={24} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">{doc.name}</p>
-                      <p className="text-xs text-gray-500">({doc.size})</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {product.documents && product.documents.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-base font-bold text-gray-900">Product Attachments</h3>
+                  {product.documents
+                    .filter(doc => doc.name !== 'Spec Sheet')
+                    .map((doc, idx) => (
+                      <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition-all shadow-sm">
+                        <div className="size-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+                          <FileText size={24} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900">{doc.name}</p>
+                          {doc.name === 'Warranty' && <p className="text-xs text-gray-500">(2.99 MB)</p>}
+                          {doc.name === 'About Amerikooler' && <p className="text-xs text-gray-500">(182.99 KB)</p>}
+                          {doc.name === 'California 65 Statement' && <p className="text-xs text-gray-500">(53.2 KB)</p>}
+                        </div>
+                      </a>
+                    ))}
+                </div>
+              )}
             </div>
           </div>
 

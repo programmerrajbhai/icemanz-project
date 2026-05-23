@@ -11,6 +11,24 @@ type CategoryWithSubs = Category & {
   })[];
 };
 
+type ProductOption = {
+  label: string;
+  name: string;
+  options: { label: string; price?: string }[];
+};
+
+type Faq = {
+  question: string;
+  answer: string;
+};
+
+type Features = {
+  panels?: string[];
+  doors?: string[];
+  topMount?: string[];
+  remote?: string[];
+};
+
 export default function ProductForm({ allCategories }: { allCategories: CategoryWithSubs[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +44,15 @@ export default function ProductForm({ allCategories }: { allCategories: Category
 
   // Documents state
   const [docEntries, setDocEntries] = useState<{ name: string; file: File | null }[]>([]);
+
+  // Product Options state
+  const [productOptions, setProductOptions] = useState<ProductOption[]>([]);
+
+  // FAQs state
+  const [faqs, setFaqs] = useState<Faq[]>([]);
+
+  // Features state
+  const [features, setFeatures] = useState<Features>({});
 
   // Get top-level categories (no parent)
   const topCategories = useMemo(() => {
@@ -54,6 +81,9 @@ export default function ProductForm({ allCategories }: { allCategories: Category
     const formData = new FormData(e.currentTarget);
     formData.set('categoryId', finalCategoryId);
     formData.set('specs', JSON.stringify(specs));
+    formData.set('productOptions', JSON.stringify(productOptions));
+    formData.set('faqs', JSON.stringify(faqs));
+    formData.set('features', JSON.stringify(features));
 
     formData.delete('images');
     images.forEach((img) => formData.append('images', img.file));
@@ -74,6 +104,60 @@ export default function ProductForm({ allCategories }: { allCategories: Category
       setError(result.error);
       setIsSubmitting(false);
     }
+  };
+
+  // Product Options handlers
+  const addProductOption = () => {
+    setProductOptions([...productOptions, { label: '', name: '', options: [{ label: '', price: '' }] }]);
+  };
+
+  const removeProductOption = (index: number) => {
+    setProductOptions(productOptions.filter((_, i) => i !== index));
+  };
+
+  const updateProductOption = (index: number, field: 'label' | 'name', value: string) => {
+    const updated = [...productOptions];
+    updated[index][field] = value;
+    setProductOptions(updated);
+  };
+
+  const addOptionValue = (optionIndex: number) => {
+    const updated = [...productOptions];
+    updated[optionIndex].options.push({ label: '', price: '' });
+    setProductOptions(updated);
+  };
+
+  const removeOptionValue = (optionIndex: number, valueIndex: number) => {
+    const updated = [...productOptions];
+    updated[optionIndex].options = updated[optionIndex].options.filter((_, i) => i !== valueIndex);
+    setProductOptions(updated);
+  };
+
+  const updateOptionValue = (optionIndex: number, valueIndex: number, field: 'label' | 'price', value: string) => {
+    const updated = [...productOptions];
+    updated[optionIndex].options[valueIndex][field] = value;
+    setProductOptions(updated);
+  };
+
+  // FAQs handlers
+  const addFaq = () => {
+    setFaqs([...faqs, { question: '', answer: '' }]);
+  };
+
+  const removeFaq = (index: number) => {
+    setFaqs(faqs.filter((_, i) => i !== index));
+  };
+
+  const updateFaq = (index: number, field: 'question' | 'answer', value: string) => {
+    const updated = [...faqs];
+    updated[index][field] = value;
+    setFaqs(updated);
+  };
+
+  // Features helpers
+  const updateFeaturesList = (section: keyof Features, value: string) => {
+    const list = value.split('\n').map(s => s.trim()).filter(Boolean);
+    setFeatures(prev => ({ ...prev, [section]: list.length > 0 ? list : undefined }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +218,7 @@ export default function ProductForm({ allCategories }: { allCategories: Category
               </button>
             </div>
           ))}
-          
+
           <label htmlFor="image" className="block cursor-pointer group h-full">
             <div className="w-full aspect-square rounded-xl border-2 border-dashed border-slate-300 group-hover:border-[#004a99] bg-slate-50 group-hover:bg-[#004a99]/[0.03] transition-all duration-200 flex flex-col items-center justify-center gap-2">
               <div className="size-10 rounded-full bg-[#004a99]/10 group-hover:bg-[#004a99]/20 flex items-center justify-center transition-colors">
@@ -153,92 +237,102 @@ export default function ProductForm({ allCategories }: { allCategories: Category
       <div>
         <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Basic Information</h3>
         <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="title" className={labelClasses}>Title *</label>
-                <input type="text" id="title" name="title" required className={inputClasses} placeholder="e.g. TS060MR404A3-T" />
-              </div>
-              <div>
-                <label htmlFor="slug" className={labelClasses}>Slug</label>
-                <input type="text" id="slug" name="slug" className={inputClasses} placeholder="Auto-generated if empty" />
-              </div>
-            </div>
-
-            {/* Category Selector */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className={`${labelClasses} mb-2`}>Category</label>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+              <label htmlFor="title" className={labelClasses}>Title *</label>
+              <input type="text" id="title" name="title" required className={inputClasses} placeholder="e.g. TS060MR404A3-T" />
+            </div>
+            <div>
+              <label htmlFor="slug" className={labelClasses}>Slug</label>
+              <input type="text" id="slug" name="slug" className={inputClasses} placeholder="Auto-generated if empty" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="brand" className={labelClasses}>Brand</label>
+              <input type="text" id="brand" name="brand" className={inputClasses} placeholder="e.g. Amerikooler, Icemanz" />
+            </div>
+            <div>
+              <label htmlFor="sku" className={labelClasses}>SKU</label>
+              <input type="text" id="sku" name="sku" className={inputClasses} placeholder="e.g. SKU-12345" />
+            </div>
+            <div>
+              <label htmlFor="price" className={labelClasses}>Price</label>
+              <input type="text" id="price" name="price" className={inputClasses} placeholder="e.g. $1,299.00" />
+            </div>
+          </div>
+
+          {/* Category Selector */}
+          <div>
+            <label className={`${labelClasses} mb-2`}>Category</label>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+              <div className="flex items-start sm:items-center gap-3">
+                <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
+                  <select value={selectedLevel1} onChange={(e) => { setSelectedLevel1(e.target.value); setSelectedLevel2(''); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel1 ? 'border-[#004a99]/40 bg-[#004a99]/[0.03]' : ''}`}>
+                    <option value="">Select category...</option>
+                    {topCategories.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                  </select>
+                </div>
+              </div>
+              {level2Options.length > 0 && (
                 <div className="flex items-start sm:items-center gap-3">
-                  <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
+                  <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
                   <div className="flex-1">
-                    <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
-                    <select value={selectedLevel1} onChange={(e) => { setSelectedLevel1(e.target.value); setSelectedLevel2(''); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel1 ? 'border-[#004a99]/40 bg-[#004a99]/[0.03]' : ''}`}>
-                      <option value="">Select category...</option>
-                      {topCategories.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                    <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
+                    <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
+                      <option value="">Select subcategory...</option>
+                      {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
                     </select>
                   </div>
                 </div>
-                {level2Options.length > 0 && (
-                  <div className="flex items-start sm:items-center gap-3">
-                    <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
-                    <div className="flex-1">
-                      <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
-                      <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
-                        <option value="">Select subcategory...</option>
-                        {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                      </select>
-                    </div>
+              )}
+              {level3Options.length > 0 && (
+                <div className="flex items-start sm:items-center gap-3">
+                  <span className="shrink-0 size-6 rounded-full bg-[#0891b2] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">3</span>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-slate-500 mb-1">Type</p>
+                    <select value={selectedLevel3} onChange={(e) => setSelectedLevel3(e.target.value)} className={`${selectClasses} ${selectedLevel3 ? 'border-[#0891b2]/40 bg-[#0891b2]/[0.03]' : ''}`}>
+                      <option value="">Select type...</option>
+                      {level3Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                    </select>
                   </div>
-                )}
-                {level3Options.length > 0 && (
-                  <div className="flex items-start sm:items-center gap-3">
-                    <span className="shrink-0 size-6 rounded-full bg-[#0891b2] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">3</span>
-                    <div className="flex-1">
-                      <p className="text-xs font-medium text-slate-500 mb-1">Type</p>
-                      <select value={selectedLevel3} onChange={(e) => setSelectedLevel3(e.target.value)} className={`${selectClasses} ${selectedLevel3 ? 'border-[#0891b2]/40 bg-[#0891b2]/[0.03]' : ''}`}>
-                        <option value="">Select type...</option>
-                        {level3Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {selectedLevel1 && (
-                  <div className="pt-2 border-t border-slate-200">
-                    <p className="text-xs text-slate-400 font-medium">
-                      Selected: <span className="text-[#004a99] font-semibold">
-                        {topCategories.find(c => c.id === selectedLevel1)?.name}
-                        {selectedLevel2 && ` › ${level2Options.find(c => c.id === selectedLevel2)?.name}`}
-                        {selectedLevel3 && ` › ${level3Options.find(c => c.id === selectedLevel3)?.name}`}
-                      </span>
-                    </p>
-                  </div>
-                )}
-              </div>
-              <input type="hidden" name="categoryId" value={finalCategoryId} />
+                </div>
+              )}
+              {selectedLevel1 && (
+                <div className="pt-2 border-t border-slate-200">
+                  <p className="text-xs text-slate-400 font-medium">
+                    Selected: <span className="text-[#004a99] font-semibold">
+                      {topCategories.find(c => c.id === selectedLevel1)?.name}
+                      {selectedLevel2 && ` › ${level2Options.find(c => c.id === selectedLevel2)?.name}`}
+                      {selectedLevel3 && ` › ${level3Options.find(c => c.id === selectedLevel3)?.name}`}
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
+            <input type="hidden" name="categoryId" value={finalCategoryId} />
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="price" className={labelClasses}>Price</label>
-                <input type="text" id="price" name="price" className={inputClasses} placeholder="e.g. $1,299.00" />
-              </div>
-              <div>
-                <label htmlFor="badge" className={labelClasses}>Badge</label>
-                <input type="text" id="badge" name="badge" className={inputClasses} placeholder="e.g. IN STOCK" />
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="badge" className={labelClasses}>Badge</label>
+              <input type="text" id="badge" name="badge" className={inputClasses} placeholder="e.g. IN STOCK" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="condition" className={labelClasses}>Condition</label>
-                <input type="text" id="condition" name="condition" className={inputClasses} placeholder="e.g. New" />
-              </div>
-              <div>
-                <label htmlFor="type" className={labelClasses}>Type</label>
-                <input type="text" id="type" name="type" className={inputClasses} placeholder="e.g. Compressor" />
-              </div>
+            <div>
+              <label htmlFor="condition" className={labelClasses}>Condition</label>
+              <input type="text" id="condition" name="condition" className={inputClasses} placeholder="e.g. New" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="type" className={labelClasses}>Type</label>
+              <input type="text" id="type" name="type" className={inputClasses} placeholder="e.g. Compressor" />
             </div>
           </div>
         </div>
+      </div>
 
       {/* ===== SECTION 2: Product Details ===== */}
       <div>
@@ -337,6 +431,148 @@ export default function ProductForm({ allCategories }: { allCategories: Category
           <button type="button" onClick={addDocEntry} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
             <Plus size={16} /> Add Document
           </button>
+        </div>
+      </div>
+
+      {/* ===== SECTION 5: Product Options ===== */}
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Product Options</h3>
+        <div className="space-y-4">
+          {productOptions.map((option, i) => (
+            <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="grid grid-cols-2 gap-3 flex-1">
+                  <input
+                    type="text"
+                    value={option.label}
+                    onChange={(e) => updateProductOption(i, 'label', e.target.value)}
+                    className={`${inputClasses}`}
+                    placeholder="Option Label (e.g. Door Hinge)"
+                  />
+                  <input
+                    type="text"
+                    value={option.name}
+                    onChange={(e) => updateProductOption(i, 'name', e.target.value)}
+                    className={`${inputClasses}`}
+                    placeholder="Option Name (e.g. doorHinge)"
+                  />
+                </div>
+                <button type="button" onClick={() => removeProductOption(i)} className="ml-3 shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Values</p>
+                {option.options.map((optVal, j) => (
+                  <div key={j} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={optVal.label}
+                      onChange={(e) => updateOptionValue(i, j, 'label', e.target.value)}
+                      className={`${inputClasses} flex-1`}
+                      placeholder="Value Label (e.g. Left Hinged)"
+                    />
+                    <input
+                      type="text"
+                      value={optVal.price || ''}
+                      onChange={(e) => updateOptionValue(i, j, 'price', e.target.value)}
+                      className={`${inputClasses} w-32`}
+                      placeholder="Price (optional)"
+                    />
+                    <button type="button" onClick={() => removeOptionValue(i, j)} className="shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => addOptionValue(i)} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+                  <Plus size={14} /> Add Value
+                </button>
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={addProductOption} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+            <Plus size={16} /> Add Product Option
+          </button>
+        </div>
+      </div>
+
+      {/* ===== SECTION 6: FAQs ===== */}
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">FAQs</h3>
+        <div className="space-y-3">
+          {faqs.map((faq, i) => (
+            <div key={i} className="flex flex-col gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={faq.question}
+                  onChange={(e) => updateFaq(i, 'question', e.target.value)}
+                  className={`${inputClasses} flex-1`}
+                  placeholder="Question"
+                />
+                <button type="button" onClick={() => removeFaq(i)} className="shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <textarea
+                value={faq.answer}
+                onChange={(e) => updateFaq(i, 'answer', e.target.value)}
+                rows={2}
+                className={`${inputClasses} resize-y`}
+                placeholder="Answer"
+              />
+            </div>
+          ))}
+          <button type="button" onClick={addFaq} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+            <Plus size={16} /> Add FAQ
+          </button>
+        </div>
+      </div>
+
+      {/* ===== SECTION 7: Features ===== */}
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Features (Panels, Doors, etc.)</h3>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="features-panels" className={labelClasses}>Panels (one per line)</label>
+            <textarea
+              id="features-panels"
+              rows={3}
+              value={features.panels?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('panels', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
+          <div>
+            <label htmlFor="features-doors" className={labelClasses}>Doors (one per line)</label>
+            <textarea
+              id="features-doors"
+              rows={3}
+              value={features.doors?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('doors', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
+          <div>
+            <label htmlFor="features-topMount" className={labelClasses}>Top Mount (one per line)</label>
+            <textarea
+              id="features-topMount"
+              rows={3}
+              value={features.topMount?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('topMount', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
+          <div>
+            <label htmlFor="features-remote" className={labelClasses}>Remote (one per line)</label>
+            <textarea
+              id="features-remote"
+              rows={3}
+              value={features.remote?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('remote', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
         </div>
       </div>
 

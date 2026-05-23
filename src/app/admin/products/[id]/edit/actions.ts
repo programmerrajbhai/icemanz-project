@@ -57,6 +57,8 @@ export async function updateProduct(productId: string, formData: FormData) {
   const type = formData.get('type') as string;
   const badge = formData.get('badge') as string;
   const keyFeatures = formData.get('keyFeatures') as string;
+  const brand = formData.get('brand') as string;
+  const sku = formData.get('sku') as string;
   const imageFiles = formData.getAll('images') as File[];
 
   const existingImagesRaw = formData.get('existingImages') as string;
@@ -95,6 +97,39 @@ export async function updateProduct(productId: string, formData: FormData) {
       documents = JSON.parse(existingDocsRaw);
     } catch {
       console.error("Failed to parse existing documents JSON");
+    }
+  }
+
+  // Parse product options
+  const productOptionsRaw = formData.get('productOptions') as string;
+  let productOptions: any[] = [];
+  if (productOptionsRaw) {
+    try {
+      productOptions = JSON.parse(productOptionsRaw);
+    } catch {
+      console.error("Failed to parse productOptions JSON");
+    }
+  }
+
+  // Parse FAQs
+  const faqsRaw = formData.get('faqs') as string;
+  let faqs: any[] = [];
+  if (faqsRaw) {
+    try {
+      faqs = JSON.parse(faqsRaw);
+    } catch {
+      console.error("Failed to parse faqs JSON");
+    }
+  }
+
+  // Parse features
+  const featuresRaw = formData.get('features') as string;
+  let features: any = null;
+  if (featuresRaw) {
+    try {
+      features = JSON.parse(featuresRaw);
+    } catch {
+      console.error("Failed to parse features JSON");
     }
   }
 
@@ -170,10 +205,15 @@ export async function updateProduct(productId: string, formData: FormData) {
         type,
         badge,
         keyFeatures,
+        brand,
+        sku,
         warranty,
         detailedFeatures,
         specs: specs.length > 0 ? specs : undefined,
         documents: documents.length > 0 ? documents : undefined,
+        productOptions: productOptions.length > 0 ? productOptions : undefined,
+        faqs: faqs.length > 0 ? faqs : undefined,
+        features: features && Object.keys(features).length > 0 ? features : undefined,
         images: finalImages,
       }
     });

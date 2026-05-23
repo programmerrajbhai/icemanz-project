@@ -15,18 +15,21 @@ const mockProductsDetails: Record<string, any> = {
       '/Walk-in-Cooler-Freezer/Layout-CoolerFreezer.webp'
     ],
     badge: 'Best Seller',
-    description: 'Astra Walk-In Coolers are designed for durability and efficiency. This 6x6 model without floor is perfect for existing concrete floors.',
+    description: 'Quick Ship Indoor Walk-In Cooler, 6\' W x 6\' L x 7\'-2 1/4" H, Without Floor, 4" thick AK-XPS4 insulation providing R-29 for coolers and R-32 for freezers, ceiling & doors, insulation with 50 Year R-value warranty, 26 gauge stucco embossed corrosion resistant acrylic coated Acrylume on all interior & exterior surfaces, NSF vinyl screed, flush self-closing door, digital LED thermometer with pilot light switch, super cam-rise spring assisted hinges & door closer, ships in 48 hours - subject to terms & conditions, UL, Made in USA',
     keyFeatures: 'High-density insulation, Easy assembly, Energy efficient',
     condition: 'New',
     type: 'Cooler',
     warranty: ['15 Year Panel Warranty', '1 Year Parts Warranty'],
     detailedFeatures: [
-      '4" Thick Foamed-In-Place Polyurethane Insulation',
-      'Cam-Lock Panels, Tongue & Groove Design',
-      '24 Gauge Pre-Painted White Galvanized Steel',
-      'R27 for Coolers',
-      'CFC and HFC Free Materials',
-      '10 Year Panel Warranty'
+      '4" Thick AK-XPS4 insulation, providing R-29 for coolers and R-32 for freezers',
+      '26 Gauge Acrylume® coated corrosion resistant stucco embossed Galvalume on all interior and exterior surfaces',
+      '30"W x 76"H or 36"W x 76"H flush mounted door with spring actuated door closer',
+      '2 Super cam-rise spring assisted hinges',
+      'Deadbolt keyed handle latch',
+      'Interior safety lock release handle',
+      'Digital LED thermometer with on and off pilot light switch',
+      'Vapor proof light fixture centered on interior door jamb',
+      'Floorless walk-ins have NSF vinyl screed'
     ],
     specs: [
       { label: 'Dimensions', value: '6\' x 6\' x 7\' 6"' },
@@ -34,8 +37,10 @@ const mockProductsDetails: Record<string, any> = {
       { label: 'Application', value: 'Indoor/Outdoor' }
     ],
     documents: [
-      { name: 'Installation Manual', url: '#' },
-      { name: 'Specifications Sheet', url: '#' }
+      { name: 'Spec Sheet', url: 'https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062' },
+      { name: 'Warranty', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042' },
+      { name: 'About Amerikooler', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546' },
+      { name: 'California 65 Statement', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453' }
     ],
     productOptions: [
       {
@@ -140,17 +145,21 @@ const mockProductsDetails: Record<string, any> = {
       '/Walk-in-Cooler-Freezer/Layout-CoolerFreezer.webp'
     ],
     badge: 'Best Seller',
-    description: 'Astra Walk-In Coolers are designed for durability and efficiency. This 6x8 model without floor is perfect for existing concrete floors.',
+    description: 'Quick Ship Indoor Walk-In Cooler, 6\' W x 6\' L x 7\'-2 1/4" H, Without Floor, 4" thick AK-XPS4 insulation providing R-29 for coolers and R-32 for freezers, ceiling & doors, insulation with 50 Year R-value warranty, 26 gauge stucco embossed corrosion resistant acrylic coated Acrylume on all interior & exterior surfaces, NSF vinyl screed, flush self-closing door, digital LED thermometer with pilot light switch, super cam-rise spring assisted hinges & door closer, ships in 48 hours - subject to terms & conditions, UL, Made in USA',
     keyFeatures: 'High-density insulation, Easy assembly, Energy efficient',
     condition: 'New',
     type: 'Cooler',
     warranty: ['15 Year Panel Warranty', '1 Year Parts Warranty'],
     detailedFeatures: [
-      '4" thick insulation',
-      'Cam-lock construction',
-      'Heavy-duty door hardware',
-      'NSF Certified',
-      'UL Listed'
+      '4" Thick AK-XPS4 insulation, providing R-29 for coolers and R-32 for freezers',
+      '26 Gauge Acrylume® coated corrosion resistant stucco embossed Galvalume on all interior and exterior surfaces',
+      '30"W x 76"H or 36"W x 76"H flush mounted door with spring actuated door closer',
+      '2 Super cam-rise spring assisted hinges',
+      'Deadbolt keyed handle latch',
+      'Interior safety lock release handle',
+      'Digital LED thermometer with on and off pilot light switch',
+      'Vapor proof light fixture centered on interior door jamb',
+      'Floorless walk-ins have NSF vinyl screed'
     ],
     specs: [
       { label: 'Dimensions', value: '6\' x 8\' x 7\' 6"' },
@@ -158,8 +167,10 @@ const mockProductsDetails: Record<string, any> = {
       { label: 'Application', value: 'Indoor/Outdoor' }
     ],
     documents: [
-      { name: 'Installation Manual', url: '#' },
-      { name: 'Specifications Sheet', url: '#' }
+      { name: 'Spec Sheet', url: 'https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062' },
+      { name: 'Warranty', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042' },
+      { name: 'About Amerikooler', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546' },
+      { name: 'California 65 Statement', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453' }
     ]
   },
   '3': {
@@ -174,17 +185,21 @@ const mockProductsDetails: Record<string, any> = {
       '/Walk-in-Cooler-Freezer/Layout-CoolerFreezer.webp'
     ],
     badge: 'Popular',
-    description: 'Astra Walk-In Coolers are designed for durability and efficiency. This 6x6 model includes a heavy-duty floor for better insulation.',
+    description: 'Quick Ship Indoor Walk-In Cooler, 6\' W x 6\' L x 7\'-2 1/4" H, With Floor, 4" thick AK-XPS4 insulation providing R-29 for coolers and R-32 for freezers, ceiling & doors, insulation with 50 Year R-value warranty, 26 gauge stucco embossed corrosion resistant acrylic coated Acrylume on all interior & exterior surfaces, NSF vinyl screed, flush self-closing door, digital LED thermometer with pilot light switch, super cam-rise spring assisted hinges & door closer, ships in 48 hours - subject to terms & conditions, UL, Made in USA',
     keyFeatures: 'Includes floor, High-density insulation, Easy assembly',
     condition: 'New',
     type: 'Cooler',
     warranty: ['15 Year Panel Warranty', '1 Year Parts Warranty'],
     detailedFeatures: [
-      '4" thick insulation',
-      'Cam-lock construction',
-      'Heavy-duty door hardware',
-      'Reinforced floor panels',
-      'NSF Certified'
+      '4" Thick AK-XPS4 insulation, providing R-29 for coolers and R-32 for freezers',
+      '26 Gauge Acrylume® coated corrosion resistant stucco embossed Galvalume on all interior and exterior surfaces',
+      '30"W x 76"H or 36"W x 76"H flush mounted door with spring actuated door closer',
+      '2 Super cam-rise spring assisted hinges',
+      'Deadbolt keyed handle latch',
+      'Interior safety lock release handle',
+      'Digital LED thermometer with on and off pilot light switch',
+      'Vapor proof light fixture centered on interior door jamb',
+      'Reinforced floor panels'
     ],
     specs: [
       { label: 'Dimensions', value: '6\' x 6\' x 7\' 6"' },
@@ -192,8 +207,10 @@ const mockProductsDetails: Record<string, any> = {
       { label: 'Application', value: 'Indoor' }
     ],
     documents: [
-      { name: 'Installation Manual', url: '#' },
-      { name: 'Specifications Sheet', url: '#' }
+      { name: 'Spec Sheet', url: 'https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062' },
+      { name: 'Warranty', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042' },
+      { name: 'About Amerikooler', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546' },
+      { name: 'California 65 Statement', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453' }
     ]
   }
 };
@@ -252,9 +269,20 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
       .slice(0, 20);
   }
 
+  // Ensure product has documents
+  const productWithDocs = {
+    ...product,
+    documents: Array.isArray(product.documents) && product.documents.length > 0 ? product.documents : [
+      { name: 'Spec Sheet', url: 'https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062' },
+      { name: 'Warranty', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042' },
+      { name: 'About Amerikooler', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546' },
+      { name: 'California 65 Statement', url: 'https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453' }
+    ]
+  };
+
   return (
     <WalkInCoolerProductClient
-      product={JSON.parse(JSON.stringify(product))}
+      product={JSON.parse(JSON.stringify(productWithDocs))}
       relatedProducts={JSON.parse(JSON.stringify(relatedProducts))}
     />
   );

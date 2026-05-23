@@ -1,47 +1,8 @@
 https://www.atlanticse.com/collections/walk-in-coolers
 
--Submenu
--Submenu Details Page
-
-=============
-
-Evaporation Units : 17,100 BTU 
-combo : 13,000 BTU
-Condensing Unit
-10 HP, Medium Temp
-10 HP, Medium Temp
-
-amader project er ei page http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer
-
-amader walk-in-cooler-freezer er ekta sub category walk-in-cooler-no-floor category page er Amerikooler brand er under a ei https://www.atlanticse.com/a/search/astra-walk-in-combo-cooler-freezer-with-floor?filter_brand=Amerikooler link thyky product fatch kory database a add koro mone rakhby 
-
-
-Refrigeration filter a 
-only Top-Mount Refrigeration (42) er 42 ta products 
-so ei filter wise products gulo database a add korby onno kono kisu jano change na hoy 
-
-
-
-keep all the product butoon choose option insted of add to cart and if user click on this button go inside the detials page not addin to cart from this page
-
-ekhnay suggeted product section a alternate way tay kj korby 
-many Condensing Units er products jodi cart a add kora thaky 
-taholy Evaporation Units er products suggested products hisaby 
-dekhaby same vaby  Evaporation Units cart a thakly Condensing Units er 
-products show korby suggested products a
-
-exe : 
-Condensing Units > Low Profile - in cart 
-
-Evaporation Units > Low Profile - in suggested products
-
-Evaporation Units > Medium Profile - in cart 
-
-Condensing Units > Medium Profile (Scroll Compressor) - in suggested products
-
-
 
 =====Home Page 
+
 * Featured Products - Details Page 
 
 =====http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
@@ -62,8 +23,73 @@ Condensing Units > Medium Profile (Scroll Compressor) - in suggested products
 =====unnessary function file dlr kory site optimized korty hoby 
 
 
-
 http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor ei category er products gulo home page er ei section a add koro real content jano thaky and coose option button rakho same oi category er real product er moto kory
 
 
 Mobile navigation bar a amader update menu gulo add koro ekhany ager onk manu add hoye asy 
+
+
+======
+
+
+target website products page link https://www.atlanticse.com/a/search/walk-in-cooler-freezer-combo?filter_brand=Amerikooler
+
+1. ei link gulo thyky thyky Amerikooler brand er total 32 ta products with title description attacthment ja ja asy sob kisu fatch kory amader database http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer ei page a Amerikooler brand er under a rakho 
+
+2. real image full content details page er content soho anty hoby ami refarance hisaby am kisu photo deye dissi 
+
+3. Refrigeration Top Mount Refrigeration(42) er products gulo alada vaby filter a add korty hoby jerokom asy target website a jaty filter kora jay 
+
+4. onno kono page er kisu change kora jaby na ba onno kono product modify kora jaby na 
+
+6. must sob gulo product er details er page er content alada alada dynamic hoby
+
+7. bortomany amader website er ui onujay hoby just content gulo dynamic hoby desing er kono change kora jaby na 
+
+
+
+===========
+
+
+
+1. https://www.atlanticse.com/products/amerikooler-qc060672-n-o-6-x-6-x-7-2-floorless-walk-in-cooler
+oder website a ei page a product description a 
+Spec Sheet asy amader tai missing 
+
+2. Product Attachments
+        Warranty
+        About Amerikooler
+        California 65 Statement
+  missing amader details page egulo fix koro 
+
+
+  =====
+
+  https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062
+  eta holo Spec Sheet er link 
+
+  https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042
+  eta Warranty
+
+  https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546
+  eta About Amerikooler
+
+  https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453
+  eta California 65 Statement
+
+
+
+
+  ====
+
+dashboard a ei page thyky 
+  http://localhost:3000/admin/products/new?category=walk-in-cooler-freezer
+
+ei category gulor product add kora jaby 
+  http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
+
+  http://localhost:3000/walk-in-cooler-freezer
+
+must sob gulo details add kora jaby ja ja dorkar ei product er details page a 
+
+details page http://localhost:3000/walk-in-cooler-freezer/amerikooler-dw081277n-6-6-sc-8-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration

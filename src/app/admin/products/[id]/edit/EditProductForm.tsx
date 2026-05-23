@@ -15,6 +15,24 @@ type ProductWithCategory = Product & {
   category: Category | null;
 };
 
+type ProductOption = {
+  label: string;
+  name: string;
+  options: { label: string; price?: string }[];
+};
+
+type Faq = {
+  question: string;
+  answer: string;
+};
+
+type Features = {
+  panels?: string[];
+  doors?: string[];
+  topMount?: string[];
+  remote?: string[];
+};
+
 // Helper: find which top-level, level-2, and level-3 categories match the product's categoryId
 function findCategoryPath(allCategories: CategoryWithSubs[], categoryId: string | null) {
   if (!categoryId) return { l1: '', l2: '', l3: '' };
@@ -53,6 +71,18 @@ export default function EditProductForm({ product, allCategories }: { product: P
   const [existingDocs, setExistingDocs] = useState<{ name: string; url: string }[]>(initialDocs);
   const [newDocEntries, setNewDocEntries] = useState<{ name: string; file: File | null }[]>([]);
 
+  // Product Options state
+  const initialProductOptions = (product.productOptions as ProductOption[]) || [];
+  const [productOptions, setProductOptions] = useState<ProductOption[]>(initialProductOptions);
+
+  // FAQs state
+  const initialFaqs = (product.faqs as Faq[]) || [];
+  const [faqs, setFaqs] = useState<Faq[]>(initialFaqs);
+
+  // Features state
+  const initialFeatures = (product.features as Features) || {};
+  const [features, setFeatures] = useState<Features>(initialFeatures);
+
   const topCategories = useMemo(() => allCategories.filter(c => !c.parentId), [allCategories]);
 
   const level2Options = useMemo(() => {
@@ -79,6 +109,9 @@ export default function EditProductForm({ product, allCategories }: { product: P
     formData.set('specs', JSON.stringify(specs));
     formData.set('existingDocuments', JSON.stringify(existingDocs));
     formData.set('existingImages', JSON.stringify(existingImages));
+    formData.set('productOptions', JSON.stringify(productOptions));
+    formData.set('faqs', JSON.stringify(faqs));
+    formData.set('features', JSON.stringify(features));
 
     formData.delete('images');
     newImages.forEach(img => formData.append('images', img.file));
@@ -137,6 +170,60 @@ export default function EditProductForm({ product, allCategories }: { product: P
   const addNewDocEntry = () => setNewDocEntries([...newDocEntries, { name: '', file: null }]);
   const removeNewDocEntry = (i: number) => setNewDocEntries(newDocEntries.filter((_, idx) => idx !== i));
   const removeExistingDoc = (i: number) => setExistingDocs(existingDocs.filter((_, idx) => idx !== i));
+
+  // Product Options handlers
+  const addProductOption = () => {
+    setProductOptions([...productOptions, { label: '', name: '', options: [{ label: '', price: '' }] }]);
+  };
+
+  const removeProductOption = (index: number) => {
+    setProductOptions(productOptions.filter((_, i) => i !== index));
+  };
+
+  const updateProductOption = (index: number, field: 'label' | 'name', value: string) => {
+    const updated = [...productOptions];
+    updated[index][field] = value;
+    setProductOptions(updated);
+  };
+
+  const addOptionValue = (optionIndex: number) => {
+    const updated = [...productOptions];
+    updated[optionIndex].options.push({ label: '', price: '' });
+    setProductOptions(updated);
+  };
+
+  const removeOptionValue = (optionIndex: number, valueIndex: number) => {
+    const updated = [...productOptions];
+    updated[optionIndex].options = updated[optionIndex].options.filter((_, i) => i !== valueIndex);
+    setProductOptions(updated);
+  };
+
+  const updateOptionValue = (optionIndex: number, valueIndex: number, field: 'label' | 'price', value: string) => {
+    const updated = [...productOptions];
+    updated[optionIndex].options[valueIndex][field] = value;
+    setProductOptions(updated);
+  };
+
+  // FAQs handlers
+  const addFaq = () => {
+    setFaqs([...faqs, { question: '', answer: '' }]);
+  };
+
+  const removeFaq = (index: number) => {
+    setFaqs(faqs.filter((_, i) => i !== index));
+  };
+
+  const updateFaq = (index: number, field: 'question' | 'answer', value: string) => {
+    const updated = [...faqs];
+    updated[index][field] = value;
+    setFaqs(updated);
+  };
+
+  // Features helpers
+  const updateFeaturesList = (section: keyof Features, value: string) => {
+    const list = value.split('\n').map(s => s.trim()).filter(Boolean);
+    setFeatures(prev => ({ ...prev, [section]: list.length > 0 ? list : undefined }));
+  };
 
   const inputClasses = "py-2.5 px-3.5 block w-full border border-slate-300 rounded-lg text-sm focus:border-[#004a99] focus:ring-1 focus:ring-[#004a99]/20 bg-white placeholder:text-slate-400 outline-none transition-all";
   const selectClasses = `${inputClasses} appearance-none cursor-pointer`;
@@ -202,6 +289,20 @@ export default function EditProductForm({ product, allCategories }: { product: P
               <input type="text" id="slug" name="slug" defaultValue={product.slug} className={inputClasses} placeholder="Auto-generated if empty" />
             </div>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="brand" className={labelClasses}>Brand</label>
+              <input type="text" id="brand" name="brand" defaultValue={product.brand || ''} className={inputClasses} placeholder="e.g. Amerikooler, Icemanz" />
+            </div>
+            <div>
+              <label htmlFor="sku" className={labelClasses}>SKU</label>
+              <input type="text" id="sku" name="sku" defaultValue={product.sku || ''} className={inputClasses} placeholder="e.g. SKU-12345" />
+            </div>
+            <div>
+              <label htmlFor="price" className={labelClasses}>Price</label>
+              <input type="text" id="price" name="price" defaultValue={product.price || ''} className={inputClasses} placeholder="e.g. $1,299.00" />
+            </div>
+          </div>
 
           {/* Category Selector */}
           <div>
@@ -247,19 +348,15 @@ export default function EditProductForm({ product, allCategories }: { product: P
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="price" className={labelClasses}>Price</label>
-              <input type="text" id="price" name="price" defaultValue={product.price || ''} className={inputClasses} placeholder="e.g. $1,299.00" />
-            </div>
-            <div>
               <label htmlFor="badge" className={labelClasses}>Badge</label>
               <input type="text" id="badge" name="badge" defaultValue={product.badge || ''} className={inputClasses} placeholder="e.g. IN STOCK" />
             </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="condition" className={labelClasses}>Condition</label>
               <input type="text" id="condition" name="condition" defaultValue={product.condition || ''} className={inputClasses} placeholder="e.g. New" />
             </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="type" className={labelClasses}>Type</label>
               <input type="text" id="type" name="type" defaultValue={product.type || ''} className={inputClasses} placeholder="e.g. Compressor" />
@@ -380,6 +477,148 @@ export default function EditProductForm({ product, allCategories }: { product: P
           <button type="button" onClick={addNewDocEntry} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
             <Plus size={16} /> Add New Document
           </button>
+        </div>
+      </div>
+
+      {/* ===== SECTION 5: Product Options ===== */}
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Product Options</h3>
+        <div className="space-y-4">
+          {productOptions.map((option, i) => (
+            <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="grid grid-cols-2 gap-3 flex-1">
+                  <input
+                    type="text"
+                    value={option.label}
+                    onChange={(e) => updateProductOption(i, 'label', e.target.value)}
+                    className={`${inputClasses}`}
+                    placeholder="Option Label (e.g. Door Hinge)"
+                  />
+                  <input
+                    type="text"
+                    value={option.name}
+                    onChange={(e) => updateProductOption(i, 'name', e.target.value)}
+                    className={`${inputClasses}`}
+                    placeholder="Option Name (e.g. doorHinge)"
+                  />
+                </div>
+                <button type="button" onClick={() => removeProductOption(i)} className="ml-3 shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Values</p>
+                {option.options.map((optVal, j) => (
+                  <div key={j} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={optVal.label}
+                      onChange={(e) => updateOptionValue(i, j, 'label', e.target.value)}
+                      className={`${inputClasses} flex-1`}
+                      placeholder="Value Label (e.g. Left Hinged)"
+                    />
+                    <input
+                      type="text"
+                      value={optVal.price || ''}
+                      onChange={(e) => updateOptionValue(i, j, 'price', e.target.value)}
+                      className={`${inputClasses} w-32`}
+                      placeholder="Price (optional)"
+                    />
+                    <button type="button" onClick={() => removeOptionValue(i, j)} className="shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => addOptionValue(i)} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+                  <Plus size={14} /> Add Value
+                </button>
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={addProductOption} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+            <Plus size={16} /> Add Product Option
+          </button>
+        </div>
+      </div>
+
+      {/* ===== SECTION 6: FAQs ===== */}
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">FAQs</h3>
+        <div className="space-y-3">
+          {faqs.map((faq, i) => (
+            <div key={i} className="flex flex-col gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={faq.question}
+                  onChange={(e) => updateFaq(i, 'question', e.target.value)}
+                  className={`${inputClasses} flex-1`}
+                  placeholder="Question"
+                />
+                <button type="button" onClick={() => removeFaq(i)} className="shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <textarea
+                value={faq.answer}
+                onChange={(e) => updateFaq(i, 'answer', e.target.value)}
+                rows={2}
+                className={`${inputClasses} resize-y`}
+                placeholder="Answer"
+              />
+            </div>
+          ))}
+          <button type="button" onClick={addFaq} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+            <Plus size={16} /> Add FAQ
+          </button>
+        </div>
+      </div>
+
+      {/* ===== SECTION 7: Features ===== */}
+      <div>
+        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Features (Panels, Doors, etc.)</h3>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="features-panels" className={labelClasses}>Panels (one per line)</label>
+            <textarea
+              id="features-panels"
+              rows={3}
+              value={features.panels?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('panels', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
+          <div>
+            <label htmlFor="features-doors" className={labelClasses}>Doors (one per line)</label>
+            <textarea
+              id="features-doors"
+              rows={3}
+              value={features.doors?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('doors', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
+          <div>
+            <label htmlFor="features-topMount" className={labelClasses}>Top Mount (one per line)</label>
+            <textarea
+              id="features-topMount"
+              rows={3}
+              value={features.topMount?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('topMount', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
+          <div>
+            <label htmlFor="features-remote" className={labelClasses}>Remote (one per line)</label>
+            <textarea
+              id="features-remote"
+              rows={3}
+              value={features.remote?.join('\n') || ''}
+              onChange={(e) => updateFeaturesList('remote', e.target.value)}
+              className={`${inputClasses} resize-y`}
+            />
+          </div>
         </div>
       </div>
 
