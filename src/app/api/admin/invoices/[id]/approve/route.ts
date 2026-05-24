@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import Stripe from 'stripe';
 import nodemailer from 'nodemailer';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+import { getQboClient } from '@/lib/qbo';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -14,6 +13,93 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD || process.env.SMTP_PASS,
   },
 });
+
+async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
+  try {
+    const { oauthClient, realmId } = await getQboClient();
+
+    // First, create or get customer
+    let customerRef;
+    try {
+      const customerQuery = `SELECT * FROM Customer WHERE PrimaryEmailAddr.Address = '${invoice.email}' MAXRESULTS 1`;
+      const customerResponse = await oauthClient.makeApiCall({
+        url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/query?query=${encodeURIComponent(customerQuery)}`,
+        method: 'GET',
+      });
+
+      const customerBody = typeof customerResponse.body === 'string' ? JSON.parse(customerResponse.body) : customerResponse.body;
+      const customers = customerBody?.QueryResponse?.Customer;
+      if (customers && customers.length > 0) {
+        customerRef = { value: customers[0].Id, name: customers[0].DisplayName };
+      } else {
+        // Create new customer
+        const customerData = {
+          DisplayName: invoice.fullName,
+          PrimaryEmailAddr: { Address: invoice.email },
+          ...(invoice.phone ? { PrimaryPhone: { FreeFormNumber: invoice.phone } } : {}),
+          ...(invoice.address ? { BillAddr: { Line1: invoice.address } } : {}),
+        };
+
+        const createCustomerResponse = await oauthClient.makeApiCall({
+          url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/customer`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(customerData),
+        });
+
+        const createCustomerBody = typeof createCustomerResponse.body === 'string' ? JSON.parse(createCustomerResponse.body) : createCustomerResponse.body;
+        const newCustomer = createCustomerBody?.Customer;
+        customerRef = { value: newCustomer.Id, name: newCustomer.DisplayName };
+      }
+    } catch (customerError) {
+      console.error('Error with customer:', customerError);
+      // Fallback to a default customer if needed
+    }
+
+    if (!customerRef) {
+      console.log('Could not get or create customer, skipping QBO sync');
+      return null;
+    }
+
+    // Create invoice
+    const lineItems = [
+      {
+        DetailType: 'SalesItemLineDetail',
+        SalesItemLineDetail: {
+          ItemRef: { value: '1', name: 'Services' },
+          Qty: 1,
+          UnitPrice: finalTotalAmount,
+        },
+        Amount: finalTotalAmount,
+        Description: `Invoice for Project: ${invoice.projectName || 'Custom Project'}`,
+      },
+    ];
+
+    const invoiceData = {
+      CustomerRef: customerRef,
+      Line: lineItems,
+      PrivateNote: invoice.deliveryNotes || '',
+    };
+
+    const createInvoiceResponse = await oauthClient.makeApiCall({
+      url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/invoice`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(invoiceData),
+    });
+
+    const createInvoiceBody = typeof createInvoiceResponse.body === 'string' ? JSON.parse(createInvoiceResponse.body) : createInvoiceResponse.body;
+    const qboInvoice = createInvoiceBody?.Invoice;
+
+    return {
+      qboInvoiceId: qboInvoice?.Id,
+      qboCustomerId: customerRef.value,
+    };
+  } catch (error) {
+    console.error('Error syncing to QuickBooks:', error);
+    return null;
+  }
+}
 
 export async function POST(
   req: Request,
@@ -43,45 +129,61 @@ export async function POST(
       // Determine the base URL for redirects and images
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-      // Create Stripe checkout session
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: `Invoice for Project: ${invoice.projectName || 'Custom Project'}`,
-                description: `Requested by ${invoice.fullName}`,
+      let session = null;
+      if (process.env.STRIPE_SECRET_KEY) {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        // Create Stripe checkout session
+        session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: {
+                  name: `Invoice for Project: ${invoice.projectName || 'Custom Project'}`,
+                  description: `Requested by ${invoice.fullName}`,
+                },
+                unit_amount: Math.round(finalTotalAmount * 100),
               },
-              unit_amount: Math.round(finalTotalAmount * 100),
+              quantity: 1,
             },
-            quantity: 1,
+          ],
+          mode: 'payment',
+          success_url: `${baseUrl}/completed-projects?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${baseUrl}/request-invoice?canceled=true`,
+          metadata: {
+            invoiceId: invoice.id,
+            customerName: invoice.fullName,
+            customerEmail: invoice.email,
           },
-        ],
-        mode: 'payment',
-        success_url: `${baseUrl}/completed-projects?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/request-invoice?canceled=true`,
-        metadata: {
-          invoiceId: invoice.id,
-          customerName: invoice.fullName,
-          customerEmail: invoice.email,
-        },
-      });
+        });
+      }
+
+      // Sync to QuickBooks if connected
+      let qboData = null;
+      try {
+        qboData = await syncInvoiceToQuickBooks(invoice, finalTotalAmount);
+      } catch (qboError) {
+        console.error('QBO sync failed:', qboError);
+      }
 
       const updatedInvoice = await prisma.invoiceRequest.update({
         where: { id },
         data: {
           status: 'APPROVED',
           totalAmount: amount,
-          stripeSessionId: session.id,
-          paymentLink: session.url,
+          stripeSessionId: session?.id || null,
+          paymentLink: session?.url || null,
           deliveryTime,
           offerDiscount,
           tax,
           deliveryCost,
           totalWithTax: finalTotalAmount,
           deliveryNotes,
+          ...(qboData ? {
+            qboInvoiceId: qboData.qboInvoiceId,
+            qboCustomerId: qboData.qboCustomerId,
+          } : {}),
         },
       });
 
@@ -147,9 +249,11 @@ export async function POST(
             ` : ''}
           </div>
 
-          <div style="text-align: center; margin: 35px 0;">
-            <a href="${session.url}" style="background-color: #004a99; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 2px 4px rgba(0,74,153,0.2);">Pay Invoice Now</a>
-          </div>
+          ${session ? `
+            <div style="text-align: center; margin: 35px 0;">
+              <a href="${session.url}" style="background-color: #004a99; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 2px 4px rgba(0,74,153,0.2);">Pay Invoice Now</a>
+            </div>
+          ` : ''}
 
           <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
 

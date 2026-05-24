@@ -3,10 +3,6 @@ import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
-
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || '587'),
@@ -18,14 +14,24 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function POST(req: Request) {
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json(
+      { error: 'Stripe webhook is not configured' },
+      { status: 500 }
+    );
+  }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   const payload = await req.text();
   const signature = req.headers.get('stripe-signature');
 
   let event: Stripe.Event;
 
   try {
-    if (!signature || !webhookSecret) {
-      throw new Error('Missing stripe signature or webhook secret');
+    if (!signature) {
+      throw new Error('Missing stripe signature');
     }
     event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
   } catch (err: any) {

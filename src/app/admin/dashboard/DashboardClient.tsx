@@ -4,16 +4,25 @@ import {
   TrendingUp, 
   FileText, 
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  CheckCircle2,
+  XCircle
 } from "lucide-react";
 import Link from "next/link";
 import useSWR from "swr";
 import { getDashboardData } from "./actions";
 
-export default function DashboardClient({ initialData }: { initialData: any }) {
+export default function DashboardClient({ initialData, qboStatus }: { initialData: any; qboStatus: { connected: boolean } }) {
   const { data } = useSWR('dashboard', getDashboardData, { fallbackData: initialData, refreshInterval: 10000 });
 
   const { totalRequests, newRequests, totalProducts, recentInvoices } = data || initialData;
+
+  const handleDisconnectQbo = async () => {
+    if (confirm('Are you sure you want to disconnect from QuickBooks?')) {
+      await fetch('/api/qbo/disconnect', { method: 'POST' });
+      window.location.reload();
+    }
+  };
 
   const stats = [
     {
@@ -44,9 +53,34 @@ export default function DashboardClient({ initialData }: { initialData: any }) {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h1>
-        <p className="text-sm text-slate-500 mt-1">Welcome back. Here's what's happening today.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h1>
+          <p className="text-sm text-slate-500 mt-1">Welcome back. Here's what's happening today.</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          {qboStatus.connected ? (
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2">
+              <CheckCircle2 className="text-emerald-600" size={20} />
+              <span className="text-sm font-semibold text-emerald-700">Connected to QuickBooks</span>
+              <button
+                onClick={handleDisconnectQbo}
+                className="ml-2 text-xs font-medium text-emerald-700 hover:text-emerald-900 underline"
+              >
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <a
+              href="/api/qbo/connect"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 font-medium transition-colors"
+            >
+              <XCircle className="text-white" size={20} />
+              Connect to QuickBooks
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Stats Grid */}

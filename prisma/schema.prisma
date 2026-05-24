@@ -76,6 +76,8 @@ model InvoiceRequest {
   totalWithTax      Float?
   deliveryNotes     String?
   category          String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
+  qboInvoiceId      String?
+  qboCustomerId     String?
 }
 
 model Order {
@@ -127,4 +129,14 @@ model GeneralEnquiry {
   status    String   @default("PENDING")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model QboToken {
+  id            String   @id @default(uuid())
+  accessToken   String
+  refreshToken  String
+  realmId       String
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

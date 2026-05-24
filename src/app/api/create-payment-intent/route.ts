@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(request: Request) {
   try {
     const { amount, items, email, fullName, phone, address } = await request.json();
@@ -29,6 +27,16 @@ export async function POST(request: Request) {
       }
     });
     console.log("[CREATE-PAYMENT-INTENT] InvoiceRequest created with email:", invoiceRequest.email);
+
+    // Check if Stripe is configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe payment is not configured' },
+        { status: 500 }
+      );
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     // Create Stripe Payment Intent for inline payment
     const paymentIntent = await stripe.paymentIntents.create({

@@ -3,8 +3,6 @@ import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
-
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || '587'),
@@ -22,6 +20,15 @@ export async function POST(req: Request) {
     if (!paymentIntentId) {
       return NextResponse.json({ error: 'Missing paymentIntentId' }, { status: 400 });
     }
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe is not configured' },
+        { status: 500 }
+      );
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     // Retrieve the payment intent from Stripe
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);

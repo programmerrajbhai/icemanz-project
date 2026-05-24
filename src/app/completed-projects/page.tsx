@@ -8,8 +8,6 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
-
 // Demo data for completed projects
 const demoProjects = [
     {
@@ -69,8 +67,9 @@ export default async function CompletedProjectsPage({
     let paymentSuccessful = false;
     let orderDetails = null;
 
-    if (sessionId) {
+    if (sessionId && process.env.STRIPE_SECRET_KEY) {
         try {
+            const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
             // Retrieve the Stripe session to verify payment status
             const session = await stripe.checkout.sessions.retrieve(sessionId);
 
