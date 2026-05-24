@@ -79,6 +79,8 @@ async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
       CustomerRef: customerRef,
       Line: lineItems,
       PrivateNote: invoice.deliveryNotes || '',
+      EmailStatus: 'NotSet',
+      BillEmail: { Address: invoice.email },
     };
 
     const createInvoiceResponse = await oauthClient.makeApiCall({
@@ -91,9 +93,23 @@ async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
     const createInvoiceBody = typeof createInvoiceResponse.body === 'string' ? JSON.parse(createInvoiceResponse.body) : createInvoiceResponse.body;
     const qboInvoice = createInvoiceBody?.Invoice;
 
+    // Generate payment link
+    let qboPaymentLink = null;
+    if (qboInvoice?.Id) {
+      try {
+        const qboBaseUrl = process.env.QBO_ENVIRONMENT === 'sandbox'
+          ? 'https://sandbox.qbo.intuit.com'
+          : 'https://qbo.intuit.com';
+        qboPaymentLink = `${qboBaseUrl}/app/invoice-pay?txnId=${qboInvoice.Id}&realmId=${realmId}`;
+      } catch (linkError) {
+        console.error('Error generating QBO payment link:', linkError);
+      }
+    }
+
     return {
       qboInvoiceId: qboInvoice?.Id,
       qboCustomerId: customerRef.value,
+      qboPaymentLink,
     };
   } catch (error) {
     console.error('Error syncing to QuickBooks:', error);
@@ -173,7 +189,7 @@ export async function POST(
           status: 'APPROVED',
           totalAmount: amount,
           stripeSessionId: session?.id || null,
-          paymentLink: session?.url || null,
+          paymentLink: qboData?.qboPaymentLink || session?.url || null,
           deliveryTime,
           offerDiscount,
           tax,
@@ -183,6 +199,7 @@ export async function POST(
           ...(qboData ? {
             qboInvoiceId: qboData.qboInvoiceId,
             qboCustomerId: qboData.qboCustomerId,
+            qboPaymentLink: qboData.qboPaymentLink,
           } : {}),
         },
       });
@@ -249,7 +266,11 @@ export async function POST(
             ` : ''}
           </div>
 
-          ${session ? `
+          ${qboData?.qboPaymentLink ? `
+            <div style="text-align: center; margin: 35px 0;">
+              <a href="${qboData.qboPaymentLink}" target="_blank" style="background-color: #004a99; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 2px 4px rgba(0,74,153,0.2);">Pay Invoice Now (QuickBooks)</a>
+            </div>
+          ` : session ? `
             <div style="text-align: center; margin: 35px 0;">
               <a href="${session.url}" style="background-color: #004a99; color: white; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 2px 4px rgba(0,74,153,0.2);">Pay Invoice Now</a>
             </div>

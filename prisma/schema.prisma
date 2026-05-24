@@ -78,6 +78,7 @@ model InvoiceRequest {
   category          String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
   qboInvoiceId      String?
   qboCustomerId     String?
+  qboPaymentLink    String?
 }
 
 model Order {
