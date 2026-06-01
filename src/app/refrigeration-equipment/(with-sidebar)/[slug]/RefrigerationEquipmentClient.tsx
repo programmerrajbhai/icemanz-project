@@ -26,22 +26,56 @@ import { Product, Category } from '@prisma/client';
 
 type CategoryWithSubs = Category & { subcategories: CategoryWithSubs[] };
 
-function extractProductInfo(text: string | null | undefined) {
-  if (!text) return null;
-  const hpMatch = text.match(/(\d+(?:\.\d+)?)\s*HP/i);
-  const tempMatch = text.match(/(Medium|Low)(?:\s+Temperature)?/i);
+function generateOptimizedTitle(product: any) {
+  const brand = product.brand || 'Turbo Air';
+
+  let model = product.title || '';
+  if (model.match(/HP|Temp|BTU/i)) {
+    const parts = model.split(/\s+/);
+    model = parts[parts.length - 1]; 
+  }
+
+  const textToSearch = `${product.title || ''} ${product.keyFeatures || ''} ${product.description || ''}`;
+  let capacity = '';
+  const hpMatch = textToSearch.match(/(\d+(?:\.\d+)?)\s*HP/i);
   if (hpMatch) {
-    const hp = hpMatch[1];
-    const temp = tempMatch ? `${tempMatch[1]} Temp` : 'Medium Temp';
-    return `${hp} HP, ${temp}`;
+    capacity = `${hpMatch[1]} HP`;
+  } else {
+    const btuMatch = textToSearch.match(/([\d,]+)\s*BTU/i);
+    if (btuMatch) {
+      const btu = btuMatch[1].replace(/,/g, '');
+      const formattedBtu = btu.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      capacity = `${formattedBtu} BTU`;
+    }
   }
-  const btuMatch = text.match(/([\d,]+)\s*BTU/i);
-  if (btuMatch) {
-    const btu = btuMatch[1].replace(/,/g, '');
-    const formattedBtu = btu.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return `${formattedBtu} BTU`;
+
+  let temp = '';
+  const tempMatch = textToSearch.match(/(Extended\s+Medium|Medium|Low)(?:\s+Temperature|\s+Temp)?/i);
+  if (tempMatch) {
+    temp = `${tempMatch[1]} Temp`;
   }
-  return null;
+
+  let context = 'Unit';
+  if (product.category) {
+    const slug = product.category.slug || '';
+    if (slug.includes('condensing') || slug.includes('scroll') || slug.includes('hermetic')) {
+      if (textToSearch.toLowerCase().includes('outdoor')) context = 'Outdoor Condensing Unit';
+      else if (textToSearch.toLowerCase().includes('indoor')) context = 'Indoor Condensing Unit';
+      else context = 'Condensing Unit';
+    } else if (slug.includes('evaporator') || slug.includes('profile')) {
+      if (slug.includes('low-profile')) context = 'Low Profile Evaporator';
+      else if (slug.includes('medium-profile')) context = 'Medium Profile Evaporator';
+      else if (slug.includes('center-mount')) context = 'Center Mount Evaporator';
+      else if (slug.includes('thin-profile')) context = 'Thin Profile Evaporator';
+      else context = 'Evaporator';
+    } else if (slug.includes('combo') || slug.includes('package')) {
+      if (slug.includes('outdoor')) context = 'Outdoor Package Unit';
+      else if (slug.includes('indoor')) context = 'Indoor Package Unit';
+      else context = 'Package Unit';
+    }
+  }
+
+  return [brand, model, capacity, temp, context].filter(Boolean).join(' ');
 }
 
 export default function RefrigerationEquipmentClient({
@@ -55,7 +89,17 @@ export default function RefrigerationEquipmentClient({
   slug: string,
   title: string
 }) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['condensing-units', 'low-profile-evaporator', 'combo-unitspackage-units', 'indoor-pemmvl', 'outdoor-bueip']);
+  const [expandedItems, setExpandedItems] = useState<string[]>([
+    'evaporation-units',
+    'condensing-units',
+    'combo-units-package-units',
+    'low-profile-evaporator', 
+    'thin-profile-evaporator-reach-in',
+    'medium-profile',
+    'center-mount-evaporator-low-velocity',
+    'indoor-pemmvl', 
+    'outdoor-bueip'
+  ]);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
 
@@ -116,7 +160,7 @@ export default function RefrigerationEquipmentClient({
                                   onClick={(e) => toggleExpand(e, cat.slug)}
                                   className="p-1 cursor-pointer transition-colors"
                                 >
-                                  {expandedItems.includes(cat.slug) ? <Minus size={14} className="text-gray-800" /> : <Plus size={14} className="text-gray-800" />}
+                                  {expandedItems.includes(cat.slug) ? <Minus size={14} className="text-red-500" /> : <Plus size={14} className="text-gray-800" />}
                                 </button>
                               )}
                             </div>
@@ -128,7 +172,7 @@ export default function RefrigerationEquipmentClient({
                                     <div className="flex items-center justify-between group">
                                       <Link
                                         href={`/refrigeration-equipment/${sub.slug}`}
-                                        className={`text-[13px] font-semibold transition-colors ${slug === sub.slug ? 'text-primary' : 'text-gray-600 hover:text-primary'}`}
+                                        className={`text-[14px] font-semibold transition-colors ${slug === sub.slug ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                                       >
                                         {sub.name}
                                       </Link>
@@ -137,7 +181,7 @@ export default function RefrigerationEquipmentClient({
                                           onClick={(e) => toggleExpand(e, sub.slug)}
                                           className="p-1 cursor-pointer transition-colors"
                                         >
-                                          {expandedItems.includes(sub.slug) ? <Minus size={12} className="text-gray-600" /> : <Plus size={12} className="text-gray-600" />}
+                                          {expandedItems.includes(sub.slug) ? <Minus size={12} className="text-red-500" /> : <Plus size={12} className="text-gray-600" />}
                                         </button>
                                       )}
                                     </div>
@@ -148,7 +192,7 @@ export default function RefrigerationEquipmentClient({
                                           <Link
                                             key={deepSub.slug}
                                             href={`/refrigeration-equipment/${deepSub.slug}`}
-                                            className={`text-[12px] font-medium transition-colors block ${slug === deepSub.slug ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
+                                            className={`text-[13px] font-medium transition-colors block ${slug === deepSub.slug ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                                           >
                                             {deepSub.name}
                                           </Link>
@@ -221,7 +265,7 @@ export default function RefrigerationEquipmentClient({
                     return (
                       <Link
                         key={product.id}
-                        href={`/refrigeration-equipment/${slug}/${product.id}`}
+                        href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`}
                         className="group bg-white border border-gray-200 rounded-sm p-2 overflow-hidden hover:-translate-y-1 transition-all duration-500 flex flex-col cursor-pointer block"
                       >
                         {/* Image Area */}

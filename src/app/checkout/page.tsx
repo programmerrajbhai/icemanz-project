@@ -1,4 +1,5 @@
 import CheckoutClient from './CheckoutClient';
+import { Suspense } from 'react';
 
 export const metadata = {
     title: 'Checkout | ICEMANZ',
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function CheckoutPage() {
-    return <CheckoutClient />;
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white"><div className="w-8 h-8 border-4 border-[#004a99]/30 border-t-[#004a99] rounded-full animate-spin"></div></div>}>
+            <CheckoutClient />
+        </Suspense>
+    );
 }

@@ -29,14 +29,27 @@ type Features = {
   remote?: string[];
 };
 
-export default function ProductForm({ allCategories }: { allCategories: CategoryWithSubs[] }) {
+export default function ProductForm({ allCategories, preselectedCategory }: { allCategories: CategoryWithSubs[], preselectedCategory?: any }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<{ file: File, preview: string }[]>([]);
 
-  // Cascading category state
-  const [selectedLevel1, setSelectedLevel1] = useState('');
-  const [selectedLevel2, setSelectedLevel2] = useState('');
+  // Cascading category state - initialize correctly based on preselected category
+  const [selectedLevel1, setSelectedLevel1] = useState(() => {
+    if (!preselectedCategory) return '';
+    // If preselected has parent, parent is level1
+    if (preselectedCategory.parentId) return preselectedCategory.parentId;
+    // Otherwise, preselected is level1
+    return preselectedCategory.id;
+  });
+  const [selectedLevel2, setSelectedLevel2] = useState(() => {
+    if (!preselectedCategory) return '';
+    // If preselected has parent and no parent's parent, preselected is level2
+    if (preselectedCategory.parentId) {
+      return preselectedCategory.id;
+    }
+    return '';
+  });
   const [selectedLevel3, setSelectedLevel3] = useState('');
 
   // Specs state
@@ -54,10 +67,18 @@ export default function ProductForm({ allCategories }: { allCategories: Category
   // Features state
   const [features, setFeatures] = useState<Features>({});
 
+  // Walk-in Cooler Specific State
+  const [walkInType, setWalkInType] = useState('');
+  const [sizeW, setSizeW] = useState('');
+  const [sizeL, setSizeL] = useState('');
+
   // Get top-level categories (no parent)
   const topCategories = useMemo(() => {
     return allCategories.filter(c => !c.parentId);
   }, [allCategories]);
+
+  const walkInCoolerCat = topCategories.find(c => c.slug === 'walk-in-cooler-freezer');
+  const isWalkInCooler = walkInCoolerCat && selectedLevel1 === walkInCoolerCat.id;
 
   const level2Options = useMemo(() => {
     if (!selectedLevel1) return [];
@@ -83,7 +104,15 @@ export default function ProductForm({ allCategories }: { allCategories: Category
     formData.set('specs', JSON.stringify(specs));
     formData.set('productOptions', JSON.stringify(productOptions));
     formData.set('faqs', JSON.stringify(faqs));
-    formData.set('features', JSON.stringify(features));
+    const currentFeatures: any = { ...features };
+    if (isWalkInCooler) {
+      currentFeatures.walkInType = walkInType;
+      if (sizeW && sizeL) {
+        currentFeatures.size = `${sizeW}' x ${sizeL}'`;
+      }
+    }
+
+    formData.set('features', JSON.stringify(currentFeatures));
 
     formData.delete('images');
     images.forEach((img) => formData.append('images', img.file));
@@ -242,20 +271,24 @@ export default function ProductForm({ allCategories }: { allCategories: Category
               <label htmlFor="title" className={labelClasses}>Title *</label>
               <input type="text" id="title" name="title" required className={inputClasses} placeholder="e.g. TS060MR404A3-T" />
             </div>
-            <div>
-              <label htmlFor="slug" className={labelClasses}>Slug</label>
-              <input type="text" id="slug" name="slug" className={inputClasses} placeholder="Auto-generated if empty" />
-            </div>
+            {!isWalkInCooler && (
+              <div>
+                <label htmlFor="slug" className={labelClasses}>Slug</label>
+                <input type="text" id="slug" name="slug" className={inputClasses} placeholder="Auto-generated if empty" />
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label htmlFor="brand" className={labelClasses}>Brand</label>
               <input type="text" id="brand" name="brand" className={inputClasses} placeholder="e.g. Amerikooler, Icemanz" />
             </div>
-            <div>
-              <label htmlFor="sku" className={labelClasses}>SKU</label>
-              <input type="text" id="sku" name="sku" className={inputClasses} placeholder="e.g. SKU-12345" />
-            </div>
+            {!isWalkInCooler && (
+              <div>
+                <label htmlFor="sku" className={labelClasses}>SKU</label>
+                <input type="text" id="sku" name="sku" className={inputClasses} placeholder="e.g. SKU-12345" />
+              </div>
+            )}
             <div>
               <label htmlFor="price" className={labelClasses}>Price</label>
               <input type="text" id="price" name="price" className={inputClasses} placeholder="e.g. $1,299.00" />
@@ -263,74 +296,128 @@ export default function ProductForm({ allCategories }: { allCategories: Category
           </div>
 
           {/* Category Selector */}
-          <div>
-            <label className={`${labelClasses} mb-2`}>Category</label>
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
-              <div className="flex items-start sm:items-center gap-3">
-                <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
-                  <select value={selectedLevel1} onChange={(e) => { setSelectedLevel1(e.target.value); setSelectedLevel2(''); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel1 ? 'border-[#004a99]/40 bg-[#004a99]/[0.03]' : ''}`}>
-                    <option value="">Select category...</option>
-                    {topCategories.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                  </select>
+          {!isWalkInCooler && (
+            <div>
+              <label className={`${labelClasses} mb-2`}>Category</label>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+                <div className="flex items-start sm:items-center gap-3">
+                  <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
+                    <select value={selectedLevel1} onChange={(e) => { setSelectedLevel1(e.target.value); setSelectedLevel2(''); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel1 ? 'border-[#004a99]/40 bg-[#004a99]/[0.03]' : ''}`}>
+                      <option value="">Select category...</option>
+                      {topCategories.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                    </select>
+                  </div>
                 </div>
+                {level2Options.length > 0 && (
+                  <div className="flex items-start sm:items-center gap-3">
+                    <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
+                      <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
+                        <option value="">Select subcategory...</option>
+                        {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+                {level3Options.length > 0 && (
+                  <div className="flex items-start sm:items-center gap-3">
+                    <span className="shrink-0 size-6 rounded-full bg-[#0891b2] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">3</span>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-slate-500 mb-1">Type</p>
+                      <select value={selectedLevel3} onChange={(e) => setSelectedLevel3(e.target.value)} className={`${selectClasses} ${selectedLevel3 ? 'border-[#0891b2]/40 bg-[#0891b2]/[0.03]' : ''}`}>
+                        <option value="">Select type...</option>
+                        {level3Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+                {selectedLevel1 && (
+                  <div className="pt-2 border-t border-slate-200">
+                    <p className="text-xs text-slate-400 font-medium">
+                      Selected: <span className="text-[#004a99] font-semibold">
+                        {topCategories.find(c => c.id === selectedLevel1)?.name}
+                        {selectedLevel2 && ` › ${level2Options.find(c => c.id === selectedLevel2)?.name}`}
+                        {selectedLevel3 && ` › ${level3Options.find(c => c.id === selectedLevel3)?.name}`}
+                      </span>
+                    </p>
+                  </div>
+                )}
               </div>
-              {level2Options.length > 0 && (
-                <div className="flex items-start sm:items-center gap-3">
-                  <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
-                    <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); setSelectedLevel3(''); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
-                      <option value="">Select subcategory...</option>
-                      {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                    </select>
-                  </div>
-                </div>
-              )}
-              {level3Options.length > 0 && (
-                <div className="flex items-start sm:items-center gap-3">
-                  <span className="shrink-0 size-6 rounded-full bg-[#0891b2] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">3</span>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-slate-500 mb-1">Type</p>
-                    <select value={selectedLevel3} onChange={(e) => setSelectedLevel3(e.target.value)} className={`${selectClasses} ${selectedLevel3 ? 'border-[#0891b2]/40 bg-[#0891b2]/[0.03]' : ''}`}>
-                      <option value="">Select type...</option>
-                      {level3Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
-                    </select>
-                  </div>
-                </div>
-              )}
-              {selectedLevel1 && (
-                <div className="pt-2 border-t border-slate-200">
-                  <p className="text-xs text-slate-400 font-medium">
-                    Selected: <span className="text-[#004a99] font-semibold">
-                      {topCategories.find(c => c.id === selectedLevel1)?.name}
-                      {selectedLevel2 && ` › ${level2Options.find(c => c.id === selectedLevel2)?.name}`}
-                      {selectedLevel3 && ` › ${level3Options.find(c => c.id === selectedLevel3)?.name}`}
-                    </span>
-                  </p>
-                </div>
-              )}
             </div>
-            <input type="hidden" name="categoryId" value={finalCategoryId} />
-          </div>
+          )}
+          {isWalkInCooler && (
+            <div>
+              <label className={`${labelClasses} mb-2`}>Category</label>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+                <div className="flex items-start sm:items-center gap-3">
+                  <span className="shrink-0 size-6 rounded-full bg-[#004a99] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">1</span>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-slate-500 mb-1">Main Category</p>
+                    <input type="text" value={topCategories.find(c => c.id === selectedLevel1)?.name || ''} disabled className={`${inputClasses} bg-slate-100`} />
+                  </div>
+                </div>
+                {level2Options.length > 0 && (
+                  <div className="flex items-start sm:items-center gap-3">
+                    <span className="shrink-0 size-6 rounded-full bg-[#0070cc] text-white text-xs font-bold flex items-center justify-center mt-1 sm:mt-0">2</span>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-slate-500 mb-1">Subcategory</p>
+                      <select value={selectedLevel2} onChange={(e) => { setSelectedLevel2(e.target.value); }} className={`${selectClasses} ${selectedLevel2 ? 'border-[#0070cc]/40 bg-[#0070cc]/[0.03]' : ''}`}>
+                        <option value="">Select subcategory...</option>
+                        {level2Options.map((cat) => (<option key={cat.id} value={cat.id}>{cat.name}</option>))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+                {(selectedLevel1 || selectedLevel2) && (
+                  <div className="pt-2 border-t border-slate-200">
+                    <p className="text-xs text-slate-400 font-medium">
+                      Selected: <span className="text-[#004a99] font-semibold">
+                        {topCategories.find(c => c.id === selectedLevel1)?.name}
+                        {selectedLevel2 && ` › ${level2Options.find(c => c.id === selectedLevel2)?.name}`}
+                      </span>
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          <input type="hidden" name="categoryId" value={finalCategoryId} />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="badge" className={labelClasses}>Badge</label>
-              <input type="text" id="badge" name="badge" className={inputClasses} placeholder="e.g. IN STOCK" />
+          {!isWalkInCooler && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="badge" className={labelClasses}>Badge</label>
+                <input type="text" id="badge" name="badge" className={inputClasses} placeholder="e.g. IN STOCK" />
+              </div>
+              <div>
+                <label htmlFor="condition" className={labelClasses}>Condition</label>
+                <input type="text" id="condition" name="condition" className={inputClasses} placeholder="e.g. New" />
+              </div>
             </div>
-            <div>
-              <label htmlFor="condition" className={labelClasses}>Condition</label>
-              <input type="text" id="condition" name="condition" className={inputClasses} placeholder="e.g. New" />
+          )}
+          {!isWalkInCooler && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="type" className={labelClasses}>Type</label>
+                <input type="text" id="type" name="type" className={inputClasses} placeholder="e.g. Compressor" />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="type" className={labelClasses}>Type</label>
-              <input type="text" id="type" name="type" className={inputClasses} placeholder="e.g. Compressor" />
+          )}
+          {isWalkInCooler && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="type" className={labelClasses}>Refrigeration Type</label>
+                <select id="type" name="type" className={selectClasses}>
+                  <option value="">Select Refrigeration Type...</option>
+                  <option value="No Refrigeration">No Refrigeration</option>
+                  <option value="Top-Mount Refrigeration">Top-Mount Refrigeration</option>
+                </select>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -338,18 +425,22 @@ export default function ProductForm({ allCategories }: { allCategories: Category
       <div>
         <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Product Details</h3>
         <div className="space-y-4">
-          <div>
-            <label htmlFor="keyFeatures" className={labelClasses}>Key Features (short summary)</label>
-            <input type="text" id="keyFeatures" name="keyFeatures" className={inputClasses} placeholder="e.g. 3.5 HP, Low Temperature Condensing Unit With Scroll Compressor" />
-          </div>
+          {!isWalkInCooler && (
+            <div>
+              <label htmlFor="keyFeatures" className={labelClasses}>Key Features (short summary)</label>
+              <input type="text" id="keyFeatures" name="keyFeatures" className={inputClasses} placeholder="e.g. 3.5 HP, Low Temperature Condensing Unit With Scroll Compressor" />
+            </div>
+          )}
           <div>
             <label htmlFor="description" className={labelClasses}>Description</label>
             <textarea id="description" name="description" rows={3} className={`${inputClasses} resize-y`} placeholder="Detailed product description..."></textarea>
           </div>
-          <div>
-            <label htmlFor="warranty" className={labelClasses}>Warranty (one per line)</label>
-            <textarea id="warranty" name="warranty" rows={2} className={`${inputClasses} resize-y`} placeholder={"1 Year Compressor Warranty\n1 Year Fan Motor and Parts Warranty"}></textarea>
-          </div>
+          {!isWalkInCooler && (
+            <div>
+              <label htmlFor="warranty" className={labelClasses}>Warranty (one per line)</label>
+              <textarea id="warranty" name="warranty" rows={2} className={`${inputClasses} resize-y`} placeholder={"1 Year Compressor Warranty\n1 Year Fan Motor and Parts Warranty"}></textarea>
+            </div>
+          )}
           <div>
             <label htmlFor="detailedFeatures" className={labelClasses}>Detailed Features (one per line)</label>
             <textarea id="detailedFeatures" name="detailedFeatures" rows={4} className={`${inputClasses} resize-y`} placeholder={"Blue anti-corrosion-fin increases the life span\nHighest quality compressor in the world\nControl box is designed for easy installation"}></textarea>
@@ -497,82 +588,113 @@ export default function ProductForm({ allCategories }: { allCategories: Category
       </div>
 
       {/* ===== SECTION 6: FAQs ===== */}
-      <div>
-        <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">FAQs</h3>
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <div key={i} className="flex flex-col gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={faq.question}
-                  onChange={(e) => updateFaq(i, 'question', e.target.value)}
-                  className={`${inputClasses} flex-1`}
-                  placeholder="Question"
+      {!isWalkInCooler && (
+        <div>
+          <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">FAQs</h3>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <div key={i} className="flex flex-col gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={faq.question}
+                    onChange={(e) => updateFaq(i, 'question', e.target.value)}
+                    className={`${inputClasses} flex-1`}
+                    placeholder="Question"
+                  />
+                  <button type="button" onClick={() => removeFaq(i)} className="shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+                <textarea
+                  value={faq.answer}
+                  onChange={(e) => updateFaq(i, 'answer', e.target.value)}
+                  rows={2}
+                  className={`${inputClasses} resize-y`}
+                  placeholder="Answer"
                 />
-                <button type="button" onClick={() => removeFaq(i)} className="shrink-0 size-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors cursor-pointer">
-                  <Trash2 size={14} />
-                </button>
               </div>
-              <textarea
-                value={faq.answer}
-                onChange={(e) => updateFaq(i, 'answer', e.target.value)}
-                rows={2}
-                className={`${inputClasses} resize-y`}
-                placeholder="Answer"
-              />
-            </div>
-          ))}
-          <button type="button" onClick={addFaq} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
-            <Plus size={16} /> Add FAQ
-          </button>
+            ))}
+            <button type="button" onClick={addFaq} className="inline-flex items-center gap-2 text-sm font-medium text-[#004a99] hover:text-[#003d80] transition-colors cursor-pointer">
+              <Plus size={16} /> Add FAQ
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ===== SECTION 7: Features ===== */}
       <div>
         <h3 className="text-sm font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100">Features (Panels, Doors, etc.)</h3>
         <div className="space-y-4">
-          <div>
-            <label htmlFor="features-panels" className={labelClasses}>Panels (one per line)</label>
-            <textarea
-              id="features-panels"
-              rows={3}
-              value={features.panels?.join('\n') || ''}
-              onChange={(e) => updateFeaturesList('panels', e.target.value)}
-              className={`${inputClasses} resize-y`}
-            />
-          </div>
-          <div>
-            <label htmlFor="features-doors" className={labelClasses}>Doors (one per line)</label>
-            <textarea
-              id="features-doors"
-              rows={3}
-              value={features.doors?.join('\n') || ''}
-              onChange={(e) => updateFeaturesList('doors', e.target.value)}
-              className={`${inputClasses} resize-y`}
-            />
-          </div>
-          <div>
-            <label htmlFor="features-topMount" className={labelClasses}>Top Mount (one per line)</label>
-            <textarea
-              id="features-topMount"
-              rows={3}
-              value={features.topMount?.join('\n') || ''}
-              onChange={(e) => updateFeaturesList('topMount', e.target.value)}
-              className={`${inputClasses} resize-y`}
-            />
-          </div>
-          <div>
-            <label htmlFor="features-remote" className={labelClasses}>Remote (one per line)</label>
-            <textarea
-              id="features-remote"
-              rows={3}
-              value={features.remote?.join('\n') || ''}
-              onChange={(e) => updateFeaturesList('remote', e.target.value)}
-              className={`${inputClasses} resize-y`}
-            />
-          </div>
+          {isWalkInCooler && (
+            <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-6 space-y-4">
+              <h4 className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Walk-In Cooler Filters</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClasses}>Walk In Type</label>
+                  <select value={walkInType} onChange={(e) => setWalkInType(e.target.value)} className={selectClasses}>
+                    <option value="">Select Walk In Type...</option>
+                    <option value="Cooler (Refrigerator) No Floor">Cooler (Refrigerator) No Floor</option>
+                    <option value="Cooler (Refrigerator) with Floor">Cooler (Refrigerator) with Floor</option>
+                    <option value="Freezer with Floor">Freezer with Floor</option>
+                    <option value="Combo (Cooler & Freezer)">Combo (Cooler & Freezer)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={labelClasses}>Size W x L</label>
+                  <div className="flex items-center gap-2">
+                    <input type="number" value={sizeW} onChange={(e) => setSizeW(e.target.value)} className={`${inputClasses} px-2`} placeholder="W (ft)" />
+                    <span className="text-slate-400 font-medium">x</span>
+                    <input type="number" value={sizeL} onChange={(e) => setSizeL(e.target.value)} className={`${inputClasses} px-2`} placeholder="L (ft)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {!isWalkInCooler && (
+            <>
+              <div>
+                <label htmlFor="features-panels" className={labelClasses}>Panels (one per line)</label>
+                <textarea
+                  id="features-panels"
+                  rows={3}
+                  value={features.panels?.join('\n') || ''}
+                  onChange={(e) => updateFeaturesList('panels', e.target.value)}
+                  className={`${inputClasses} resize-y`}
+                />
+              </div>
+              <div>
+                <label htmlFor="features-doors" className={labelClasses}>Doors (one per line)</label>
+                <textarea
+                  id="features-doors"
+                  rows={3}
+                  value={features.doors?.join('\n') || ''}
+                  onChange={(e) => updateFeaturesList('doors', e.target.value)}
+                  className={`${inputClasses} resize-y`}
+                />
+              </div>
+              <div>
+                <label htmlFor="features-topMount" className={labelClasses}>Top Mount (one per line)</label>
+                <textarea
+                  id="features-topMount"
+                  rows={3}
+                  value={features.topMount?.join('\n') || ''}
+                  onChange={(e) => updateFeaturesList('topMount', e.target.value)}
+                  className={`${inputClasses} resize-y`}
+                />
+              </div>
+              <div>
+                <label htmlFor="features-remote" className={labelClasses}>Remote (one per line)</label>
+                <textarea
+                  id="features-remote"
+                  rows={3}
+                  value={features.remote?.join('\n') || ''}
+                  onChange={(e) => updateFeaturesList('remote', e.target.value)}
+                  className={`${inputClasses} resize-y`}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 

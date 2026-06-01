@@ -1,45 +1,14 @@
 https://www.atlanticse.com/collections/walk-in-coolers
 
 
-=====Home Page 
+target website products page link https://www.atlanticse.com/a/search/astra-walk-in-cooler-no-floor?filter_brand=Amerikooler
 
-* Featured Products - Details Page 
-
-=====http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
-
-* http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer | ei page er size responsive korty hoby 
-
-=====http://localhost:3000/walk-in-cooler-freezer/amerikooler-dw101277f-6-6-sc-10-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration
-
-*Data gulo dynamic hobe 
-*Product Attachments add korty hoby
-*Mobile responsive hobe 
-
-=====Search Funtionality add hobe
-=====Dashboard thyky dynamically walking cooler er products add kora jaby 
-=====Email gulo check korty hoby
-=====Mobile menu tay problem asy check korty hoby
-=====Full website ekbar overview korty hoby 
-=====unnessary function file dlr kory site optimized korty hoby 
-
-
-http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor ei category er products gulo home page er ei section a add koro real content jano thaky and coose option button rakho same oi category er real product er moto kory
-
-
-Mobile navigation bar a amader update menu gulo add koro ekhany ager onk manu add hoye asy 
-
-
-======
-
-
-target website products page link https://www.atlanticse.com/a/search/walk-in-cooler-freezer-combo?filter_brand=Amerikooler
-
-1. ei link gulo thyky thyky Amerikooler brand er total 32 ta products with title description attacthment ja ja asy sob kisu fatch kory amader database http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer ei page a Amerikooler brand er under a rakho 
+1. ei link gulo thyky thyky Amerikooler brand er total 32 ta products with title description attacthment ja ja asy sob kisu fatch kory amader database http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor ei page a Amerikooler brand er under a rakho 
 
 2. real image full content details page er content soho anty hoby ami refarance hisaby am kisu photo deye dissi 
 
-3. Refrigeration Top Mount Refrigeration(42) er products gulo alada vaby filter a add korty hoby jerokom asy target website a jaty filter kora jay 
-
+3. Refrigeration No Refrigeration(18)  and Top-Mount Refrigeration(13) er products gulo alada vaby filter a add korty hoby jerokom asy target website a jaty filter kora jay 
+​
 4. onno kono page er kisu change kora jaby na ba onno kono product modify kora jaby na 
 
 6. must sob gulo product er details er page er content alada alada dynamic hoby
@@ -47,9 +16,7 @@ target website products page link https://www.atlanticse.com/a/search/walk-in-co
 7. bortomany amader website er ui onujay hoby just content gulo dynamic hoby desing er kono change kora jaby na 
 
 
-
 ===========
-
 
 
 1. https://www.atlanticse.com/products/amerikooler-qc060672-n-o-6-x-6-x-7-2-floorless-walk-in-cooler
@@ -78,9 +45,7 @@ Spec Sheet asy amader tai missing
   eta California 65 Statement
 
 
-
-
-  ====
+====
 
 dashboard a ei page thyky 
   http://localhost:3000/admin/products/new?category=walk-in-cooler-freezer
@@ -93,3 +58,74 @@ ei category gulor product add kora jaby
 must sob gulo details add kora jaby ja ja dorkar ei product er details page a 
 
 details page http://localhost:3000/walk-in-cooler-freezer/amerikooler-dw081277n-6-6-sc-8-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration
+
+
+
+======
+https://www.turboairinc.com/refrigerationsystem/product-category/2021/unit-coolers/low-profile-evaporator/
+
+https://www.turboairinc.com/refrigerationsystem/product-category/2021/unit-coolers/low-profile-evaporator/air-defrost/
+
+https://www.turboairinc.com/refrigerationsystem/product-category/2021/unit-coolers/low-profile-evaporator/electric-defrost/
+
+=======================================
+ Condensing Units >              
+    Low Profile >
+         Scroll compressor
+         Semi- Hermetic
+    Medium Profile (Scroll Compressor)
+
+Evaporation Units 
+    Low Profile Evaporator-
+        Air Defrost
+        Electric Defrost
+    Medium Profile-
+        Air Defrost
+        Electric Defrost - 6FPI
+        Electric Defrost - 4FPI
+    Center Mount Evaporator (Low Velocity)-
+        Air Defrost
+        Electric Defrost
+    Thin Profile Evaporator (Reach-in)-
+        Air Defrost
+        Electric Defrost
+
+Combo Units/Package Units 
+    Indoor 
+    Outdoor
+
+  Target website link : https://www.atlanticse.com/a/search/astra-walk-in-cooler-no-floor?filter_brand=Amerikooler
+
+  brand : Amerikooler
+
+  Our website link : http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
+
+  -amader muloto https://www.atlanticse.com ei website thyky product with product details sob kisu amader website a migrate korty hoby.
+  -products gulo kom basi kora jaby na 
+  -Refrigeration filters a joto gulo products jay category tay asy target website a same to same bosaty hobe vul kora jaby na 
+  -sobgulo filters jano perfectly kj kory 
+  -product er image and details gulo jano static na hoy dynamic hoty hobe must 
+  -project er onno kono page a kono code modify kora jaby na kono conflitct kora jaby na
+  ami refarance category photo and link gulo deye dissi 
+
+
+01-06-26
+=====Dynamic data gulo thik asy kina check korty hobe -done
+
+=====Mobile responsive hobe and Full website ekbar overview korty hoby - 
+
+=====Search Funtionality add hobe -done 
+
+=====Dashboard thyky dynamically walking cooler er products add kora jaby -done
+
+=====Email gulo check korty hoby
+
+=====Unnessary function file dlr kory site optimized korty hoby 
+
+=====Quick Book Payment Getway proparly setup korty hobe
+
+https://www.atlanticse.com/collections/turbo-air-evaporator-fan
+
+https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
+
+

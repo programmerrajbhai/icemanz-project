@@ -11,7 +11,7 @@ export async function GET() {
     });
 
     const authUri = oauthClient.authorizeUri({
-      scope: ['com.intuit.quickbooks.accounting'],
+      scope: 'com.intuit.quickbooks.accounting openid profile email',
       state: 'icemanz-qbo-auth',
     });
 

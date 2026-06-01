@@ -79,14 +79,27 @@ export default function Header() {
   };
 
   const [hoveredRefrigerationItem, setHoveredRefrigerationItem] = useState('/category/refrigerationEquipment/condensingUnit.jpg');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      setIsSearchOpen(false); // Close search when scrolling
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close search when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isSearchOpen && !(e.target as Element).closest('.search-container')) {
+        setIsSearchOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isSearchOpen]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -205,9 +218,9 @@ export default function Header() {
                   {/* Links Column */}
                   <div className="flex flex-col gap-1.5 flex-1">
                     {[
-                      { label: 'Condensing units', href: '/refrigeration-equipment/condensing-units' },
-                      { label: 'Evaporation units', href: '/refrigeration-equipment/evaporation-units' },
-                      { label: 'Combo units / package unit', href: '/refrigeration-equipment/combo-unitspackage-units' }
+                      { label: 'Condensing Units', href: '/refrigeration-equipment/condensing-units' },
+                      { label: 'Evaporation Units', href: '/refrigeration-equipment/evaporation-units' },
+                      { label: 'Combo Units / Package Units', href: '/refrigeration-equipment/combo-units-package-units' }
                     ].map((item) => (
                       <Link
                         key={item.label}
@@ -239,24 +252,34 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1 mr-2">
-              <button className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary cursor-pointer">
+            <div className="hidden sm:flex items-center gap-1 mr-2 relative search-container">
+              <button
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-2.5 text-gray-600 hover:text-primary transition-colors cursor-pointer"
+                aria-label="Search"
+              >
                 <Search size={20} />
               </button>
-              <div className="relative">
-                <button
-                  onClick={() => setIsCartOpen(!isCartOpen)}
-                  className="p-2.5 hover:bg-gray-100 rounded-sm transition-all text-gray-700 hover:text-primary relative group cursor-pointer"
-                >
-                  <ShoppingCart size={20} />
-                  {cartItems.length > 0 && (
-                    <span className="absolute top-1.5 right-1.5 bg-accent text-white text-[10px] w-4 h-4 rounded-sm flex items-center justify-center font-bold shadow-sm group-hover:scale-110 transition-transform">
-                      {cartItems.length}
-                    </span>
-                  )}
-                </button>
-                <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-              </div>
+
+              {isSearchOpen && (
+                <div className="absolute top-full right-0 mt-2 bg-white shadow-xl rounded-sm border border-gray-100 p-2 w-72 z-50">
+                  <form action="/search" method="GET" className="relative flex items-center">
+                    <input
+                      type="text"
+                      name="q"
+                      autoFocus
+                      placeholder="Search products..."
+                      className="w-full pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-sm focus:outline-none focus:border-primary transition-all bg-gray-50 focus:bg-white"
+                      required
+                    />
+                    <button type="submit" className="absolute right-1 p-2 text-gray-400 hover:text-primary transition-colors cursor-pointer">
+                      <Search size={18} />
+                    </button>
+                  </form>
+                </div>
+              )}
+
+           
             </div>
 
             <Link
@@ -303,6 +326,20 @@ export default function Header() {
 
           {/* Mobile Menu Body - Scrollable */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+            <div className="p-5 border-b border-gray-50">
+              <form action="/search" method="GET" className="relative flex items-center w-full" onSubmit={() => setIsMobileMenuOpen(false)}>
+                <input
+                  type="text"
+                  name="q"
+                  placeholder="Search products..."
+                  className="w-full pl-4 pr-10 py-3 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-primary transition-all bg-gray-50 focus:bg-white"
+                  required
+                />
+                <button type="submit" className="absolute right-2 p-2 text-gray-400 hover:text-primary transition-colors cursor-pointer">
+                  <Search size={18} />
+                </button>
+              </form>
+            </div>
             <nav className="flex flex-col text-sm font-bold text-gray-800">
               <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-5 hover:text-primary transition-all cursor-pointer border-b border-gray-50 flex items-center justify-between group">
                 Home

@@ -46,6 +46,9 @@ type Invoice = {
   deliveryCost: number | null;
   totalWithTax: number | null;
   deliveryNotes: string | null;
+  qboInvoiceId: string | null;
+  qboCustomerId: string | null;
+  qboPaymentLink: string | null;
 };
 
 export default function InvoicesClient({ initialInvoices }: { initialInvoices: Invoice[] }) {
@@ -182,8 +185,46 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
     });
   };
 
+  const handleVerifyPayment = async (id: string) => {
+    const invoiceToVerify = invoices?.find(inv => inv.id === id) || selectedInvoice;
+    if (!invoiceToVerify) {
+      toast.error('Invoice not found');
+      return;
+    }
+    if (!invoiceToVerify.qboInvoiceId) {
+      toast.error('No QuickBooks invoice linked to this request. Please re-approve the invoice to sync with QuickBooks.');
+      return;
+    }
+
+    const loadingToast = toast.loading('Verifying payment with QuickBooks...');
+    try {
+      const response = await fetch(`/api/admin/invoices/${id}/verify-payment`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || 'Failed to verify payment');
+
+      mutate();
+
+      if (data.status === 'PAID') {
+        toast.success(data.message || 'Payment verified and order created!', { id: loadingToast });
+        if (selectedInvoice && selectedInvoice.id === id) {
+          setSelectedInvoice({ ...selectedInvoice, status: 'PAID' });
+        }
+      } else {
+        toast.error(data.message || 'Invoice is still pending payment.', { id: loadingToast });
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to verify payment', { id: loadingToast });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status.toUpperCase()) {
+      case 'PAID':
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800"><CheckCircle2 size={12} /> Paid</span>;
       case 'APPROVED':
         return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800"><CheckCircle2 size={12} /> Approved</span>;
       case 'DECLINED':
@@ -308,7 +349,15 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                   {getStatusBadge(selectedInvoice.status)}
                 </div>
                 <div className="flex gap-3">
-                  {selectedInvoice.status !== 'APPROVED' && (
+                  {selectedInvoice.status === 'APPROVED' && (
+                    <button
+                      onClick={() => handleVerifyPayment(selectedInvoice.id)}
+                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
+                    >
+                      <CheckCircle2 size={18} /> Verify Payment
+                    </button>
+                  )}
+                  {selectedInvoice.status !== 'APPROVED' && selectedInvoice.status !== 'PAID' && (
                     <button
                       onClick={() => handleUpdateStatus(selectedInvoice.id, 'APPROVED')}
                       className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
@@ -316,7 +365,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                       <CheckCircle2 size={18} /> Approve
                     </button>
                   )}
-                  {selectedInvoice.status !== 'DECLINED' && (
+                  {selectedInvoice.status !== 'DECLINED' && selectedInvoice.status !== 'PAID' && (
                     <button
                       onClick={() => handleUpdateStatus(selectedInvoice.id, 'DECLINED')}
                       className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
@@ -324,7 +373,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                       <XCircle size={18} /> Decline
                     </button>
                   )}
-                  {selectedInvoice.status !== 'PENDING' && (
+                  {selectedInvoice.status !== 'PENDING' && selectedInvoice.status !== 'PAID' && (
                     <button
                       onClick={() => handleUpdateStatus(selectedInvoice.id, 'PENDING')}
                       className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
@@ -459,6 +508,26 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                           </div>
                         )}
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm mt-6">
+                    <h3 className="text-[12px] font-bold text-purple-600 uppercase tracking-[0.15em] border-b border-gray-50 pb-3 mb-4">QuickBooks Info</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">QBO Invoice ID</span>
+                        <span className="text-[13px] font-bold text-gray-900">{selectedInvoice.qboInvoiceId || <span className="text-red-500 italic">Not Set</span>}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">QBO Customer ID</span>
+                        <span className="text-[13px] font-bold text-gray-900">{selectedInvoice.qboCustomerId || <span className="text-red-500 italic">Not Set</span>}</span>
+                      </div>
+                      {selectedInvoice.qboPaymentLink && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">QBO Payment Link</span>
+                          <a href={selectedInvoice.qboPaymentLink} target="_blank" rel="noopener noreferrer" className="text-[13px] font-bold text-blue-600 hover:underline">View Link</a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

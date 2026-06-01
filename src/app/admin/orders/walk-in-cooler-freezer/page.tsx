@@ -3,10 +3,13 @@ import OrdersClient from './OrdersClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function OrdersPage() {
+export default async function WalkInCoolerOrdersPage() {
   const orders = await prisma.order.findMany({
     where: {
-      category: 'walk-in-cooler-freezer'
+      OR: [
+        { category: 'walk-in-cooler-freezer' },
+        { category: null }
+      ]
     },
     include: {
       invoice: true,

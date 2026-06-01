@@ -12,6 +12,13 @@ const subcategoryTitles: Record<string, string> = {
   'walk-in-combo-cooler-freezer': 'Walk-In Combo (Cooler & Freezer)'
 };
 
+const slugToWalkInType: Record<string, string> = {
+  'walk-in-cooler-no-floor': 'Cooler (Refrigerator) No Floor',
+  'walk-in-cooler-with-floor': 'Cooler (Refrigerator) with Floor',
+  'walk-in-freezer-with-floor': 'Freezer with Floor',
+  'walk-in-combo-cooler-freezer': 'Combo (Cooler & Freezer)'
+};
+
 export const dynamic = 'force-dynamic';
 
 export default async function WalkInCoolerSlugPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -19,26 +26,42 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
 
   // Check if this is a subcategory page
   if (subcategoryTitles[slug]) {
-    let products = await prisma.product.findMany({
+    // Get all walk-in cooler products with category included
+    const allWalkInProducts = await prisma.product.findMany({
       where: {
         category: {
-          slug: slug
+          slug: { in: ['walk-in-cooler-no-floor', 'walk-in-cooler-freezer', 'walk-in-cooler-with-floor', 'walk-in-freezer-with-floor', 'walk-in-combo-cooler-freezer'] }
         }
-      }
+      },
+      include: { category: true }
     });
 
-    // Fallback: If no products found in the specific subcategory,
-    // load the original products from the main 'walk-in-cooler-freezer' category
-    // or the 'walk-in-cooler-no-floor' category as requested ("ager product guloi show korby")
-    if (products.length === 0) {
-      products = await prisma.product.findMany({
-        where: {
-          category: {
-            slug: 'walk-in-cooler-no-floor'
+    // Filter products for the current subcategory: first check category slug, then walk-in type
+    const targetWalkInType = slugToWalkInType[slug];
+    const products = allWalkInProducts.filter(product => {
+      // First: check if product's category slug matches exactly
+      if (product.category?.slug === slug) {
+        return true;
+      }
+
+      // Fallback: check if walk-in type matches from features or title
+      let walkInType = (product.features as any)?.walkInType;
+      if (!walkInType) {
+        // Try to extract walk-in type from title
+        if (product.title.includes('Cooler')) {
+          if (product.title.includes('No Floor') || product.title.includes('Floorless')) {
+            walkInType = 'Cooler (Refrigerator) No Floor';
+          } else {
+            walkInType = 'Cooler (Refrigerator) with Floor';
           }
+        } else if (product.title.includes('Freezer')) {
+          walkInType = 'Freezer with Floor';
+        } else if (product.title.includes('Combo')) {
+          walkInType = 'Combo (Cooler & Freezer)';
         }
-      });
-    }
+      }
+      return walkInType === targetWalkInType;
+    });
 
     return (
       <main className="min-h-screen bg-white selection:bg-primary selection:text-white">

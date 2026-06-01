@@ -47,7 +47,7 @@ export default async function NewProductPage({ searchParams }: { searchParams: P
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
-        <ProductForm allCategories={allCategories} />
+        <ProductForm allCategories={allCategories} preselectedCategory={preselectedCategory} />
       </div>
     </div>
   );

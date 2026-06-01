@@ -30,10 +30,10 @@ export default function ProductActions({ productId }: { productId: string }) {
     <div className="flex items-center justify-end gap-2 relative">
       <button
         onClick={handleEdit}
-        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+        className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
         title="Edit product"
       >
-        <Edit size={18} />
+        <Edit size={20} strokeWidth={2} />
       </button>
 
       {showConfirm ? (
@@ -63,10 +63,10 @@ export default function ProductActions({ productId }: { productId: string }) {
       ) : (
         <button
           onClick={() => setShowConfirm(true)}
-          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+          className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
           title="Delete product"
         >
-          <Trash2 size={18} />
+          <Trash2 size={20} strokeWidth={2} />
         </button>
       )}
     </div>

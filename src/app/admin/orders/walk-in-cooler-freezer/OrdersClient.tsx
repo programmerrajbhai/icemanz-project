@@ -266,9 +266,9 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                         <div key={index} className="p-4">
                           <div className="flex gap-4">
                             {product.image && (
-                              <img
-                                src={product.image}
-                                alt={product.name || 'Product'}
+                              <img 
+                                src={product.image} 
+                                alt={product.name || 'Product'} 
                                 className="w-20 h-20 object-cover rounded border border-gray-200"
                               />
                             )}

@@ -6,13 +6,17 @@ import ProductActions from "../ProductActions";
 export const dynamic = 'force-dynamic';
 
 export default async function WalkInCoolerProductsPage() {
+  const walkInSlugs = ['walk-in-cooler-freezer', 'walk-in-cooler-no-floor', 'walk-in-cooler-with-floor', 'walk-in-freezer-with-floor', 'walk-in-combo-cooler-freezer'];
+
   const products = await prisma.product.findMany({
     include: {
       category: true,
     },
     where: {
       category: {
-        slug: 'walk-in-cooler-freezer'
+        slug: {
+          in: walkInSlugs
+        }
       }
     },
     orderBy: {
@@ -24,11 +28,11 @@ export default async function WalkInCoolerProductsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Walk-in Cooler & Freezer</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage all products in Walk-in Cooler & Freezer category.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Walk-In Cooler & Freezer</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage all products in Walk-In Cooler & Freezer category.</p>
         </div>
-        <Link 
-          href="/admin/products/new?category=walk-in-cooler-freezer" 
+        <Link
+          href="/admin/products/new?category=walk-in-cooler-freezer"
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
         >
           <Plus size={20} />
@@ -70,9 +74,9 @@ export default async function WalkInCoolerProductsPage() {
                             <ImageIcon className="size-6 text-slate-400" />
                           )}
                         </div>
-                        <div>
-                          <p className="font-semibold text-slate-900">{product.title}</p>
-                          <p className="text-xs text-slate-500 max-w-[200px] truncate">{product.description || "No description"}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-slate-900 truncate">{product.title}</p>
+                          <p className="text-xs text-slate-500 truncate">{product.description || "No description"}</p>
                         </div>
                       </div>
                     </td>

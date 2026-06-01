@@ -23,6 +23,7 @@ interface Product {
   badge?: string | null;
   brand?: string | null; // Add brand field
   type?: string | null; // Add type field for refrigeration type
+  features?: any; // Add features for walk-in specific fields
 }
 
 const FilterSection = ({ id, title, children, expandedFilters, toggleFilter }: { id: string, title: string, children: React.ReactNode, expandedFilters: string[], toggleFilter: (id: string) => void }) => (
@@ -129,11 +130,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   // Derive filter counts from products
   const filterCounts = useMemo(() => {
     const counts = {
-      brands: {
-        'Icemanz': 0,
-        'Amerikooler': 0
-
-      } as Record<string, number>,
+      brands: {} as Record<string, number>,
       sizes: {
         "6' x 6'": 0,
         "6' x 8'": 0,
@@ -149,32 +146,32 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
         'Top-Mount Refrigeration': 0
       } as Record<string, number>,
       walkInTypes: {
-        'Cooler (Refrigerator) No Floor': 0
-      } as Record<string, number>,
-      productTypes: {
-        'Walk-In Boxes': 0
-      } as Record<string, number>,
-      customProducts: {
-        'Yes': 0
+        'Cooler (Refrigerator) No Floor': 0,
+        'Cooler (Refrigerator) with Floor': 0,
+        'Freezer with Floor': 0,
+        'Combo (Cooler & Freezer)': 0
       } as Record<string, number>
     };
 
     initialProducts.forEach(product => {
       // Brand
       const brand = product.brand || product.title.split(' ')[0];
-      if (brand === 'Amerikooler' || brand === 'Icemanz') {
+      if (brand) {
         counts.brands[brand] = (counts.brands[brand] || 0) + 1;
       }
 
       // Size
-      const sizeMatch = product.title.match(/(\d+')\s*x\s*(\d+')/);
-      if (sizeMatch) {
-        const size = `${sizeMatch[1]} x ${sizeMatch[2]}`;
+      let size = product.features?.size;
+      if (!size) {
+        const sizeMatch = product.title.match(/(\d+')\s*x\s*(\d+')/);
+        if (sizeMatch) {
+          size = `${sizeMatch[1]} x ${sizeMatch[2]}`;
+        }
+      }
+      if (size) {
         if (counts.sizes[size] !== undefined) {
           counts.sizes[size] += 1;
         } else {
-          // If a product has a size not in the predefined list, we can add it or ignore it.
-          // For now, let's just add it so no products are missed.
           counts.sizes[size] = 1;
         }
       }
@@ -184,14 +181,25 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
         counts.refrigeration[product.type] = (counts.refrigeration[product.type] || 0) + 1;
       }
 
-      // We can infer walkInTypes from title or just increment for all if we want to mock it
-      // For now, let's assume if it has 'Cooler' and 'No Floor'
-      if (product.title.includes('Cooler') && (product.title.includes('No Floor') || product.title.includes('Floorless'))) {
-        counts.walkInTypes['Cooler (Refrigerator) No Floor']++;
+      // Walk In Type
+      let walkInType = product.features?.walkInType;
+      if (!walkInType) {
+        // Try to extract walk-in type from title if not in features
+        if (product.title.includes('Cooler')) {
+          if (product.title.includes('No Floor') || product.title.includes('Floorless')) {
+            walkInType = 'Cooler (Refrigerator) No Floor';
+          } else {
+            walkInType = 'Cooler (Refrigerator) with Floor';
+          }
+        } else if (product.title.includes('Freezer')) {
+          walkInType = 'Freezer with Floor';
+        } else if (product.title.includes('Combo')) {
+          walkInType = 'Combo (Cooler & Freezer)';
+        }
       }
-
-      counts.productTypes['Walk-In Boxes']++;
-      counts.customProducts['Yes']++;
+      if (walkInType) {
+        counts.walkInTypes[walkInType] = (counts.walkInTypes[walkInType] || 0) + 1;
+      }
     });
 
     return counts;
@@ -202,8 +210,6 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedRefrigerationTypes, setSelectedRefrigerationTypes] = useState<string[]>([]);
   const [selectedWalkInTypes, setSelectedWalkInTypes] = useState<string[]>([]);
-  const [selectedProductTypes, setSelectedProductTypes] = useState<string[]>([]);
-  const [selectedCustomProducts, setSelectedCustomProducts] = useState<string[]>([]);
 
   // Derive brands and counts from products
   const brands = useMemo(() => {
@@ -211,28 +217,43 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   }, [filterCounts.brands]);
 
   // Helper to extract size from product title
-  const extractSize = (title: string) => {
-    const match = title.match(/(\d+')\s*x\s*(\d+')/);
+  const extractSize = (product: Product) => {
+    if (product.features?.size) return product.features.size;
+    const match = product.title.match(/(\d+')\s*x\s*(\d+')/);
     return match ? `${match[1]} x ${match[2]}` : '';
+  };
+
+  const getWalkInType = (product: Product) => {
+    if (product.features?.walkInType) return product.features.walkInType;
+    // Try to extract walk-in type from title if not in features
+    if (product.title.includes('Cooler')) {
+      if (product.title.includes('No Floor') || product.title.includes('Floorless')) {
+        return 'Cooler (Refrigerator) No Floor';
+      } else {
+        return 'Cooler (Refrigerator) with Floor';
+      }
+    } else if (product.title.includes('Freezer')) {
+      return 'Freezer with Floor';
+    } else if (product.title.includes('Combo')) {
+      return 'Combo (Cooler & Freezer)';
+    }
+    return '';
   };
 
   // Filter products based on selected filters
   const filteredProducts = useMemo(() => {
     return initialProducts.filter(product => {
       const brand = product.title.split(' ')[0];
-      const size = extractSize(product.title);
+      const size = extractSize(product);
 
-      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand);
+      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand) || (product.brand && selectedBrands.includes(product.brand));
       const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(size);
       const refrigerationMatch = selectedRefrigerationTypes.length === 0 || selectedRefrigerationTypes.includes(product.type || '');
-      const walkInTypeMatch = selectedWalkInTypes.length === 0 ||
-        selectedWalkInTypes.some(type => product.title.includes(type.split(' ')[0]));
-      const productTypeMatch = selectedProductTypes.length === 0 || selectedProductTypes.includes("Walk-In Boxes");
-      const customProductMatch = selectedCustomProducts.length === 0 || selectedCustomProducts.includes("Yes");
+      const walkInTypeMatch = selectedWalkInTypes.length === 0 || selectedWalkInTypes.includes(getWalkInType(product));
 
-      return brandMatch && sizeMatch && refrigerationMatch && walkInTypeMatch && productTypeMatch && customProductMatch;
+      return brandMatch && sizeMatch && refrigerationMatch && walkInTypeMatch;
     });
-  }, [initialProducts, selectedBrands, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes, selectedProductTypes, selectedCustomProducts]);
+  }, [initialProducts, selectedBrands, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes]);
 
   const products = filteredProducts;
 
@@ -267,27 +288,11 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     setCurrentPage(1);
   };
 
-  const toggleProductType = (type: string) => {
-    setSelectedProductTypes(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
-    );
-    setCurrentPage(1);
-  };
-
-  const toggleCustomProduct = (type: string) => {
-    setSelectedCustomProducts(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
-    );
-    setCurrentPage(1);
-  };
-
   const clearAllFilters = () => {
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedRefrigerationTypes([]);
     setSelectedWalkInTypes([]);
-    setSelectedProductTypes([]);
-    setSelectedCustomProducts([]);
     setCurrentPage(1);
   };
 
@@ -395,30 +400,8 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                       </button>
                     </div>
                   ))}
-                  {selectedProductTypes.map(type => (
-                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
-                      Product Type: {type}
-                      <button
-                        onClick={() => toggleProductType(type)}
-                        className="hover:text-primary cursor-pointer transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                  {selectedCustomProducts.map(type => (
-                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
-                      Custom Product: {type}
-                      <button
-                        onClick={() => toggleCustomProduct(type)}
-                        className="hover:text-primary cursor-pointer transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
                 </div>
-                {(selectedBrands.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0 || selectedProductTypes.length > 0 || selectedCustomProducts.length > 0) && (
+                {(selectedBrands.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0) && (
                   <button
                     onClick={clearAllFilters}
                     className="text-sm mt-5 cursor-pointer font-normal underline text-black decoration-gray-900 underline-offset-2 hover:text-primary hover:decoration-primary transition-all"
@@ -465,30 +448,15 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                 </FilterSection>
 
                 <FilterSection id="walk-in-type" title="Walk In Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox
-                    label="Cooler (Refrigerator) No Floor"
-                    count={filterCounts.walkInTypes['Cooler (Refrigerator) No Floor']}
-                    checked={selectedWalkInTypes.includes("Cooler (Refrigerator) No Floor")}
-                    onChange={() => toggleWalkInType("Cooler (Refrigerator) No Floor")}
-                  />
-                </FilterSection>
-
-                <FilterSection id="product-type" title="Product Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox
-                    label="Walk-In Boxes"
-                    count={filterCounts.productTypes['Walk-In Boxes']}
-                    checked={selectedProductTypes.includes("Walk-In Boxes")}
-                    onChange={() => toggleProductType("Walk-In Boxes")}
-                  />
-                </FilterSection>
-
-                <FilterSection id="custom-product" title="Custom Product" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  <Checkbox
-                    label="Yes"
-                    count={filterCounts.customProducts['Yes']}
-                    checked={selectedCustomProducts.includes("Yes")}
-                    onChange={() => toggleCustomProduct("Yes")}
-                  />
+                  {Object.entries(filterCounts.walkInTypes).map(([type, count]) => (
+                    <Checkbox
+                      key={type}
+                      label={type}
+                      count={count}
+                      checked={selectedWalkInTypes.includes(type)}
+                      onChange={() => toggleWalkInType(type)}
+                    />
+                  ))}
                 </FilterSection>
               </div>
             </div>

@@ -6,9 +6,20 @@ import ProductActions from "./ProductActions";
 export const dynamic = 'force-dynamic';
 
 export default async function AdminProductsPage() {
+  const excludedSlugs = ['refrigeration-equipment', 'walk-in-cooler-freezer', 'walk-in-cooler-no-floor', 'walk-in-cooler-with-floor', 'walk-in-freezer-with-floor', 'walk-in-combo-cooler-freezer'];
+  
   const products = await prisma.product.findMany({
     include: {
       category: true,
+    },
+    where: {
+      NOT: {
+        category: {
+          slug: {
+            in: excludedSlugs
+          }
+        }
+      }
     },
     orderBy: {
       createdAt: 'desc'
@@ -65,9 +76,9 @@ export default async function AdminProductsPage() {
                             <ImageIcon className="size-6 text-slate-400" />
                           )}
                         </div>
-                        <div>
-                          <p className="font-semibold text-slate-900">{product.title}</p>
-                          <p className="text-xs text-slate-500 max-w-[200px] truncate">{product.description || "No description"}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-slate-900 truncate">{product.title}</p>
+                          <p className="text-xs text-slate-500 truncate">{product.description || "No description"}</p>
                         </div>
                       </div>
                     </td>
