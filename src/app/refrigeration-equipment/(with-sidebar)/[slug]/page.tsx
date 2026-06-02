@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 import RefrigerationEquipmentClient from './RefrigerationEquipmentClient';
 
-export const revalidate = 3600; // Revalidate every hour
+export const dynamic = 'force-dynamic';
 
 export default async function RefrigerationSubcategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

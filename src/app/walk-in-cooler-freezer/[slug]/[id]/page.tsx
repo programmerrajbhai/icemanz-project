@@ -1,6 +1,8 @@
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import WalkInCoolerProductClient from './WalkInCoolerProductClient';
+
+export const dynamic = 'force-dynamic';
 // Mock data for fallback when not in database
 const mockProductsDetails: Record<string, any> = {
   '1': {

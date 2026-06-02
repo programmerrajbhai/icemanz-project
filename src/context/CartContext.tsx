@@ -50,9 +50,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
       }
 
-      const price = typeof product.price === 'string'
-        ? parseFloat(product.price.replace(/,/g, ''))
-        : product.price;
+      const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
+      const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
 
       return [...prevItems, {
         id: product.id,

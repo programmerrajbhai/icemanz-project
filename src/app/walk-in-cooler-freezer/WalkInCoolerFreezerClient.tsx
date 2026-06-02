@@ -323,6 +323,12 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     }
   ];
 
+  const cleanPrice = (priceStr: string | null) => {
+    if (!priceStr) return '0.00';
+    const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   return (
     <div className=" bg-white min-h-screen">
       <div className="container mx-auto px-4 ">
@@ -503,7 +509,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
                     <h3 className="text-xs  font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-2">{product.title}</h3>
 
-                    <div className="text-lg font-semibold text-[#004a99] mb-1 ">${product.price}</div>
+                    <div className="text-lg font-semibold text-[#004a99] mb-1 ">${cleanPrice(product.price)}</div>
 
                     <div className="flex items-center justify-center gap-1.5 mb-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>

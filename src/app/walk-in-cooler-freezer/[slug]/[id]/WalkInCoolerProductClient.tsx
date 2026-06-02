@@ -165,6 +165,11 @@ export default function WalkInCoolerProductClient({
       { question: 'Are walk-in coolers energy-efficient?', answer: 'Yes, modern walk-in coolers are designed with high-density insulation and energy-efficient refrigeration systems to minimize power consumption.' }
     ];
 
+  const cleanPrice = (priceStr: string) => {
+    const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   return (
     <main className="min-h-screen bg-white">
       <Header />
@@ -453,7 +458,7 @@ export default function WalkInCoolerProductClient({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs  font-bold text-gray-800 uppercase">Price:</span>
-                  <span className="text-2xl font-normal text-gray-900">${product.price}</span>
+                  <span className="text-2xl font-normal text-gray-900">${cleanPrice(product.price)}</span>
                 </div>
 
               </div>
@@ -652,7 +657,7 @@ export default function WalkInCoolerProductClient({
                           </p>
                           <div className="mt-auto text-center">
                             <p className="text-sm font-bold text-[#003366]">
-                              ${relatedProduct.price || '0.00'} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
+                              ${cleanPrice(relatedProduct.price || '')} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
                             </p>
                           </div>
                         </div>
@@ -746,7 +751,7 @@ export default function WalkInCoolerProductClient({
                           </p>
                           <div className="mt-auto text-center">
                             <p className="text-sm font-bold text-[#003366]">
-                              ${viewedProduct.price || '0.00'} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
+                              ${cleanPrice(viewedProduct.price || '')} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
                             </p>
                           </div>
                         </div>

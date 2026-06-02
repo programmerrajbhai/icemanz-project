@@ -5,6 +5,11 @@ async function main() {
   const slug = 'condensing-units';
   const category = await prisma.category.findUnique({ where: { slug } });
   
+  if (!category) {
+    console.log(`Category not found: ${slug}`);
+    return;
+  }
+
   const categoryIdsToFetch = [category.id];
   const subCategories = await prisma.category.findMany({
     where: { parentId: category.id },

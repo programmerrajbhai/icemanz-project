@@ -29,6 +29,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const { q } = await searchParams;
   const query = q || '';
 
+  const cleanPrice = (priceStr: string | null) => {
+    if (!priceStr) return '0.00';
+    const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   const queryWords = query.split(/\s+/).filter(w => w.trim().length > 0);
 
   // Fetch products that match the query
@@ -83,7 +89,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <main className="min-h-screen bg-white">
       <Header />
-      
+
       <div className="pt-36 pb-20 md:pt-48 md:pb-24">
         <div className="container px-4">
           <div className="mb-8">
@@ -129,14 +135,14 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                       <div className="text-[10px] text-black font-bold mb-0.5 uppercase">
                         {product.brand || product.title.split(' ')[0]}
                       </div>
-                      
+
                       <h3 className="text-xs font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-2">
                         {product.title}
                       </h3>
 
                       {product.price ? (
                         <p className="text-base font-bold text-[#004a99] mb-2">
-                          {product.price.startsWith('$') ? product.price : `$${product.price}`}
+                          ${cleanPrice(product.price)}
                         </p>
                       ) : (
                         <p className="text-xs font-medium text-gray-400 mb-2">Contact for Price</p>

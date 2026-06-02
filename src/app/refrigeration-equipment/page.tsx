@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 import RefrigerationEquipmentClient from './(with-sidebar)/[slug]/RefrigerationEquipmentClient';
 
-export const revalidate = 3600; // Revalidate every hour
+export const dynamic = 'force-dynamic';
 
 export default async function RefrigerationEquipmentPage() {
   // Fetch all root categories for the sidebar

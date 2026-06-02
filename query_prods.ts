@@ -6,7 +6,7 @@ async function main() {
     include: { category: true }
   });
   console.log(`Total products: ${prods.length}`);
-  const catCounts = prods.reduce((acc, p) => {
+  const catCounts = prods.reduce((acc: Record<string, number>, p) => {
     const cat = p.category?.slug || 'none';
     acc[cat] = (acc[cat] || 0) + 1;
     return acc;

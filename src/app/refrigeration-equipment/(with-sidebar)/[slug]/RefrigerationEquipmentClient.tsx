@@ -26,13 +26,31 @@ import { Product, Category } from '@prisma/client';
 
 type CategoryWithSubs = Category & { subcategories: CategoryWithSubs[] };
 
+function extractProductInfo(text: string | null | undefined) {
+  if (!text) return null;
+  const hpMatch = text.match(/(\d+(?:\.\d+)?)\s*HP/i);
+  const tempMatch = text.match(/(Medium|Low)(?:\s+Temperature)?/i);
+  if (hpMatch) {
+    const hp = hpMatch[1];
+    const temp = tempMatch ? `${tempMatch[1]} Temp` : 'Medium Temp';
+    return `${hp} HP, ${temp}`;
+  }
+  const btuMatch = text.match(/([\d,]+)\s*BTU/i);
+  if (btuMatch) {
+    const btu = btuMatch[1].replace(/,/g, '');
+    const formattedBtu = btu.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return `${formattedBtu} BTU`;
+  }
+  return null;
+}
+
 function generateOptimizedTitle(product: any) {
   const brand = product.brand || 'Turbo Air';
 
   let model = product.title || '';
   if (model.match(/HP|Temp|BTU/i)) {
     const parts = model.split(/\s+/);
-    model = parts[parts.length - 1]; 
+    model = parts[parts.length - 1];
   }
 
   const textToSearch = `${product.title || ''} ${product.keyFeatures || ''} ${product.description || ''}`;
@@ -93,11 +111,11 @@ export default function RefrigerationEquipmentClient({
     'evaporation-units',
     'condensing-units',
     'combo-units-package-units',
-    'low-profile-evaporator', 
+    'low-profile-evaporator',
     'thin-profile-evaporator-reach-in',
     'medium-profile',
     'center-mount-evaporator-low-velocity',
-    'indoor-pemmvl', 
+    'indoor-pemmvl',
     'outdoor-bueip'
   ]);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -111,6 +129,12 @@ export default function RefrigerationEquipmentClient({
         ? prev.filter(s => s !== itemSlug)
         : [...prev, itemSlug]
     );
+  };
+
+  const cleanPrice = (priceStr: string | null) => {
+    if (!priceStr) return '0.00';
+    const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   return (
@@ -292,7 +316,7 @@ export default function RefrigerationEquipmentClient({
 
                           {/* Price */}
                           {product.price ? (
-                            <p className="text-base font-bold text-[#004a99] mb-2">{product.price.startsWith('$') ? product.price : `$${product.price}`}</p>
+                            <p className="text-base font-bold text-[#004a99] mb-2">${cleanPrice(product.price)}</p>
                           ) : (
                             <p className="text-xs font-medium text-gray-400 mb-2">Contact for Price</p>
                           )}

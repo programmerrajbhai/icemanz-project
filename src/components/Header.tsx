@@ -261,6 +261,22 @@ export default function Header() {
                 <Search size={20} />
               </button>
 
+              <div className="relative">
+                <button
+                  onClick={() => setIsCartOpen(!isCartOpen)}
+                  className="p-2.5 text-gray-600 hover:text-primary transition-colors cursor-pointer relative"
+                  aria-label="Cart"
+                >
+                  <ShoppingCart size={20} />
+                  {cartItems.length > 0 && (
+                    <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </button>
+                <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+              </div>
+
               {isSearchOpen && (
                 <div className="absolute top-full right-0 mt-2 bg-white shadow-xl rounded-sm border border-gray-100 p-2 w-72 z-50">
                   <form action="/search" method="GET" className="relative flex items-center">

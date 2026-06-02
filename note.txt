@@ -110,13 +110,8 @@ Combo Units/Package Units
 
 
 01-06-26
-=====Dynamic data gulo thik asy kina check korty hobe -done
 
 =====Mobile responsive hobe and Full website ekbar overview korty hoby - 
-
-=====Search Funtionality add hobe -done 
-
-=====Dashboard thyky dynamically walking cooler er products add kora jaby -done
 
 =====Email gulo check korty hoby
 
@@ -127,5 +122,6 @@ Combo Units/Package Units
 https://www.atlanticse.com/collections/turbo-air-evaporator-fan
 
 https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
+
 
 
