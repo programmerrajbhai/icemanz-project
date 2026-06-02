@@ -97,6 +97,7 @@ async function main() {
         description,
         detailedFeatures,
         type,
+        brand: 'Amerikooler',
         documents,
         categoryId: category.id
       },
@@ -108,6 +109,7 @@ async function main() {
         description,
         detailedFeatures,
         type,
+        brand: 'Amerikooler',
         badge: 'IN STOCK',
         condition: 'New',
         documents,
@@ -117,7 +119,7 @@ async function main() {
     console.log(`Upserted ${title}`);
   }
 
-  console.log('Done seeding Amerikooler Walk-in Freezer with Floor products.');
+  console.log('Done seeding Amerikooler Walk-in Combo (Cooler & Freezer) products.');
 }
 
 main()

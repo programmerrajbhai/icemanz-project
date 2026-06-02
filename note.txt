@@ -1,13 +1,13 @@
 https://www.atlanticse.com/collections/walk-in-coolers
 
 
-target website products page link https://www.atlanticse.com/a/search/astra-walk-in-cooler-no-floor?filter_brand=Amerikooler
+target website products page link https://www.atlanticse.com/a/search/walk-in-cooler-freezer-combo?filter_brand=Amerikooler
 
-1. ei link gulo thyky thyky Amerikooler brand er total 32 ta products with title description attacthment ja ja asy sob kisu fatch kory amader database http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor ei page a Amerikooler brand er under a rakho 
+1. ei link gulo thyky thyky Amerikooler brand er total 42 ta products with title description attacthment ja ja asy sob kisu fatch kory amader database http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer ei page a Amerikooler brand er under a rakho 
 
 2. real image full content details page er content soho anty hoby ami refarance hisaby am kisu photo deye dissi 
 
-3. Refrigeration No Refrigeration(18)  and Top-Mount Refrigeration(13) er products gulo alada vaby filter a add korty hoby jerokom asy target website a jaty filter kora jay 
+3. Refrigeration No  Top-Mount Refrigeration(42) er products gulo alada vaby filter a add korty hoby jerokom asy target website a jaty filter kora jay 
 ​
 4. onno kono page er kisu change kora jaby na ba onno kono product modify kora jaby na 
 
@@ -125,3 +125,8 @@ https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
 
 
 
+----
+cart counting problem 
+
+---walking cooler er products gulo add korty hobe 
+---

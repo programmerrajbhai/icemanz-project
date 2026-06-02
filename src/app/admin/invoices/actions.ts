@@ -6,6 +6,9 @@ import { revalidatePath } from 'next/cache';
 export async function getInvoices() {
   const invoices = await prisma.invoiceRequest.findMany({
     orderBy: { createdAt: 'desc' },
+    include: {
+      order: true
+    }
   });
   return invoices;
 }

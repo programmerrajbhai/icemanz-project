@@ -67,10 +67,10 @@ export default function Header() {
   };
 
   const refrigerationImages: { [key: string]: string } = {
-    'Condensing units': '/category/refrigerationEquipment/condensingUnit.jpg',
+    'Condensing Units': '/category/refrigerationEquipment/condensingUnit.jpg',
     'Medium profile (Scroll compressor)': '/category/refrigerationEquipment/mediumProfile.jpg',
-    'Evaporation units': '/category/refrigerationEquipment/evaporationUnit.jpg',
-    'Combo units / package unit': '/category/refrigerationEquipment/packageUnit.jpg',
+    'Evaporation Units': '/category/refrigerationEquipment/evaporationUnit.jpg',
+    'Combo Units / Package Units': '/category/refrigerationEquipment/packageUnit.jpg',
     'Low profile evaporator': '/category/refrigerationEquipment/lowProfileEvaporator.jpg',
     'Medium profile': '/category/refrigerationEquipment/mediumProfile.jpg',
     'Center mount': '/category/refrigerationEquipment/centerMount.jpg',

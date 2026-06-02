@@ -1,108 +1,28 @@
 import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
-import { getQboClient } from '@/lib/qbo';
+import nodemailer from 'nodemailer';
 
-async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
-  try {
-    const { oauthClient, realmId } = await getQboClient();
-
-    let customerRef;
-    try {
-      const customerQuery = `SELECT * FROM Customer WHERE PrimaryEmailAddr = '${invoice.email}' MAXRESULTS 1`;
-      const customerResponse = await oauthClient.makeApiCall({
-        url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/query?query=${encodeURIComponent(customerQuery)}`,
-        method: 'GET',
-      });
-
-      const customerBody = typeof customerResponse.body === 'string' ? JSON.parse(customerResponse.body) : customerResponse.body;
-      const customers = customerBody?.QueryResponse?.Customer;
-      if (customers && customers.length > 0) {
-        customerRef = { value: customers[0].Id, name: customers[0].DisplayName };
-      } else {
-        const customerData = {
-          DisplayName: invoice.fullName,
-          PrimaryEmailAddr: { Address: invoice.email },
-          ...(invoice.phone ? { PrimaryPhone: { FreeFormNumber: invoice.phone } } : {}),
-          ...(invoice.address ? { BillAddr: { Line1: invoice.address } } : {}),
-        };
-
-        const createCustomerResponse = await oauthClient.makeApiCall({
-          url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/customer`,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(customerData),
-        });
-
-        const createCustomerBody = typeof createCustomerResponse.body === 'string' ? JSON.parse(createCustomerResponse.body) : createCustomerResponse.body;
-        const newCustomer = createCustomerBody?.Customer;
-        customerRef = { value: newCustomer.Id, name: newCustomer.DisplayName };
-      }
-    } catch (customerError) {
-      console.error('Error with customer:', customerError);
-    }
-
-    if (!customerRef) {
-      return null;
-    }
-
-    const lineItems = [
-      {
-        DetailType: 'SalesItemLineDetail',
-        SalesItemLineDetail: {
-          ItemRef: { value: '1', name: 'Services' },
-          Qty: 1,
-          UnitPrice: finalTotalAmount,
-        },
-        Amount: finalTotalAmount,
-        Description: `Online Order`,
-      },
-    ];
-
-    const invoiceData = {
-      CustomerRef: customerRef,
-      Line: lineItems,
-      EmailStatus: 'NotSet',
-      BillEmail: { Address: invoice.email },
-    };
-
-    const createInvoiceResponse = await oauthClient.makeApiCall({
-      url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/invoice`,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(invoiceData),
-    });
-
-    const createInvoiceBody = typeof createInvoiceResponse.body === 'string' ? JSON.parse(createInvoiceResponse.body) : createInvoiceResponse.body;
-    const qboInvoice = createInvoiceBody?.Invoice;
-
-    let qboPaymentLink = qboInvoice?.InvoiceLink || null;
-    if (!qboPaymentLink && qboInvoice?.Id) {
-      console.warn('create-payment-intent: InvoiceLink not found. This usually means QuickBooks Payments is not enabled for this company.');
-    }
-
-    return {
-      qboInvoiceId: qboInvoice?.Id,
-      qboCustomerId: customerRef.value,
-      qboPaymentLink,
-    };
-  } catch (error) {
-    console.error('Error syncing to QuickBooks:', error);
-    return null;
-  }
-}
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true',
+  auth: {
+    user: process.env.SMTP_USERNAME || process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD || process.env.SMTP_PASS,
+  },
+});
 
 export async function POST(request: Request) {
   try {
     const { amount, items, email, fullName, phone, address } = await request.json();
-    console.log("[CREATE-PAYMENT-INTENT] Received data:", { email, fullName, phone, address });
+    console.log("[CREATE-PAYMENT-INTENT] Received order request data:", { email, fullName, phone, address });
 
     // Determine the category from the cart items
     const category = items.some((item: any) => item.category === 'walk-in-cooler-freezer')
       ? 'walk-in-cooler-freezer'
       : 'refrigeration-equipment';
 
-    // Create InvoiceRequest in database
+    // Create InvoiceRequest in database with PENDING status
     const invoiceRequest = await prisma.invoiceRequest.create({
       data: {
         email: email || 'customer@example.com',
@@ -116,68 +36,61 @@ export async function POST(request: Request) {
         status: 'PENDING'
       }
     });
-    console.log("[CREATE-PAYMENT-INTENT] InvoiceRequest created with email:", invoiceRequest.email);
 
-    // If Stripe is not configured, try to use QuickBooks
-    if (!process.env.STRIPE_SECRET_KEY) {
-      console.log("[CREATE-PAYMENT-INTENT] Stripe is not configured, trying QuickBooks...");
-      const qboData = await syncInvoiceToQuickBooks(invoiceRequest, amount);
+    console.log("[CREATE-PAYMENT-INTENT] Order Request created with ID:", invoiceRequest.id);
 
-      if (qboData && qboData.qboPaymentLink) {
-        await prisma.invoiceRequest.update({
-          where: { id: invoiceRequest.id },
-          data: {
-            status: 'APPROVED',
-            qboInvoiceId: qboData.qboInvoiceId,
-            qboCustomerId: qboData.qboCustomerId,
-            qboPaymentLink: qboData.qboPaymentLink,
-            paymentLink: qboData.qboPaymentLink,
-          }
-        });
+    // Send simple "Thank You" email without generating/syncing QBO invoice
+    const baseUrl = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
 
-        return NextResponse.json({
-          isQuickBooks: true,
-          paymentLink: qboData.qboPaymentLink,
-          invoiceId: invoiceRequest.id
-        });
-      } else {
-        return NextResponse.json(
-          { error: 'Payment configuration missing (neither Stripe nor QuickBooks is fully set up)' },
-          { status: 500 }
-        );
-      }
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
+        <div style="text-align: center; margin-bottom: 25px;">
+          <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+        </div>
+        
+        <h2 style="color: #004a99; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Thank You For Your Request!</h2>
+        
+        <div style="color: #334155; font-size: 16px; line-height: 1.6;">
+          <p>Hello <strong>${invoiceRequest.fullName}</strong>,</p>
+          <p>We have successfully received your order request. Our team is currently reviewing it.</p>
+          <p>We will contact you shortly with the final invoice and payment details.</p>
+        </div>
+        
+        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #004a99;">
+          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Request ID:</strong> <span style="color: #0f172a;">${invoiceRequest.id}</span></p>
+          <p style="margin: 0; font-size: 15px; color: #475569;"><strong>Status:</strong> <span style="color: #eab308; font-weight: bold;">Pending Review</span></p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+
+        <p style="color: #64748b; font-size: 13px; text-align: center; margin-bottom: 0; line-height: 1.5;">
+          If you have any questions, please contact our support team.<br/>
+          &copy; ${new Date().getFullYear()} ICEMANZ. All rights reserved.
+        </p>
+      </div>
+    `;
+
+    try {
+      await transporter.sendMail({
+        from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+        to: invoiceRequest.email,
+        subject: `Order Request Received - #${invoiceRequest.id}`,
+        html: emailHtml,
+      });
+      console.log('Thank you email sent successfully to:', invoiceRequest.email);
+    } catch (emailError) {
+      console.error('Error sending thank you email:', emailError);
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-    // Create Stripe Payment Intent for inline payment
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
-      currency: 'usd',
-      payment_method_types: ['card'],
-      metadata: {
-        invoiceId: invoiceRequest.id,
-        customerName: fullName || 'Customer',
-        customerEmail: email || 'customer@example.com',
-      },
-    });
-    console.log("[CREATE-PAYMENT-INTENT] Stripe payment intent created with metadata:", paymentIntent.metadata);
-
-    // Update invoiceRequest with paymentIntentId
-    await prisma.invoiceRequest.update({
-      where: { id: invoiceRequest.id },
-      data: {
-        stripeSessionId: paymentIntent.id,
-        status: 'APPROVED'
-      }
-    });
-
     return NextResponse.json({
-      clientSecret: paymentIntent.client_secret,
+      success: true,
+      invoiceId: invoiceRequest.id,
       isQuickBooks: false
     });
   } catch (error: any) {
-    console.error('Payment intent error:', error);
+    console.error('Order request error:', error);
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

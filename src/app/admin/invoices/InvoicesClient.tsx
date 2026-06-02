@@ -49,6 +49,13 @@ type Invoice = {
   qboInvoiceId: string | null;
   qboCustomerId: string | null;
   qboPaymentLink: string | null;
+  order?: {
+    id: string;
+    stripePaymentId: string | null;
+    amountPaid: number;
+    createdAt: Date;
+    status: string;
+  } | null;
 };
 
 export default function InvoicesClient({ initialInvoices }: { initialInvoices: Invoice[] }) {
@@ -72,8 +79,31 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   );
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
-    if (newStatus === 'APPROVED') {
+    if (newStatus === 'SYNC_QBO') {
       setShowApproveModal(true);
+      return;
+    }
+
+    if (newStatus === 'APPROVE_ORDER') {
+      const loadingToast = toast.loading('Approving order and sending confirmation...');
+      try {
+        const response = await fetch(`/api/admin/invoices/${id}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'APPROVE_ORDER' }),
+        });
+
+        if (!response.ok) throw new Error('Failed to approve order');
+
+        const updatedData = await response.json();
+        mutate();
+        toast.success('Order approved successfully!', { id: loadingToast });
+        if (selectedInvoice && selectedInvoice.id === id) {
+          setSelectedInvoice({ ...selectedInvoice, status: 'APPROVED' });
+        }
+      } catch (error: any) {
+        toast.error(error.message || 'Failed to approve', { id: loadingToast });
+      }
       return;
     }
 
@@ -101,13 +131,13 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   const submitApproval = async () => {
     if (!selectedInvoice || !totalAmount) return;
 
-    const loadingToast = toast.loading('Creating invoice and sending email...');
+    const loadingToast = toast.loading('Creating invoice in QuickBooks...');
     try {
       const response = await fetch(`/api/admin/invoices/${selectedInvoice.id}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'APPROVE',
+          action: 'SYNC_QBO',
           totalAmount: totalAmount,
           deliveryTime,
           offerDiscount: offerDiscount ? parseFloat(offerDiscount) : null,
@@ -119,7 +149,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to approve invoice');
+      if (!response.ok) throw new Error('Failed to create invoice in QuickBooks');
 
       const updatedData = await response.json();
       mutate();
@@ -133,9 +163,9 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
       setTotalWithTax('');
       setDeliveryNotes('');
       setAdminMessage('');
-      toast.success('Invoice approved and email sent to client!', { id: loadingToast });
+      toast.success('Invoice created in QuickBooks! You can now send it manually.', { id: loadingToast });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to approve', { id: loadingToast });
+      toast.error(error.message || 'Failed to create invoice', { id: loadingToast });
     }
   };
 
@@ -224,9 +254,11 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   const getStatusBadge = (status: string) => {
     switch (status.toUpperCase()) {
       case 'PAID':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800"><CheckCircle2 size={12} /> Paid</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800"><CheckCircle2 size={12} /> Paid</span>;
       case 'APPROVED':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800"><CheckCircle2 size={12} /> Approved</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800"><CheckCircle2 size={12} /> Approved</span>;
+      case 'INVOICED':
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800"><CheckCircle2 size={12} /> Invoiced in QBO</span>;
       case 'DECLINED':
         return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800"><XCircle size={12} /> Declined</span>;
       default:
@@ -349,36 +381,36 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                   {getStatusBadge(selectedInvoice.status)}
                 </div>
                 <div className="flex gap-3">
-                  {selectedInvoice.status === 'APPROVED' && (
+                  {selectedInvoice.status === 'PAID' && (
+                    <button
+                      onClick={() => handleUpdateStatus(selectedInvoice.id, 'APPROVE_ORDER')}
+                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
+                    >
+                      <CheckCircle2 size={18} /> Approve Order
+                    </button>
+                  )}
+                  {selectedInvoice.status === 'INVOICED' && (
                     <button
                       onClick={() => handleVerifyPayment(selectedInvoice.id)}
-                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
+                      className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
                     >
                       <CheckCircle2 size={18} /> Verify Payment
                     </button>
                   )}
-                  {selectedInvoice.status !== 'APPROVED' && selectedInvoice.status !== 'PAID' && (
+                  {selectedInvoice.status === 'PENDING' && (
                     <button
-                      onClick={() => handleUpdateStatus(selectedInvoice.id, 'APPROVED')}
+                      onClick={() => handleUpdateStatus(selectedInvoice.id, 'SYNC_QBO')}
                       className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
                     >
-                      <CheckCircle2 size={18} /> Approve
+                      <FileText size={18} /> Create QBO Invoice
                     </button>
                   )}
-                  {selectedInvoice.status !== 'DECLINED' && selectedInvoice.status !== 'PAID' && (
+                  {selectedInvoice.status !== 'DECLINED' && selectedInvoice.status !== 'PAID' && selectedInvoice.status !== 'APPROVED' && (
                     <button
                       onClick={() => handleUpdateStatus(selectedInvoice.id, 'DECLINED')}
                       className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
                     >
                       <XCircle size={18} /> Decline
-                    </button>
-                  )}
-                  {selectedInvoice.status !== 'PENDING' && selectedInvoice.status !== 'PAID' && (
-                    <button
-                      onClick={() => handleUpdateStatus(selectedInvoice.id, 'PENDING')}
-                      className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
-                    >
-                      <Clock size={18} /> Mark Pending
                     </button>
                   )}
                 </div>
@@ -486,7 +518,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                       </div>
                     )}
 
-                    <div className="mt-auto">
+                    <div className="mt-6">
                       <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-3">Requested Products (Qty: {selectedInvoice.quantity})</p>
                       <div className="space-y-3 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
                         {selectedInvoice.products && Array.isArray(selectedInvoice.products) ? (
@@ -530,6 +562,30 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                       )}
                     </div>
                   </div>
+
+                  {selectedInvoice.order && (
+                    <div className="bg-white p-5 rounded-lg border border-gray-100 shadow-sm mt-6">
+                      <h3 className="text-[12px] font-bold text-blue-600 uppercase tracking-[0.15em] border-b border-gray-50 pb-3 mb-4">Payment Details</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Transaction ID</span>
+                          <span className="text-[13px] font-bold text-gray-900">{selectedInvoice.order.stripePaymentId || 'N/A'}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Payment Method</span>
+                          <span className="text-[13px] font-bold text-gray-900">QuickBooks Gateway</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Amount Paid</span>
+                          <span className="text-[13px] font-bold text-green-600">${selectedInvoice.order.amountPaid?.toFixed(2)}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Payment Time</span>
+                          <span className="text-[13px] font-bold text-gray-900">{new Date(selectedInvoice.order.createdAt).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -542,8 +598,8 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
       {showApproveModal && selectedInvoice && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Approve Invoice Request</h3>
-            <p className="text-sm text-gray-500 mb-8">Enter the invoice details to generate a payment link.</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Create Invoice in QuickBooks</h3>
+            <p className="text-sm text-gray-500 mb-8">Enter the final order details. This will create an invoice in QBO but will NOT send an email automatically. You must send it manually from QBO.</p>
 
             <div className="space-y-5">
               <div>
@@ -711,7 +767,7 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                 disabled={!totalAmount || parseFloat(totalAmount) <= 0}
                 className="px-5 py-2.5 text-sm font-medium text-white bg-[#004a99] hover:bg-[#004a99]/90 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Approve & Send Email
+                Create QBO Invoice
               </button>
             </div>
           </div>

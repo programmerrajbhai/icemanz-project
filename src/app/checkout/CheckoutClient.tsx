@@ -28,6 +28,8 @@ const CheckoutClient = () => {
     const [phone, setPhone] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [isSuccess, setIsSuccess] = useState(false);
+
     // Initial fetch if invoiceId is present
     useEffect(() => {
         if (invoiceId) {
@@ -93,17 +95,16 @@ const CheckoutClient = () => {
 
             const data = await response.json();
 
-            if (data.isQuickBooks && data.paymentLink) {
-                // Redirect to QuickBooks payment link
-                toast.success('Redirecting to secure payment...');
+            if (response.ok && data.success) {
+                // Success!
                 clearCart();
-                window.location.href = data.paymentLink;
+                setIsSuccess(true);
+                setIsLoading(false);
                 return;
             }
 
             if (data.clientSecret) {
                 // If somehow Stripe is still enabled on backend, we could set client secret here
-                // but since we are replacing the flow, let's just handle it
                 toast.error("Stripe is not supported in this flow. Please use QuickBooks.");
                 setIsLoading(false);
             } else {
@@ -123,13 +124,40 @@ const CheckoutClient = () => {
 
     // Handle empty cart
     useEffect(() => {
-        if (!invoiceId && subtotal <= 0) {
+        if (!invoiceId && subtotal <= 0 && !isSuccess) {
             const timer = setTimeout(() => {
                 router.push('/cart');
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [subtotal, router, invoiceId]);
+    }, [subtotal, router, invoiceId, isSuccess]);
+
+    if (isSuccess) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="flex flex-col items-center gap-6 max-w-md px-6 text-center">
+                    <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div className="space-y-4">
+                        <h2 className="text-3xl font-black text-gray-900 tracking-tight">Order Request Received!</h2>
+                        <p className="text-gray-600 text-base leading-relaxed">
+                            Thank you for your order. We have sent a confirmation to <span className="font-bold text-gray-900">{email}</span>.
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                            Our team will review your request and contact you shortly with the invoice and payment details.
+                        </p>
+                    </div>
+                    <Link
+                        href="/"
+                        className="mt-4 bg-primary text-white px-8 py-3.5 rounded-md font-bold hover:bg-blue-800 transition-colors shadow-md w-full"
+                    >
+                        Return to Home
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     if (!invoiceId && subtotal <= 0) {
         return (
@@ -368,31 +396,6 @@ const CheckoutClient = () => {
                         )}
                     </section>
 
-                    {/* Payment Section */}
-                    <section className="mb-10">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Payment</h2>
-                        <p className="text-lg text-gray-500 mb-6">All transactions are secure and encrypted.</p>
-
-                        <div className="p-6 bg-gray-50 rounded-md text-center border border-gray-200">
-                            <div className="flex justify-center mb-4">
-                                <Lock size={32} className="text-gray-400" />
-                            </div>
-                            <p className="text-gray-700 font-medium mb-2">Secure Payment via QuickBooks</p>
-                            <p className="text-gray-500 text-sm">
-                                You will be redirected to QuickBooks to complete your purchase securely.
-                            </p>
-                        </div>
-                    </section>
-
-                    {/* Save info section */}
-                    <div className="mb-6">
-                        <p className="text-md mb-2">Save my information for a faster checkout</p>
-                        <p className="text-xs text-gray-500">
-                            By paying, you agree to create a Shop account subject to Shop's <a href="#" className="text-blue-600 underline">Terms and Privacy Policy</a>.
-                            <span className="text-blue-600 text-xs ml-3 cursor-pointer">Not now</span>
-                        </p>
-                    </div>
-
                     <form onSubmit={handleCheckoutSubmit}>
                         <button
                             disabled={isLoading}
@@ -405,7 +408,7 @@ const CheckoutClient = () => {
                                     Processing...
                                 </>
                             ) : (
-                                `Pay now`
+                                `Place Order`
                             )}
                         </button>
                     </form>
