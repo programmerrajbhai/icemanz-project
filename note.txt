@@ -136,7 +136,7 @@ Combo Units/Package Units
 
 --Qout req , invoice req all dashboard check if have any problem then fix - done 
 
---quick book payment functionaity fix - 
+--quick book payment functionaity fix - done 
 
 --https://demo.theme-sky.com/druco/ home page mockup
 

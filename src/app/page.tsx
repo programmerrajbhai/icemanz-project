@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import PromoBanners from "@/components/PromoBanners";
 import ScrollingTicker from "@/components/ScrollingTicker";
 import Products from "@/components/Products";
 import WalkInOptionsSlider from "@/components/WalkInOptionsSlider";
@@ -27,6 +28,7 @@ export default async function Home() {
       <main className="grow">
         <Hero />
         <ScrollingTicker />
+        <PromoBanners />
         <Products />
         <WalkInOptionsSlider products={walkInCoolerProducts} />
         <Services />
