@@ -123,10 +123,10 @@ Combo Units/Package Units
 
 
 --Title optimization like atlanticse -- atlantice website down tai titile gulo dekhty parini ei jonno ei kj ta kora hoyni 
+
   https://www.atlanticse.com/collections/turbo-air-evaporator-fan
 
   https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
-
 
 --Mobile Navigation Bar Fixing  - done 
 
@@ -138,13 +138,14 @@ Combo Units/Package Units
 
 --quick book payment functionaity fix - done 
 
---https://demo.theme-sky.com/druco/ home page mockup
+--https://demo.theme-sky.com/druco/ home page mockup - done 
+
+--Details page filter responsive - done 
 
 --Footer section 
 
 --alurilla - 30-40m
 
---Details page filter responsive - done 
 
 
 ------
