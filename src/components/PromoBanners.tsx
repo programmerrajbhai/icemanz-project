@@ -20,7 +20,7 @@ const PromoBanners = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-20 pl-8 md:pl-16 lg:pl-24 py-12 w-[80%]">
+          <div className="relative z-20 pl-8 md:pl-16 lg:pl-24 py-12 w-[80%] pointer-events-auto">
             <h3 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-white leading-[1.1] tracking-tight mb-3">
               Walk-in Coolers<br />& Freezers
             </h3>
@@ -29,7 +29,7 @@ const PromoBanners = () => {
             </p>
             <Link
               href="/walk-in-cooler-freezer"
-              className="inline-block bg-white text-[#004a99] text-sm font-bold uppercase tracking-wider px-8 py-3.5 hover:bg-gray-100 hover:shadow-lg transition-all duration-300 shadow-md"
+              className="inline-block relative z-30 bg-white text-[#004a99] text-sm font-bold uppercase tracking-wider px-8 py-3.5 hover:bg-gray-100 hover:shadow-lg transition-all duration-300 shadow-md cursor-pointer"
             >
               Shop Now
             </Link>
@@ -50,7 +50,7 @@ const PromoBanners = () => {
           </div>
 
           {/* Content */}
-          <div className="relative z-20 pl-8 md:pl-16 lg:pl-24 py-12 w-[80%]">
+          <div className="relative z-20 pl-8 md:pl-16 lg:pl-24 py-12 w-[80%] pointer-events-auto">
             <h3 className="text-3xl md:text-4xl lg:text-[42px] font-bold text-white leading-[1.1] tracking-tight mb-3">
               Refrigeration<br />Equipment
             </h3>
@@ -59,7 +59,7 @@ const PromoBanners = () => {
             </p>
             <Link
               href="/refrigeration-equipment"
-              className="inline-block bg-[#004a99] text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 hover:bg-blue-800 hover:shadow-lg transition-all duration-300 shadow-md"
+              className="inline-block relative z-30 bg-[#004a99] text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 hover:bg-blue-800 hover:shadow-lg transition-all duration-300 shadow-md cursor-pointer"
             >
               Shop Now
             </Link>
