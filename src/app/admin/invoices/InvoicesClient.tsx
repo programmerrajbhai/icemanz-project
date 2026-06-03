@@ -62,15 +62,6 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   const { data: invoices, mutate } = useSWR<Invoice[]>('invoices', getInvoices as any, { fallbackData: initialInvoices, refreshInterval: 10000 });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [showApproveModal, setShowApproveModal] = useState(false);
-  const [totalAmount, setTotalAmount] = useState('');
-  const [deliveryTime, setDeliveryTime] = useState('');
-  const [offerDiscount, setOfferDiscount] = useState('');
-  const [tax, setTax] = useState('');
-  const [deliveryCost, setDeliveryCost] = useState('');
-  const [totalWithTax, setTotalWithTax] = useState('');
-  const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [adminMessage, setAdminMessage] = useState('');
 
   const filteredInvoices = (invoices || []).filter(inv =>
     inv.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -79,11 +70,6 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
   );
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
-    if (newStatus === 'SYNC_QBO') {
-      setShowApproveModal(true);
-      return;
-    }
-
     if (newStatus === 'APPROVE_ORDER') {
       const loadingToast = toast.loading('Approving order and sending confirmation...');
       try {
@@ -125,47 +111,6 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to update', { id: loadingToast });
-    }
-  };
-
-  const submitApproval = async () => {
-    if (!selectedInvoice || !totalAmount) return;
-
-    const loadingToast = toast.loading('Creating invoice in QuickBooks...');
-    try {
-      const response = await fetch(`/api/admin/invoices/${selectedInvoice.id}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'SYNC_QBO',
-          totalAmount: totalAmount,
-          deliveryTime,
-          offerDiscount: offerDiscount ? parseFloat(offerDiscount) : null,
-          tax: tax ? parseFloat(tax) : null,
-          deliveryCost: deliveryCost ? parseFloat(deliveryCost) : null,
-          totalWithTax: totalWithTax ? parseFloat(totalWithTax) : null,
-          deliveryNotes,
-          message: adminMessage
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to create invoice in QuickBooks');
-
-      const updatedData = await response.json();
-      mutate();
-      setSelectedInvoice(updatedData);
-      setShowApproveModal(false);
-      setTotalAmount('');
-      setDeliveryTime('');
-      setOfferDiscount('');
-      setTax('');
-      setDeliveryCost('');
-      setTotalWithTax('');
-      setDeliveryNotes('');
-      setAdminMessage('');
-      toast.success('Invoice created in QuickBooks! You can now send it manually.', { id: loadingToast });
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create invoice', { id: loadingToast });
     }
   };
 
@@ -381,28 +326,12 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                   {getStatusBadge(selectedInvoice.status)}
                 </div>
                 <div className="flex gap-3">
-                  {selectedInvoice.status === 'PAID' && (
-                    <button
-                      onClick={() => handleUpdateStatus(selectedInvoice.id, 'APPROVE_ORDER')}
-                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
-                    >
-                      <CheckCircle2 size={18} /> Approve Order
-                    </button>
-                  )}
-                  {selectedInvoice.status === 'INVOICED' && (
+                  {(selectedInvoice.status === 'INVOICED' || selectedInvoice.status === 'PENDING') && (
                     <button
                       onClick={() => handleVerifyPayment(selectedInvoice.id)}
                       className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
                     >
                       <CheckCircle2 size={18} /> Verify Payment
-                    </button>
-                  )}
-                  {selectedInvoice.status === 'PENDING' && (
-                    <button
-                      onClick={() => handleUpdateStatus(selectedInvoice.id, 'SYNC_QBO')}
-                      className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-md transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
-                    >
-                      <FileText size={18} /> Create QBO Invoice
                     </button>
                   )}
                   {selectedInvoice.status !== 'DECLINED' && selectedInvoice.status !== 'PAID' && selectedInvoice.status !== 'APPROVED' && (
@@ -589,186 +518,6 @@ export default function InvoicesClient({ initialInvoices }: { initialInvoices: I
                 </div>
               </div>
 
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Approve Modal Overlay */}
-      {showApproveModal && selectedInvoice && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Create Invoice in QuickBooks</h3>
-            <p className="text-sm text-gray-500 mb-8">Enter the final order details. This will create an invoice in QBO but will NOT send an email automatically. You must send it manually from QBO.</p>
-
-            <div className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Total Amount (USD) *</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                  <input
-                    type="number"
-                    value={totalAmount}
-                    onChange={(e) => {
-                      setTotalAmount(e.target.value);
-                      // Auto-calculate total with tax
-                      const base = parseFloat(e.target.value) || 0;
-                      const discount = parseFloat(offerDiscount) || 0;
-                      const taxAmount = parseFloat(tax) || 0;
-                      const delivery = parseFloat(deliveryCost) || 0;
-                      const total = base - discount + taxAmount + delivery;
-                      setTotalWithTax(total.toString());
-                    }}
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Time</label>
-                  <input
-                    type="text"
-                    value={deliveryTime}
-                    onChange={(e) => setDeliveryTime(e.target.value)}
-                    placeholder="e.g. 3-5 business days"
-                    className="block w-full px-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Offer/Discount (USD)</label>
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                    <input
-                      type="number"
-                      value={offerDiscount}
-                      onChange={(e) => {
-                        setOfferDiscount(e.target.value);
-                        // Auto-recalculate total
-                        const base = parseFloat(totalAmount) || 0;
-                        const discount = parseFloat(e.target.value) || 0;
-                        const taxAmount = parseFloat(tax) || 0;
-                        const delivery = parseFloat(deliveryCost) || 0;
-                        const total = base - discount + taxAmount + delivery;
-                        setTotalWithTax(total.toString());
-                      }}
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tax (USD)</label>
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                    <input
-                      type="number"
-                      value={tax}
-                      onChange={(e) => {
-                        setTax(e.target.value);
-                        // Auto-recalculate total
-                        const base = parseFloat(totalAmount) || 0;
-                        const discount = parseFloat(offerDiscount) || 0;
-                        const taxAmount = parseFloat(e.target.value) || 0;
-                        const delivery = parseFloat(deliveryCost) || 0;
-                        const total = base - discount + taxAmount + delivery;
-                        setTotalWithTax(total.toString());
-                      }}
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Cost (USD)</label>
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                    <input
-                      type="number"
-                      value={deliveryCost}
-                      onChange={(e) => {
-                        setDeliveryCost(e.target.value);
-                        // Auto-recalculate total
-                        const base = parseFloat(totalAmount) || 0;
-                        const discount = parseFloat(offerDiscount) || 0;
-                        const taxAmount = parseFloat(tax) || 0;
-                        const delivery = parseFloat(e.target.value) || 0;
-                        const total = base - discount + taxAmount + delivery;
-                        setTotalWithTax(total.toString());
-                      }}
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      className="block w-full pl-8 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-blue-50 border border-blue-100 rounded-md px-4 py-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-gray-700">Total Price (including tax)</span>
-                  <span className="text-xl font-black text-[#004a99]">${parseFloat(totalWithTax || '0').toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Notes</label>
-                <textarea
-                  value={deliveryNotes}
-                  onChange={(e) => setDeliveryNotes(e.target.value)}
-                  placeholder="Any delivery-related notes..."
-                  rows={2}
-                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Admin Message (Optional)</label>
-                <textarea
-                  value={adminMessage}
-                  onChange={(e) => setAdminMessage(e.target.value)}
-                  placeholder="Any additional notes for the client..."
-                  rows={2}
-                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-md focus:ring-[#004a99] focus:border-[#004a99]"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 mt-8">
-              <button
-                onClick={() => {
-                  setShowApproveModal(false);
-                  setTotalAmount('');
-                  setDeliveryTime('');
-                  setOfferDiscount('');
-                  setTax('');
-                  setDeliveryCost('');
-                  setTotalWithTax('');
-                  setDeliveryNotes('');
-                  setAdminMessage('');
-                }}
-                className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={submitApproval}
-                disabled={!totalAmount || parseFloat(totalAmount) <= 0}
-                className="px-5 py-2.5 text-sm font-medium text-white bg-[#004a99] hover:bg-[#004a99]/90 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Create QBO Invoice
-              </button>
             </div>
           </div>
         </div>

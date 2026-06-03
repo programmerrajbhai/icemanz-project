@@ -119,14 +119,57 @@ Combo Units/Package Units
 
 =====Quick Book Payment Getway proparly setup korty hobe
 
-https://www.atlanticse.com/collections/turbo-air-evaporator-fan
-
-https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
 
 
 
-----
-cart counting problem 
+--Title optimization like atlanticse -- atlantice website down tai titile gulo dekhty parini ei jonno ei kj ta kora hoyni 
+  https://www.atlanticse.com/collections/turbo-air-evaporator-fan
 
----walking cooler er products gulo add korty hobe 
----
+  https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
+
+
+--Mobile Navigation Bar Fixing  - done 
+
+--All page a responsive thik korty hobe - done 
+
+--Walk-In Cooler & Freezer dashboard a table fix korty hobe - done 
+
+--Qout req , invoice req all dashboard check if have any problem then fix - done 
+
+--quick book payment functionaity fix - 
+
+--https://demo.theme-sky.com/druco/ home page mockup
+
+--Footer section 
+
+--alurilla - 30-40m
+
+--Details page filter responsive - done 
+
+
+------
+Refrigeration Equipment
+  Condensing Units
+  Evaporation Units
+  Combo Units / Package Units
+
+Walk-in Cooler & Freezer
+  Walk-In Cooler No Floor
+  Walk-In Cooler with Floor
+  Walk-In Freezer With Floor
+  Walk-In Combo (Cooler & Freezer)
+
+
+
+
+
+
+  http://localhost:3000/checkout
+
+  ei page er sathy total payment system ta kivaby kj korby tar details 
+
+  -client jokhon order korby checkout page thyky tokhon order ammount soho quick book er invoice a coly jaby and client er mail a thank you message jaby 
+  -dashboard thyky order price set kora approve kora egulo jaby na jeta agy silo 
+  -dashobard thyky just invoice er status dekha jaby quikc book er status onujay dashobard a status update hobe 
+  -total payment related kj quick book er through tay menually handle kora hobe 
+  -checkout page a to order ammount thakbai oi ta soho quick book er invoice a jaby 

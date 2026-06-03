@@ -19,7 +19,8 @@ import {
   ChevronDown,
   Plus,
   Minus,
-  ArrowRight
+  ArrowRight,
+  X
 } from 'lucide-react';
 import { useState } from 'react';
 import { Product, Category } from '@prisma/client';
@@ -149,24 +150,40 @@ export default function RefrigerationEquipmentClient({
             <aside className="lg:w-72 xl:w-[320px] shrink-0">
               {/* Mobile Toggle Button */}
               <button
-                onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-                className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4"
+                onClick={() => setIsMobileSidebarOpen(true)}
+                className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4 cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   <Filter size={18} className="text-gray-900" />
-                  <span className="font-semibold text-gray-900 text-lg">Categories</span>
+                  <span className="font-semibold text-gray-900 text-lg">Filter Category</span>
                 </div>
-                {isMobileSidebarOpen ? <Minus size={20} className="text-gray-900" /> : <Plus size={20} className="text-gray-900" />}
+                <Plus size={20} className="text-gray-900" />
               </button>
 
-              <div className={`space-y-6 ${isMobileSidebarOpen ? 'block' : 'hidden'} lg:block`}>
-                <div className="flex flex-col bg-white border rounded-sm border-gray-200 ">
-                  <div className="px-5 py-4 border-b border-gray-200">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className=" text-xl font-semibold text-gray-900">Product Categories</h3>
-                    </div>
+              {/* Overlay for mobile */}
+              {isMobileSidebarOpen && (
+                <div
+                  className="fixed inset-0 bg-black/50 z-[60] lg:hidden cursor-pointer"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                />
+              )}
+
+              <div className={`
+                fixed top-0 right-0 h-full w-full bg-white z-[70] transform transition-transform duration-300 overflow-y-auto
+                lg:static lg:w-full lg:max-w-none lg:h-auto lg:bg-transparent lg:z-auto lg:shadow-none lg:transform-none lg:overflow-visible
+                ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+              `}>
+                <div className="flex flex-col bg-white lg:border rounded-sm lg:border-gray-200 h-full lg:h-auto">
+                  <div className="px-5 py-4 border-b border-gray-200 sticky top-0 bg-white z-10 lg:static flex items-center justify-between">
+                    <h3 className=" text-xl font-semibold text-gray-900">Product Categories</h3>
+                    <button
+                      className="lg:hidden p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-900 cursor-pointer"
+                      onClick={() => setIsMobileSidebarOpen(false)}
+                    >
+                      <X size={24} />
+                    </button>
                   </div>
-                  <div className="p-5">
+                  <div className="p-5 flex-1 pb-20">
                     <nav className="flex flex-col space-y-4">
                       {categories
                         .filter(cat => cat.slug !== 'walk-in-cooler-freezer')
@@ -175,6 +192,7 @@ export default function RefrigerationEquipmentClient({
                             <div className="flex items-center justify-between group">
                               <Link
                                 href={`/refrigeration-equipment/${cat.slug}`}
+                                onClick={() => setIsMobileSidebarOpen(false)}
                                 className={`text-md font-semibold transition-colors  ${slug === cat.slug ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
                               >
                                 {cat.name}
@@ -196,6 +214,7 @@ export default function RefrigerationEquipmentClient({
                                     <div className="flex items-center justify-between group">
                                       <Link
                                         href={`/refrigeration-equipment/${sub.slug}`}
+                                        onClick={() => setIsMobileSidebarOpen(false)}
                                         className={`text-[14px] font-semibold transition-colors ${slug === sub.slug ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                                       >
                                         {sub.name}
@@ -216,6 +235,7 @@ export default function RefrigerationEquipmentClient({
                                           <Link
                                             key={deepSub.slug}
                                             href={`/refrigeration-equipment/${deepSub.slug}`}
+                                            onClick={() => setIsMobileSidebarOpen(false)}
                                             className={`text-[13px] font-medium transition-colors block ${slug === deepSub.slug ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                                           >
                                             {deepSub.name}

@@ -1,24 +1,69 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Image as ImageIcon } from "lucide-react";
+import { Plus, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import ProductActions from "../ProductActions";
 
 export const dynamic = 'force-dynamic';
 
-export default async function RefrigerationEquipmentProductsPage() {
-  const products = await prisma.product.findMany({
+export default async function RefrigerationEquipmentProductsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    page?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const page = Number(params?.page) || 1;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const rootSlugs = ['refrigeration-equipment', 'evaporation-units', 'condensing-units', 'combo-units-package-units'];
+  const rootCategories = await prisma.category.findMany({
+    where: { slug: { in: rootSlugs } },
     include: {
-      category: true,
-    },
-    where: {
-      category: {
-        slug: 'refrigeration-equipment'
+      subcategories: {
+        include: {
+          subcategories: true
+        }
       }
-    },
-    orderBy: {
-      createdAt: 'desc'
     }
   });
+
+  const categoryIdsToFetch: string[] = [];
+
+  // Collect all category IDs (root + subcategories + sub-subcategories)
+  for (const root of rootCategories) {
+    categoryIdsToFetch.push(root.id);
+    for (const sub of root.subcategories) {
+      categoryIdsToFetch.push(sub.id);
+      for (const subSub of sub.subcategories) {
+        categoryIdsToFetch.push(subSub.id);
+      }
+    }
+  }
+
+  const where = {
+    categoryId: {
+      in: categoryIdsToFetch
+    }
+  };
+
+  const [products, totalCount] = await Promise.all([
+    prisma.product.findMany({
+      include: {
+        category: true,
+      },
+      where,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: limit,
+      skip: skip
+    }),
+    prisma.product.count({ where })
+  ]);
+
+  const totalPages = Math.ceil(totalCount / limit);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -27,8 +72,8 @@ export default async function RefrigerationEquipmentProductsPage() {
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Refrigeration Equipment</h1>
           <p className="text-sm text-slate-500 mt-1">Manage all products in Refrigeration Equipment category.</p>
         </div>
-        <Link 
-          href="/admin/products/new?category=refrigeration-equipment" 
+        <Link
+          href="/admin/products/new?category=refrigeration-equipment"
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
         >
           <Plus size={20} />
@@ -36,12 +81,12 @@ export default async function RefrigerationEquipmentProductsPage() {
         </Link>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 whitespace-nowrap">
               <tr>
-                <th className="px-6 py-4">Product</th>
+                <th className="px-6 py-4 w-full">Product</th>
                 <th className="px-6 py-4">Category</th>
                 <th className="px-6 py-4">Price</th>
                 <th className="px-6 py-4 text-right">Actions</th>
@@ -61,7 +106,7 @@ export default async function RefrigerationEquipmentProductsPage() {
               ) : (
                 products.map((product) => (
                   <tr key={product.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 max-w-[200px] sm:max-w-[300px] lg:max-w-[500px]">
                       <div className="flex items-center gap-4">
                         <div className="size-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center flex-shrink-0">
                           {product.images?.[0] ? (
@@ -71,20 +116,20 @@ export default async function RefrigerationEquipmentProductsPage() {
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="font-semibold text-slate-900 truncate">{product.title}</p>
-                          <p className="text-xs text-slate-500 truncate">{product.description || "No description"}</p>
+                          <p className="font-semibold text-slate-900 line-clamp-2 whitespace-normal break-words" title={product.title}>{product.title}</p>
+                          <p className="text-xs text-slate-500 line-clamp-2 whitespace-normal break-words mt-0.5">{product.description || "No description"}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 whitespace-nowrap align-top">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
                         {product.category?.name || "Uncategorized"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-slate-600 font-medium">
+                    <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap align-top">
                       {product.price || "-"}
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-right whitespace-nowrap align-top">
                       <ProductActions productId={product.id} />
                     </td>
                   </tr>
@@ -93,6 +138,44 @@ export default async function RefrigerationEquipmentProductsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="border-t border-slate-200 px-6 py-4 flex items-center justify-between bg-slate-50">
+            <div className="text-sm text-slate-500">
+              Showing <span className="font-medium text-slate-900">{skip + 1}</span> to{" "}
+              <span className="font-medium text-slate-900">
+                {Math.min(skip + limit, totalCount)}
+              </span>{" "}
+              of <span className="font-medium text-slate-900">{totalCount}</span> results
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                href={page > 1 ? `?page=${page - 1}` : "#"}
+                className={`p-2 rounded-lg border ${page > 1
+                    ? "border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50"
+                  }`}
+                aria-disabled={page <= 1}
+              >
+                <ChevronLeft size={18} />
+              </Link>
+              <div className="text-sm font-medium text-slate-700 px-2">
+                Page {page} of {totalPages}
+              </div>
+              <Link
+                href={page < totalPages ? `?page=${page + 1}` : "#"}
+                className={`p-2 rounded-lg border ${page < totalPages
+                    ? "border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50"
+                  }`}
+                aria-disabled={page >= totalPages}
+              >
+                <ChevronRight size={18} />
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

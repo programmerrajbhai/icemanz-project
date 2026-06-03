@@ -28,19 +28,33 @@ export default function Header() {
 
   const mobileMenuData = [
     {
+      label: 'Refrigeration Equipment',
+      href: '/refrigeration-equipment',
+      subItems: [
+        { label: 'Condensing Units', href: '/refrigeration-equipment/condensing-units' },
+        { label: 'Evaporation Units', href: '/refrigeration-equipment/evaporation-units' },
+        { label: 'Combo Units / Package Units', href: '/refrigeration-equipment/combo-units-package-units' }
+      ]
+    },
+    {
       label: 'Walk-in Cooler & Freezer',
-      href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor',
-      subItems: [] as { label: string, href: string }[]
+      href: '/walk-in-cooler-freezer',
+      subItems: [
+        { label: 'Walk-In Cooler No Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+        { label: 'Walk-In Cooler with Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-with-floor' },
+        { label: 'Walk-In Freezer With Floor', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
+        { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' }
+      ]
     },
     {
       label: 'Glassdoor Walk-in Cooler',
       href: '/walk-in-cooler-freezer',
-      subItems: [] as { label: string, href: string }[]
-    },
-    {
-      label: 'Refrigeration Equipment',
-      href: '/refrigeration-equipment',
-      subItems: [] as { label: string, href: string }[]
+      subItems: [
+        { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-coolers' },
+        { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
+        { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
+        { label: 'Shelving', href: '/refrigeration-equipment' }
+      ]
     }
   ];
 
@@ -295,7 +309,7 @@ export default function Header() {
                 </div>
               )}
 
-           
+
             </div>
 
             <Link
@@ -342,20 +356,6 @@ export default function Header() {
 
           {/* Mobile Menu Body - Scrollable */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-            <div className="p-5 border-b border-gray-50">
-              <form action="/search" method="GET" className="relative flex items-center w-full" onSubmit={() => setIsMobileMenuOpen(false)}>
-                <input
-                  type="text"
-                  name="q"
-                  placeholder="Search products..."
-                  className="w-full pl-4 pr-10 py-3 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-primary transition-all bg-gray-50 focus:bg-white"
-                  required
-                />
-                <button type="submit" className="absolute right-2 p-2 text-gray-400 hover:text-primary transition-colors cursor-pointer">
-                  <Search size={18} />
-                </button>
-              </form>
-            </div>
             <nav className="flex flex-col text-sm font-bold text-gray-800">
               <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-5 hover:text-primary transition-all cursor-pointer border-b border-gray-50 flex items-center justify-between group">
                 Home
@@ -364,14 +364,57 @@ export default function Header() {
 
               <div className="py-2 border-t border-gray-50">
                 {mobileMenuData.map((category) => (
-                  <div key={category.label} className="border-b border-gray-50">
-                    <Link
-                      href={category.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition-all cursor-pointer group"
-                    >
-                      <span className="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">{category.label}</span>
-                    </Link>
+                  <div key={category.label} className="border-b border-gray-50 flex flex-col">
+                    {category.subItems && category.subItems.length > 0 ? (
+                      // Clickable row for category with sub-items
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleMobileCategory(category.label);
+                        }}
+                        className="w-full flex items-center justify-between px-6 py-5 hover:bg-gray-50 transition-all cursor-pointer group"
+                      >
+                        <span className={`text-[15px] font-bold transition-colors ${expandedMobileCategories.includes(category.label) ? 'text-primary' : 'text-gray-800 group-hover:text-primary'}`}>
+                          {category.label}
+                        </span>
+                        <ChevronDown 
+                          size={18} 
+                          className={`transition-transform duration-300 text-gray-400 group-hover:text-primary ${expandedMobileCategories.includes(category.label) ? 'rotate-180 text-primary' : ''}`} 
+                        />
+                      </button>
+                    ) : (
+                      // Regular link for category without sub-items
+                      <Link
+                        href={category.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full flex items-center justify-between px-6 py-5 hover:bg-gray-50 transition-all cursor-pointer group"
+                      >
+                        <span className="text-[15px] font-bold text-gray-800 group-hover:text-primary transition-colors">{category.label}</span>
+                      </Link>
+                    )}
+                    
+                    {/* Submenu items */}
+                    {category.subItems && category.subItems.length > 0 && (
+                      <div 
+                        className={`bg-gray-50/80 overflow-hidden transition-all duration-300 ease-in-out ${
+                          expandedMobileCategories.includes(category.label) 
+                            ? 'max-h-[500px] opacity-100 py-2' 
+                            : 'max-h-0 opacity-0 py-0'
+                        }`}
+                      >
+                        {category.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.label}
+                            href={subItem.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-3 w-full px-8 py-3 text-[14px] font-medium text-gray-600 hover:text-primary hover:bg-gray-100 transition-all group/sub"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-gray-300 group-hover/sub:bg-primary transition-colors"></span>
+                            {subItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

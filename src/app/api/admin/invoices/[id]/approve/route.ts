@@ -227,18 +227,14 @@ export async function POST(
       ? 'http://localhost:3000'
       : (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
 
-    if (action === 'SYNC_QBO') {
-      if (!totalAmount || isNaN(parseFloat(totalAmount))) {
-        return NextResponse.json({ error: 'Valid total amount is required to create invoice' }, { status: 400 });
-      }
-
-      const amount = parseFloat(totalAmount);
-      const finalTotalAmount = totalWithTax ? parseFloat(totalWithTax) : amount;
+    if (action === 'SYNC_QBO' || (!action && req.method === 'POST')) {
+      // Allow syncing from checkout page which might just call POST without action payload
+      const finalTotalAmount = totalWithTax ? parseFloat(totalWithTax) : (invoice.totalAmount || 0);
 
       // Sync to QuickBooks if connected
       let qboData = null;
       try {
-        console.log('Starting QBO sync for invoice:', invoice.id);
+        console.log('Starting QBO sync for invoice:', invoice.id, 'with amount:', finalTotalAmount);
         qboData = await syncInvoiceToQuickBooks(invoice, finalTotalAmount);
         console.log('QBO sync result:', qboData);
       } catch (qboError) {
@@ -254,14 +250,7 @@ export async function POST(
         where: { id },
         data: {
           status: 'INVOICED',
-          totalAmount: amount,
           paymentLink: qboData.qboPaymentLink,
-          deliveryTime,
-          offerDiscount,
-          tax,
-          deliveryCost,
-          totalWithTax: finalTotalAmount,
-          deliveryNotes,
           qboInvoiceId: qboData.qboInvoiceId,
           qboCustomerId: qboData.qboCustomerId,
           qboPaymentLink: qboData.qboPaymentLink,

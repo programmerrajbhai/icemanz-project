@@ -408,7 +408,7 @@ const CheckoutClient = () => {
                                     Processing...
                                 </>
                             ) : (
-                                `Place Order`
+                                `Send Invoice Request`
                             )}
                         </button>
                     </form>

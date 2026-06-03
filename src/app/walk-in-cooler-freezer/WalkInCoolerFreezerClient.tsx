@@ -10,7 +10,8 @@ import {
   LayoutList,
   ChevronDown,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Filter
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
@@ -122,6 +123,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'custom-product']);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [selectedBoxType, setSelectedBoxType] = useState<string | null>(null);
   const [visibleProductCount, setVisibleProductCount] = useState(40); // Increased initial count to show more products
   const [activeBoxType, setActiveBoxType] = useState<string | null>(null);
@@ -211,9 +213,22 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [selectedRefrigerationTypes, setSelectedRefrigerationTypes] = useState<string[]>([]);
   const [selectedWalkInTypes, setSelectedWalkInTypes] = useState<string[]>([]);
 
-  // Derive brands and counts from products
+  // Derive brands and counts from products, sorting "Icemanz" to the top
   const brands = useMemo(() => {
-    return Object.entries(filterCounts.brands).map(([name, count]) => ({ name, count }));
+    // If Icemanz is not in the list but we want to show it, we can inject it
+    const existingBrands = { ...filterCounts.brands };
+    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'icemanz')) {
+      existingBrands['Icemanz'] = 0; // Add it with 0 count if it doesn't exist
+    }
+
+    const brandList = Object.entries(existingBrands).map(([name, count]) => ({ name, count }));
+    return brandList.sort((a, b) => {
+      const aName = a.name.toLowerCase();
+      const bName = b.name.toLowerCase();
+      if (aName === 'icemanz') return -1;
+      if (bName === 'icemanz') return 1;
+      return aName.localeCompare(bName);
+    });
   }, [filterCounts.brands]);
 
   // Helper to extract size from product title
@@ -356,118 +371,155 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
         <div className="flex flex-col lg:flex-row gap-4 pt-8 pb-8 ">
 
           {/* Sidebar Filters */}
-          <aside className="lg:w-60 xl:w-64 border  h-fit border-gray-200 shadow-sm ">
-            <div className="space-y-0">
-              {/* Active Filters / Selected Filters */}
-              <div className=" bg-white  py-2 px-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Filters</h2>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {selectedBrands.map(brand => (
-                    <div key={brand} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
-                      Brand: {brand}
-                      <button
-                        onClick={() => toggleBrand(brand)}
-                        className="hover:text-primary cursor-pointer transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                  {selectedSizes.map(size => (
-                    <div key={size} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
-                      Size: {size}
-                      <button
-                        onClick={() => toggleSize(size)}
-                        className="hover:text-primary cursor-pointer transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                  {selectedRefrigerationTypes.map(type => (
-                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
-                      Refrigeration: {type}
-                      <button
-                        onClick={() => toggleRefrigerationType(type)}
-                        className="hover:text-primary cursor-pointer transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                  {selectedWalkInTypes.map(type => (
-                    <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
-                      Walk In Type: {type}
-                      <button
-                        onClick={() => toggleWalkInType(type)}
-                        className="hover:text-primary cursor-pointer transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                {(selectedBrands.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0) && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="text-sm mt-5 cursor-pointer font-normal underline text-black decoration-gray-900 underline-offset-2 hover:text-primary hover:decoration-primary transition-all"
-                  >
-                    Clear all filters
-                  </button>
-                )}
+          <aside className="lg:w-60 xl:w-64 shrink-0">
+            {/* Mobile Toggle Button */}
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4 cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <Filter size={18} className="text-gray-900" />
+                <span className="font-semibold text-gray-900 text-lg">Filter Products</span>
               </div>
-              <div className="  bg-white p-2">
-                <FilterSection id="brand" title="Brand" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  {brands.map((brand) => (
-                    <Checkbox
-                      key={brand.name}
-                      label={brand.name}
-                      count={brand.count}
-                      checked={selectedBrands.includes(brand.name)}
-                      onChange={() => toggleBrand(brand.name)}
-                    />
-                  ))}
-                </FilterSection>
+              <Plus size={20} className="text-gray-900" />
+            </button>
 
-                <FilterSection id="size" title="Size W x L" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  {Object.entries(filterCounts.sizes).map(([size, count]) => (
-                    <Checkbox
-                      key={size}
-                      label={size}
-                      count={count}
-                      checked={selectedSizes.includes(size)}
-                      onChange={() => toggleSize(size)}
-                    />
-                  ))}
-                </FilterSection>
+            {/* Overlay for mobile */}
+            {isMobileSidebarOpen && (
+              <div
+                className="fixed inset-0 bg-black/50 z-[60] lg:hidden cursor-pointer"
+                onClick={() => setIsMobileSidebarOpen(false)}
+              />
+            )}
 
-                <FilterSection id="refrigeration" title="Refrigeration" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  {Object.entries(filterCounts.refrigeration).map(([type, count]) => (
-                    <Checkbox
-                      key={type}
-                      label={type}
-                      count={count}
-                      checked={selectedRefrigerationTypes.includes(type)}
-                      onChange={() => toggleRefrigerationType(type)}
-                    />
-                  ))}
-                </FilterSection>
+            <div className={`
+              fixed top-0 right-0 h-full w-full bg-white z-[70] transform transition-transform duration-300 overflow-y-auto
+              lg:static lg:w-full lg:max-w-none lg:h-auto lg:bg-transparent lg:z-auto lg:shadow-none lg:transform-none lg:overflow-visible lg:border lg:border-gray-200
+              ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+            `}>
+              <div className="space-y-0 pb-20 lg:pb-0">
+                <div className="px-5 py-4 border-b border-gray-200 sticky top-0 bg-white z-10 lg:hidden flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-gray-900">Filters</h3>
+                  <button
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-900 cursor-pointer"
+                    onClick={() => setIsMobileSidebarOpen(false)}
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
 
-                <FilterSection id="walk-in-type" title="Walk In Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                  {Object.entries(filterCounts.walkInTypes).map(([type, count]) => (
-                    <Checkbox
-                      key={type}
-                      label={type}
-                      count={count}
-                      checked={selectedWalkInTypes.includes(type)}
-                      onChange={() => toggleWalkInType(type)}
-                    />
-                  ))}
-                </FilterSection>
+                {/* Active Filters / Selected Filters */}
+                <div className=" bg-white  py-2 px-4 lg:pt-4">
+                  <h2 className="hidden lg:block text-xl font-semibold text-gray-900 mb-6">Filters</h2>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {selectedBrands.map(brand => (
+                      <div key={brand} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                        Brand: {brand}
+                        <button
+                          onClick={() => toggleBrand(brand)}
+                          className="hover:text-primary cursor-pointer transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    {selectedSizes.map(size => (
+                      <div key={size} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                        Size: {size}
+                        <button
+                          onClick={() => toggleSize(size)}
+                          className="hover:text-primary cursor-pointer transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    {selectedRefrigerationTypes.map(type => (
+                      <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                        Refrigeration: {type}
+                        <button
+                          onClick={() => toggleRefrigerationType(type)}
+                          className="hover:text-primary cursor-pointer transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    {selectedWalkInTypes.map(type => (
+                      <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                        Walk In Type: {type}
+                        <button
+                          onClick={() => toggleWalkInType(type)}
+                          className="hover:text-primary cursor-pointer transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {(selectedBrands.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0) && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="text-sm mt-5 cursor-pointer font-normal underline text-black decoration-gray-900 underline-offset-2 hover:text-primary hover:decoration-primary transition-all"
+                    >
+                      Clear all filters
+                    </button>
+                  )}
+                </div>
+                <div className="  bg-white p-2">
+                  <FilterSection id="brand" title="Brand" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                    {brands.map((brand) => (
+                      <Checkbox
+                        key={brand.name}
+                        label={brand.name}
+                        count={brand.count}
+                        checked={selectedBrands.includes(brand.name)}
+                        onChange={() => toggleBrand(brand.name)}
+                      />
+                    ))}
+                  </FilterSection>
+
+                  <FilterSection id="size" title="Size W x L" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                    {Object.entries(filterCounts.sizes).map(([size, count]) => (
+                      <Checkbox
+                        key={size}
+                        label={size}
+                        count={count}
+                        checked={selectedSizes.includes(size)}
+                        onChange={() => toggleSize(size)}
+                      />
+                    ))}
+                  </FilterSection>
+
+                  <FilterSection id="refrigeration" title="Refrigeration" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                    {Object.entries(filterCounts.refrigeration).map(([type, count]) => (
+                      <Checkbox
+                        key={type}
+                        label={type}
+                        count={count}
+                        checked={selectedRefrigerationTypes.includes(type)}
+                        onChange={() => toggleRefrigerationType(type)}
+                      />
+                    ))}
+                  </FilterSection>
+
+                  <FilterSection id="walk-in-type" title="Walk In Type" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                    {Object.entries(filterCounts.walkInTypes).map(([type, count]) => (
+                      <Checkbox
+                        key={type}
+                        label={type}
+                        count={count}
+                        checked={selectedWalkInTypes.includes(type)}
+                        onChange={() => toggleWalkInType(type)}
+                      />
+                    ))}
+                  </FilterSection>
+                </div>
               </div>
             </div>
           </aside>
-          {/* Main Content - Product Grid */}
+
+          {/* Main Content */}
           <div className="flex-1">
             {/* Page Heading inside Main Content */}
             <div className="bg-white  border-b-0 p-6">
