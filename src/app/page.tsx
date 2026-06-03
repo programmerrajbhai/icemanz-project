@@ -28,13 +28,13 @@ export default async function Home() {
       <main className="grow">
         <Hero />
         <ScrollingTicker />
-        <PromoBanners />
         <Products />
         <WalkInOptionsSlider products={walkInCoolerProducts} />
         <Services />
+        <PromoBanners />
         <Industries />
         <Testimonials />
-        <CTA />
+        {/* <CTA /> */}
       </main>
 
     </div>
