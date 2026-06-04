@@ -65,9 +65,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       'walk-in-cooler-no-floor',
       'walk-in-cooler-with-floor',
       'walk-in-freezer-with-floor',
-      'walk-in-combo-cooler-freezer',
-      'walk-in-coolers',
-      'walk-in-freezer-units'
+      'walk-in-combo-cooler-freezer'
     ];
 
     const isWalkIn = product.category && (

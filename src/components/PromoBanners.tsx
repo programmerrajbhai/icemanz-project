@@ -1,4 +1,3 @@
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,10 +8,10 @@ const PromoBanners = () => {
         {/* Left Banner */}
         <div className="relative overflow-hidden bg-[#004a99] group min-h-[320px] md:min-h-[400px] flex items-center">
           {/* Background Image */}
-          <div className="absolute right-0 top-0 bottom-0 w-[65%] transition-transform duration-700 group-hover:scale-105">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#004a99] via-[#004a99]/90 to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-[100%] transition-transform duration-700 group-hover:scale-105">
+            <div className="absolute inset-0 z-10"></div>
             <Image
-              src="/Walk-in-Cooler-Freezer/combounits.jpg"
+              src="/home/Refrigeration_warehouse_walk-in_…_202606042119.jpeg"
               alt="Walk-in Coolers"
               fill
               className="object-cover object-right opacity-80"
@@ -39,10 +38,10 @@ const PromoBanners = () => {
         {/* Right Banner */}
         <div className="relative overflow-hidden bg-slate-900 group min-h-[320px] md:min-h-[400px] flex items-center">
           {/* Background Image */}
-          <div className="absolute right-0 top-0 bottom-0 w-[65%] transition-transform duration-700 group-hover:scale-105">
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-[100%] transition-transform duration-700 group-hover:scale-105">
+            <div className="absolute inset-0 z-10"></div>
             <Image
-              src="/category/refrigerationEquipment/packageUnit.jpg"
+              src="/home/Refrigeration_warehouse_walk-in_…_202606042126.jpeg"
               alt="Refrigeration Equipment"
               fill
               className="object-cover object-right opacity-80"
@@ -59,7 +58,7 @@ const PromoBanners = () => {
             </p>
             <Link
               href="/refrigeration-equipment"
-              className="inline-block relative z-30 bg-[#004a99] text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 hover:bg-blue-800 hover:shadow-lg transition-all duration-300 shadow-md cursor-pointer"
+              className="inline-block relative z-30 bg-white text-[#004a99] text-sm font-bold uppercase tracking-wider px-8 py-3.5 hover:bg-gray-100 hover:shadow-lg transition-all duration-300 shadow-md cursor-pointer"
             >
               Shop Now
             </Link>

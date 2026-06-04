@@ -119,35 +119,6 @@ Combo Units/Package Units
 
 =====Quick Book Payment Getway proparly setup korty hobe
 
-
-
-
---Title optimization like atlanticse -- atlantice website down tai titile gulo dekhty parini ei jonno ei kj ta kora hoyni 
-
-  https://www.atlanticse.com/collections/turbo-air-evaporator-fan
-
-  https://icemanzv-2-hiy6.vercel.app/refrigeration-equipment/evaporation-units
-
---Mobile Navigation Bar Fixing  - done 
-
---All page a responsive thik korty hobe - done 
-
---Walk-In Cooler & Freezer dashboard a table fix korty hobe - done 
-
---Qout req , invoice req all dashboard check if have any problem then fix - done 
-
---quick book payment functionaity fix - done 
-
---https://demo.theme-sky.com/druco/ home page mockup - done 
-
---Details page filter responsive - done 
-
---Footer section 
-
---alurilla - 30-40m
-
-
-
 ------
 Refrigeration Equipment
   Condensing Units
@@ -161,10 +132,6 @@ Walk-in Cooler & Freezer
   Walk-In Combo (Cooler & Freezer)
 
 
-
-
-
-
   http://localhost:3000/checkout
 
   ei page er sathy total payment system ta kivaby kj korby tar details 
@@ -174,3 +141,53 @@ Walk-in Cooler & Freezer
   -dashobard thyky just invoice er status dekha jaby quikc book er status onujay dashobard a status update hobe 
   -total payment related kj quick book er through tay menually handle kora hobe 
   -checkout page a to order ammount thakbai oi ta soho quick book er invoice a jaby 
+
+  --Refrigaration quepment er detials page 
+  --Walking cooler and freezer er detials page 
+
+
+-------------------
+
+https://www.alurella.co/collections/eastiswest/products/arts-culture-club-crewneck-black
+https://www.alurella.co/collections/eastiswest/products/arts-culture-club-crewneck-chocolate
+https://www.alurella.co/collections/skies-are-blue
+
+Delwar IT
+10:09 AM
+https://chatgpt.com/s/t_6a20fa75ff308191afa5c0c7e8957f24
+https://www.alurella.co/collections/swimsuit --gOOGLE MY BUSINESS ADD KORBEN
+
+
+
+
+===04-06-2026
+--Title optimization like atlanticse -- Done 
+--Indor Outdoor er child category add -- Done 
+--Hoome page er product slider sundor korty hobe -- Done 
+--Glassdoor Walk-in Cooler thyky magser image soraty hobe--Done 
+--all dade link gulo remove korty hobe --Done 
+--Product category er desing improvement -- Done 
+--Footer section - done 
+--Footer er uporer section -- done 
+--Banner section ta canva deye sundor design kortyhobe -- done 
+
+
+--Walking cooler and refrigeration er category page 
+      Walk-in Cooler & Freezer SAME DESIGN 
+      HOBE SUDU MOCKUP AR IMAGE CONTENT CHANGE HOBE 
+
+--Alurilla tay 1h kj korty hobe 
+
+
+Total 4h kajer update 
+
+
+----
+-ei 2 ta title ta lokkho koro
+
+eta amader website er Refrigeration Equipment category er product er titile kintu amr client cassy titile gulo erkom thakby na aro organized hobe like it : -Turbo Air ADR352AENC 6 Fan Low Profile Evaporator Coil (Unit Cooler)
+
+-amader project a only Refrigeration Equipment category er sob gulo child parent category er product er titile wise erokom organized titile a convert kory falo
+
+-onno kono page a kisu korar dorkar nai ar example ta just for example many kmn formate a titile ta hobe
+

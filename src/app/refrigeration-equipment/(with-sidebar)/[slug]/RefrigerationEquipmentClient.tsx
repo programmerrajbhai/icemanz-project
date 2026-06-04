@@ -183,17 +183,17 @@ export default function RefrigerationEquipmentClient({
                       <X size={24} />
                     </button>
                   </div>
-                  <div className="p-5 flex-1 pb-20">
-                    <nav className="flex flex-col space-y-4">
+                  <div className="p-6 flex-1 pb-20">
+                    <nav className="flex flex-col space-y-6">
                       {categories
                         .filter(cat => cat.slug !== 'walk-in-cooler-freezer')
                         .map((cat) => (
-                          <div key={cat.slug} className="space-y-4">
+                          <div key={cat.slug} className="flex flex-col">
                             <div className="flex items-center justify-between group">
                               <Link
                                 href={`/refrigeration-equipment/${cat.slug}`}
                                 onClick={() => setIsMobileSidebarOpen(false)}
-                                className={`text-md font-semibold transition-colors  ${slug === cat.slug ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
+                                className={`text-[16px] font-bold transition-colors ${slug === cat.slug ? 'text-[#004a99]' : 'text-gray-800 hover:text-[#004a99]'}`}
                               >
                                 {cat.name}
                               </Link>
@@ -202,20 +202,20 @@ export default function RefrigerationEquipmentClient({
                                   onClick={(e) => toggleExpand(e, cat.slug)}
                                   className="p-1 cursor-pointer transition-colors"
                                 >
-                                  {expandedItems.includes(cat.slug) ? <Minus size={14} className="text-red-500" /> : <Plus size={14} className="text-gray-800" />}
+                                  {expandedItems.includes(cat.slug) ? <Minus size={16} className="text-red-500" strokeWidth={1.5} /> : <Plus size={16} className="text-gray-600" strokeWidth={1.5} />}
                                 </button>
                               )}
                             </div>
 
                             {cat.subcategories && cat.subcategories.length > 0 && expandedItems.includes(cat.slug) && (
-                              <div className="pl-4 space-y-4 border-l border-gray-100 ml-1">
+                              <div className="mt-4 pl-4 border-l border-gray-200 ml-1 flex flex-col space-y-5">
                                 {cat.subcategories.map((sub) => (
-                                  <div key={sub.slug} className="space-y-4">
+                                  <div key={sub.slug} className="flex flex-col">
                                     <div className="flex items-center justify-between group">
                                       <Link
                                         href={`/refrigeration-equipment/${sub.slug}`}
                                         onClick={() => setIsMobileSidebarOpen(false)}
-                                        className={`text-[14px] font-semibold transition-colors ${slug === sub.slug ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                                        className={`text-[15px] font-semibold transition-colors ${slug === sub.slug ? 'text-[#004a99]' : 'text-gray-700 hover:text-[#004a99]'}`}
                                       >
                                         {sub.name}
                                       </Link>
@@ -224,19 +224,19 @@ export default function RefrigerationEquipmentClient({
                                           onClick={(e) => toggleExpand(e, sub.slug)}
                                           className="p-1 cursor-pointer transition-colors"
                                         >
-                                          {expandedItems.includes(sub.slug) ? <Minus size={12} className="text-red-500" /> : <Plus size={12} className="text-gray-600" />}
+                                          {expandedItems.includes(sub.slug) ? <Minus size={14} className="text-red-500" strokeWidth={1.5} /> : <Plus size={14} className="text-gray-600" strokeWidth={1.5} />}
                                         </button>
                                       )}
                                     </div>
 
                                     {sub.subcategories && sub.subcategories.length > 0 && expandedItems.includes(sub.slug) && (
-                                      <div className="pl-4 space-y-3 border-l border-gray-100 ml-1">
+                                      <div className="mt-3 pl-4 flex flex-col space-y-3.5">
                                         {sub.subcategories.map((deepSub) => (
                                           <Link
                                             key={deepSub.slug}
                                             href={`/refrigeration-equipment/${deepSub.slug}`}
                                             onClick={() => setIsMobileSidebarOpen(false)}
-                                            className={`text-[13px] font-medium transition-colors block ${slug === deepSub.slug ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                                            className={`text-[14px] font-medium transition-colors block ${slug === deepSub.slug ? 'text-[#004a99]' : 'text-gray-600 hover:text-[#004a99]'}`}
                                           >
                                             {deepSub.name}
                                           </Link>
@@ -329,9 +329,9 @@ export default function RefrigerationEquipmentClient({
 
                         {/* Content Area */}
                         <div className="flex flex-col flex-grow items-center text-center">
-                          {/* Title / Description */}
-                          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-1 group-hover:text-blue-700 transition-colors">
-                            {formattedInfo}
+                          {/* Title */}
+                          <h3 className="text-sm font-semibold text-gray-900 mb-1 text-center group-hover:text-primary transition-colors line-clamp-2" title={product.title}>
+                            {product.title}
                           </h3>
 
                           {/* Price */}

@@ -50,8 +50,8 @@ export default function Header() {
       label: 'Glassdoor Walk-in Cooler',
       href: '/walk-in-cooler-freezer',
       subItems: [
-        { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-coolers' },
-        { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
+        { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+        { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
         { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
         { label: 'Shelving', href: '/refrigeration-equipment' }
       ]
@@ -189,35 +189,22 @@ export default function Header() {
                 Glassdoor Walk-in Cooler <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </button>
               {/* Mega Dropdown for Glassdoor Walk-in Cooler */}
-              <div className="absolute top-full left-0 w-[500px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
-                <div className="flex gap-8">
-                  {/* Links Column */}
-                  <div className="flex flex-col gap-1.5 flex-1">
-                    {[
-                      { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-coolers' },
-                      { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-units' },
-                      { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
-                      { label: 'Shelving', href: '/refrigeration-equipment' }
-                    ].map((item, index) => (
-                      <Link
-                        key={item.label}
-                        href={item.href}
-                        onMouseEnter={() => setHoveredGlassdoorItem(glassdoorImages[item.label])}
-                        className={`text-[14px] font-bold transition-all py-1.5 hover:translate-x-1 inline-block ${index === 0 ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                  {/* Image Column */}
-                  <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-sm p-3 overflow-hidden min-h-[180px] max-h-[220px]">
-                    <img
-                      key={hoveredGlassdoorItem}
-                      src={hoveredGlassdoorItem}
-                      alt="Glassdoor Cooler Preview"
-                      className="max-w-full h-auto rounded-sm shadow-sm"
-                    />
-                  </div>
+              <div className="absolute top-full left-0 w-[300px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
+                <div className="flex flex-col gap-1.5 flex-1">
+                  {[
+                    { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+                    { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
+                    { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
+                    { label: 'Shelving', href: '/refrigeration-equipment' }
+                  ].map((item, index) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className="text-[14px] font-bold transition-all py-2 hover:translate-x-1 flex items-center justify-between group/item text-gray-500 hover:text-primary"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
@@ -377,9 +364,9 @@ export default function Header() {
                         <span className={`text-[15px] font-bold transition-colors ${expandedMobileCategories.includes(category.label) ? 'text-primary' : 'text-gray-800 group-hover:text-primary'}`}>
                           {category.label}
                         </span>
-                        <ChevronDown 
-                          size={18} 
-                          className={`transition-transform duration-300 text-gray-400 group-hover:text-primary ${expandedMobileCategories.includes(category.label) ? 'rotate-180 text-primary' : ''}`} 
+                        <ChevronDown
+                          size={18}
+                          className={`transition-transform duration-300 text-gray-400 group-hover:text-primary ${expandedMobileCategories.includes(category.label) ? 'rotate-180 text-primary' : ''}`}
                         />
                       </button>
                     ) : (
@@ -392,15 +379,14 @@ export default function Header() {
                         <span className="text-[15px] font-bold text-gray-800 group-hover:text-primary transition-colors">{category.label}</span>
                       </Link>
                     )}
-                    
+
                     {/* Submenu items */}
                     {category.subItems && category.subItems.length > 0 && (
-                      <div 
-                        className={`bg-gray-50/80 overflow-hidden transition-all duration-300 ease-in-out ${
-                          expandedMobileCategories.includes(category.label) 
-                            ? 'max-h-[500px] opacity-100 py-2' 
+                      <div
+                        className={`bg-gray-50/80 overflow-hidden transition-all duration-300 ease-in-out ${expandedMobileCategories.includes(category.label)
+                            ? 'max-h-[500px] opacity-100 py-2'
                             : 'max-h-0 opacity-0 py-0'
-                        }`}
+                          }`}
                       >
                         {category.subItems.map((subItem) => (
                           <Link

@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import PromoBanners from "@/components/PromoBanners";
 import ScrollingTicker from "@/components/ScrollingTicker";
+import FeaturedCategories from "@/components/FeaturedCategories";
 import Products from "@/components/Products";
 import WalkInOptionsSlider from "@/components/WalkInOptionsSlider";
 import Services from "@/components/Services";
@@ -13,30 +14,31 @@ import prisma from "@/lib/prisma";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const walkInCoolerProducts = await prisma.product.findMany({
-    where: {
-      category: {
-        slug: 'walk-in-cooler-no-floor'
-      }
-    },
-    take: 12
-  });
+    const walkInCoolerProducts = await prisma.product.findMany({
+        where: {
+            category: {
+                slug: 'walk-in-cooler-no-floor'
+            }
+        },
+        take: 12
+    });
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="grow">
-        <Hero />
-        <ScrollingTicker />
-        <Products />
-        <WalkInOptionsSlider products={walkInCoolerProducts} />
-        <Services />
-        <PromoBanners />
-        <Industries />
-        <Testimonials />
-        {/* <CTA /> */}
-      </main>
+    return (
+        <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="grow">
+                <Hero />
+                <ScrollingTicker />
+                <Products />
+                <WalkInOptionsSlider products={walkInCoolerProducts} />
+                <Services />
+                <PromoBanners />
+                <Industries />
+                <Testimonials />
+                <FeaturedCategories />
+                {/* <CTA /> */}
+            </main>
 
-    </div>
-  );
+        </div>
+    );
 }

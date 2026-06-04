@@ -85,7 +85,7 @@ export default function Testimonials() {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="py-24 bg-blue-50/50 relative overflow-hidden">
+    <section className="py-20 pb-14 bg-blue-50/50 relative overflow-hidden">
       <div className="container px-4 md:px-6 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6">
