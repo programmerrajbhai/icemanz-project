@@ -96,7 +96,7 @@ export default function Testimonials() {
               <div className="w-4 h-px bg-blue-600"></div>
             </div>
 
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 uppercase tracking-tight leading-[1.1]">
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-gray-900">
               What Our <br />
               <span className="text-accent">Clients Say</span>
             </h2>

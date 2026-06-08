@@ -1,4 +1,3 @@
-import React from 'react';
 
 const tickerItems = [
   "WALK-IN COOLER & FREEZER",

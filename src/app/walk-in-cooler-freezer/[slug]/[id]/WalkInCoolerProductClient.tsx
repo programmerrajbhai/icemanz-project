@@ -178,7 +178,7 @@ export default function WalkInCoolerProductClient({
         <div className="container px-4 mx-auto">
           {/* Breadcrumb */}
           {/* <nav className="text-xs text-gray-500 mb-6">
-            <Link href="/walk-in-cooler-freezer" className="hover:text-primary transition-colors">Walk-in Coolers</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Walk-in Coolers</Link>
             <span className="mx-2">/</span>
             <span className="text-gray-800">{product.title}</span>
           </nav> */}

@@ -95,6 +95,12 @@ export default function ProductDetailsClient({
   const documents = (product.documents as { name: string; url: string }[] | null) || [];
   const specs = (product.specs as { label: string; value: string }[] | null) || [];
 
+  const cleanPrice = (priceStr: string | null) => {
+    if (!priceStr) return '0.00';
+    const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   // Determine which tabs to show
   const hasTabs = product.detailedFeatures.length > 0 || specs.length > 0 || product.description;
 
@@ -209,12 +215,12 @@ export default function ProductDetailsClient({
             {/* Right: Product Info */}
             <div className="flex flex-col lg:col-span-1 px-0 lg:pl-8">
               <div className="mb-8 mt-3">
-                <h1 className="text-2xl md:text-3xl font-bold text-[#1f2937] tracking-tight">
-                  {formattedInfo ? `${formattedInfo} ${product.title}` : product.title}
+                <h1 className="text-2xl  font-bold text-[#1f2937] tracking-tight">
+                  {product.title}
                 </h1>
                 {product.price && (
                   <p className="text-xl font-bold text-[#004a99] mt-3">
-                    {product.price.startsWith('$') ? product.price : `$${product.price}`}
+                    ${cleanPrice(product.price)}
                   </p>
                 )}
               </div>
@@ -223,7 +229,7 @@ export default function ProductDetailsClient({
                 {/* Key Features */}
                 {product.description && (
                   <div>
-                    <h3 className="text-lg font-bold text-[#1f2937] mb-4">Key Features</h3>
+                    <h3 className="text-md font-bold text-[#1f2937] mb-4">Key Features</h3>
                     <p className="text-gray-600 pl-4 text-[15px] leading-relaxed">
                       {product.description}
                     </p>
@@ -233,7 +239,7 @@ export default function ProductDetailsClient({
                 {/* Warranty */}
                 {product.warranty.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-bold text-[#1f2937] mb-4">Warranty</h3>
+                    <h3 className="text-md font-bold text-[#1f2937] mb-4">Warranty</h3>
                     <ul className="space-y-4 pl-4">
                       {product.warranty.map((item, i) => (
                         <li key={i} className="text-gray-600 text-[15px] leading-relaxed">
@@ -247,7 +253,7 @@ export default function ProductDetailsClient({
                 {/* Documents */}
                 {documents.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-bold text-[#1f2937] mb-4">Documents</h3>
+                    <h3 className="text-md font-bold text-[#1f2937] mb-4">Documents</h3>
                     <div className="flex flex-wrap gap-x-6 gap-y-4 pl-4">
                       {documents.map((doc, i) => (
                         <a
@@ -427,7 +433,7 @@ export default function ProductDetailsClient({
                       </h3>
                       {rp.price && (
                         <p className="text-sm font-bold text-[#004a99] mb-2">
-                          {rp.price.startsWith('$') ? rp.price : `$${rp.price}`}
+                          ${cleanPrice(rp.price)}
                         </p>
                       )}
                       <div className="flex items-center justify-center gap-1.5 mb-4">

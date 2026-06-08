@@ -94,7 +94,7 @@ export default async function RequestInvoicePage({
         image: product.images[0] || '/Walk-in-Cooler-Freezer/combounits.jpg',
         rating: 5,
         reviews: 0,
-        price: product.price ? (product.price.startsWith('$') ? product.price : `$${product.price}`) : 'Price on Request',
+        price: product.price ? `$${parseFloat(product.price.replace(/[^0-9.]/g, '') || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on Request',
         href: '#'
       };
 
@@ -163,7 +163,7 @@ export default async function RequestInvoicePage({
       image: p.images[0] || `/slider/s_${(i % 3) + 1}.jpeg`,
       rating: 4 + (i % 2),
       reviews: 100 + (i * 23),
-      price: p.price ? (p.price.startsWith('$') ? p.price : `$${p.price}`) : 'Price on Request',
+      price: p.price ? `$${parseFloat(p.price.replace(/[^0-9.]/g, '') || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on Request',
       href: '#'
     }));
 

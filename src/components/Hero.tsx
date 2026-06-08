@@ -63,7 +63,7 @@ export default function Hero() {
         <div className="max-w-4xl pt-4 md:pt-10 text-center">
           <div className="space-y-10 md:space-y-12">
             {/* Main Headline following reference image */}
-            <h1 className="text-4xl sm:text-5xl md:text-[64px] font-black text-white uppercase tracking-tight leading-[0.9] md:leading-[0.9] px-2 max-w-[95vw] mx-auto drop-shadow-2xl">
+            <h1 className="text-4xl lg:text-6xl font-bold text-white uppercase tracking-tight leading-[0.9] md:leading-[0.9] px-2 max-w-[95vw] mx-auto drop-shadow-2xl">
               YOUR TOTAL <br />
               REFRIGERATION SOLUTIONS
             </h1>
@@ -72,7 +72,7 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 px-4 sm:px-0 justify-center">
               <Link
                 href="/walk-in-cooler-freezer/walk-in-cooler-no-floor"
-                className="py-4 px-10 inline-flex justify-center items-center gap-x-2 text-sm font-black rounded-sm border border-transparent bg-primary text-white hover:bg-blue-600 focus:outline-none focus:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(0,74,153,0.3)] hover:shadow-[0_0_30px_rgba(0,74,153,0.5)] active:scale-[0.98]"
+                className="py-4 px-10 inline-flex justify-center items-center gap-x-2 text-sm  font-bold rounded-sm border border-transparent bg-primary text-white hover:bg-blue-600 focus:outline-none focus:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(0,74,153,0.3)] hover:shadow-[0_0_30px_rgba(0,74,153,0.5)] active:scale-[0.98]"
               >
                 Explore Products
               </Link>

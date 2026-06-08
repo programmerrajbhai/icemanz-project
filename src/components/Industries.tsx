@@ -45,7 +45,7 @@ export default function Industries() {
             <div className="w-8 h-px bg-primary/20"></div>
           </div>
           
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tight leading-[0.9] mb-8">
+          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-gray-900 mb-8">
             ONE SYSTEM. <br />
             <span className="text-accent">EVERY SECTOR.</span>
           </h2>

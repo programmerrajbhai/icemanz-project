@@ -14,13 +14,14 @@ import prisma from "@/lib/prisma";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-    const walkInCoolerProducts = await prisma.product.findMany({
+    const walkInProducts = await prisma.product.findMany({
         where: {
             category: {
                 slug: 'walk-in-cooler-no-floor'
             }
         },
-        take: 12
+        take: 12,
+        include: { category: true }
     });
 
     return (
@@ -30,7 +31,7 @@ export default async function Home() {
                 <Hero />
                 <ScrollingTicker />
                 <Products />
-                <WalkInOptionsSlider products={walkInCoolerProducts} />
+                <WalkInOptionsSlider products={JSON.parse(JSON.stringify(walkInProducts))} />
                 <Services />
                 <PromoBanners />
                 <Industries />

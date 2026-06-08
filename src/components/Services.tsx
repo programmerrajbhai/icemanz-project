@@ -6,39 +6,23 @@ import Link from 'next/link';
 const services = [
   {
     title: 'Installation',
-    description: 'ICEMANZ provides professional installation for walk-in coolers, refrigeration units, and HVAC systems. Our skilled team ensures every system is set up for maximum efficiency.',
-    icon: Zap,
-    gridArea: 'lg:col-span-2',
-    color: 'bg-primary/10',
-    iconColor: 'text-primary',
-    variant: 'primary'
+    description: 'Professional installations for walk-in coolers, refrigeration units, and HVAC systems. Our team ensures zero-downtime setup optimized for maximum efficiency.',
+    icon: Wrench,
   },
   {
     title: 'Maintenance',
-    description: 'Maximize uptime and boost efficiency with ICEMANZ’s expert maintenance and rapid aftersales support.',
-    icon: Wrench,
-    gridArea: 'lg:col-span-1',
-    color: 'bg-primary/10',
-    iconColor: 'text-primary',
-    variant: 'neutral'
+    description: 'Maximize system lifespan and efficiency with ICEMANZ expert maintenance and rapid response technical support available around the clock.',
+    icon: ShieldCheck,
   },
   {
     title: 'Engineering Design',
-    description: 'At ICEMANZ, every cooler and freezer is backed by smart engineering and accurate load calculations.',
+    description: 'Every cooler and freezer is backed by expert engineering and accurate heat load calculations—designed to the exact spec your facility demands.',
     icon: Layout,
-    gridArea: 'lg:col-span-1',
-    color: 'bg-primary/10',
-    iconColor: 'text-primary',
-    variant: 'neutral'
   },
   {
     title: 'Smart Cooling',
-    description: 'Advanced temperature control and monitoring systems to keep your products safe and energy costs low.',
-    icon: ShieldCheck,
-    gridArea: 'lg:col-span-2',
-    color: 'bg-primary/10',
-    iconColor: 'text-primary',
-    variant: 'primary'
+    description: 'Advanced temperature control and monitoring systems to keep your products safe and energy costs low around the clock, every day.',
+    icon: Zap,
   },
 ];
 
@@ -56,69 +40,59 @@ export default function Services() {
       </div>
 
       <div className="container px-4 md:px-6 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16 md:mb-20">
-          <div className="space-y-5">
-            <div className="flex items-center gap-3 text-primary">
-              <div className="w-8 h-px bg-primary"></div>
-              <span className="text-[11px] font-black uppercase tracking-[0.4em]">Excellence in Service</span>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+          {/* Left Column: Text & CTA */}
+          <div className="space-y-6 md:space-y-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-primary">
+                <div className="w-8 h-px bg-primary"></div>
+                <span className="text-[11px] font-black uppercase tracking-[0.4em]">Excellence in Service</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight text-gray-900 leading-[1.1]">
+                Smart <span className="text-primary">Cooling</span><br />
+                Tailored Solutions
+              </h2>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-[0.9]">
-              Smart <span className="text-primary">Cooling</span><br />
-              Tailored Solutions
-            </h2>
+
+            <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-lg font-medium">
+              At ICEMANZ, every cooler and freezer is backed by expert engineering and accurate heat calculations. We design systems that keep your products safe and energy costs low.
+            </p>
+
+            <div className="pt-2">
+              <Link
+                href="/services"
+                className="inline-flex justify-center items-center gap-x-2 bg-primary text-white hover:bg-blue-800 text-[11px] font-black uppercase tracking-[0.15em] py-4 px-8 rounded-sm transition-all shadow-[0_0_20px_rgba(0,74,153,0.2)] hover:shadow-[0_0_30px_rgba(0,74,153,0.4)]"
+              >
+                View All Services
+              </Link>
+            </div>
           </div>
 
-          <Link
-            href="/services"
-            className="group flex items-center gap-2 text-primary text-[11px] font-black uppercase tracking-[0.2em] hover:text-blue-700 transition-colors mb-2"
-          >
-            View All Services
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform stroke-[3px]" />
-          </Link>
-        </div>
+          {/* Right Column: Service Cards Grid */}
+          <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+            {services.map((service, index) => (
+              <div
+                key={index}
+                className="bg-slate-50 border border-slate-100 rounded-2xl p-6 md:p-8 hover:border-primary/30 hover:bg-white hover:shadow-xl transition-all duration-300 group"
+              >
+                <div className="size-12 rounded-lg bg-white border border-slate-200 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:border-primary transition-colors duration-300 shadow-sm">
+                  <service.icon className="size-5 text-primary group-hover:text-white transition-colors" strokeWidth={2} />
+                </div>
 
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className={`${service.gridArea} group relative flex flex-col rounded-[2.5rem] overflow-hidden transition-all duration-700 p-8 md:p-10 bg-linear-to-br ${service.variant === 'primary' ? 'from-primary/5 via-white to-white border border-primary/20 hover:border-primary/40 hover:shadow-2xl' : 'from-slate-50 via-white to-white border border-slate-100 hover:border-primary/20 hover:shadow-xl'}`}
-            >
-              <div className={`size-16 inline-flex justify-center items-center rounded-sm ${service.color} ${service.iconColor} mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm transform group-hover:-translate-y-1`}>
-                <service.icon className="size-8 stroke-[1.5px]" />
-              </div>
-
-              <div className="mt-auto space-y-4">
-                <h3 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight leading-none group-hover:text-primary transition-colors">
+                <h3 className="text-[14px] font-black text-gray-900 uppercase tracking-widest mb-3 group-hover:text-primary transition-colors">
                   {service.title}
                 </h3>
 
-                <p className="text-slate-500 text-[15px] leading-relaxed max-w-md font-medium opacity-80 group-hover:opacity-100 transition-opacity">
+                <p className="text-slate-500 text-[13px] leading-relaxed font-medium">
                   {service.description}
                 </p>
-
-                <div className="flex items-center gap-2 text-primary text-[11px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 pt-4">
-                  <span>Explore Service</span>
-                  <ArrowRight size={14} className="stroke-[3px]" />
-                </div>
               </div>
+            ))}
+          </div>
 
-              {/* Decorative background number or icon */}
-              <div className="absolute -bottom-6 -right-6 size-40 opacity-[0.03] group-hover:opacity-[0.08] group-hover:scale-110 transition-all duration-1000">
-                <service.icon className="size-full" />
-              </div>
-            </div>
-          ))}
         </div>
       </div>
-
-      <style jsx>{`
-        .outline-text {
-          -webkit-text-stroke: 1px #e5e7eb;
-          color: transparent;
-        }
-      `}</style>
     </section>
   );
 }

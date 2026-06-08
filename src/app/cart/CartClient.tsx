@@ -25,7 +25,7 @@ const CartClient = () => {
                         {cartItems.length === 0 ? (
                             <div className="bg-white p-10 rounded-sm border border-gray-200 text-center">
                                 <p className="text-black text-lg mb-6">Your cart is currently empty.</p>
-                                <Link href="/walk-in-cooler-freezer">
+                                <Link href="/">
                                     <button className="bg-primary text-white px-8 text-lg py-3   cursor-pointer  tracking-wider hover:bg-blue-800 transition-colors">
                                         Continue Shopping
                                     </button>
