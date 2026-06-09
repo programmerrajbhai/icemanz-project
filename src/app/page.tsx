@@ -8,6 +8,7 @@ import WalkInOptionsSlider from "@/components/WalkInOptionsSlider";
 import Services from "@/components/Services";
 import Industries from "@/components/Industries";
 import Testimonials from "@/components/Testimonials";
+import ImageGallery from "@/components/ImageGallery";
 import CTA from "@/components/CTA";
 import prisma from "@/lib/prisma";
 
@@ -36,7 +37,8 @@ export default async function Home() {
                 <PromoBanners />
                 <Industries />
                 <Testimonials />
-                <FeaturedCategories />
+                {/* <FeaturedCategories /> */}
+                <ImageGallery />
                 {/* <CTA /> */}
             </main>
 
