@@ -4,27 +4,27 @@ import { Maximize } from 'lucide-react';
 const images = [
   {
     id: 1,
-    src: '/home/Industrial_walk-in_cooler_ice_cave_202606092059.jpeg',
+    src: '/home/hf6.webp',
     alt: 'Walk-In Coolers'
   },
   {
     id: 2,
-    src: '/home/Industrial_walk-in_freezer_unit_202606092059.jpeg',
+    src: '/home/hf2.webp',
     alt: 'Walk-In Freezers'
   },
   {
     id: 3,
-    src: '/home/Commercial_refrigeration_unit_on…_202606092059.jpeg',
+    src: '/home/hf3.webp',
     alt: 'Combo Units'
   },
   {
     id: 4,
-    src: '/home/hf4.jpeg',
+    src: '/home/hf4.webp',
     alt: 'Refrigeration Equipment'
   },
   {
     id: 5,
-    src: '/home/Walk-in_cooler_unit_frozen_envir…_202606092103.jpeg',
+    src: '/home/hf5.webp',
     alt: 'Industrial Walk-In'
   }
 ];

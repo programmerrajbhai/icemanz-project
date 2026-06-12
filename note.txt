@@ -189,8 +189,93 @@ eta amader website er Refrigeration Equipment category er product er titile kint
 -onno kono page a kisu korar dorkar nai ar example ta just for example many kmn formate a titile ta hobe
 
 
-
 Delwar IT
 10:09 AM
 https://chatgpt.com/s/t_6a20fa75ff308191afa5c0c7e8957f24
 https://www.alurella.co/collections/swimsuit --gOOGLE MY BUSINESS ADD KORBEN
+
+
+
+
+--refrigeration product order quicbook problem  -done 
+--email template redesing with propar information -
+--footer uppper section image design 
+--Total website ui preview if need any improvement then make it 
+
+
+3 days / 5 dasy / 7 dasy er doses for antibiotic 
+
+-Colistin
+-Amoxicicllin 
+
+ 
+Thayamin plus 
+Lysovit 
+
+Murgir bassar bording er niom 
+
+1day
+====
+bassy anar pory Lysovit er pani then 
+2h pory strater feed gura kory dety hobe jaty kory bassa sohojy mukhy nety pary 
+3 bela pani cheange kory dety hobe 
+
+2nd - 5th day before first vacine 
+=======
+-sokaly endrosine vet sokal thyky durpur porjonto colby 
+-sathy panir ph 
+-Thayamin + Rena C dupur thyky sondha porjonto colby 
+-Vacine er ager din thyky somosto medicine off rakhty hobe 
+
+5th - 6th day
+=============
+no medicine period 
+
+7th day -bcrdv vacine
+==============
+
+8th day 
+=======
+-sokaly panir ph er sathy + vacine er dhopol araty vital amino use korty hobe 
+-dupur thyky colby zinc eta 21 din porjonto calano jaby 
+
+====
+jodi amassa hoy taholy 
+
+
+
+http://localhost:3000/refrigeration-equipment 
+ei page ta jerokom vaby desing kora asy same vaby 
+http://localhost:3000/Walk-in Cooler & Freezer ei page aw same ekta page 
+design koro  Walk-in Cooler & Freezer er category gulo deye same layoute rakhby 
+
+
+Probiotic → ACME Biogut Vet
+Rena C → Renata
+Panir PH → Hamko Ph 
+Lysovit → Renata
+Vital Amino → 
+Thiamine Plus → 
+Coxitril Vet
+Antibiotic → Amcol Vet Amoxicicllin 
+Liver tonic → Square Liva-Vit
+
+premium before skin care
+
+
+
+
+Thank You for Your Invoice Request!
+
+Hello Fazlul Rabbi,
+
+We have successfully received your invoice request. Our team will review the details and process your request shortly.
+
+We will contact you soon with the final invoice and payment information.
+
+Requested Product Details
+
+Name:
+Image:
+
+Thank you for choosing us.

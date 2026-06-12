@@ -41,7 +41,7 @@ const PromoBanners = () => {
           <div className="absolute right-0 top-0 bottom-0 w-[100%] transition-transform duration-700 group-hover:scale-105">
             <div className="absolute inset-0 z-10"></div>
             <Image
-              src="/home/Refrigeration_warehouse_walk-in_…_202606042126.jpeg"
+              src="/home/Refrigeration_condensing_unit_wa…_202606091949.jpeg"
               alt="Refrigeration Equipment"
               fill
               className="object-cover object-right opacity-80"

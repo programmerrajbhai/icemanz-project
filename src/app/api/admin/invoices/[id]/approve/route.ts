@@ -50,9 +50,9 @@ async function getFirstIncomeAccount(oauthClient: any, realmId: string) {
 
 async function getOrCreateQboItem(oauthClient: any, realmId: string, item: any) {
   try {
-    const itemName = (item.name || item.title || 'Custom Item').substring(0, 100).replace(/:/g, ''); 
+    const itemName = (item.name || item.title || 'Custom Item').substring(0, 100).replace(/:/g, '');
     const itemQuery = `SELECT * FROM Item WHERE Name = '${itemName.replace(/'/g, "\\'")}' MAXRESULTS 1`;
-    
+
     const itemResponse = await oauthClient.makeApiCall({
       url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/query?query=${encodeURIComponent(itemQuery)}`,
       method: 'GET',
@@ -70,7 +70,7 @@ async function getOrCreateQboItem(oauthClient: any, realmId: string, item: any) 
     const itemData = {
       Name: itemName,
       Sku: item.sku || '',
-      Type: 'Service', 
+      Type: 'Service',
       IncomeAccountRef: incomeAccountRef
     };
 
@@ -86,19 +86,21 @@ async function getOrCreateQboItem(oauthClient: any, realmId: string, item: any) 
   } catch (error) {
     console.error('Error in getOrCreateQboItem:', error);
     // Fallback to a default item if creation fails
-    return { value: '1', name: 'Services' }; 
+    return { value: '1', name: 'Services' };
   }
 }
 
-async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
+async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmountParam: number) {
   try {
     const { oauthClient, realmId } = await getQboClient();
+    let finalTotalAmount = finalTotalAmountParam;
 
     // First, create or get customer
     let customerRef;
     try {
       customerRef = await withRetry(async () => {
-        const customerQuery = `SELECT * FROM Customer WHERE PrimaryEmailAddr = '${invoice.email}' MAXRESULTS 1`;
+        // Intuit QBO uses PrimaryEmailAddr LIKE '%email%' as a workaround for nested queries
+        const customerQuery = `SELECT * FROM Customer WHERE PrimaryEmailAddr LIKE '%${invoice.email}%' MAXRESULTS 1`;
         const customerResponse = await oauthClient.makeApiCall({
           url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/query?query=${encodeURIComponent(customerQuery)}`,
           method: 'GET',
@@ -138,20 +140,30 @@ async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
     if (!customerRef) return null;
 
     let lineItems = [];
+    let calculatedTotal = 0;
     if (invoice.products && invoice.products.length > 0) {
       lineItems = await Promise.all(invoice.products.map(async (item: any) => {
         const itemRef = await getOrCreateQboItem(oauthClient, realmId, item);
+        const priceValue = typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) : (item.price || 0);
+        const qty = item.quantity ? parseInt(item.quantity, 10) : 1;
+        const lineAmount = priceValue * qty;
+        calculatedTotal += lineAmount;
+
         return {
           DetailType: 'SalesItemLineDetail',
           SalesItemLineDetail: {
             ItemRef: itemRef,
-            Qty: item.quantity || 1,
-            UnitPrice: item.price,
+            Qty: qty,
+            UnitPrice: priceValue,
           },
-          Amount: item.price * (item.quantity || 1),
+          Amount: lineAmount,
           Description: `${item.name || item.title} ${item.sku ? `(SKU: ${item.sku})` : ''}`,
         };
       }));
+
+      if (finalTotalAmount === 0 && calculatedTotal > 0) {
+        finalTotalAmount = calculatedTotal;
+      }
     } else {
       // Default line item if no products array
       const itemRef = await getOrCreateQboItem(oauthClient, realmId, { name: 'Custom Project' });
@@ -199,6 +211,7 @@ async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmount: number) {
       qboInvoiceId: qboInvoice?.Id,
       qboCustomerId: customerRef.value,
       qboPaymentLink,
+      calculatedTotal: finalTotalAmount,
     };
   } catch (error) {
     console.error('Error syncing to QuickBooks:', error);
@@ -254,6 +267,10 @@ export async function POST(
           qboInvoiceId: qboData.qboInvoiceId,
           qboCustomerId: qboData.qboCustomerId,
           qboPaymentLink: qboData.qboPaymentLink,
+          ...(qboData.calculatedTotal > 0 && (invoice.totalAmount === null || invoice.totalAmount === 0) ? {
+            totalAmount: qboData.calculatedTotal,
+            totalWithTax: qboData.calculatedTotal,
+          } : {})
         },
       });
 
