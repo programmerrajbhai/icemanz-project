@@ -461,7 +461,7 @@ const CheckoutClient = () => {
                     </div>
                 </div>
             </main>
-            <Footer />
+
         </div>
     );
 };

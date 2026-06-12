@@ -59,10 +59,12 @@ export default function WalkInOptionsSlider({ products = [] }: { products?: any[
                                     <p className="text-xs text-gray-800 line-clamp-2 mb-3 leading-relaxed h-[36px]">
                                         {product.title}
                                     </p>
-                                    <div className="mt-auto text-center w-full">
-                                        <p className="text-sm font-bold text-[#003366] mb-3">
-                                            ${product.price} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
+                                    <div className="text-center mb-3">
+                                        <p className="text-sm font-bold text-[#003366]">
+                                            ${product.price || '0.00'} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
                                         </p>
+                                    </div>
+                                    <div className="mt-auto text-center w-full">
                                         <button className="w-full bg-[#004a99] hover:bg-blue-800 text-white text-xs font-bold py-2 px-4 rounded-sm transition-colors uppercase tracking-wider">
                                             Choose Option
                                         </button>

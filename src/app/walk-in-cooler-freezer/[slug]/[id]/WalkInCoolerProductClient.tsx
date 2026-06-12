@@ -457,8 +457,8 @@ export default function WalkInCoolerProductClient({
               {/* Price Section */}
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs  font-bold text-gray-800 uppercase">Price:</span>
-                  <span className="text-2xl font-normal text-gray-900">${cleanPrice(product.price)}</span>
+                  <span className="text-2xl font-bold text-[#003366]">${product.price}</span>
+                  <span className="text-lg font-normal text-gray-500">/ Ea.</span>
                 </div>
 
               </div>
