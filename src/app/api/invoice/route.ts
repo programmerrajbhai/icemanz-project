@@ -61,36 +61,39 @@ export async function POST(req: Request) {
       },
     });
 
-    const productsList = addedProducts.map((p: any) => `<li>${p.title} - ${p.price}</li>`).join('');
+    const productsList = addedProducts.map((p: any) => `
+      <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+        ${p.image ? `<img src="${p.image}" alt="${p.title}" style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; background-color: #fff;" />` : ''}
+        <div>
+          <p style="margin: 0 0 5px 0; font-size: 15px; color: #0f172a;"><strong>Name:</strong> ${p.title}</p>
+        </div>
+      </div>
+    `).join('');
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <div style="text-align: center; margin-bottom: 25px;">
-          <h1 style="color: #2563eb; margin: 0; font-size: 32px; font-weight: bold;">ICEMANZ</h1>
+          <h1 style="color: #004a99; margin: 0; font-size: 26px; font-weight: bold;">Thank You for Your Invoice Request!</h1>
         </div>
-        
-        <h2 style="color: #10b981; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Invoice Request Received!</h2>
         
         <div style="color: #334155; font-size: 16px; line-height: 1.6;">
           <p>Hello <strong>${formData.fullName}</strong>,</p>
-          <p>Thank you for your invoice request! We've received your details and will review them shortly.</p>
+          <p>We have successfully received your invoice request. Our team will review the details and process your request shortly.</p>
+          <p>We will contact you soon with the final invoice and payment information.</p>
         </div>
         
-        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #10b981;">
-          <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 18px;">Request Details</h3>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Request ID:</strong> <span style="color: #0f172a;">${newRequest.id}</span></p>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Project Name:</strong> <span style="color: #0f172a;">${formData.projectName}</span></p>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Dimensions:</strong> <span style="color: #0f172a;">${formData.width}′ W × ${formData.length}′ L × ${formData.height}′ H</span></p>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Temperature:</strong> <span style="color: #0f172a;">${formData.tempRange}</span></p>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Products:</strong></p>
-          <ul style="margin: 0 0 10px 0; padding-left: 20px;">${productsList}</ul>
+        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
+          <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Requested Product Details</h3>
+          ${productsList}
         </div>
+
+        <p style="color: #334155; font-size: 16px; font-weight: 500; margin-top: 25px;">
+          Thank you for choosing us.
+        </p>
 
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
 
         <p style="color: #64748b; font-size: 13px; text-align: center; margin-bottom: 0; line-height: 1.5;">
-          Our team will review your request and send a tailored invoice to your email within 1–2 business days.<br/><br/>
-          If you have any questions, please contact our support team.<br/>
           &copy; ${new Date().getFullYear()} ICEMANZ. All rights reserved.
         </p>
       </div>
