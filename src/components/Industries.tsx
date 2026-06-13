@@ -1,88 +1,92 @@
-import { Utensils, ShoppingBasket, Box, Hotel, Stethoscope, Star } from 'lucide-react';
+import { Utensils, ShoppingCart, Archive, Hotel, Stethoscope, Star, ArrowRight } from 'lucide-react';
 
 const sectors = [
   {
     title: 'RESTAURANTS',
-    description: 'Walk-ins sized for every kitchen, from cafes to large restaurant groups',
+    description: 'Walk-ins sized for every kitchen, from cafes to large multi-unit groups.',
+    footer: 'NSF / UL Approved',
     icon: Utensils,
   },
   {
     title: 'SUPERMARKETS',
-    description: 'Glassdoor display and walk-in systems for retail environments',
-    icon: ShoppingBasket,
+    description: 'Anti-condensation display glass doors and multi-deck systems.',
+    footer: 'Maximized Merchandising',
+    icon: ShoppingCart,
   },
   {
     title: 'WAREHOUSES',
-    description: 'Large-scale drive-in coolers for high-volume cold storage',
-    icon: Box,
+    description: 'Large-scale drive-in coolers for massive high-volume cold storage.',
+    footer: 'ASTM E84 Compliant',
+    icon: Archive,
   },
   {
     title: 'HOSPITALITY',
-    description: 'Hotel kitchens, banquet facilities, and full F&B programs',
+    description: 'Solutions for resort kitchens, banquet facilities, and large-scale F&B.',
+    footer: 'Integrated Catering Systems',
     icon: Hotel,
   },
   {
     title: 'HEALTHCARE',
-    description: 'Precision temperature control for pharmaceutical and medical storage',
+    description: 'Precise, medical-grade temperature arrays for sensitive pharma storage.',
+    footer: 'NIST Traceable Monitoring',
     icon: Stethoscope,
   },
   {
     title: 'CUSTOM',
-    description: 'Fully custom-engineered solutions for unique project requirements',
+    description: 'Fully tailored, spatially complex engineering solutions for unique project requirements.',
+    footer: 'Full CAD/BIM Support',
     icon: Star,
   },
 ];
 
 export default function Industries() {
   return (
-    <section className="py-24 bg-white text-gray-900 overflow-hidden relative">
-      <div className="container px-4 md:px-6 relative z-10">
+    <section className="py-24 bg-white text-gray-900 overflow-hidden relative font-sans">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 max-w-[1200px]">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
-          <div className="flex items-center justify-center gap-x-3 mb-6">
-            <div className="w-8 h-px bg-primary/20"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Industries Served</span>
-            <div className="w-8 h-px bg-primary/20"></div>
-          </div>
-          
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-gray-900 mb-8">
-            ONE SYSTEM. <br />
-            <span className="text-accent">EVERY SECTOR.</span>
-          </h2>
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <span className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4 block">Target Industries</span>
 
-          <div className="flex justify-center">
-            <div className="size-8 rounded-sm border border-primary/10 flex items-center justify-center">
-              <div className="size-1.5 rounded-sm bg-primary animate-pulse shadow-[0_0_10px_rgba(0,74,153,0.3)]"></div>
-            </div>
-          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-[40px] font-black uppercase tracking-tight text-gray-900">
+            ONE SYSTEM. <span className="text-[#0055ff]">EVERY SECTOR.</span>
+          </h2>
         </div>
 
         {/* Sectors Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {sectors.map((item, index) => (
-            <div 
+            <div
               key={index}
-              className="flex flex-col items-center text-center p-6 md:p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:border-primary/20 hover:bg-white hover:shadow-xl transition-all duration-500 group"
+              className="flex items-center p-5 md:p-6 rounded-3xl bg-white border border-gray-100 hover:border-[#0055ff]/20 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden"
+              style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}
             >
-              <div className="size-16 rounded-sm bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 border border-primary/20 group-hover:bg-primary group-hover:text-white shadow-sm shadow-primary/5 group-hover:shadow-xl group-hover:shadow-primary/20">
-                <item.icon className="size-7 text-primary group-hover:text-white transition-colors" strokeWidth={2} />
+              {/* Icon */}
+              <div className="mr-4 shrink-0 flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-[#0055ff]/10 blur-xl rounded-full group-hover:bg-[#0055ff]/20 transition-all duration-300"></div>
+                <item.icon className="w-10 h-10 text-[#0a1526] group-hover:text-[#0055ff] transition-colors relative z-10" strokeWidth={1.5} />
               </div>
 
-              <h3 className="text-sm font-black uppercase tracking-widest mb-3 text-gray-900 group-hover:text-primary transition-colors">
-                {item.title}
-              </h3>
+              {/* Content */}
+              <div className="flex-1 pr-6">
+                <h3 className="text-base font-bold text-gray-900 mb-1.5 group-hover:text-[#0055ff] transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-[13px] text-gray-600 leading-relaxed mb-2.5">
+                  {item.description}
+                </p>
+                <p className="text-[11px] font-bold text-gray-900">
+                  {item.footer}
+                </p>
+              </div>
 
-              <p className="text-[10px] leading-relaxed text-slate-500 font-medium group-hover:text-slate-600 transition-colors">
-                {item.description}
-              </p>
+              {/* Arrow */}
+              <div className="absolute bottom-6 right-6 opacity-20 group-hover:opacity-100 text-gray-400 group-hover:text-[#0055ff] transition-all duration-300 group-hover:translate-x-1">
+                <ArrowRight size={16} strokeWidth={2} />
+              </div>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 size-[600px] bg-primary/[0.03] rounded-sm blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 size-[600px] bg-accent/[0.03] rounded-sm blur-[120px] pointer-events-none"></div>
     </section>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail, CheckSquare, Youtube, Truck, ShieldCheck, Headphones, Award, Lock, FileText, ChevronRight } from 'lucide-react';
+import { MapPin, Phone, Mail, CheckSquare, Truck, ShieldCheck, Headphones, Award, Lock, FileText, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Footer() {
@@ -47,26 +47,6 @@ export default function Footer() {
                             </li>
                         </ul>
 
-                        <div className="pt-4">
-                            <h5 className="text-white font-bold text-sm mb-4">Follow Us</h5>
-                            <div className="flex gap-3">
-                                {[
-                                    { icon: Facebook, href: '#' },
-                                    { icon: Twitter, href: '#' },
-                                    { icon: Instagram, href: '#' },
-                                    { icon: Linkedin, href: '#' },
-                                    { icon: Youtube, href: '#' }
-                                ].map((social, i) => (
-                                    <a
-                                        key={i}
-                                        href={social.href}
-                                        className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-700 bg-[#0a1526] text-gray-400 hover:border-[#0055ff] hover:bg-[#0055ff] hover:text-white transition-all duration-300"
-                                    >
-                                        <social.icon size={16} strokeWidth={2} />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
                     </div>
 
                     {/* Column 2: EXPLORE (Span 2) */}
@@ -80,11 +60,7 @@ export default function Footer() {
                                 { name: 'Home', href: '/' },
                                 { name: 'Products', href: '/refrigeration-equipment' },
                                 { name: 'Services', href: '/services' },
-                                { name: 'Portfolio', href: '/completed-projects' },
-                                { name: 'About Us', href: '/#about' },
-                                { name: 'Resource Center', href: '#' },
-                                { name: 'Blog', href: '#' },
-                                { name: 'Careers', href: '#' }
+                                { name: 'Portfolio', href: '/completed-projects' }
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="group flex items-center justify-between hover:text-white transition-colors cursor-pointer w-full max-w-[160px]">
@@ -107,10 +83,7 @@ export default function Footer() {
                                 { name: 'Walk-In Coolers', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
                                 { name: 'Walk-In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
                                 { name: 'Combo Units', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' },
-                                { name: 'Glass Doors', href: '/walk-in-cooler-freezer' },
-                                { name: 'Custom Build', href: '/quote' },
-                                { name: 'Parts & Accessories', href: '#' },
-                                { name: 'Maintenance & Support', href: '#' }
+                                { name: 'Custom Build', href: '/quote' }
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="hover:text-white transition-colors cursor-pointer">
@@ -130,12 +103,8 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm text-gray-400">
                             {[
                                 { name: 'Request a Quote', href: '/quote' },
-                                { name: 'Installation Guide', href: '#' },
-                                { name: 'Warranty Information', href: '#' },
-                                { name: 'Shipping & Delivery', href: '#' },
-                                { name: 'Returns & Refunds', href: '#' },
-                                { name: 'FAQs', href: '#' },
-                                { name: 'Contact Us', href: '/#contact' }
+                                { name: 'Request Invoice', href: '/request-invoice' },
+                                { name: 'Contact Us', href: '/enquiry' }
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="hover:text-white transition-colors cursor-pointer">
@@ -268,12 +237,6 @@ export default function Footer() {
                                 <p>Compliant</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="flex gap-6 text-[13px]">
-                        <Link href="/privacy" className="hover:text-white transition-colors cursor-pointer">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-white transition-colors cursor-pointer">Terms of Service</Link>
-                        <Link href="/sitemap" className="hover:text-white transition-colors cursor-pointer">Sitemap</Link>
                     </div>
                 </div>
 
