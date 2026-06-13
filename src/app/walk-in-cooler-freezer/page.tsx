@@ -138,7 +138,7 @@ export default function WalkInCoolerFreezerPage() {
         </div>
       </div>
       
-      <Footer />
+      
     </main>
   );
 }

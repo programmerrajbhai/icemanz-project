@@ -291,3 +291,11 @@ sai jonno quick book accesspt korsy na error astasy
 -to ekhon jakono ekta demo ammount each order er sathy pathaw 10$ ei ammount ta pathaw jaty kory quick book a error na asy 
 
 -refrigeration equipment ei category er product sara onnno kono category page ba onno kono kisur upor jano kono effect na pory musk kheal rakhby 
+
+-amader existing checkout page tai form field gulo  jayrokom asy same thakby just refrafance image er moto kory layout er design ta hobe
+
+-onno kono page ba onno kono funtionality change hobey na
+
+-onno kono funtionality ba page a effect porby na
+
+-checkout er funtionlity jerokom asy same thekaby just design layout change hobe

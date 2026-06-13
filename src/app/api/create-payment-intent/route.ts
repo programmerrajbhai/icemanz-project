@@ -67,6 +67,16 @@ export async function POST(request: Request) {
       console.error("Error auto-syncing with QuickBooks:", syncError);
     }
 
+    // Generate product list HTML
+    const productsList = items.map((p: any) => `
+      <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+        ${p.image ? `<img src="${p.image}" alt="${p.title || p.name}" style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; background-color: #fff;" />` : ''}
+        <div>
+          <p style="margin: 0 0 5px 0; font-size: 15px; color: #0f172a;"><strong>Name:</strong> ${p.title || p.name}</p>
+        </div>
+      </div>
+    `).join('');
+
     // Send a Thank You email
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
@@ -77,9 +87,19 @@ export async function POST(request: Request) {
         <div style="color: #334155; font-size: 16px; line-height: 1.6;">
           <p>Hello <strong>${fullName}</strong>,</p>
           <p>We have successfully received your order request. Our team is currently reviewing it.</p>
-          <p><strong>Order Total:</strong> $${amount.toFixed(2)}</p>
+          <p style="font-size: 18px; font-weight: bold; color: #0f172a; margin: 20px 0;">Order Total: $${amount.toFixed(2)}</p>
           <p>You will receive an official invoice with payment instructions shortly. If you have any questions, feel free to reply to this email.</p>
         </div>
+        
+        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
+          <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Requested Product Details</h3>
+          ${productsList}
+        </div>
+
+        <p style="color: #334155; font-size: 16px; font-weight: 500; margin-top: 25px;">
+          Thank you for choosing us.
+        </p>
+
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
         <p style="color: #64748b; font-size: 13px; text-align: center;">
           &copy; ${new Date().getFullYear()} ICEMANZ. All rights reserved.

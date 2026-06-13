@@ -388,6 +388,8 @@ const CheckoutClient = () => {
 
                                 </div>
                             )}
+                            <p className="text-sm text-gray-500 pt-3">You will not be charged yet. We will confirm pricing before payment.</p>
+
                         </section>
 
                         <form onSubmit={handleCheckoutSubmit}>
@@ -402,7 +404,7 @@ const CheckoutClient = () => {
                                         Processing...
                                     </>
                                 ) : (
-                                    `Submit Order Request`
+                                    `Submit Invoice Request`
                                 )}
                             </button>
                         </form>

@@ -88,34 +88,25 @@ export default function Footer() {
           <div className="lg:col-span-3 lg:ml-auto">
             <h4 className="text-white text-[15px] font-bold mb-6">Connect</h4>
             <div className="space-y-6">
-              <a href="tel:929-451-7665" className="flex items-start gap-4 group cursor-pointer">
-                <div className="mt-1 text-[#3b82f6] group-hover:text-white transition-colors">
-                  <Phone size={18} />
+              <a href="tel:929-451-7665" className="flex items-center gap-3 group cursor-pointer">
+                <div className="text-[#3b82f6] group-hover:text-white transition-colors">
+                  <Phone size={20} />
                 </div>
-                <div>
-                  <p className="text-[12px] text-gray-500 font-medium mb-1 uppercase tracking-wider">Voice Support</p>
-                  <p className="text-gray-300 group-hover:text-white text-[14px] font-medium transition-colors">929-451-7665</p>
-                </div>
+                <p className="text-gray-300 group-hover:text-white text-[15px] transition-colors">929-451-7665</p>
               </a>
 
-              <a href="mailto:sales@icemanz.com" className="flex items-start gap-4 group cursor-pointer">
-                <div className="mt-1 text-[#3b82f6] group-hover:text-white transition-colors">
-                  <Mail size={18} />
+              <a href="mailto:sales@icemanz.com" className="flex items-center gap-3 group cursor-pointer">
+                <div className="text-[#3b82f6] group-hover:text-white transition-colors">
+                  <Mail size={20} />
                 </div>
-                <div>
-                  <p className="text-[12px] text-gray-500 font-medium mb-1 uppercase tracking-wider">Digital Enquiry</p>
-                  <p className="text-gray-300 group-hover:text-white text-[14px] font-medium transition-colors">sales@icemanz.com</p>
-                </div>
+                <p className="text-gray-300 group-hover:text-white text-[15px] transition-colors">sales@icemanz.com</p>
               </a>
 
-              <div className="flex items-start gap-4 group cursor-pointer">
+              <div className="flex items-start gap-3 group cursor-pointer">
                 <div className="mt-1 text-[#3b82f6] group-hover:text-white transition-colors">
-                  <MapPin size={18} />
+                  <MapPin size={20} />
                 </div>
-                <div>
-                  <p className="text-[12px] text-gray-500 font-medium mb-1 uppercase tracking-wider">Global HQ</p>
-                  <p className="text-gray-300 group-hover:text-white text-[14px] font-medium leading-relaxed transition-colors">Brooklyn, <br />New York, USA</p>
-                </div>
+                <p className="text-gray-300 group-hover:text-white text-[15px] leading-relaxed transition-colors">Brooklyn, <br />New York, USA</p>
               </div>
             </div>
           </div>

@@ -70,6 +70,17 @@ export async function POST(req: Request) {
       </div>
     `).join('');
 
+    const totalAmount = addedProducts.reduce((sum: number, p: any) => {
+      let price = 0;
+      if (typeof p.price === 'string') {
+        price = parseFloat(p.price.replace(/[^0-9.]/g, '')) || 0;
+      } else if (typeof p.price === 'number') {
+        price = p.price;
+      }
+      const qty = p.quantity ? parseInt(p.quantity, 10) : 1;
+      return sum + (price * qty);
+    }, 0);
+
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <div style="text-align: center; margin-bottom: 25px;">
@@ -78,8 +89,9 @@ export async function POST(req: Request) {
         
         <div style="color: #334155; font-size: 16px; line-height: 1.6;">
           <p>Hello <strong>${formData.fullName}</strong>,</p>
-          <p>We have successfully received your invoice request. Our team will review the details and process your request shortly.</p>
-          <p>We will contact you soon with the final invoice and payment information.</p>
+          <p>We have successfully received your invoice request. Our team is currently reviewing it.</p>
+          <p style="font-size: 18px; font-weight: bold; color: #0f172a; margin: 20px 0;">Invoice Total: $${totalAmount.toFixed(2)}</p>
+          <p>You will receive an official invoice with payment instructions shortly. If you have any questions, feel free to reply to this email.</p>
         </div>
         
         <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
