@@ -144,7 +144,13 @@ async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmountParam: numb
     if (invoice.products && invoice.products.length > 0) {
       lineItems = await Promise.all(invoice.products.map(async (item: any) => {
         const itemRef = await getOrCreateQboItem(oauthClient, realmId, item);
-        const priceValue = typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) : (item.price || 0);
+        let priceValue = typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) : (item.price || 0);
+        
+        // Use a demo amount of $10 if price is 0 to prevent QuickBooks errors
+        if (!priceValue || priceValue === 0 || isNaN(priceValue)) {
+          priceValue = 10;
+        }
+
         const qty = item.quantity ? parseInt(item.quantity, 10) : 1;
         const lineAmount = priceValue * qty;
         calculatedTotal += lineAmount;
@@ -167,14 +173,22 @@ async function syncInvoiceToQuickBooks(invoice: any, finalTotalAmountParam: numb
     } else {
       // Default line item if no products array
       const itemRef = await getOrCreateQboItem(oauthClient, realmId, { name: 'Custom Project' });
+      
+      let defaultPrice = finalTotalAmount;
+      // Use a demo amount of $10 if price is 0 to prevent QuickBooks errors
+      if (!defaultPrice || defaultPrice === 0 || isNaN(defaultPrice)) {
+        defaultPrice = 10;
+        finalTotalAmount = 10; // Update finalTotalAmount so the rest of the logic uses it
+      }
+
       lineItems = [{
         DetailType: 'SalesItemLineDetail',
         SalesItemLineDetail: {
           ItemRef: itemRef,
           Qty: 1,
-          UnitPrice: finalTotalAmount,
+          UnitPrice: defaultPrice,
         },
-        Amount: finalTotalAmount,
+        Amount: defaultPrice,
         Description: `Invoice for Project: ${invoice.projectName || 'Custom Project'}`,
       }];
     }

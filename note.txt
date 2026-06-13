@@ -223,7 +223,7 @@ bassy anar pory Lysovit er pani then
 2nd - 5th day before first vacine 
 =======
 -sokaly endrosine vet sokal thyky durpur porjonto colby 
--sathy panir ph 
+-sathy panir ph 0
 -Thayamin + Rena C dupur thyky sondha porjonto colby 
 -Vacine er ager din thyky somosto medicine off rakhty hobe 
 
@@ -280,3 +280,14 @@ Name:
 Image:
 
 Thank you for choosing us.
+
+
+
+
+
+-refrigeration equipment er order korly kono price jassy na many ammount 0 invoice hossy 
+sai jonno quick book accesspt korsy na error astasy 
+
+-to ekhon jakono ekta demo ammount each order er sathy pathaw 10$ ei ammount ta pathaw jaty kory quick book a error na asy 
+
+-refrigeration equipment ei category er product sara onnno kono category page ba onno kono kisur upor jano kono effect na pory musk kheal rakhby 
