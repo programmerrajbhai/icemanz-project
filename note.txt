@@ -299,3 +299,13 @@ sai jonno quick book accesspt korsy na error astasy
 -onno kono funtionality ba page a effect porby na
 
 -checkout er funtionlity jerokom asy same thekaby just design layout change hobe
+
+
+
+
+
+
+http://localhost:3000/checkout
+ei page ta redesing korty hobe field and funtionality ekhon jerokom asy same thakby just desing ta refrafance image er moto hobe 
+
+-onno kono page ba funtionality er upor effect porby na 

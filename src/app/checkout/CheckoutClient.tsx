@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChevronDown, Lock, ShoppingCart } from 'lucide-react';
+import { ChevronDown, Lock, ShoppingCart, User, MapPin, FileText, Send, Clock, Headphones, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
 import Header from '@/components/Header';
@@ -16,18 +16,20 @@ const CheckoutClient = () => {
     const searchParams = useSearchParams();
     const invoiceId = searchParams.get('invoiceId');
 
-    const [clientSecret, setClientSecret] = useState<string | null>(null); // Kept for state compatibility if needed
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [shippingMethod, setShippingMethod] = useState<'ship' | 'pickup'>('ship');
 
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const [businessType, setBusinessType] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [zipCode, setZipCode] = useState('');
     const [phone, setPhone] = useState('');
+    const [additionalInfo, setAdditionalInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const [isSuccess, setIsSuccess] = useState(false);
@@ -41,13 +43,11 @@ const CheckoutClient = () => {
                     const response = await fetch(`/api/invoice/${invoiceId}`);
                     if (response.ok) {
                         const data = await response.json();
-                        // If we have a payment link ready, we might want to redirect immediately
                         if (data.qboPaymentLink || data.paymentLink) {
                             window.location.href = data.qboPaymentLink || data.paymentLink;
                             return;
                         }
 
-                        // Otherwise populate fields if we are processing it here
                         if (data.email) setEmail(data.email);
                         if (data.phone) setPhone(data.phone);
                         if (data.fullName) {
@@ -55,7 +55,6 @@ const CheckoutClient = () => {
                             setFirstName(parts[0] || '');
                             setLastName(parts.slice(1).join(' ') || '');
                         }
-                        // Address logic could be added here if structured
                     }
                 } catch (error) {
                     console.error("Error fetching invoice details:", error);
@@ -74,8 +73,8 @@ const CheckoutClient = () => {
             return;
         }
 
-        if (!email || !firstName || !lastName || !address || !city || !state || !zipCode) {
-            toast.error("Please fill in all contact and delivery details");
+        if (!email || !firstName || !lastName || !address || !city || !state || !zipCode || !phone) {
+            toast.error("Please fill in all required fields.");
             return;
         }
 
@@ -98,7 +97,6 @@ const CheckoutClient = () => {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // Success!
                 clearCart();
                 setIsSuccess(true);
                 setIsLoading(false);
@@ -106,7 +104,6 @@ const CheckoutClient = () => {
             }
 
             if (data.clientSecret) {
-                // If somehow Stripe is still enabled on backend, we could set client secret here
                 toast.error("Stripe is not supported in this flow. Please use QuickBooks.");
                 setIsLoading(false);
             } else {
@@ -138,23 +135,23 @@ const CheckoutClient = () => {
         return (
             <div className="min-h-screen bg-[#f9fafb] flex flex-col">
                 <Header />
-                <main className="grow flex items-center justify-center bg-white">
+                <main className="grow flex items-center justify-center bg-white pt-32">
                     <div className="flex flex-col items-center gap-6 max-w-md px-6 text-center">
                         <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <CheckCircle2 size={40} />
                         </div>
                         <div className="space-y-4">
-                            <h2 className="text-3xl font-black text-gray-900 tracking-tight">Order Request Received!</h2>
+                            <h2 className="text-3xl font-black text-[#003366] tracking-tight">Request Received!</h2>
                             <p className="text-gray-600 text-base leading-relaxed">
-                                Thank you for your order. We have sent a confirmation to <span className="font-bold text-gray-900">{email}</span>.
+                                Thank you for your request. We have sent a confirmation to <span className="font-bold text-gray-900">{email}</span>.
                             </p>
                             <p className="text-gray-500 text-sm">
-                                Our team will review your request and contact you shortly with the invoice and payment details.
+                                Our team will review your selected equipment and send you an invoice with final pricing shortly.
                             </p>
                         </div>
                         <Link
                             href="/"
-                            className="mt-4 bg-primary text-white px-8 py-3.5 rounded-md font-bold hover:bg-blue-800 transition-colors shadow-md w-full"
+                            className="mt-4 bg-[#004a99] text-white px-8 py-3.5 rounded-md font-bold hover:bg-[#003366] transition-colors shadow-md w-full"
                         >
                             Return to Home
                         </Link>
@@ -169,7 +166,7 @@ const CheckoutClient = () => {
         return (
             <div className="min-h-screen bg-[#f9fafb] flex flex-col">
                 <Header />
-                <main className="grow flex items-center justify-center bg-white">
+                <main className="grow flex items-center justify-center bg-white pt-32">
                     <div className="flex flex-col items-center gap-6 max-w-sm px-6 text-center">
                         <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400">
                             <ShoppingCart size={32} />
@@ -180,7 +177,7 @@ const CheckoutClient = () => {
                         </div>
                         <Link
                             href="/cart"
-                            className="bg-primary text-white px-8 py-3 rounded-sm font-bold hover:bg-blue-800 transition-colors"
+                            className="bg-[#004a99] text-white px-8 py-3 rounded-sm font-bold hover:bg-[#003366] transition-colors"
                         >
                             Return to Cart
                         </Link>
@@ -195,7 +192,7 @@ const CheckoutClient = () => {
         return (
             <div className="min-h-screen bg-[#f9fafb] flex flex-col">
                 <Header />
-                <main className="grow flex items-center justify-center bg-white">
+                <main className="grow flex items-center justify-center bg-white pt-32">
                     <div className="flex flex-col items-center gap-4">
                         <div className="w-8 h-8 border-4 border-[#004a99]/30 border-t-[#004a99] rounded-full animate-spin"></div>
                         <p className="text-gray-500 font-medium">Redirecting to secure payment...</p>
@@ -206,264 +203,368 @@ const CheckoutClient = () => {
         );
     }
 
-    if (error && !clientSecret) {
-        // We removed initializePayment on load, so we shouldn't hit this unless we manually set error
-        // and even then, we probably just want to show a toast.
-    }
-
     return (
-        <div className="min-h-screen bg-[#f9fafb] flex flex-col">
+        <div className="min-h-screen bg-white flex flex-col">
             <Header />
-            <main className="grow flex flex-col-reverse lg:flex-row pt-40">
-                {/* Left Side: Checkout Form */}
-                <div className="flex-1 lg:max-w-[60%] px-6 md:px-12 lg:px-24 pb-12 border-r border-gray-100">
-                    <div className="max-w-xl ml-auto w-full">
+            <main className="grow max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+                
+                {/* Header Title */}
+                <div className="mb-8 lg:mb-12 max-w-2xl">
+                    <h1 className="text-3xl lg:text-4xl font-extrabold text-[#003366] mb-3 tracking-tight">Request Your Invoice</h1>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                        Complete your details below. Our team will review your selected equipment, confirm shipping details, and send you an invoice with final pricing.
+                    </p>
+                </div>
 
-                        {/* Contact Section */}
-                        <section className="mb-10">
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-md font-bold text-gray-900">Contact</h2>
-                            </div>
-                            <div className="space-y-4">
-                                <input
-                                    type="email"
-                                    required
-                                    placeholder="Email"
-                                    className="w-full px-4 py-3 placeholder:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                        </section>
-
-                        {/* Delivery Section */}
-                        <section className="mb-10">
-                            <h2 className="text-md font-bold text-gray-900 mb-6">Delivery</h2>
-
-                            {/* Shipping Method Dropdown */}
-                            <div className="relative mb-8">
-                                <select
-                                    value={shippingMethod}
-                                    onChange={(e) => setShippingMethod(e.target.value as 'ship' | 'pickup')}
-                                    className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-semibold text-gray-800 text-base appearance-none transition-all cursor-pointer shadow-sm"
-                                >
-                                    <option value="ship"> Ship</option>
-                                    <option value="pickup"> Pickup</option>
-                                </select>
-                                <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-                            </div>
-
-                            {shippingMethod === 'ship' && (
-                                <div className="space-y-6">
-                                    <div className="relative">
-                                        <select className="w-full px-4 py-2 pt-6 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-semibold text-sm appearance-none transition-all">
-                                            <option>United States</option>
-                                        </select>
-                                        <span className="absolute left-4 top-1.5 text-sm text-gray-500 transition-all">Country/Region</span>
-                                        <ChevronDown size={20} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                    
+                    {/* Left Side: Checkout Form */}
+                    <div className="flex-1 lg:max-w-[65%]">
+                        <form onSubmit={handleCheckoutSubmit} className="space-y-8">
+                            
+                            {/* Customer Information */}
+                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0">
+                                        <User size={20} />
                                     </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#003366]">Customer Information</h2>
+                                        <p className="text-xs text-gray-500 mt-0.5">Tell us who you are so we can contact you.</p>
+                                    </div>
+                                </div>
 
-                                    <div className="flex gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">First name <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
-                                            placeholder="First name"
-                                            className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 placeholder:text-sm focus:ring-primary/20 focus:border-primary text-lg transition-all"
+                                            required
+                                            placeholder="Enter your first name"
+                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                         />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Last name <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
-                                            placeholder="Last name"
-                                            className="flex-1 px-4 py-2 bg-white border placeholder:text-sm border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg transition-all"
+                                            required
+                                            placeholder="Enter your last name"
+                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                         />
                                     </div>
-
-                                    <div className="relative">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Email address <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="email"
+                                            required
+                                            placeholder="name@example.com"
+                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Phone number <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
-                                            placeholder="Address"
-                                            className="w-full px-4 py-2 placeholder:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg transition-all pr-10"
+                                            required
+                                            placeholder="(123) 456-7890"
+                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                            value={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Company name</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter your company name"
+                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                            value={companyName}
+                                            onChange={(e) => setCompanyName(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Business type</label>
+                                        <div className="relative">
+                                            <select
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                value={businessType}
+                                                onChange={(e) => setBusinessType(e.target.value)}
+                                            >
+                                                <option value="">Select your business type</option>
+                                                <option value="Restaurant">Restaurant</option>
+                                                <option value="Supermarket">Supermarket</option>
+                                                <option value="Convenience Store">Convenience Store</option>
+                                                <option value="Warehouse">Warehouse</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Shipping Address */}
+                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0">
+                                        <MapPin size={20} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#003366]">Shipping Address</h2>
+                                        <p className="text-xs text-gray-500 mt-0.5">Where should we deliver your equipment?</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-5">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Address <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="Street address"
+                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
                                             value={address}
                                             onChange={(e) => setAddress(e.target.value)}
                                         />
                                     </div>
 
-                                    <input
-                                        type="text"
-                                        placeholder="Apartment, suite, etc. (optional)"
-                                        className="w-full px-4 py-2 bg-white border placeholder:text-sm border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg transition-all"
-                                    />
-
-                                    <div className="flex gap-4">
-                                        <input
-                                            type="text"
-                                            placeholder="City"
-                                            className="w-full px-4 py-2 placeholder:font-semibold placeholder:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg transition-all"
-                                            value={city}
-                                            onChange={(e) => setCity(e.target.value)}
-                                        />
-
-                                        <div className="relative w-full">
-                                            <select
-                                                className="px-4 py-3 w-full text-sm placeholder:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary appearance-none transition-all pr-10"
-                                                value={state}
-                                                onChange={(e) => setState(e.target.value)}
-                                            >
-                                                <option value="">State</option>
-                                                <option value="AL">Alabama</option>
-                                                <option value="AK">Alaska</option>
-                                                <option value="AZ">Arizona</option>
-                                                <option value="AR">Arkansas</option>
-                                                <option value="CA">California</option>
-                                                <option value="CO">Colorado</option>
-                                                <option value="CT">Connecticut</option>
-                                                <option value="DE">Delaware</option>
-                                                <option value="FL">Florida</option>
-                                                <option value="GA">Georgia</option>
-                                                <option value="HI">Hawaii</option>
-                                                <option value="ID">Idaho</option>
-                                                <option value="IL">Illinois</option>
-                                                <option value="IN">Indiana</option>
-                                                <option value="IA">Iowa</option>
-                                                <option value="KS">Kansas</option>
-                                                <option value="KY">Kentucky</option>
-                                                <option value="LA">Louisiana</option>
-                                                <option value="ME">Maine</option>
-                                                <option value="MD">Maryland</option>
-                                                <option value="MA">Massachusetts</option>
-                                                <option value="MI">Michigan</option>
-                                                <option value="MN">Minnesota</option>
-                                                <option value="MS">Mississippi</option>
-                                                <option value="MO">Missouri</option>
-                                                <option value="MT">Montana</option>
-                                                <option value="NE">Nebraska</option>
-                                                <option value="NV">Nevada</option>
-                                                <option value="NH">New Hampshire</option>
-                                                <option value="NJ">New Jersey</option>
-                                                <option value="NM">New Mexico</option>
-                                                <option value="NY">New York</option>
-                                                <option value="NC">North Carolina</option>
-                                                <option value="ND">North Dakota</option>
-                                                <option value="OH">Ohio</option>
-                                                <option value="OK">Oklahoma</option>
-                                                <option value="OR">Oregon</option>
-                                                <option value="PA">Pennsylvania</option>
-                                                <option value="RI">Rhode Island</option>
-                                                <option value="SC">South Carolina</option>
-                                                <option value="SD">South Dakota</option>
-                                                <option value="TN">Tennessee</option>
-                                                <option value="TX">Texas</option>
-                                                <option value="UT">Utah</option>
-                                                <option value="VT">Vermont</option>
-                                                <option value="VA">Virginia</option>
-                                                <option value="WA">Washington</option>
-                                                <option value="WV">West Virginia</option>
-                                                <option value="WI">Wisconsin</option>
-                                                <option value="WY">Wyoming</option>
-                                            </select>
-                                            <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-5">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-800 mb-1.5">City <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="City"
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                value={city}
+                                                onChange={(e) => setCity(e.target.value)}
+                                            />
                                         </div>
-
-                                        <input
-                                            type="text"
-                                            placeholder="ZIP code"
-                                            className="px-4 w-full py-2 placeholder:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg transition-all"
-                                            value={zipCode}
-                                            onChange={(e) => setZipCode(e.target.value)}
-                                        />
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-800 mb-1.5">State / Province <span className="text-red-500">*</span></label>
+                                            <div className="relative">
+                                                <select
+                                                    required
+                                                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                    value={state}
+                                                    onChange={(e) => setState(e.target.value)}
+                                                >
+                                                    <option value="">Select state</option>
+                                                    <option value="AL">Alabama</option>
+                                                    <option value="AK">Alaska</option>
+                                                    <option value="AZ">Arizona</option>
+                                                    <option value="CA">California</option>
+                                                    <option value="CO">Colorado</option>
+                                                    <option value="FL">Florida</option>
+                                                    <option value="GA">Georgia</option>
+                                                    <option value="IL">Illinois</option>
+                                                    <option value="NY">New York</option>
+                                                    <option value="TX">Texas</option>
+                                                    {/* Add more as needed */}
+                                                </select>
+                                                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-800 mb-1.5">ZIP / Postal code <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="ZIP / Postal code"
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                value={zipCode}
+                                                onChange={(e) => setZipCode(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
 
-                                    <div className="flex justify-center items-center gap-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Phone"
-                                            className="px-4 py-2.5 w-full placeholder:text-sm bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all pr-10"
-                                            value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
-                                        />
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Country / Region <span className="text-red-500">*</span></label>
+                                        <div className="relative">
+                                            <select className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none text-sm appearance-none text-gray-800 font-medium">
+                                                <option>United States</option>
+                                            </select>
+                                            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                        </div>
                                     </div>
-
-
                                 </div>
-                            )}
-                            <p className="text-sm text-gray-500 pt-3">You will not be charged yet. We will confirm pricing before payment.</p>
+                            </div>
 
-                        </section>
+                            {/* Additional Information */}
+                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <div className="flex items-start gap-4 mb-4">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0">
+                                        <FileText size={20} />
+                                    </div>
+                                    <div className="w-full">
+                                        <h2 className="text-lg font-bold text-[#003366]">Additional Information <span className="text-gray-400 font-normal text-sm">(optional)</span></h2>
+                                        <p className="text-xs text-gray-500 mt-0.5 mb-4">Add any notes or special requirements for our team.</p>
+                                        <textarea
+                                            placeholder="Installation questions, delivery requirements, special notes, etc."
+                                            rows={3}
+                                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all resize-none"
+                                            value={additionalInfo}
+                                            onChange={(e) => setAdditionalInfo(e.target.value)}
+                                        ></textarea>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <form onSubmit={handleCheckoutSubmit}>
-                            <button
-                                disabled={isLoading}
-                                type="submit"
-                                className={`w-full bg-primary cursor-pointer text-white py-3 rounded-md font-bold text-base transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-800 hover:shadow-lg'}`}
-                            >
-                                {isLoading ? (
-                                    <>
-                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        Processing...
-                                    </>
-                                ) : (
-                                    `Submit Invoice Request`
-                                )}
-                            </button>
+                            {/* Submit Button & Trust Badges */}
+                            <div>
+                                <button
+                                    disabled={isLoading}
+                                    type="submit"
+                                    className={`w-full bg-[#004a99] cursor-pointer text-white py-4 rounded-xl font-bold text-lg transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-3 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#003366] hover:shadow-lg'}`}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            Processing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send size={20} />
+                                            Request My Invoice
+                                        </>
+                                    )}
+                                </button>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 border-t border-gray-100 pt-6">
+                                    <div className="flex items-center gap-3 justify-center md:justify-start">
+                                        <CheckCircle2 className="text-[#004a99] shrink-0" size={20} />
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-800">No payment required</p>
+                                            <p className="text-[10px] text-gray-500">You will not be charged yet.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 justify-center md:justify-start">
+                                        <ShieldCheck className="text-[#004a99] shrink-0" size={20} />
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-800">Pricing confirmed</p>
+                                            <p className="text-[10px] text-gray-500">We confirm final pricing before payment.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 justify-center md:justify-start">
+                                        <Lock className="text-[#004a99] shrink-0" size={20} />
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-800">Secure & Private</p>
+                                            <p className="text-[10px] text-gray-500">Your information is safe with us.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
-                </div>
 
-                {/* Right Side: Order Summary */}
-                <div className="flex-1 lg:max-w-[40%] bg-gray-50 px-6 md:px-12 lg:px-16 py-12 border-l border-gray-200">
-                    <div className="max-w-md w-full sticky top-12">
-                        {/* Cart Items List */}
-                        <div className="space-y-6 mb-8 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                            {cartItems.map((item) => (
-                                <div key={item.id} className="flex items-center gap-4">
-                                    <div className="relative w-16 h-16 bg-white border border-gray-200 rounded-lg shrink-0 overflow-hidden shadow-sm">
-                                        <Image
-                                            src={item.image}
-                                            alt={item.name}
-                                            fill
-                                            className="object-contain p-2"
-                                            sizes="64px"
-                                        />
-                                        <span className="absolute -top-2 -right-2 bg-gray-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10">
-                                            {item.quantity}
+                    {/* Right Side: Order Summary */}
+                    <div className="flex-1 lg:max-w-[35%]">
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm sticky top-24 overflow-hidden">
+                            
+                            {/* Summary Header */}
+                            <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-3">
+                                <FileText className="text-[#004a99]" size={20} />
+                                <h2 className="text-lg font-bold text-[#003366]">Selected Equipment</h2>
+                            </div>
+
+                            <div className="p-5 lg:p-6">
+                                {/* Cart Items */}
+                                <div className="space-y-6 mb-6 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                                    {cartItems.map((item) => (
+                                        <div key={item.id} className="flex gap-4">
+                                            <div className="relative w-20 h-20 bg-white border border-gray-200 rounded-lg shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
+                                                <Image
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    fill
+                                                    className="object-contain p-2"
+                                                    sizes="80px"
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-3 mb-1">{item.name}</h3>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">{item.brand}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Totals */}
+                                <div className="space-y-3 pt-6 border-t border-gray-100">
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-600 font-medium">Quantity</span>
+                                        <span className="text-gray-900 font-bold">{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-600 font-medium">Subtotal ({cartItems.reduce((acc, item) => acc + item.quantity, 0)} item)</span>
+                                        <span className="text-gray-900 font-bold">${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                </div>
+
+                                {/* Grand Total */}
+                                <div className="flex justify-between items-end pt-6 pb-6 mt-4 border-t border-gray-100">
+                                    <span className="text-lg font-bold text-gray-900">Estimated Total</span>
+                                    <div className="text-right flex items-baseline gap-1.5">
+                                        <span className="text-xs font-bold text-gray-500 uppercase">USD</span>
+                                        <span className="text-2xl font-black text-[#004a99]">
+                                            ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                         </span>
                                     </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">{item.name}</h3>
-                                        <p className="text-[11px] text-gray-500 font-bold uppercase mt-1">{item.brand}</p>
-                                    </div>
-                                    <div className="text-sm font-bold text-gray-900">
-                                        ${(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </div>
+
+                                {/* Info Box */}
+                                <div className="bg-[#f0f7ff] border border-[#d6e8ff] rounded-lg p-4 mb-6">
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-0.5 text-[#004a99]">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-bold text-[#003366] mb-1">What happens next?</h4>
+                                            <p className="text-xs text-[#004a99]/80 leading-relaxed">
+                                                Our team will review your request and send you an invoice with final pricing, shipping, and lead time details via email.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
 
-                        {/* Summary Calculations */}
-                        <div className="space-y-4 pt-6 border-t border-gray-200 mb-6">
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600">Subtotal • {cartItems.reduce((acc, item) => acc + item.quantity, 0)} items</span>
-                                <span className="text-gray-900 font-semibold">${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                            </div>
-                        </div>
-
-                        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
-                            <span className="text-xl font-bold text-gray-900">Total</span>
-                            <div className="text-right">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-xs font-bold text-gray-500 uppercase">USD</span>
-                                    <span className="text-xl font-semibold text-gray-900">
-                                        ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                    </span>
+                                {/* Value Props */}
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-3">
+                                        <Clock className="text-[#004a99] shrink-0 mt-0.5" size={18} />
+                                        <div>
+                                            <h5 className="text-xs font-bold text-gray-900">Quick Response</h5>
+                                            <p className="text-[11px] text-gray-500">We typically respond within 1 business day.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <Headphones className="text-[#004a99] shrink-0 mt-0.5" size={18} />
+                                        <div>
+                                            <h5 className="text-xs font-bold text-gray-900">Expert Support</h5>
+                                            <p className="text-[11px] text-gray-500">Our specialists are here to help.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <ShieldCheck className="text-[#004a99] shrink-0 mt-0.5" size={18} />
+                                        <div>
+                                            <h5 className="text-xs font-bold text-gray-900">Reliable Equipment</h5>
+                                            <p className="text-[11px] text-gray-500">Commercial-grade quality you can trust.</p>
+                                        </div>
+                                    </div>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
-
+            <Footer />
         </div>
     );
 };
