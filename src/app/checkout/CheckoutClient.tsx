@@ -157,7 +157,7 @@ const CheckoutClient = () => {
                         </Link>
                     </div>
                 </main>
-                <Footer />
+         
             </div>
         );
     }
@@ -207,9 +207,9 @@ const CheckoutClient = () => {
         <div className="min-h-screen bg-white flex flex-col">
             <Header />
             <main className="grow max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-                
+
                 {/* Header Title */}
-                <div className="mb-8 lg:mb-12 max-w-2xl">
+                <div className="mb-8 lg:mb-12 max-w-2xl pt-12">
                     <h1 className="text-3xl lg:text-4xl font-extrabold text-[#003366] mb-3 tracking-tight">Request Your Invoice</h1>
                     <p className="text-gray-600 text-sm leading-relaxed">
                         Complete your details below. Our team will review your selected equipment, confirm shipping details, and send you an invoice with final pricing.
@@ -217,11 +217,11 @@ const CheckoutClient = () => {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-                    
+
                     {/* Left Side: Checkout Form */}
                     <div className="flex-1 lg:max-w-[65%]">
                         <form onSubmit={handleCheckoutSubmit} className="space-y-8">
-                            
+
                             {/* Customer Information */}
                             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                                 <div className="flex items-start gap-4 mb-6">
@@ -397,25 +397,7 @@ const CheckoutClient = () => {
                                 </div>
                             </div>
 
-                            {/* Additional Information */}
-                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                                <div className="flex items-start gap-4 mb-4">
-                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0">
-                                        <FileText size={20} />
-                                    </div>
-                                    <div className="w-full">
-                                        <h2 className="text-lg font-bold text-[#003366]">Additional Information <span className="text-gray-400 font-normal text-sm">(optional)</span></h2>
-                                        <p className="text-xs text-gray-500 mt-0.5 mb-4">Add any notes or special requirements for our team.</p>
-                                        <textarea
-                                            placeholder="Installation questions, delivery requirements, special notes, etc."
-                                            rows={3}
-                                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all resize-none"
-                                            value={additionalInfo}
-                                            onChange={(e) => setAdditionalInfo(e.target.value)}
-                                        ></textarea>
-                                    </div>
-                                </div>
-                            </div>
+                          
 
                             {/* Submit Button & Trust Badges */}
                             <div>
@@ -432,7 +414,7 @@ const CheckoutClient = () => {
                                     ) : (
                                         <>
                                             <Send size={20} />
-                                            Request My Invoice
+                                            Request For Invoice
                                         </>
                                     )}
                                 </button>
@@ -467,7 +449,7 @@ const CheckoutClient = () => {
                     {/* Right Side: Order Summary */}
                     <div className="flex-1 lg:max-w-[35%]">
                         <div className="bg-white border border-gray-200 rounded-xl shadow-sm sticky top-24 overflow-hidden">
-                            
+
                             {/* Summary Header */}
                             <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-3">
                                 <FileText className="text-[#004a99]" size={20} />
@@ -558,13 +540,12 @@ const CheckoutClient = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 };

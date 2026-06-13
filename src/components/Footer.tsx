@@ -2,132 +2,282 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail, CheckSquare, Youtube, Truck, ShieldCheck, Headphones, Award, Lock, FileText, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-  const pathname = usePathname();
+    const currentYear = new Date().getFullYear();
+    const pathname = usePathname();
 
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
+    if (pathname?.startsWith('/admin')) {
+        return null;
+    }
 
-  return (
-    <footer className="bg-[#0a101d] text-gray-300 pt-20 pb-8 border-t border-white/5">
-      <div className="container px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+    return (
+        <footer className="bg-[#05101e] text-gray-300 pt-16 pb-8 border-t-4 border-[#0055ff] relative overflow-hidden font-sans">
+            <div className="container mx-auto px-6 lg:px-8 max-w-[1400px]">
+                {/* Main Footer Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-12 mb-16">
 
-          {/* Brand & Vision Column */}
-          <div className="lg:col-span-4 space-y-6">
-            <Link href="/" className="inline-block cursor-pointer">
-              <img src='/logo.png' alt='logo' className='h-12 relative' />
-            </Link>
-            <p className="text-gray-400 leading-relaxed max-w-sm text-[14px]">
-              Revolutionizing cold storage with intelligent refrigeration. Built for performance, engineered for reliability, and delivered nationwide.
-            </p>
+                    {/* Column 1: Brand & Info (Span 4) */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <Link href="/" className="inline-block cursor-pointer mb-2">
+                            <Image src='/logo.png' alt='Icemanz Refrigeration' width={180} height={60} className='h-12 w-auto' />
+                        </Link>
+                        <p className="text-gray-400 leading-relaxed text-sm pr-4">
+                            Revolutionizing cold storage with intelligent refrigeration. Built for performance, engineered for reliability, and delivered nationwide.
+                        </p>
 
-            <div className="flex gap-3 pt-4">
-              {[
-                { icon: Facebook, href: '#' },
-                { icon: Twitter, href: '#' },
-                { icon: Instagram, href: '#' },
-                { icon: Linkedin, href: '#' }
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.href}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-gray-400 hover:bg-primary hover:text-white transition-all duration-300 hover:-translate-y-1"
-                >
-                  <social.icon size={18} />
-                </a>
-              ))}
+                        <ul className="space-y-3 pt-2 text-sm text-gray-300">
+                            <li className="flex items-center gap-3">
+                                <CheckSquare size={18} className="text-[#0055ff]" />
+                                <span>Commercial-Grade Quality</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <CheckSquare size={18} className="text-[#0055ff]" />
+                                <span>Energy Efficient Solutions</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <CheckSquare size={18} className="text-[#0055ff]" />
+                                <span>Nationwide Delivery</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <CheckSquare size={18} className="text-[#0055ff]" />
+                                <span>Expert Support & Service</span>
+                            </li>
+                        </ul>
+
+                        <div className="pt-4">
+                            <h5 className="text-white font-bold text-sm mb-4">Follow Us</h5>
+                            <div className="flex gap-3">
+                                {[
+                                    { icon: Facebook, href: '#' },
+                                    { icon: Twitter, href: '#' },
+                                    { icon: Instagram, href: '#' },
+                                    { icon: Linkedin, href: '#' },
+                                    { icon: Youtube, href: '#' }
+                                ].map((social, i) => (
+                                    <a
+                                        key={i}
+                                        href={social.href}
+                                        className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-700 bg-[#0a1526] text-gray-400 hover:border-[#0055ff] hover:bg-[#0055ff] hover:text-white transition-all duration-300"
+                                    >
+                                        <social.icon size={16} strokeWidth={2} />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Column 2: EXPLORE (Span 2) */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-white text-sm font-bold tracking-wider mb-6 relative inline-block">
+                            EXPLORE
+                            <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-[#0055ff]"></span>
+                        </h4>
+                        <ul className="space-y-4 text-sm text-gray-400">
+                            {[
+                                { name: 'Home', href: '/' },
+                                { name: 'Products', href: '/refrigeration-equipment' },
+                                { name: 'Services', href: '/services' },
+                                { name: 'Portfolio', href: '/completed-projects' },
+                                { name: 'About Us', href: '/#about' },
+                                { name: 'Resource Center', href: '#' },
+                                { name: 'Blog', href: '#' },
+                                { name: 'Careers', href: '#' }
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link href={item.href} className="group flex items-center justify-between hover:text-white transition-colors cursor-pointer w-full max-w-[160px]">
+                                        <span>{item.name}</span>
+                                        <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#0055ff]" />
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Column 3: SOLUTIONS (Span 2) */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-white text-sm font-bold tracking-wider mb-6 relative inline-block">
+                            SOLUTIONS
+                            <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-[#0055ff]"></span>
+                        </h4>
+                        <ul className="space-y-4 text-sm text-gray-400">
+                            {[
+                                { name: 'Walk-In Coolers', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+                                { name: 'Walk-In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
+                                { name: 'Combo Units', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' },
+                                { name: 'Glass Doors', href: '/walk-in-cooler-freezer' },
+                                { name: 'Custom Build', href: '/quote' },
+                                { name: 'Parts & Accessories', href: '#' },
+                                { name: 'Maintenance & Support', href: '#' }
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link href={item.href} className="hover:text-white transition-colors cursor-pointer">
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Column 4: SUPPORT (Span 2) */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-white text-sm font-bold tracking-wider mb-6 relative inline-block">
+                            SUPPORT
+                            <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-[#0055ff]"></span>
+                        </h4>
+                        <ul className="space-y-4 text-sm text-gray-400">
+                            {[
+                                { name: 'Request a Quote', href: '/quote' },
+                                { name: 'Installation Guide', href: '#' },
+                                { name: 'Warranty Information', href: '#' },
+                                { name: 'Shipping & Delivery', href: '#' },
+                                { name: 'Returns & Refunds', href: '#' },
+                                { name: 'FAQs', href: '#' },
+                                { name: 'Contact Us', href: '/#contact' }
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link href={item.href} className="hover:text-white transition-colors cursor-pointer">
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Column 5: GET IN TOUCH (Span 2) */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-white text-sm font-bold tracking-wider mb-6 relative inline-block">
+                            GET IN TOUCH
+                            <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-[#0055ff]"></span>
+                        </h4>
+
+                        <div className="space-y-6 mb-8">
+                            <a href="tel:929-451-7665" className="flex items-start gap-4 group cursor-pointer">
+                                <div className="w-10 h-10 rounded-full bg-[#0a1526] border border-gray-800 flex items-center justify-center text-[#0055ff] group-hover:bg-[#0055ff] group-hover:text-white transition-all shrink-0">
+                                    <Phone size={18} />
+                                </div>
+                                <div>
+                                    <p className="text-white font-semibold text-sm">929-451-7665</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">Mon - Fri: 9AM - 6PM EST</p>
+                                </div>
+                            </a>
+
+                            <a href="mailto:sales@icemanz.com" className="flex items-start gap-4 group cursor-pointer">
+                                <div className="w-10 h-10 rounded-full bg-[#0a1526] border border-gray-800 flex items-center justify-center text-[#0055ff] group-hover:bg-[#0055ff] group-hover:text-white transition-all shrink-0">
+                                    <Mail size={18} />
+                                </div>
+                                <div>
+                                    <p className="text-white font-semibold text-sm">sales@icemanz.com</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">We reply within 1 business day</p>
+                                </div>
+                            </a>
+
+                            <div className="flex items-start gap-4 group">
+                                <div className="w-10 h-10 rounded-full bg-[#0a1526] border border-gray-800 flex items-center justify-center text-[#0055ff] shrink-0">
+                                    <MapPin size={18} />
+                                </div>
+                                <div>
+                                    <p className="text-white font-semibold text-sm">Brooklyn, New York, USA</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">Serving nationwide</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <Link
+                            href="/quote"
+                            className="w-full py-3 px-4 bg-[#0055ff] hover:bg-[#0044cc] text-white rounded-md flex items-center justify-center gap-2 font-semibold text-sm transition-colors cursor-pointer"
+                        >
+                            <FileText size={16} />
+                            Get a Quote
+                        </Link>
+                    </div>
+
+                </div>
+
+                {/* Trust Badges Banner */}
+                <div className="bg-[#0a1526]/80 border border-gray-800 rounded-xl p-6 lg:p-8 mb-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                        <div className="flex items-center gap-4">
+                            <div className="text-[#0055ff] shrink-0">
+                                <Truck size={36} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h5 className="text-white font-semibold text-sm">Fast Nationwide Delivery</h5>
+                                <p className="text-gray-500 text-xs mt-1">Reliable shipping across the United States</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="text-[#0055ff] shrink-0">
+                                <ShieldCheck size={36} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h5 className="text-white font-semibold text-sm">Commercial-Grade Quality</h5>
+                                <p className="text-gray-500 text-xs mt-1">Built to last with premium materials & components</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="text-[#0055ff] shrink-0">
+                                <Headphones size={36} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h5 className="text-white font-semibold text-sm">Expert Support</h5>
+                                <p className="text-gray-500 text-xs mt-1">Our refrigeration experts are here to help</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="text-[#0055ff] shrink-0">
+                                <Award size={36} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h5 className="text-white font-semibold text-sm">Satisfaction Guarantee</h5>
+                                <p className="text-gray-500 text-xs mt-1">Quality you can trust, service you can count on</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="pt-6 border-t border-gray-800 flex flex-col lg:flex-row justify-between items-center gap-6 text-xs text-gray-500">
+                    <div className="text-center lg:text-left">
+                        <p>© {currentYear} <span className="text-[#0055ff] font-bold">ICEMANZ</span>. All rights reserved.</p>
+                        <p className="mt-1">Precision Cold Storage.</p>
+                    </div>
+
+                    {/* Security Badges */}
+                    <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8">
+                        <div className="flex items-center gap-2">
+                            <Lock size={16} className="text-gray-400" />
+                            <div className="text-[10px] leading-tight font-medium uppercase">
+                                <p className="text-gray-300">Secure</p>
+                                <p>& Private</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <ShieldCheck size={16} className="text-[#0055ff]" />
+                            <div className="text-[10px] leading-tight font-medium uppercase">
+                                <p className="text-gray-300">SSL</p>
+                                <p>Encrypted</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="px-2 py-0.5 bg-[#0055ff] text-white text-[10px] font-black italic rounded uppercase tracking-wider">PCI</div>
+                            <div className="text-[10px] leading-tight font-medium uppercase">
+                                <p className="text-gray-300">PCI</p>
+                                <p>Compliant</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-6 text-[13px]">
+                        <Link href="/privacy" className="hover:text-white transition-colors cursor-pointer">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-white transition-colors cursor-pointer">Terms of Service</Link>
+                        <Link href="/sitemap" className="hover:text-white transition-colors cursor-pointer">Sitemap</Link>
+                    </div>
+                </div>
+
             </div>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="lg:col-span-2 lg:ml-auto">
-            <h4 className="text-white text-[15px] font-bold mb-6">Exploration</h4>
-            <ul className="space-y-4 text-[14px]">
-              {[
-                { name: 'Home', href: '/' },
-                { name: 'Products', href: '/refrigeration-equipment' },
-                { name: 'Services', href: '/services' },
-                { name: 'Portfolio', href: '/completed-projects' },
-                { name: 'About Us', href: '/#about' }
-              ].map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-gray-400 hover:text-white hover:underline decoration-primary underline-offset-4 transition-all cursor-pointer">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Product Categories */}
-          <div className="lg:col-span-2 lg:ml-auto">
-            <h4 className="text-white text-[15px] font-bold mb-6">Solutions</h4>
-            <ul className="space-y-4 text-[14px]">
-              {[
-                { name: 'Walk-In Coolers', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-                { name: 'Walk-In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-                { name: 'Combo Units', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' },
-                { name: 'Glass Doors', href: '/walk-in-cooler-freezer' },
-                { name: 'Custom Build', href: '/quote' }
-              ].map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-gray-400 hover:text-white hover:underline decoration-primary underline-offset-4 transition-all cursor-pointer">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div className="lg:col-span-3 lg:ml-auto">
-            <h4 className="text-white text-[15px] font-bold mb-6">Connect</h4>
-            <div className="space-y-6">
-              <a href="tel:929-451-7665" className="flex items-center gap-3 group cursor-pointer">
-                <div className="text-[#3b82f6] group-hover:text-white transition-colors">
-                  <Phone size={20} />
-                </div>
-                <p className="text-gray-300 group-hover:text-white text-[15px] transition-colors">929-451-7665</p>
-              </a>
-
-              <a href="mailto:sales@icemanz.com" className="flex items-center gap-3 group cursor-pointer">
-                <div className="text-[#3b82f6] group-hover:text-white transition-colors">
-                  <Mail size={20} />
-                </div>
-                <p className="text-gray-300 group-hover:text-white text-[15px] transition-colors">sales@icemanz.com</p>
-              </a>
-
-              <div className="flex items-start gap-3 group cursor-pointer">
-                <div className="mt-1 text-[#3b82f6] group-hover:text-white transition-colors">
-                  <MapPin size={20} />
-                </div>
-                <p className="text-gray-300 group-hover:text-white text-[15px] leading-relaxed transition-colors">Brooklyn, <br />New York, USA</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[13px]">
-          <div className="text-gray-500">
-            © {currentYear} <span className="text-white font-semibold">ICEMANZ</span>. Precision Cold Storage.
-          </div>
-
-          <div className="flex gap-8">
-            <Link href="/privacy" className="text-gray-500 hover:text-white transition-colors cursor-pointer">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-gray-500 hover:text-white transition-colors cursor-pointer">
-              Terms of Service
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+        </footer>
+    );
 }
