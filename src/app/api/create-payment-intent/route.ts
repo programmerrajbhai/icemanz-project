@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
-import { logoBase64 } from '@/lib/logo';
+import { logoAttachment } from '@/lib/logo';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
         <div style="text-align: center; margin-bottom: 25px;">
-          <img src="${logoBase64}" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+          <img src="cid:icemanz-logo" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
         </div>
         <h2 style="color: #004a99; text-align: center; font-size: 24px; font-weight: bold;">${emailHeading}</h2>
         <div style="color: #334155; font-size: 16px; line-height: 1.6;">
@@ -127,6 +127,7 @@ export async function POST(request: Request) {
         to: email,
         subject: emailSubject,
         html: emailHtml,
+        attachments: [logoAttachment]
       });
       console.log("[CREATE-PAYMENT-INTENT] Thank you email sent to:", email);
     } catch (emailError) {

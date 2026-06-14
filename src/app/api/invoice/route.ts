@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
-import { logoBase64 } from '@/lib/logo';
+import { logoAttachment } from '@/lib/logo';
 
 export async function POST(req: Request) {
   try {
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <div style="text-align: center; margin-bottom: 25px;">
-          <img src="${logoBase64}" alt="ICEMANZ Logo" style="max-width: 160px; height: auto; margin-bottom: 15px;" />
+          <img src="cid:icemanz-logo" alt="ICEMANZ Logo" style="max-width: 160px; height: auto; margin-bottom: 15px;" />
           <h1 style="color: #004a99; margin: 0; font-size: 26px; font-weight: bold;">Thank You for Your Invoice Request!</h1>
         </div>
         
@@ -124,6 +124,7 @@ export async function POST(req: Request) {
         to: formData.email,
         subject: `Invoice Request Received - ${productTitle}`,
         html: emailHtml,
+        attachments: [logoAttachment]
       });
       console.log("[INVOICE API] Email sent successfully! Message ID:", info.messageId);
     } catch (emailError) {
