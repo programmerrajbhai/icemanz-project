@@ -197,10 +197,6 @@ https://www.alurella.co/collections/swimsuit --gOOGLE MY BUSINESS ADD KORBEN
 
 
 
---refrigeration product order quicbook problem  -done 
---email template redesing with propar information -
---footer uppper section image design 
---Total website ui preview if need any improvement then make it 
 
 
 3 days / 5 dasy / 7 dasy er doses for antibiotic 
@@ -282,9 +278,6 @@ Image:
 Thank you for choosing us.
 
 
-
-
-
 -refrigeration equipment er order korly kono price jassy na many ammount 0 invoice hossy 
 sai jonno quick book accesspt korsy na error astasy 
 
@@ -309,3 +302,14 @@ sai jonno quick book accesspt korsy na error astasy
 amader project ei section ta redesing korty hobe desing ta refrafance image er moto hobe 
 
 -onno kono page ba funtionality er upor effect porby na 
+
+
+
+
+--Email Template Fixing 
+--quicbook 
+
+
+walking cooler er product order korly Thank You order erokom asby na
+
+Thank for your invoice reqest asby spealing thik kory nio order bolty kono kisu nei only invoice request and logo ta mail a show korsy na

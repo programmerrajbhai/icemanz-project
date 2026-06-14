@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import Stripe from 'stripe';
 import nodemailer from 'nodemailer';
 import { getQboClient } from '@/lib/qbo';
+import { logoBase64 } from '@/lib/logo';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -50,8 +51,11 @@ async function getFirstIncomeAccount(oauthClient: any, realmId: string) {
 
 async function getOrCreateQboItem(oauthClient: any, realmId: string, item: any) {
   try {
-    const itemName = (item.name || item.title || 'Custom Item').substring(0, 100).replace(/:/g, '');
-    const itemQuery = `SELECT * FROM Item WHERE Name = '${itemName.replace(/'/g, "\\'")}' MAXRESULTS 1`;
+    const itemName = (item.name || item.title || 'Custom Item')
+      .substring(0, 100)
+      .replace(/[:"']/g, ''); // Remove colons, double quotes, and single quotes for QBO compatibility
+
+    const itemQuery = `SELECT * FROM Item WHERE Name = '${itemName}' MAXRESULTS 1`;
 
     const itemResponse = await oauthClient.makeApiCall({
       url: `https://${process.env.QBO_ENVIRONMENT === 'sandbox' ? 'sandbox-' : ''}quickbooks.api.intuit.com/v3/company/${realmId}/query?query=${encodeURIComponent(itemQuery)}`,
@@ -392,7 +396,7 @@ export async function POST(
       const emailHtml = `
        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
          <div style="text-align: center; margin-bottom: 25px;">
-           <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+           <img src="${logoBase64}" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
          </div>
          
          <h2 style="color: #dc2626; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Invoice Request Declined</h2>

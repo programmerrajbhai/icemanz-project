@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { logoBase64 } from '@/lib/logo';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -77,17 +78,30 @@ export async function POST(request: Request) {
       </div>
     `).join('');
 
+    // Determine email content based on category
+    const isWalkInCooler = category === 'walk-in-cooler-freezer';
+    const productTitle = items && items.length > 0 ? (items[0].title || items[0].name) : 'Custom Project';
+    const emailSubject = isWalkInCooler
+      ? `Invoice Request Received - ${productTitle}`
+      : `Order Received - ${productTitle}`;
+    const emailHeading = isWalkInCooler
+      ? `Thank You for Your Invoice Request!`
+      : `Thank You for Your Order!`;
+    const requestTypeText = isWalkInCooler
+      ? `invoice request`
+      : `order request`;
+
     // Send a Thank You email
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
         <div style="text-align: center; margin-bottom: 25px;">
-          <img src="${baseUrl}/logo.png" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
+          <img src="${logoBase64}" alt="ICEMANZ Logo" style="max-width: 160px; height: auto;" />
         </div>
-        <h2 style="color: #004a99; text-align: center; font-size: 24px; font-weight: bold;">Thank You for Your Order!</h2>
+        <h2 style="color: #004a99; text-align: center; font-size: 24px; font-weight: bold;">${emailHeading}</h2>
         <div style="color: #334155; font-size: 16px; line-height: 1.6;">
           <p>Hello <strong>${fullName}</strong>,</p>
-          <p>We have successfully received your order request. Our team is currently reviewing it.</p>
-          <p style="font-size: 18px; font-weight: bold; color: #0f172a; margin: 20px 0;">Order Total: $${amount.toFixed(2)}</p>
+          <p>We have successfully received your ${requestTypeText}. Our team is currently reviewing it.</p>
+          ${category !== 'refrigeration-equipment' ? `<p style="font-size: 18px; font-weight: bold; color: #0f172a; margin: 20px 0;">Order Total: $${amount.toFixed(2)}</p>` : ''}
           <p>You will receive an official invoice with payment instructions shortly. If you have any questions, feel free to reply to this email.</p>
         </div>
         
@@ -111,7 +125,7 @@ export async function POST(request: Request) {
       await transporter.sendMail({
         from: `"ICEMANZ Support" <${process.env.SMTP_USERNAME || process.env.SMTP_USER}>`,
         to: email,
-        subject: `Order Received - ICEMANZ`,
+        subject: emailSubject,
         html: emailHtml,
       });
       console.log("[CREATE-PAYMENT-INTENT] Thank you email sent to:", email);
