@@ -17,7 +17,10 @@ import {
   Wind,
   Box,
   Zap,
-  Info
+  Info,
+  User,
+  Mail,
+  Phone
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -25,6 +28,9 @@ export type Quote = {
   id: string;
   jobName: string;
   address: string;
+  fullName?: string | null;
+  email?: string | null;
+  phone?: string | null;
   date?: string | null;
   ambientTemp?: string | null;
   voltage?: string | null;
@@ -156,6 +162,7 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
             <thead className="bg-gray-50/50">
               <tr>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Job Name</th>
+                <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Contact</th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Address</th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Date</th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Status</th>
@@ -175,6 +182,14 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
                           <div className="text-sm font-bold text-gray-900">{quote.jobName}</div>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {quote.fullName ? (
+                        <div className="text-sm font-medium text-gray-900">{quote.fullName}</div>
+                      ) : (
+                        <div className="text-sm text-gray-400 italic">No name</div>
+                      )}
+                      {quote.email && <div className="text-xs text-gray-500">{quote.email}</div>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-600 truncate max-w-[250px]">{quote.address}</div>
@@ -283,6 +298,44 @@ export default function QuotesClient({ quotes: initialQuotes }: { quotes: Quote[
                     </div>
 
                     <div className="space-y-4 mb-5">
+                      {selectedQuote.fullName && (
+                        <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-gray-100/80 shadow-sm">
+                          <User size={16} className="text-gray-400" />
+                          <div>
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Contact Name</p>
+                            <p className="text-[13px] font-bold text-gray-900 mt-0.5">{selectedQuote.fullName}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedQuote.email && (
+                        <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-gray-100/80 shadow-sm">
+                          <Mail size={16} className="text-gray-400" />
+                          <div>
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Email Address</p>
+                            <p className="text-[13px] font-bold text-gray-900 mt-0.5">
+                              <a href={`mailto:${selectedQuote.email}`} className="text-[#004a99] hover:underline">
+                                {selectedQuote.email}
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedQuote.phone && (
+                        <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-gray-100/80 shadow-sm">
+                          <Phone size={16} className="text-gray-400" />
+                          <div>
+                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Phone Number</p>
+                            <p className="text-[13px] font-bold text-gray-900 mt-0.5">
+                              <a href={`tel:${selectedQuote.phone}`} className="text-[#004a99] hover:underline">
+                                {selectedQuote.phone}
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-gray-100/80 shadow-sm">
                         <MapPin size={16} className="text-gray-400" />
                         <div>

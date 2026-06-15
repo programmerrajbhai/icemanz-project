@@ -17,7 +17,9 @@ import {
     Send,
     User,
     CheckCircle2,
-    AlertCircle
+    AlertCircle,
+    Mail,
+    Phone
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -35,6 +37,9 @@ export default function QuotePage() {
         date: new Date().toISOString().split('T')[0],
         jobName: '',
         address: '',
+        fullName: '',
+        email: '',
+        phone: '',
         ambientTemp: '',
         voltage: '',
         phase: '',
@@ -82,6 +87,9 @@ export default function QuotePage() {
         e.preventDefault();
 
         const newErrors: Record<string, string> = {};
+        if (!formData.fullName) newErrors.fullName = 'Full Name is required';
+        if (!formData.email) newErrors.email = 'Email address is required';
+        if (!formData.phone) newErrors.phone = 'Phone number is required';
         if (!formData.jobName) newErrors.jobName = 'Job name is required';
         if (!formData.address) newErrors.address = 'Installation address is required';
 
@@ -174,7 +182,41 @@ export default function QuotePage() {
                                             </h3>
                                         </div>
 
+
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+
+                                            <div>
+                                                <label htmlFor="fullName" className="block mb-2 text-sm font-bold text-gray-700">Full Name *</label>
+                                                <div className="relative">
+                                                    <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Your full name" className={getInputClass(errors.fullName)} />
+                                                    <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4">
+                                                        <User className="size-4 text-gray-400" />
+                                                    </div>
+                                                </div>
+                                                <ErrorMsg msg={errors.fullName} />
+                                            </div>
+
+                                            <div>
+                                                <label htmlFor="email" className="block mb-2 text-sm font-bold text-gray-700">Email Address *</label>
+                                                <div className="relative">
+                                                    <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} placeholder="Your email address" className={getInputClass(errors.email)} />
+                                                    <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4">
+                                                        <Mail className="size-4 text-gray-400" />
+                                                    </div>
+                                                </div>
+                                                <ErrorMsg msg={errors.email} />
+                                            </div>
+
+                                            <div>
+                                                <label htmlFor="phone" className="block mb-2 text-sm font-bold text-gray-700">Phone Number *</label>
+                                                <div className="relative">
+                                                    <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} placeholder="Your phone number" className={getInputClass(errors.phone)} />
+                                                    <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4">
+                                                        <Phone className="size-4 text-gray-400" />
+                                                    </div>
+                                                </div>
+                                                <ErrorMsg msg={errors.phone} />
+                                            </div>
                                             <div>
                                                 <label htmlFor="date" className="block mb-2 text-sm font-bold text-gray-700">Date</label>
                                                 <div className="relative">
@@ -188,7 +230,7 @@ export default function QuotePage() {
                                             <div>
                                                 <label htmlFor="jobName" className="block mb-2 text-sm font-bold text-gray-700">Job Name *</label>
                                                 <div className="relative">
-                                                    <input type="text" id="jobName" name="jobName" value={formData.jobName} onChange={handleChange} placeholder="Enter project or job name" className={getInputClass(errors.jobName)} />
+                                                    <input type="text" id="jobName" name="jobName" value={formData.jobName} onChange={handleChange} placeholder="Enter job name" className={getInputClass(errors.jobName)} />
                                                     <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4">
                                                         <Briefcase className="size-4 text-gray-400" />
                                                     </div>
@@ -196,7 +238,8 @@ export default function QuotePage() {
                                                 <ErrorMsg msg={errors.jobName} />
                                             </div>
 
-                                            <div className="md:col-span-2">
+
+                                            <div className="">
                                                 <label htmlFor="address" className="block mb-2 text-sm font-bold text-gray-700">Installation Address *</label>
                                                 <div className="relative">
                                                     <input type="text" id="address" name="address" value={formData.address} onChange={handleChange} placeholder="Full installation address" className={getInputClass(errors.address)} />
@@ -206,6 +249,9 @@ export default function QuotePage() {
                                                 </div>
                                                 <ErrorMsg msg={errors.address} />
                                             </div>
+
+
+
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Ambient Temperature</label>
@@ -229,13 +275,16 @@ export default function QuotePage() {
                                                     <div className="relative flex-1">
                                                         <input type="text" name="voltage" value={formData.voltage} onChange={handleChange} placeholder="Voltage" className={getNoIconInputClass()} />
                                                     </div>
-                                                    <div className="inline-flex rounded-sm shadow-sm border border-gray-300">
+                                                    <div className="inline-flex rounded-sm shadow-sm">
                                                         {['Single', '3 Phase'].map(p => (
                                                             <button
                                                                 key={p}
                                                                 type="button"
                                                                 onClick={() => updateField('phase', p)}
-                                                                className={`py-3 px-4 inline-flex items-center gap-x-2 text-xs font-bold -ms-px first:rounded-s-lg last:rounded-e-lg border-x border-transparent bg-white text-gray-800 hover:bg-gray-50 focus:z-10 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all ${formData.phase === p ? 'bg-blue-50 text-blue-600 z-10' : ''}`}
+                                                                className={`py-3 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-bold -ms-px first:rounded-s-sm last:rounded-e-sm border focus:z-10 focus:outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-all min-w-[90px] ${formData.phase === p
+                                                                    ? 'bg-blue-50 text-blue-600 border-blue-500 z-10 ring-1 ring-blue-500'
+                                                                    : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-50'
+                                                                    }`}
                                                             >
                                                                 {p}
                                                             </button>
@@ -281,7 +330,7 @@ export default function QuotePage() {
 
                                             <div>
                                                 <label className="block mb-2 text-sm font-bold text-gray-700">Required Temperature</label>
-                                                <input type="text" name="coolerRequiredTemp" value={formData.coolerRequiredTemp} onChange={handleChange} placeholder="e.g. 35F to 38F" className={getNoIconInputClass()} />
+                                                <input type="text" name="coolerRequiredTemp" value={formData.coolerRequiredTemp} onChange={handleChange} placeholder="e.g. -10F to 35F" className={getNoIconInputClass()} />
                                             </div>
 
                                             <div>
@@ -290,7 +339,7 @@ export default function QuotePage() {
                                             </div>
 
                                             <div>
-                                                <label className="block mb-2 text-sm font-bold text-gray-700">No. of Doors</label>
+                                                <label className="block mb-2 text-sm font-bold text-gray-700">Number of Glass Doors</label>
                                                 <input type="text" name="coolerNoOfDoors" value={formData.coolerNoOfDoors} onChange={handleChange} placeholder="Quantity" className={getNoIconInputClass()} />
                                             </div>
 

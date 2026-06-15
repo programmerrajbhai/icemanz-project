@@ -102,6 +102,9 @@ model CustomQuoteRequest {
   date                String?
   jobName             String
   address             String
+  fullName            String?
+  email               String?
+  phone               String?
   ambientTemp         String?
   voltage             String?
   phase               String?

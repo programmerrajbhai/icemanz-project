@@ -313,3 +313,11 @@ amader project ei section ta redesing korty hobe desing ta refrafance image er m
 walking cooler er product order korly Thank You order erokom asby na
 
 Thank for your invoice reqest asby spealing thik kory nio order bolty kono kisu nei only invoice request and logo ta mail a show korsy na
+
+
+ 14:51
+PrimeOtybit14
+
+http://localhost:3000/quote
+
+ei page a ei button ta select korly thik moto dekha jay na selected button ta thik moto heilight koro
