@@ -104,7 +104,9 @@ export default function Footer() {
                             {[
                                 { name: 'Request a Quote', href: '/quote' },
                                 { name: 'Request Invoice', href: '/request-invoice' },
-                                { name: 'Contact Us', href: '/enquiry' }
+                                { name: 'Contact Us', href: '/enquiry' },
+                                { name: 'Privacy Policy', href: '/privacy-policy' },
+                                { name: 'Terms & Conditions', href: '/terms-and-conditions' }
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="hover:text-white transition-colors cursor-pointer">
