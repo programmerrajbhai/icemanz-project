@@ -129,9 +129,9 @@ export default function Footer() {
                                 <div className="w-10 h-10 rounded-full bg-[#0a1526] border border-gray-800 flex items-center justify-center text-[#0055ff] group-hover:bg-[#0055ff] group-hover:text-white transition-all shrink-0">
                                     <Phone size={18} />
                                 </div>
-                                <div>
+                                <div className=' w-full'>
                                     <p className="text-white font-semibold text-sm">929-451-7665</p>
-                                    <p className="text-gray-500 text-xs mt-0.5">Mon - Fri: 9AM - 6PM EST</p>
+                                    <p className="text-gray-500 text-xs w-full mt-0.5 whitespace-nowrap">Mon - Fri: 9AM - 6PM EST</p>
                                 </div>
                             </a>
 
@@ -141,7 +141,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-white font-semibold text-sm">sales@icemanz.com</p>
-                                    <p className="text-gray-500 text-xs mt-0.5">We reply within 1 business day</p>
+                                    <p className="text-gray-500 text-xs mt-0.5 whitespace-nowrap">We reply within 1 business day</p>
                                 </div>
                             </a>
 
@@ -150,8 +150,8 @@ export default function Footer() {
                                     <MapPin size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-white font-semibold text-sm">Brooklyn, New York, USA</p>
-                                    <p className="text-gray-500 text-xs mt-0.5">Serving nationwide</p>
+                                    <p className="text-white font-semibold text-sm whitespace-nowrap">Brooklyn, New York, USA</p>
+                                    <p className="text-gray-500 text-xs mt-0.5 ">Serving nationwide</p>
                                 </div>
                             </div>
                         </div>

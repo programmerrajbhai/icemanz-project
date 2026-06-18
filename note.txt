@@ -321,3 +321,19 @@ PrimeOtybit14
 http://localhost:3000/quote
 
 ei page a ei button ta select korly thik moto dekha jay na selected button ta thik moto heilight koro
+
+
+Terms & Conditions / EULA
+
+Include:
+
+Use of website
+Ordering and payment terms
+Shipping policy
+Returns and refunds
+Limitation of liability
+Contact information
+
+
+amader website a ekta Terms & Condition page lagby included policy gulo thkaby
+

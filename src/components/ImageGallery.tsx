@@ -31,7 +31,7 @@ const images = [
 
 const ImageGallery = () => {
   return (
-    <section className="w-full  bg-white pt-6 pb-0 border-b-[6px] border-[#2b5341]">
+    <section className="w-full  bg-white pt-6 pb-0  ">
       <div className="w-full px-2 sm:px-4 pb-4">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
           {images.map((image) => (
