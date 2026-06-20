@@ -102,6 +102,7 @@ export default function Footer() {
                         </h4>
                         <ul className="space-y-4 text-sm text-gray-400">
                             {[
+                                { name: 'Support Center', href: '/support' },
                                 { name: 'Request a Quote', href: '/quote' },
                                 { name: 'Request Invoice', href: '/request-invoice' },
                                 { name: 'Contact Us', href: '/enquiry' },
