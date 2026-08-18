@@ -525,7 +525,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
             <div className="bg-white  border-b-0 p-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">{title}</h1>
               <p className="text-sm text-gray-600">
-                At Atlantic Supermarket Equipment we have Walk-In Coolers in stock & ready to ship! We offer attractive financing options, ship nationwide, and have great prices!
+                Icemanz Supermarket Equipment we have Walk-In Coolers in stock & ready to ship! We offer attractive financing options, ship nationwide, and have great prices!
                 <button
                   onClick={() => setIsReadMoreOpen(!isReadMoreOpen)}
                   className="ml-2 text-gray-900 font-bold underline cursor-pointer hover:text-primary transition-colors"

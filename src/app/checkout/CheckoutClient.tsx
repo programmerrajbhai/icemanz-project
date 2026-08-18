@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChevronDown, Lock, ShoppingCart, User, MapPin, FileText, Send, Clock, Headphones, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ChevronDown, Lock, ShoppingCart, User, MapPin, FileText, Send, Clock, Headphones, ShieldCheck, CheckCircle2, ShoppingCart as ShoppingCartIcon, Info, ArrowRightLeft } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
 import Header from '@/components/Header';
@@ -23,12 +23,26 @@ const CheckoutClient = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [companyName, setCompanyName] = useState('');
+    const [contactPersonRole, setContactPersonRole] = useState('');
     const [businessType, setBusinessType] = useState('');
+    const [purchaseTimeline, setPurchaseTimeline] = useState('');
+    const [numberLocations, setNumberLocations] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [zipCode, setZipCode] = useState('');
+    const [country, setCountry] = useState('United States');
     const [phone, setPhone] = useState('');
+    const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
+    const [billingAddress, setBillingAddress] = useState('');
+    const [billingCity, setBillingCity] = useState('');
+    const [billingState, setBillingState] = useState('');
+    const [billingZipCode, setBillingZipCode] = useState('');
+    const [billingCountry, setBillingCountry] = useState('United States');
+    const [loadingDock, setLoadingDock] = useState(false);
+    const [forklift, setForklift] = useState(false);
+    const [residentialDelivery, setResidentialDelivery] = useState(false);
+    const [projectDetails, setProjectDetails] = useState('');
     const [additionalInfo, setAdditionalInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -73,8 +87,13 @@ const CheckoutClient = () => {
             return;
         }
 
-        if (!email || !firstName || !lastName || !address || !city || !state || !zipCode || !phone) {
+        if (!email || !firstName || !lastName || !companyName || !businessType || !address || !city || !state || !zipCode || !phone) {
             toast.error("Please fill in all required fields.");
+            return;
+        }
+
+        if (!billingSameAsShipping && (!billingAddress || !billingCity || !billingState || !billingZipCode)) {
+            toast.error("Please fill in all required billing fields.");
             return;
         }
 
@@ -90,7 +109,24 @@ const CheckoutClient = () => {
                     email,
                     fullName: `${firstName} ${lastName}`,
                     phone,
-                    address: `${address}, ${city}, ${state} ${zipCode}`
+                    address: `${address}, ${city}, ${state} ${zipCode}, ${country}`,
+                    companyName,
+                    contactPersonRole,
+                    businessType,
+                    purchaseTimeline,
+                    numberLocations,
+                    billingSameAsShipping,
+                    billingAddress,
+                    billingCity,
+                    billingState,
+                    billingZipCode,
+                    billingCountry,
+                    deliveryRequirements: {
+                        loadingDock,
+                        forklift,
+                        residentialDelivery
+                    },
+                    projectDetails
                 }),
             });
 
@@ -157,7 +193,7 @@ const CheckoutClient = () => {
                         </Link>
                     </div>
                 </main>
-         
+
             </div>
         );
     }
@@ -222,21 +258,21 @@ const CheckoutClient = () => {
                     <div className="flex-1 lg:max-w-[65%]">
                         <form onSubmit={handleCheckoutSubmit} className="space-y-8">
 
-                            {/* Customer Information */}
+                            {/* Contact & Business Information */}
                             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                                 <div className="flex items-start gap-4 mb-6">
-                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0 border border-blue-100">
                                         <User size={20} />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-bold text-[#003366]">Customer Information</h2>
-                                        <p className="text-xs text-gray-500 mt-0.5">Tell us who you are so we can contact you.</p>
+                                        <h2 className="text-lg font-bold text-[#003366]">1. Contact & Business Information</h2>
+                                        <p className="text-sm text-gray-500 mt-0.5">Tell us about you and your business.</p>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">First name <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">First Name <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             required
@@ -247,7 +283,7 @@ const CheckoutClient = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Last name <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Last Name <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             required
@@ -258,18 +294,18 @@ const CheckoutClient = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Email address <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Email Address <span className="text-red-500">*</span></label>
                                         <input
                                             type="email"
                                             required
-                                            placeholder="name@example.com"
+                                            placeholder="name@company.com"
                                             className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Phone number <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Phone Number <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             required
@@ -280,9 +316,10 @@ const CheckoutClient = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Company name</label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Company Name <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
+                                            required
                                             placeholder="Enter your company name"
                                             className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
                                             value={companyName}
@@ -290,9 +327,27 @@ const CheckoutClient = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Business type</label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Contact Person Role</label>
                                         <div className="relative">
                                             <select
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                value={contactPersonRole}
+                                                onChange={(e) => setContactPersonRole(e.target.value)}
+                                            >
+                                                <option value="">e.g. Owner, Manager, Buyer</option>
+                                                <option value="Owner">Owner</option>
+                                                <option value="Manager">Manager</option>
+                                                <option value="Buyer">Buyer</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Business Type <span className="text-red-500">*</span></label>
+                                        <div className="relative">
+                                            <select
+                                                required
                                                 className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
                                                 value={businessType}
                                                 onChange={(e) => setBusinessType(e.target.value)}
@@ -307,89 +362,36 @@ const CheckoutClient = () => {
                                             <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Shipping Address */}
-                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                                <div className="flex items-start gap-4 mb-6">
-                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0">
-                                        <MapPin size={20} />
-                                    </div>
                                     <div>
-                                        <h2 className="text-lg font-bold text-[#003366]">Shipping Address</h2>
-                                        <p className="text-xs text-gray-500 mt-0.5">Where should we deliver your equipment?</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-5">
-                                    <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Address <span className="text-red-500">*</span></label>
-                                        <input
-                                            type="text"
-                                            required
-                                            placeholder="Street address"
-                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-5">
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-800 mb-1.5">City <span className="text-red-500">*</span></label>
-                                            <input
-                                                type="text"
-                                                required
-                                                placeholder="City"
-                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
-                                                value={city}
-                                                onChange={(e) => setCity(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-800 mb-1.5">State / Province <span className="text-red-500">*</span></label>
-                                            <div className="relative">
-                                                <select
-                                                    required
-                                                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
-                                                    value={state}
-                                                    onChange={(e) => setState(e.target.value)}
-                                                >
-                                                    <option value="">Select state</option>
-                                                    <option value="AL">Alabama</option>
-                                                    <option value="AK">Alaska</option>
-                                                    <option value="AZ">Arizona</option>
-                                                    <option value="CA">California</option>
-                                                    <option value="CO">Colorado</option>
-                                                    <option value="FL">Florida</option>
-                                                    <option value="GA">Georgia</option>
-                                                    <option value="IL">Illinois</option>
-                                                    <option value="NY">New York</option>
-                                                    <option value="TX">Texas</option>
-                                                    {/* Add more as needed */}
-                                                </select>
-                                                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-800 mb-1.5">ZIP / Postal code <span className="text-red-500">*</span></label>
-                                            <input
-                                                type="text"
-                                                required
-                                                placeholder="ZIP / Postal code"
-                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
-                                                value={zipCode}
-                                                onChange={(e) => setZipCode(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-semibold text-gray-800 mb-1.5">Country / Region <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Purchase Timeline</label>
                                         <div className="relative">
-                                            <select className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none text-sm appearance-none text-gray-800 font-medium">
-                                                <option>United States</option>
+                                            <select
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                value={purchaseTimeline}
+                                                onChange={(e) => setPurchaseTimeline(e.target.value)}
+                                            >
+                                                <option value="">Select timeline</option>
+                                                <option value="Immediately">Immediately</option>
+                                                <option value="Within 1 month">Within 1 month</option>
+                                                <option value="1-3 months">1-3 months</option>
+                                                <option value="3+ months">3+ months</option>
+                                            </select>
+                                            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-[#003366] mb-1.5">Number of Locations</label>
+                                        <div className="relative">
+                                            <select
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                value={numberLocations}
+                                                onChange={(e) => setNumberLocations(e.target.value)}
+                                            >
+                                                <option value="">Select number of locations</option>
+                                                <option value="1">1</option>
+                                                <option value="2-5">2-5</option>
+                                                <option value="6-10">6-10</option>
+                                                <option value="10+">10+</option>
                                             </select>
                                             <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                         </div>
@@ -397,7 +399,270 @@ const CheckoutClient = () => {
                                 </div>
                             </div>
 
-                          
+                            {/* Delivery Information */}
+                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0 border border-blue-100">
+                                        <MapPin size={20} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#003366]">2. Delivery Information</h2>
+                                        <p className="text-sm text-gray-500 mt-0.5">Where should we deliver your equipment?</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 mb-6">
+                                    <input
+                                        type="checkbox"
+                                        id="billingSame"
+                                        className="w-4 h-4 text-[#004a99] border-gray-300 rounded focus:ring-[#004a99]"
+                                        checked={billingSameAsShipping}
+                                        onChange={(e) => setBillingSameAsShipping(e.target.checked)}
+                                    />
+                                    <label htmlFor="billingSame" className="text-sm font-semibold text-[#003366] cursor-pointer">
+                                        Billing address same as shipping address
+                                    </label>
+                                </div>
+
+                                <div className={`grid grid-cols-1 gap-6 items-start transition-all duration-300 ${!billingSameAsShipping ? 'lg:grid-cols-[1fr_auto_1fr]' : ''}`}>
+
+                                    {/* Shipping Address Container */}
+                                    <div className={`space-y-5 ${!billingSameAsShipping ? 'bg-white border border-gray-200 rounded-xl p-5 shadow-sm' : ''}`}>
+                                        {!billingSameAsShipping && <h3 className="text-base font-bold text-[#003366] mb-4 pb-2 border-b border-gray-100">Shipping Address</h3>}
+
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#003366] mb-1.5">Street Address <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="Enter street address"
+                                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                value={address}
+                                                onChange={(e) => setAddress(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#003366] mb-1.5">City <span className="text-red-500">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    placeholder="City"
+                                                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                    value={city}
+                                                    onChange={(e) => setCity(e.target.value)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#003366] mb-1.5">State / Province <span className="text-red-500">*</span></label>
+                                                <div className="relative">
+                                                    <select
+                                                        required
+                                                        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                        value={state}
+                                                        onChange={(e) => setState(e.target.value)}
+                                                    >
+                                                        <option value="">Select state</option>
+                                                        <option value="AL">Alabama</option>
+                                                        <option value="AK">Alaska</option>
+                                                        <option value="AZ">Arizona</option>
+                                                        <option value="CA">California</option>
+                                                        <option value="CO">Colorado</option>
+                                                        <option value="FL">Florida</option>
+                                                        <option value="GA">Georgia</option>
+                                                        <option value="IL">Illinois</option>
+                                                        <option value="NY">New York</option>
+                                                        <option value="TX">Texas</option>
+                                                    </select>
+                                                    <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#003366] mb-1.5">ZIP / Postal Code <span className="text-red-500">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    placeholder="ZIP / Postal code"
+                                                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                    value={zipCode}
+                                                    onChange={(e) => setZipCode(e.target.value)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#003366] mb-1.5">Country <span className="text-red-500">*</span></label>
+                                                <div className="relative">
+                                                    <select
+                                                        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                        value={country}
+                                                        onChange={(e) => setCountry(e.target.value)}
+                                                    >
+                                                        <option value="United States">United States</option>
+                                                    </select>
+                                                    <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Center Icon */}
+                                    {!billingSameAsShipping && (
+                                        <div className="hidden lg:flex mt-32 justify-center">
+                                            <div className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center bg-gray-50 text-gray-400 shadow-sm">
+                                                <ArrowRightLeft size={18} />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Billing Address Container */}
+                                    {!billingSameAsShipping && (
+                                        <div className="space-y-5 bg-white border border-gray-200 rounded-xl p-5 shadow-sm animate-in fade-in slide-in-from-right-4 duration-300">
+                                            <h3 className="text-base font-bold text-[#003366] mb-4 pb-2 border-b border-gray-100">Billing Address</h3>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#003366] mb-1.5">Street Address <span className="text-red-500">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    required={!billingSameAsShipping}
+                                                    placeholder="Enter street address"
+                                                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                    value={billingAddress}
+                                                    onChange={(e) => setBillingAddress(e.target.value)}
+                                                />
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#003366] mb-1.5">City <span className="text-red-500">*</span></label>
+                                                    <input
+                                                        type="text"
+                                                        required={!billingSameAsShipping}
+                                                        placeholder="City"
+                                                        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                        value={billingCity}
+                                                        onChange={(e) => setBillingCity(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#003366] mb-1.5">State / Province <span className="text-red-500">*</span></label>
+                                                    <div className="relative">
+                                                        <select
+                                                            required={!billingSameAsShipping}
+                                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                            value={billingState}
+                                                            onChange={(e) => setBillingState(e.target.value)}
+                                                        >
+                                                            <option value="">Select state</option>
+                                                            <option value="AL">Alabama</option>
+                                                            <option value="AK">Alaska</option>
+                                                            <option value="AZ">Arizona</option>
+                                                            <option value="CA">California</option>
+                                                            <option value="CO">Colorado</option>
+                                                            <option value="FL">Florida</option>
+                                                            <option value="GA">Georgia</option>
+                                                            <option value="IL">Illinois</option>
+                                                            <option value="NY">New York</option>
+                                                            <option value="TX">Texas</option>
+                                                        </select>
+                                                        <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#003366] mb-1.5">ZIP / Postal Code <span className="text-red-500">*</span></label>
+                                                    <input
+                                                        type="text"
+                                                        required={!billingSameAsShipping}
+                                                        placeholder="ZIP / Postal code"
+                                                        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all"
+                                                        value={billingZipCode}
+                                                        onChange={(e) => setBillingZipCode(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#003366] mb-1.5">Country <span className="text-red-500">*</span></label>
+                                                    <div className="relative">
+                                                        <select
+                                                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm appearance-none transition-all text-gray-600"
+                                                            value={billingCountry}
+                                                            onChange={(e) => setBillingCountry(e.target.value)}
+                                                        >
+                                                            <option value="United States">United States</option>
+                                                        </select>
+                                                        <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mt-6 bg-[#f8fbff] rounded-lg p-5 border border-blue-100">
+                                    <h3 className="text-sm font-semibold text-[#003366] mb-1">Delivery Requirements (optional)</h3>
+                                    <p className="text-xs text-gray-500 mb-4">This helps us prepare the best delivery experience.</p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 text-[#004a99] border-gray-300 rounded focus:ring-[#004a99]"
+                                                checked={loadingDock}
+                                                onChange={(e) => setLoadingDock(e.target.checked)}
+                                            />
+                                            <span className="text-sm text-gray-700">Loading dock available</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 text-[#004a99] border-gray-300 rounded focus:ring-[#004a99]"
+                                                checked={forklift}
+                                                onChange={(e) => setForklift(e.target.checked)}
+                                            />
+                                            <span className="text-sm text-gray-700">Forklift available</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 text-[#004a99] border-gray-300 rounded focus:ring-[#004a99]"
+                                                checked={residentialDelivery}
+                                                onChange={(e) => setResidentialDelivery(e.target.checked)}
+                                            />
+                                            <span className="text-sm text-gray-700">Residential delivery</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Additional Information */}
+                            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#004a99] shrink-0 border border-blue-100">
+                                        <FileText size={20} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#003366]">3. Additional Information (Optional)</h2>
+                                        <p className="text-sm text-gray-500 mt-0.5">Any additional details that help us serve you better.</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-[#003366] mb-1.5">Project Details / Notes</label>
+                                    <textarea
+                                        rows={4}
+                                        placeholder="Tell us about your project, specific requirements, or any questions..."
+                                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#004a99]/20 focus:border-[#004a99] text-sm transition-all resize-none"
+                                        value={projectDetails}
+                                        onChange={(e) => setProjectDetails(e.target.value)}
+                                    ></textarea>
+                                </div>
+                                <div className="mt-4 flex items-center gap-2 text-gray-500 text-xs">
+                                    <Lock size={14} />
+                                    <span>Your information is secure and will only be used to process your request.</span>
+                                </div>
+                            </div>
 
                             {/* Submit Button & Trust Badges */}
                             <div>
@@ -414,10 +679,14 @@ const CheckoutClient = () => {
                                     ) : (
                                         <>
                                             <Send size={20} />
-                                            Request For Invoice
+                                            Request Invoice & Pricing
                                         </>
                                     )}
                                 </button>
+
+                                <p className="text-center text-xs text-gray-500 mt-4">
+                                    Our team will review and email your invoice within 1 business day.
+                                </p>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 border-t border-gray-100 pt-6">
                                     <div className="flex items-center gap-3 justify-center md:justify-start">
@@ -447,27 +716,27 @@ const CheckoutClient = () => {
                     </div>
 
                     {/* Right Side: Order Summary */}
-                    <div className="flex-1 lg:max-w-[35%]">
-                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm sticky top-24 overflow-hidden">
-
+                    <div className="flex-1 lg:max-w-[35%] space-y-6">
+                        {/* 1. Selected Equipment Card */}
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                             {/* Summary Header */}
-                            <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-3">
-                                <FileText className="text-[#004a99]" size={20} />
+                            <div className="p-5 flex items-center gap-3">
+                                <ShoppingCartIcon className="text-[#004a99]" size={22} />
                                 <h2 className="text-lg font-bold text-[#003366]">Selected Equipment</h2>
                             </div>
 
-                            <div className="p-5 lg:p-6">
+                            <div className="px-5 pb-5">
                                 {/* Cart Items */}
                                 <div className="space-y-6 mb-6 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
                                     {cartItems.map((item) => (
-                                        <div key={item.id} className="flex gap-4">
-                                            <div className="relative w-20 h-20 bg-white border border-gray-200 rounded-lg shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
+                                        <div key={item.id} className="flex gap-4 items-center">
+                                            <div className="relative w-24 h-24 bg-white border border-gray-200 rounded-lg shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
                                                 <Image
                                                     src={item.image}
                                                     alt={item.name}
                                                     fill
                                                     className="object-contain p-2"
-                                                    sizes="80px"
+                                                    sizes="96px"
                                                 />
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -485,68 +754,109 @@ const CheckoutClient = () => {
                                         <span className="text-gray-900 font-bold">{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
-                                        <span className="text-gray-600 font-medium">Subtotal ({cartItems.reduce((acc, item) => acc + item.quantity, 0)} item)</span>
+                                        <span className="text-gray-600 font-medium">Equipment Price</span>
                                         <span className="text-gray-900 font-bold">${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                                     </div>
                                 </div>
 
                                 {/* Grand Total */}
-                                <div className="flex justify-between items-end pt-6 pb-6 mt-4 border-t border-gray-100">
-                                    <span className="text-lg font-bold text-gray-900">Estimated Total</span>
+                                <div className="flex justify-between items-center pt-6 pb-6 mt-4 border-t border-gray-100">
+                                    <span className="text-sm font-bold text-gray-900">Estimated Project Cost</span>
                                     <div className="text-right flex items-baseline gap-1.5">
-                                        <span className="text-xs font-bold text-gray-500 uppercase">USD</span>
-                                        <span className="text-2xl font-black text-[#004a99]">
-                                            ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                        <span className="text-xl font-black text-[#004a99]">
+                                            ${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}+
                                         </span>
                                     </div>
                                 </div>
 
-                                {/* Info Box */}
-                                <div className="bg-[#f0f7ff] border border-[#d6e8ff] rounded-lg p-4 mb-6">
+                                {/* Important Note Box */}
+                                <div className="bg-[#f0f7ff] border border-[#d6e8ff] rounded-lg p-4">
                                     <div className="flex items-start gap-3">
-                                        <div className="mt-0.5 text-[#004a99]">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-                                        </div>
+                                        <Info className="text-[#004a99] shrink-0 mt-0.5" size={18} />
                                         <div>
-                                            <h4 className="text-sm font-bold text-[#003366] mb-1">What happens next?</h4>
+                                            <h4 className="text-sm font-bold text-[#003366] mb-1">Important Note</h4>
                                             <p className="text-xs text-[#004a99]/80 leading-relaxed">
-                                                Our team will review your request and send you an invoice with final pricing, shipping, and lead time details via email.
+                                                Shipping, installation, and any applicable taxes will be calculated after reviewing your delivery requirements.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                {/* Value Props */}
-                                <div className="space-y-4">
-                                    <div className="flex items-start gap-3">
-                                        <Clock className="text-[#004a99] shrink-0 mt-0.5" size={18} />
-                                        <div>
-                                            <h5 className="text-xs font-bold text-gray-900">Quick Response</h5>
-                                            <p className="text-[11px] text-gray-500">We typically respond within 1 business day.</p>
-                                        </div>
+                        {/* 2. What Happens Next Card */}
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-[#003366] mb-6">What Happens Next?</h2>
+
+                            <div className="space-y-6 relative">
+                                {/* Vertical line connecting the steps */}
+                                <div className="absolute left-[19px] top-8 bottom-8 w-px bg-gray-200"></div>
+
+                                <div className="flex gap-4 relative z-10">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-[#004a99] shrink-0">
+                                        <User size={18} />
                                     </div>
-                                    <div className="flex items-start gap-3">
-                                        <Headphones className="text-[#004a99] shrink-0 mt-0.5" size={18} />
-                                        <div>
-                                            <h5 className="text-xs font-bold text-gray-900">Expert Support</h5>
-                                            <p className="text-[11px] text-gray-500">Our specialists are here to help.</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start gap-3">
-                                        <ShieldCheck className="text-[#004a99] shrink-0 mt-0.5" size={18} />
-                                        <div>
-                                            <h5 className="text-xs font-bold text-gray-900">Reliable Equipment</h5>
-                                            <p className="text-[11px] text-gray-500">Commercial-grade quality you can trust.</p>
-                                        </div>
+                                    <div className="pt-1">
+                                        <h4 className="text-sm font-bold text-[#003366] mb-1">We Review Your Request</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed">
+                                            Our equipment specialist will review your requirements.
+                                        </p>
                                     </div>
                                 </div>
 
+                                <div className="flex gap-4 relative z-10">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-[#004a99] shrink-0">
+                                        <FileText size={18} />
+                                    </div>
+                                    <div className="pt-1">
+                                        <h4 className="text-sm font-bold text-[#003366] mb-1">We Prepare Your Invoice</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed">
+                                            You'll receive a detailed invoice with final pricing via email.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 relative z-10">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-[#004a99] shrink-0">
+                                        <Clock size={18} />
+                                    </div>
+                                    <div className="pt-1">
+                                        <h4 className="text-sm font-bold text-[#003366] mb-1">You Confirm & We Deliver</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed">
+                                            Once confirmed, we schedule production and delivery.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 3. Why Choose Icemanz Card */}
+                        <div className="bg-[#f8fbff] border border-blue-100 rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-[#003366] mb-5">Why Choose Icemanz?</h2>
+
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle2 className="text-[#004a99] shrink-0" size={18} />
+                                    <p className="text-sm text-gray-700">Commercial-grade quality equipment</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle2 className="text-[#004a99] shrink-0" size={18} />
+                                    <p className="text-sm text-gray-700">Nationwide delivery & support</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle2 className="text-[#004a99] shrink-0" size={18} />
+                                    <p className="text-sm text-gray-700">Dedicated equipment specialists</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle2 className="text-[#004a99] shrink-0" size={18} />
+                                    <p className="text-sm text-gray-700">Quick response within 1 business day</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </main>
-        </div>
+                </div >
+            </main >
+        </div >
     );
 };
 
