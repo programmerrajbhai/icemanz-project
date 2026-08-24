@@ -12,11 +12,11 @@ export default function CTA() {
 
       <div className="container px-4 md:px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
-          
+
           {/* Huge Background Outline Text */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none select-none overflow-hidden -z-10">
-            <span 
-              className="text-[80px] md:text-[140px] lg:text-[180px] font-black uppercase text-transparent tracking-tighter leading-none whitespace-nowrap" 
+            <span
+              className="text-[80px] md:text-[140px] lg:text-[180px] font-black uppercase text-transparent tracking-tighter leading-none whitespace-nowrap"
               style={{ WebkitTextStroke: '2px rgba(0, 74, 153, 0.04)' }}
             >
               UPGRADE NOW
@@ -24,7 +24,7 @@ export default function CTA() {
           </div>
 
           <div className="bg-white border-2 border-slate-900 p-6 md:p-10 lg:p-12 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] relative transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
-            
+
             {/* Top Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] mb-8">
               <div className="size-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
@@ -37,7 +37,7 @@ export default function CTA() {
                   Ready to Upgrade <br />
                   <span className="text-[#004a99]">Your Cold Storage?</span>
                 </h2>
-                
+
                 <p className="text-sm md:text-base text-slate-600 mb-8 leading-relaxed font-medium max-w-xl">
                   Contact us today to discuss your project requirements. Whether you need a standard quick-ship unit or a fully custom-built walk-in, ICEMANZ has you covered with premium industrial solutions.
                 </p>
@@ -49,12 +49,12 @@ export default function CTA() {
                   >
                     Get a Quote <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                   </Link>
-                  
+
                   <a
-                    href="tel:929-451-7665"
+                    href="tel:+17186786005"
                     className="flex-1 py-3.5 px-6 inline-flex justify-center items-center gap-x-2 text-xs font-black uppercase tracking-widest bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-900 hover:text-white transition-colors"
                   >
-                    <PhoneCall size={16} /> 929-451-7665
+                    <PhoneCall size={16} /> +1 (718) 678-6005
                   </a>
                 </div>
               </div>

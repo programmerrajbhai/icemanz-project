@@ -62,14 +62,45 @@ export async function POST(req: Request) {
       },
     });
 
-    const productsList = addedProducts.map((p: any) => `
-      <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
-        ${p.image ? `<img src="${p.image}" alt="${p.title}" style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; background-color: #fff;" />` : ''}
-        <div>
-          <p style="margin: 0 0 5px 0; font-size: 15px; color: #0f172a;"><strong>Name:</strong> ${p.title}</p>
-        </div>
-      </div>
-    `).join('');
+    const productsTableRows = addedProducts.map((p: any) => {
+      const qty = p.quantity ? parseInt(p.quantity, 10) : 1;
+      const priceNum = typeof p.price === 'string'
+        ? parseFloat(p.price.replace(/[^0-9.]/g, '')) || 0
+        : (typeof p.price === 'number' ? p.price : 0);
+      const priceDisplay = priceNum > 0 ? `$${priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Price on Request';
+      return `
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            <table cellpadding="0" cellspacing="0" border="0" style="border: none;">
+              <tr>
+                ${p.image ? `<td style="vertical-align: middle; padding-right: 12px;"><img src="${p.image}" alt="${p.title || p.name}" style="width: 64px; height: 64px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px; background-color: #fff; display: block;" /></td>` : ''}
+                <td style="vertical-align: middle;">
+                  ${p.brand ? `<p style="margin: 0 0 3px 0; font-size: 11px; font-weight: 700; color: #004a99; text-transform: uppercase; letter-spacing: 0.05em;">${p.brand}</p>` : ''}
+                  <p style="margin: 0; font-size: 14px; font-weight: 600; color: #0f172a; line-height: 1.4;">${p.title || p.name || 'Product'}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; vertical-align: middle; font-size: 14px; font-weight: 700; color: #0f172a; white-space: nowrap;">${qty}</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: right; vertical-align: middle; font-size: 14px; font-weight: 600; color: #004a99; white-space: nowrap;">${priceDisplay}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const productsList = `
+      <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <thead>
+          <tr style="background-color: #004a99;">
+            <th style="padding: 10px 10px; text-align: left; font-size: 12px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em;">Product</th>
+            <th style="padding: 10px 10px; text-align: center; font-size: 12px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;">Qty</th>
+            <th style="padding: 10px 10px; text-align: right; font-size: 12px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;">Unit Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${productsTableRows}
+        </tbody>
+      </table>
+    `;
 
     const totalAmount = addedProducts.reduce((sum: number, p: any) => {
       let price = 0;
@@ -100,8 +131,21 @@ export async function POST(req: Request) {
         </div>
         
         <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
-          <h3 style="margin-top: 0; margin-bottom: 20px; color: #0f172a; font-size: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Requested Product Details</h3>
+          <h3 style="margin-top: 0; margin-bottom: 16px; color: #0f172a; font-size: 17px; font-weight: 700; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Requested Products</h3>
           ${productsList}
+        </div>
+
+        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
+          <h3 style="margin-top: 0; margin-bottom: 16px; color: #0f172a; font-size: 17px; font-weight: 700; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Project Details</h3>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #334155;">
+            ${formData.projectName ? `<tr><td style="padding: 6px 0; font-weight: 600; width: 160px;">Project Name</td><td style="padding: 6px 0;">${formData.projectName}</td></tr>` : ''}
+            ${formData.address ? `<tr><td style="padding: 6px 0; font-weight: 600;">Address</td><td style="padding: 6px 0;">${formData.address}</td></tr>` : ''}
+            ${(formData.width && formData.length && formData.height) ? `<tr><td style="padding: 6px 0; font-weight: 600;">Dimensions</td><td style="padding: 6px 0;">${formData.width}W × ${formData.length}L × ${formData.height}H (ft)</td></tr>` : ''}
+            ${formData.tempRange ? `<tr><td style="padding: 6px 0; font-weight: 600;">Temperature Range</td><td style="padding: 6px 0;">${formData.tempRange}${formData.customTemp ? ` (${formData.customTemp})` : ''}</td></tr>` : ''}
+            ${formData.quantity ? `<tr><td style="padding: 6px 0; font-weight: 600;">Unit Quantity</td><td style="padding: 6px 0;">${formData.quantity}</td></tr>` : ''}
+            ${formData.additionalWarranty ? `<tr><td style="padding: 6px 0; font-weight: 600;">Additional Warranty</td><td style="padding: 6px 0;">Yes — 4-year extended warranty</td></tr>` : ''}
+            ${formData.description ? `<tr><td style="padding: 6px 0; font-weight: 600; vertical-align: top;">Description</td><td style="padding: 6px 0;">${formData.description}</td></tr>` : ''}
+          </table>
         </div>
 
         <p style="color: #334155; font-size: 16px; font-weight: 500; margin-top: 25px;">

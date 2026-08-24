@@ -131,8 +131,8 @@ export default function Header() {
       <div className="hidden lg:flex bg-[#003d80] text-white py-2.5 h-[37px] items-center border-b border-white/5">
         <div className="container flex justify-between items-center text-[12px] font-bold uppercase tracking-wider leading-none">
           <div className="flex gap-8" suppressHydrationWarning>
-            <a href="tel:929-451-7665" className="flex items-center gap-2 hover:text-blue-200 transition-colors">
-              <Phone size={14} className="text-blue-300" /> 929-451-7665
+            <a href="tel:+17186786005" className="flex items-center gap-2 hover:text-blue-200 transition-colors">
+              <Phone size={14} className="text-blue-300" /> +1 (718) 678-6005
             </a>
             <a href="mailto:sales@icemanz.com" className="flex items-center gap-2 hover:text-blue-200 transition-colors">
               <Mail size={14} className="text-blue-300" /> sales@icemanz.com
@@ -384,8 +384,8 @@ export default function Header() {
                     {category.subItems && category.subItems.length > 0 && (
                       <div
                         className={`bg-gray-50/80 overflow-hidden transition-all duration-300 ease-in-out ${expandedMobileCategories.includes(category.label)
-                            ? 'max-h-[500px] opacity-100 py-2'
-                            : 'max-h-0 opacity-0 py-0'
+                          ? 'max-h-[500px] opacity-100 py-2'
+                          : 'max-h-0 opacity-0 py-0'
                           }`}
                       >
                         {category.subItems.map((subItem) => (
@@ -423,11 +423,11 @@ export default function Header() {
 
               <div className="space-y-5 bg-gray-50 p-6 rounded-sm">
                 <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Info</p>
-                <a href="tel:929-451-7665" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
+                <a href="tel:+17186786005" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
                   <div className="w-10 h-10 rounded-sm bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     <Phone size={18} className="text-primary" />
                   </div>
-                  <span className="font-bold text-sm">929-451-7665</span>
+                  <span className="font-bold text-sm">+1 (718) 678-6005</span>
                 </a>
                 <a href="mailto:sales@icemanz.com" className="flex items-center gap-4 text-gray-700 hover:text-primary transition-colors group">
                   <div className="w-10 h-10 rounded-sm bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "create-admin": "tsx scripts/create-admin-db.ts",
+    "verify-admin": "tsx scripts/verify-admin.ts"
   },
   "dependencies": {
     "@prisma/client": "5",
@@ -37,11 +39,13 @@
     "@types/nodemailer": "^8.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "playwright": "^1.60.0",
     "prisma": "5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.12",
     "typescript": "^5"
   }
 }

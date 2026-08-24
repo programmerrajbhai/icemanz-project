@@ -286,7 +286,7 @@ export default function ProductDetailsClient({
                   Request for Invoice
                 </Link>
                 <a
-                  href="tel:929-451-7665"
+                  href="tel:+17186786005"
                   className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-gray-200 bg-white text-[#1f2937] hover:bg-gray-50 transition-colors shadow-sm"
                 >
                   <PhoneCall size={18} />

@@ -128,7 +128,7 @@ Project Details: ${projectDetails || 'None'}
                         <table cellpadding="0" cellspacing="0" border="0" align="right">
                           <tr>
                             <td style="padding-right: 6px; font-size: 14px; text-align: right;">📞</td>
-                            <td style="color: #0f172a; font-weight: 600; font-size: 14px; text-align: right;">929-451-7665</td>
+                            <td style="color: #0f172a; font-weight: 600; font-size: 14px; text-align: right;">+1 (718) 678-6005</td>
                           </tr>
                           <tr>
                             <td colspan="2" style="color: #64748b; font-size: 11px; text-align: right; padding-top: 4px;">Mon - Fri: 6AM - 6PM EST</td>
@@ -381,7 +381,7 @@ Project Details: ${projectDetails || 'None'}
                               <table cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                   <td align="center" valign="middle" style="background-color: #004a99; border-radius: 8px;">
-                                    <a href="tel:9294517665" style="color: white; text-decoration: none; padding: 10px 20px; font-size: 14px; font-weight: 600; display: inline-block;">
+                                    <a href="tel:+17186786005" style="color: white; text-decoration: none; padding: 10px 20px; font-size: 14px; font-weight: 600; display: inline-block;">
                                       📞 Contact Sales Team
                                     </a>
                                   </td>

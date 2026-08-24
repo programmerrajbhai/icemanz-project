@@ -126,12 +126,12 @@ export default function Footer() {
                         </h4>
 
                         <div className="space-y-6 mb-8">
-                            <a href="tel:929-451-7665" className="flex items-start gap-4 group cursor-pointer">
+                            <a href="tel:+17186786005" className="flex items-start gap-4 group cursor-pointer">
                                 <div className="w-10 h-10 rounded-full bg-[#0a1526] border border-gray-800 flex items-center justify-center text-[#0055ff] group-hover:bg-[#0055ff] group-hover:text-white transition-all shrink-0">
                                     <Phone size={18} />
                                 </div>
                                 <div className=' w-full'>
-                                    <p className="text-white font-semibold text-sm">929-451-7665</p>
+                                    <p className="text-white font-semibold text-sm">+1 (718) 678-6005</p>
                                     <p className="text-gray-500 text-xs w-full mt-0.5 whitespace-nowrap">Mon - Fri: 9AM - 6PM EST</p>
                                 </div>
                             </a>
@@ -151,8 +151,8 @@ export default function Footer() {
                                     <MapPin size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-white font-semibold text-sm whitespace-nowrap">Brooklyn, New York, USA</p>
-                                    <p className="text-gray-500 text-xs mt-0.5 ">Serving nationwide</p>
+                                    <p className="text-white font-semibold text-sm whitespace-nowrap">184-60 Jamaica Ave</p>
+                                    <p className="text-gray-500 text-xs mt-0.5 ">Hollis, NY 11423</p>
                                 </div>
                             </div>
                         </div>

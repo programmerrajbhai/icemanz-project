@@ -27,7 +27,7 @@ export default function SupportPage() {
         },
         {
             question: "What should I do if my equipment stops working?",
-            answer: "If you experience any issues, please contact our technical support line immediately at 929-451-7665. Have your order number and equipment model ready for faster service."
+            answer: "If you experience any issues, please contact our technical support line immediately at +1 (718) 678-6005. Have your order number and equipment model ready for faster service."
         }
     ];
 
@@ -78,7 +78,7 @@ export default function SupportPage() {
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-3">Technical Support</h3>
                             <p className="text-gray-600 mb-6 text-sm leading-relaxed">Experiencing issues with your equipment? Our expert technicians are ready to help.</p>
-                            <a href="tel:929-451-7665" className="text-[#0055ff] font-bold hover:underline block text-2xl mb-2">929-451-7665</a>
+                            <a href="tel:+17186786005" className="text-[#0055ff] font-bold hover:underline block text-2xl mb-2">+1 (718) 678-6005</a>
                             <p className="text-gray-500 text-sm font-medium bg-gray-50 py-1.5 px-3 rounded-md inline-block">Mon - Fri: 9AM - 6PM EST</p>
                         </div>
 
@@ -89,8 +89,8 @@ export default function SupportPage() {
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-3">Headquarters</h3>
                             <p className="text-gray-600 mb-6 text-sm leading-relaxed">Visit us or send mail to our main office in New York for general inquiries.</p>
-                            <p className="text-gray-800 font-semibold mb-1 text-lg">Brooklyn, New York</p>
-                            <p className="text-gray-500 text-sm mb-5">Serving nationwide USA</p>
+                            <p className="text-gray-800 font-semibold mb-1 text-lg">184-60 Jamaica Ave</p>
+                            <p className="text-gray-500 text-sm mb-5">Hollis, NY 11423</p>
                             <Link href="/enquiry" className="text-[#0055ff] font-semibold hover:underline flex items-center justify-center gap-1">
                                 Send us a message
                             </Link>
