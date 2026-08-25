@@ -24,7 +24,7 @@ async function createAdminUser() {
     console.log(`📍 URL: ${supabaseUrl}`)
     
     // Create Supabase client with anon key (for signup)
-    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
 
     console.log('\n👤 Creating admin user via signup...')
     

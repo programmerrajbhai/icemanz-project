@@ -22,9 +22,9 @@ async function createAdminUser() {
   try {
     console.log('🔧 Connecting to Supabase...')
     console.log(`📍 URL: ${supabaseUrl}`)
-    
+
     // Create Supabase admin client
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    const supabase = createClient(supabaseUrl!, supabaseServiceRoleKey!, {
       auth: {
         autoRefreshToken: false,
         persistSession: false
@@ -32,10 +32,10 @@ async function createAdminUser() {
     })
 
     console.log('\n🔍 Checking if admin user already exists...')
-    
+
     // Check if user already exists
     const { data: existingUsers, error: listError } = await supabase.auth.admin.listUsers()
-    
+
     if (listError) {
       console.error('❌ Error checking existing users:', listError)
       throw listError
@@ -48,7 +48,7 @@ async function createAdminUser() {
       console.log(`📧 Email: ${ADMIN_EMAIL}`)
       console.log(`🆔 User ID: ${existingUser.id}`)
       console.log('\n🔄 Updating password...')
-      
+
       // Update the password
       const { data: updateData, error: updateError } = await supabase.auth.admin.updateUserById(
         existingUser.id,
@@ -65,10 +65,10 @@ async function createAdminUser() {
       console.log(`   Email: ${ADMIN_EMAIL}`)
       console.log(`   Password: ${ADMIN_PASSWORD}`)
       console.log(`\n🔗 Login URL: ${process.env.NEXT_PUBLIC_APP_URL}/admin/login`)
-      
+
     } else {
       console.log('👤 Creating new admin user...')
-      
+
       // Create admin user
       const { data, error } = await supabase.auth.admin.createUser({
         email: ADMIN_EMAIL,
@@ -94,7 +94,7 @@ async function createAdminUser() {
     }
 
     console.log('\n✨ Setup complete!')
-    
+
   } catch (error) {
     console.error('\n❌ Failed to create admin user:', error)
     process.exit(1)
