@@ -29,28 +29,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // Call the QBO callback API to sync and create an invoice in QuickBooks automatically
-    const baseUrl = process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
-      : (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
-
-    try {
-      console.log(`[INVOICE API] Calling sync to QuickBooks at ${baseUrl}/api/admin/invoices/${newRequest.id}/approve`);
-      // Internal call to approve endpoint to generate QBO invoice
-      const syncResponse = await fetch(`${baseUrl}/api/admin/invoices/${newRequest.id}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'SYNC_QBO' }),
-      });
-      if (!syncResponse.ok) {
-        console.error("Failed to auto-sync with QuickBooks on invoice request. Status:", syncResponse.status);
-      } else {
-        console.log("Successfully synced with QuickBooks on invoice request");
-      }
-    } catch (syncError) {
-      console.error("Error auto-syncing with QuickBooks:", syncError);
-    }
-
     // Send email confirmation to the customer
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,

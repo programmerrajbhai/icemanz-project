@@ -48,7 +48,6 @@ export async function sendOrderConfirmationEmail(to: string, customerName: strin
       ${details?.paymentLink ? `
       <div style="text-align: center; margin: 30px 0;">
         <a href="${details.paymentLink}" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Pay Invoice Securely</a>
-        <p style="font-size: 12px; color: #666; margin-top: 10px;">You can also pay using the link sent in a separate email from QuickBooks.</p>
       </div>
       ` : ''}
 

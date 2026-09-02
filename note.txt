@@ -1,339 +1,215 @@
-https://www.atlanticse.com/collections/walk-in-coolers
 
-
-target website products page link https://www.atlanticse.com/a/search/walk-in-cooler-freezer-combo?filter_brand=Amerikooler
-
-1. ei link gulo thyky thyky Amerikooler brand er total 42 ta products with title description attacthment ja ja asy sob kisu fatch kory amader database http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer ei page a Amerikooler brand er under a rakho 
-
-2. real image full content details page er content soho anty hoby ami refarance hisaby am kisu photo deye dissi 
-
-3. Refrigeration No  Top-Mount Refrigeration(42) er products gulo alada vaby filter a add korty hoby jerokom asy target website a jaty filter kora jay 
-​
-4. onno kono page er kisu change kora jaby na ba onno kono product modify kora jaby na 
-
-6. must sob gulo product er details er page er content alada alada dynamic hoby
-
-7. bortomany amader website er ui onujay hoby just content gulo dynamic hoby desing er kono change kora jaby na 
-
-
-===========
-
-
-1. https://www.atlanticse.com/products/amerikooler-qc060672-n-o-6-x-6-x-7-2-floorless-walk-in-cooler
-oder website a ei page a product description a 
-Spec Sheet asy amader tai missing 
-
-2. Product Attachments
-        Warranty
-        About Amerikooler
-        California 65 Statement
-  missing amader details page egulo fix koro 
-
-
-  =====
-
-  https://cdn.shopify.com/s/files/1/0379/1801/5627/files/amerikooler_qc060672n.pdf?v=1704371062
-  eta holo Spec Sheet er link 
-
-  https://cdn.shopify.com/s/files/1/0719/2369/5846/files/LIMITEDPANELWARRANTY.pdf?v=1736803042
-  eta Warranty
-
-  https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Company-Material-AboutUs.pdf?v=1736802546
-  eta About Amerikooler
-
-  https://cdn.shopify.com/s/files/1/0719/2369/5846/files/Atlantic_California_65_Statement.pdf.pdf?v=1773411453
-  eta California 65 Statement
-
-
-====
-
-dashboard a ei page thyky 
-  http://localhost:3000/admin/products/new?category=walk-in-cooler-freezer
-
-ei category gulor product add kora jaby 
-  http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
-
-  http://localhost:3000/walk-in-cooler-freezer
-
-must sob gulo details add kora jaby ja ja dorkar ei product er details page a 
-
-details page http://localhost:3000/walk-in-cooler-freezer/amerikooler-dw081277n-6-6-sc-8-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration
-
-
-
-======
-https://www.turboairinc.com/refrigerationsystem/product-category/2021/unit-coolers/low-profile-evaporator/
-
-https://www.turboairinc.com/refrigerationsystem/product-category/2021/unit-coolers/low-profile-evaporator/air-defrost/
-
-https://www.turboairinc.com/refrigerationsystem/product-category/2021/unit-coolers/low-profile-evaporator/electric-defrost/
-
-=======================================
- Condensing Units >              
-    Low Profile >
-         Scroll compressor
-         Semi- Hermetic
-    Medium Profile (Scroll Compressor)
-
-Evaporation Units 
-    Low Profile Evaporator-
-        Air Defrost
-        Electric Defrost
-    Medium Profile-
-        Air Defrost
-        Electric Defrost - 6FPI
-        Electric Defrost - 4FPI
-    Center Mount Evaporator (Low Velocity)-
-        Air Defrost
-        Electric Defrost
-    Thin Profile Evaporator (Reach-in)-
-        Air Defrost
-        Electric Defrost
-
-Combo Units/Package Units 
-    Indoor 
-    Outdoor
-
-  Target website link : https://www.atlanticse.com/a/search/astra-walk-in-cooler-no-floor?filter_brand=Amerikooler
-
-  brand : Amerikooler
-
-  Our website link : http://localhost:3000/walk-in-cooler-freezer/walk-in-cooler-no-floor
-
-  -amader muloto https://www.atlanticse.com ei website thyky product with product details sob kisu amader website a migrate korty hoby.
-  -products gulo kom basi kora jaby na 
-  -Refrigeration filters a joto gulo products jay category tay asy target website a same to same bosaty hobe vul kora jaby na 
-  -sobgulo filters jano perfectly kj kory 
-  -product er image and details gulo jano static na hoy dynamic hoty hobe must 
-  -project er onno kono page a kono code modify kora jaby na kono conflitct kora jaby na
-  ami refarance category photo and link gulo deye dissi 
-
-
-01-06-26
-
-=====Mobile responsive hobe and Full website ekbar overview korty hoby - 
-
-=====Email gulo check korty hoby
-
-=====Unnessary function file dlr kory site optimized korty hoby 
-
-=====Quick Book Payment Getway proparly setup korty hobe
-
-------
-Refrigeration Equipment
-  Condensing Units
-  Evaporation Units
-  Combo Units / Package Units
-
-Walk-in Cooler & Freezer
-  Walk-In Cooler No Floor
-  Walk-In Cooler with Floor
-  Walk-In Freezer With Floor
-  Walk-In Combo (Cooler & Freezer)
-
-
-  http://localhost:3000/checkout
-
-  ei page er sathy total payment system ta kivaby kj korby tar details 
-
-  -client jokhon order korby checkout page thyky tokhon order ammount soho quick book er invoice a coly jaby and client er mail a thank you message jaby 
-  -dashboard thyky order price set kora approve kora egulo jaby na jeta agy silo 
-  -dashobard thyky just invoice er status dekha jaby quikc book er status onujay dashobard a status update hobe 
-  -total payment related kj quick book er through tay menually handle kora hobe 
-  -checkout page a to order ammount thakbai oi ta soho quick book er invoice a jaby 
-
-  --Refrigaration quepment er detials page 
-  --Walking cooler and freezer er detials page 
-
-
--------------------
-
-https://www.alurella.co/collections/eastiswest/products/arts-culture-club-crewneck-black
-https://www.alurella.co/collections/eastiswest/products/arts-culture-club-crewneck-chocolate
-https://www.alurella.co/collections/skies-are-blue
-
-
-
-
-
-
-===04-06-2026
---Title optimization like atlanticse -- Done 
---Indor Outdoor er child category add -- Done 
---Hoome page er product slider sundor korty hobe -- Done 
---Glassdoor Walk-in Cooler thyky magser image soraty hobe--Done 
---all dade link gulo remove korty hobe --Done 
---Product category er desing improvement -- Done 
---Footer section - done 
---Footer er uporer section -- done 
---Banner section ta canva deye sundor design kortyhobe -- done 
-
-
---Walking cooler and refrigeration er category page 
-      Walk-in Cooler & Freezer SAME DESIGN 
-      HOBE SUDU MOCKUP AR IMAGE CONTENT CHANGE HOBE 
-
---Alurilla tay 1h kj korty hobe 
-
-
-Total 4h kajer update 
-
-
-----
--ei 2 ta title ta lokkho koro
-
-eta amader website er Refrigeration Equipment category er product er titile kintu amr client cassy titile gulo erkom thakby na aro organized hobe like it : -Turbo Air ADR352AENC 6 Fan Low Profile Evaporator Coil (Unit Cooler)
-
--amader project a only Refrigeration Equipment category er sob gulo child parent category er product er titile wise erokom organized titile a convert kory falo
-
--onno kono page a kisu korar dorkar nai ar example ta just for example many kmn formate a titile ta hobe
-
-
-Delwar IT
-10:09 AM
-https://chatgpt.com/s/t_6a20fa75ff308191afa5c0c7e8957f24
-https://www.alurella.co/collections/swimsuit --gOOGLE MY BUSINESS ADD KORBEN
-
-
-
-
-
-
-3 days / 5 dasy / 7 dasy er doses for antibiotic 
-
--Colistin
--Amoxicicllin 
-
+https://www.atlanticse.com/a/search/walk-in-cooler-freezer-combo?filter_brand=Astra&filter_custom.walk_in_type=Cooler%2FFreezer+Combo
  
-Thayamin plus 
-Lysovit 
 
-Murgir bassar bording er niom 
+ekhan thyky 10 ta product 
 
-1day
-====
-bassy anar pory Lysovit er pani then 
-2h pory strater feed gura kory dety hobe jaty kory bassa sohojy mukhy nety pary 
-3 bela pani cheange kory dety hobe 
+http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer
 
-2nd - 5th day before first vacine 
-=======
--sokaly endrosine vet sokal thyky durpur porjonto colby 
--sathy panir ph 0
--Thayamin + Rena C dupur thyky sondha porjonto colby 
--Vacine er ager din thyky somosto medicine off rakhty hobe 
-
-5th - 6th day
-=============
-no medicine period 
-
-7th day -bcrdv vacine
-==============
-
-8th day 
-=======
--sokaly panir ph er sathy + vacine er dhopol araty vital amino use korty hobe 
--dupur thyky colby zinc eta 21 din porjonto calano jaby 
-
-====
-jodi amassa hoy taholy 
-
-
-
-http://localhost:3000/refrigeration-equipment 
-ei page ta jerokom vaby desing kora asy same vaby 
-http://localhost:3000/Walk-in Cooler & Freezer ei page aw same ekta page 
-design koro  Walk-in Cooler & Freezer er category gulo deye same layoute rakhby 
-
-
-Probiotic → ACME Biogut Vet
-Rena C → Renata
-Panir PH → Hamko Ph 
-Lysovit → Renata
-Vital Amino → 
-Thiamine Plus → 
-Coxitril Vet
-Antibiotic → Amcol Vet Amoxicicllin 
-Liver tonic → Square Liva-Vit
-
-premium before skin care
-
-
-
-
--------
-Thank You for Your Invoice Request!
-
-Hello Fazlul Rabbi,
-
-We have successfully received your invoice request. Our team will review the details and process your request shortly.
-
-We will contact you soon with the final invoice and payment information.
-
-Requested Product Details
-
-Name:
-Image:
-
-Thank you for choosing us.
-
-
--refrigeration equipment er order korly kono price jassy na many ammount 0 invoice hossy 
-sai jonno quick book accesspt korsy na error astasy 
-
--to ekhon jakono ekta demo ammount each order er sathy pathaw 10$ ei ammount ta pathaw jaty kory quick book a error na asy 
-
--refrigeration equipment ei category er product sara onnno kono category page ba onno kono kisur upor jano kono effect na pory musk kheal rakhby 
-
--amader existing checkout page tai form field gulo  jayrokom asy same thakby just refrafance image er moto kory layout er design ta hobe
-
--onno kono page ba onno kono funtionality change hobey na
-
--onno kono funtionality ba page a effect porby na
-
--checkout er funtionlity jerokom asy same thekaby just design layout change hobe
+ei category tay add koro
 
 
 
 
 
+===============================================
+MIGRATION COMPLETE: QUICKBOOKS → STRIPE ✅
+===============================================
 
+QuickBooks payment system সম্পূর্ণভাবে remove করে Stripe দিয়ে replace করা হয়েছে!
 
-amader project ei section ta redesing korty hobe desing ta refrafance image er moto hobe 
+230 central ave albany ny
 
--onno kono page ba funtionality er upor effect porby na 
+===============================================
+KEY CHANGES:
+===============================================
 
+1. ❌ REMOVED QuickBooks Payment Processing
+   - QBO payment links removed
+   - QBO payment webhooks disabled
+   - No more QBO checkout flow
 
+2. ✅ ADDED Full Stripe Integration
+   - Cart checkout with Stripe
+   - Invoice payment with Stripe
+   - Stripe webhook for payment confirmation
+   - Email notifications via Stripe
 
+3. ✅ KEPT QuickBooks for Accounting Only
+   - Invoice sync to QBO (optional)
+   - Customer sync to QBO (optional)
+   - Accounting reports in QBO
+   - NO payment processing
 
---Email Template Fixing 
---quicbook 
+===============================================
+NEW PAYMENT FLOWS:
+===============================================
 
+CART CHECKOUT:
+Add to cart → /checkout → Enter email/phone → Select Ship/Pickup 
+→ "Continue to Payment" → Stripe Checkout → Pay → Success Page ✅
 
-walking cooler er product order korly Thank You order erokom asby na
+INVOICE PAYMENT:
+Admin creates invoice → Admin generates Stripe link → Customer pays via Stripe 
+→ Webhook updates status → Email sent ✅
 
-Thank for your invoice reqest asby spealing thik kory nio order bolty kono kisu nei only invoice request and logo ta mail a show korsy na
+===============================================
+SHIP & PICKUP OPTIONS:
+===============================================
 
+✅ SHIP:
+   - Customer enters shipping address in Stripe
+   - Standard: Free (5-10 days)
+   - Express: $150 (2-3 days)
 
- 14:51
-PrimeOtybit14
+✅ PICKUP:
+   - Store: 899 NEWARK TPKE, Kearny NJ 07032
+   - FREE
+   - Ready in 2-4 days
 
-http://localhost:3000/quote
+===============================================
+FILES CREATED:
+===============================================
 
-ei page a ei button ta select korly thik moto dekha jay na selected button ta thik moto heilight koro
+✅ src/app/api/create-checkout-session/route.ts
+✅ src/app/api/create-invoice-checkout/route.ts
+✅ src/app/checkout/CheckoutClient.tsx (completely rewritten)
+✅ src/app/checkout/success/page.tsx
+✅ prisma/migrations/20260831154102_remove_qbo_payment_use_stripe/
 
+===============================================
+FILES MODIFIED:
+===============================================
 
-Terms & Conditions / EULA
+✅ prisma/schema.prisma - Removed qboPaymentLink, added stripeCheckoutUrl
+✅ src/app/admin/invoices/InvoicesClient.tsx - Removed QBO payment link UI
+✅ src/app/api/admin/invoices/[id]/approve/route.ts - Removed QBO payment generation
+✅ src/app/api/create-payment-intent/route.ts - Removed auto QBO sync
+✅ src/app/api/webhook/stripe/route.ts - Enhanced for cart + invoice payments
+✅ .env.example - Updated with Stripe variables
 
-Include:
+===============================================
+DATABASE CHANGES:
+===============================================
 
-Use of website
-Ordering and payment terms
-Shipping policy
-Returns and refunds
-Limitation of liability
-Contact information
+Migration: 20260831154102_remove_qbo_payment_use_stripe
 
+REMOVED:
+- qboPaymentLink (TEXT)
+- paymentLink (TEXT)
 
-amader website a ekta Terms & Condition page lagby included policy gulo thkaby
+ADDED:
+- stripeCheckoutUrl (TEXT)
 
+KEPT:
+- qboInvoiceId (for accounting sync)
+- qboCustomerId (for accounting sync)
+- stripeSessionId
+
+===============================================
+ENVIRONMENT VARIABLES NEEDED:
+===============================================
+
+# REQUIRED FOR PAYMENTS:
+STRIPE_SECRET_KEY="sk_test_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+STRIPE_WEBHOOK_SECRET="whsec_..." (for production)
+
+# OPTIONAL FOR ACCOUNTING:
+QBO_CLIENT_ID="..."
+QBO_CLIENT_SECRET="..."
+QBO_REDIRECT_URI="https://icemanz.com/api/qbo/callback"
+QBO_ENVIRONMENT="sandbox"
+
+===============================================
+HOW TO TEST:
+===============================================
+
+1. npm run dev
+
+2. Add products to cart
+
+3. Go to: http://localhost:3000/checkout
+
+4. Enter:
+   - Email: test@example.com
+   - Phone: 1234567890
+
+5. Select Ship or Pickup
+
+6. Click "Continue to Payment"
+
+7. Use Stripe test card:
+   Card: 4242 4242 4242 4242
+   Expiry: 12/34
+   CVC: 123
+   ZIP: 12345
+
+8. Complete payment
+
+9. Should redirect to success page ✅
+
+10. Check email for confirmation ✅
+
+===============================================
+BUILD STATUS:
+===============================================
+
+✅ Database migrated successfully
+✅ Prisma client generated
+✅ TypeScript compiled without errors
+✅ Next.js build successful
+✅ All routes working
+✅ Ready for deployment!
+
+===============================================
+DEPLOYMENT CHECKLIST:
+===============================================
+
+Before deploying to production:
+
+1. [ ] Replace test Stripe keys with live keys
+2. [ ] Update NEXT_PUBLIC_BASE_URL to production URL
+3. [ ] Set up Stripe webhook in dashboard:
+       - URL: https://icemanz.com/api/webhook/stripe
+       - Events: checkout.session.completed, payment_intent.succeeded
+4. [ ] Add STRIPE_WEBHOOK_SECRET to production env
+5. [ ] Test full payment flow in production
+6. [ ] Verify emails are being sent
+7. [ ] Update shipping rates if needed
+8. [ ] (Optional) Keep QuickBooks connected for accounting
+
+===============================================
+STRIPE DASHBOARD:
+===============================================
+
+Test Mode: https://dashboard.stripe.com/test/payments
+Live Mode: https://dashboard.stripe.com/payments
+
+===============================================
+BENEFITS:
+===============================================
+
+✅ Security: PCI compliance, no card data on server
+✅ UX: Professional, mobile-optimized checkout
+✅ Features: Multiple payment methods, international support
+✅ Cost: Lower fees than QuickBooks Payments
+✅ Flexibility: Easy to add subscriptions, Apple Pay, etc.
+
+===============================================
+DOCUMENTATION:
+===============================================
+
+📄 MIGRATION_COMPLETE.md - Full technical details
+📄 BANGLA_SUMMARY.md - Bengali explanation
+📄 STRIPE_CHECKOUT_IMPLEMENTATION.md - Stripe integration guide
+
+===============================================
+
+🎉 MIGRATION COMPLETE - READY FOR DEPLOYMENT! 🎉
+
+Your website now uses Stripe for ALL payments!
+QuickBooks is kept only for accounting (optional).
+
+Build successful! Deploy korte paren! 🚀

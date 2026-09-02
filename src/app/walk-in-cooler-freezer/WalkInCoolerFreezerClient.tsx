@@ -128,6 +128,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [visibleProductCount, setVisibleProductCount] = useState(40); // Increased initial count to show more products
   const [activeBoxType, setActiveBoxType] = useState<string | null>(null);
   const [activeRefrigerationType, setActiveRefrigerationType] = useState<string | null>(null);
+  const [sortOption, setSortOption] = useState<string>('default');
 
   // Derive filter counts from products
   const filterCounts = useMemo(() => {
@@ -270,7 +271,33 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     });
   }, [initialProducts, selectedBrands, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes]);
 
-  const products = filteredProducts;
+  // Sort products based on selected sort option
+  const sortedProducts = useMemo(() => {
+    const productsToSort = [...filteredProducts];
+
+    switch (sortOption) {
+      case 'price-low':
+        return productsToSort.sort((a, b) => {
+          const priceA = parseFloat(String(a.price || '0').replace(/[^0-9.]/g, ''));
+          const priceB = parseFloat(String(b.price || '0').replace(/[^0-9.]/g, ''));
+          return priceA - priceB;
+        });
+      case 'price-high':
+        return productsToSort.sort((a, b) => {
+          const priceA = parseFloat(String(a.price || '0').replace(/[^0-9.]/g, ''));
+          const priceB = parseFloat(String(b.price || '0').replace(/[^0-9.]/g, ''));
+          return priceB - priceA;
+        });
+      case 'name-asc':
+        return productsToSort.sort((a, b) => a.title.localeCompare(b.title));
+      case 'name-desc':
+        return productsToSort.sort((a, b) => b.title.localeCompare(a.title));
+      default:
+        return productsToSort;
+    }
+  }, [filteredProducts, sortOption]);
+
+  const products = sortedProducts;
 
   const totalPages = Math.ceil(products.length / itemsPerPage);
   const currentProducts = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -521,64 +548,148 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Page Heading inside Main Content */}
-            <div className="bg-white  border-b-0 p-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">{title}</h1>
-              <p className="text-sm text-gray-600">
-                Icemanz Supermarket Equipment we have Walk-In Coolers in stock & ready to ship! We offer attractive financing options, ship nationwide, and have great prices!
-                <button
-                  onClick={() => setIsReadMoreOpen(!isReadMoreOpen)}
-                  className="ml-2 text-gray-900 font-bold underline cursor-pointer hover:text-primary transition-colors"
-                >
-                  Read more
-                </button>
-              </p>
-            </div>
-            {/* Controls Row */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5  bg-white">
-              {currentProducts.map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/walk-in-cooler-freezer/${product.slug}`}
-                  className="bg-white   shadow-md py-2 flex flex-col cursor-pointer  transition-all duration-300 group"
-                >
-                  {/* Image */}
 
-                  <div className="h-45 relative overflow-hidden bg-white flex items-center justify-center">
-                    <img
-                      src={product.images[0]}
-                      alt={product.title}
-                      className="h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
+            {/* Filter Section - Sorting and View Options */}
+            <div className="bg-white border border-gray-200 py-4 px-6 ">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Left side - Title and Results count */}
+                <div className="flex flex-col">
+                  <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    Showing {currentProducts.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}–{Math.min(currentPage * itemsPerPage, products.length)} of {products.length} results
+                  </p>
+                </div>
 
+                {/* Right side - Sorting dropdown and view toggles */}
+                <div className="flex items-center gap-3">
+                  <select
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-sm text-sm text-gray-700 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors">
+                    <option value="default">Default sorting</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                    <option value="name-desc">Name: Z to A</option>
+                  </select>
 
-                  {/* Content */}
-                  <div className="p-3 flex flex-col text-center ">
-                    <div className="text-[10px] text-black font-bold mb-0.5 uppercase">
-                      {product.brand || product.title.split(' ')[0]}
-                    </div>
-
-                    <h3 className="text-xs  font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-2">{product.title}</h3>
-
-                    <div className="text-lg font-semibold text-[#004a99] mb-1 ">${cleanPrice(product.price)}</div>
-
-                    <div className="flex items-center justify-center gap-1.5 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                      <span className="text-[9px] font-black text-gray-500 uppercase">{product.badge || 'IN STOCK'}</span>
-                    </div>
-
-                    <div
-                      className="w-full py-2 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
+                  {/* View Toggle Buttons */}
+                  <div className="flex items-center gap-1 border border-gray-300 rounded-sm overflow-hidden">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 cursor-pointer transition-colors ${viewMode === 'grid' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                      title="Grid View"
                     >
-                      Choose Option
+                      <Grid3X3 size={18} />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 cursor-pointer transition-colors ${viewMode === 'list' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                      title="List View"
+                    >
+                      <LayoutList size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            <div className={`${viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5' : 'flex flex-col '} bg-white`}>
+              {currentProducts.map((product) => (
+                viewMode === 'grid' ? (
+                  <div
+                    key={product.id}
+                    className="bg-white  border-t-0  border border-gray-200 py-2 flex flex-col  transition-all duration-300 group"
+                  >
+                    <Link href={`/walk-in-cooler-freezer/${product.slug}`} className="cursor-pointer">
+                      {/* Image */}
+                      <div className="h-45 relative overflow-hidden bg-white flex items-center justify-center">
+                        <img
+                          src={product.images[0]}
+                          alt={product.title}
+                          className="h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    </Link>
+
+                    {/* Content */}
+                    <div className="p-3 flex flex-col text-center ">
+                      <div className="text-[10px] text-black font-bold mb-0.5 uppercase">
+                        {product.brand || product.title.split(' ')[0]}
+                      </div>
+
+                      <Link href={`/walk-in-cooler-freezer/${product.slug}`} className="cursor-pointer">
+                        <h3 className="text-xs  font-medium text-gray-800 mb-2 text-center max-w-[200px] group-hover:text-primary transition-colors line-clamp-2">{product.title}</h3>
+                      </Link>
+
+                      <div className="text-lg font-semibold text-[#004a99] mb-4 ">${cleanPrice(product.price)} / Ea.</div>
+
+                      <button
+                        onClick={() => addToCart({
+                          id: product.id,
+                          title: product.title,
+                          price: cleanPrice(product.price),
+                          image: product.images[0],
+                          quantity: 1
+                        })}
+                        className="w-full py-2 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
+                      >
+                        <ShoppingCart size={12} />
+                        Add to Cart
+                      </button>
+
                     </div>
 
                   </div>
+                ) : (
+                  <div
+                    key={product.id}
+                    className="bg-white border border-gray-200 rounded-sm shadow-sm hover:shadow-md p-4 flex gap-4 transition-all duration-300 group"
+                  >
+                    <Link href={`/walk-in-cooler-freezer/${product.slug}`} className="cursor-pointer">
+                      {/* Image */}
+                      <div className="w-40 h-40 flex-shrink-0 relative overflow-hidden bg-white flex items-center justify-center">
+                        <img
+                          src={product.images[0]}
+                          alt={product.title}
+                          className="h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    </Link>
 
-                </Link>
+                    {/* Content */}
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[10px] text-black font-bold mb-1 uppercase">
+                          {product.brand || product.title.split(' ')[0]}
+                        </div>
 
+                        <Link href={`/walk-in-cooler-freezer/${product.slug}`} className="cursor-pointer">
+                          <h3 className="text-sm font-medium text-gray-800 mb-2 group-hover:text-primary transition-colors">{product.title}</h3>
+                        </Link>
+                      </div>
 
+                      <div className="flex items-center justify-between">
+                        <div className="text-lg font-semibold text-[#004a99]">${cleanPrice(product.price)} / Ea.</div>
+
+                        <button
+                          onClick={() => addToCart({
+                            id: product.id,
+                            title: product.title,
+                            price: cleanPrice(product.price),
+                            image: product.images[0],
+                            quantity: 1
+                          })}
+                          className="px-6 py-2.5 cursor-pointer rounded-sm bg-[#004a99] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#003d80] transition-colors flex items-center gap-2"
+                        >
+                          <ShoppingCart size={14} />
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
               ))}
             </div>
             {/* Pagination Controls */}

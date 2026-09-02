@@ -4,6 +4,7 @@ import WalkInCoolerProductClient from './[id]/WalkInCoolerProductClient';
 import WalkInCoolerFreezerClient from '../WalkInCoolerFreezerClient';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { mockProducts, getMockProductsByCategory, getMockProductBySlug } from '@/lib/mock-products';
 
 const subcategoryTitles: Record<string, string> = {
   'walk-in-cooler-no-floor': 'Walk-In Cooler No Floor',
@@ -27,14 +28,24 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
   // Check if this is a subcategory page
   if (subcategoryTitles[slug]) {
     // Get all walk-in cooler products with category included
-    const allWalkInProducts = await prisma.product.findMany({
-      where: {
-        category: {
-          slug: { in: ['walk-in-cooler-no-floor', 'walk-in-cooler-freezer', 'walk-in-cooler-with-floor', 'walk-in-freezer-with-floor', 'walk-in-combo-cooler-freezer'] }
-        }
-      },
-      include: { category: true }
-    });
+    let allWalkInProducts = [];
+    let useMockData = false;
+
+    try {
+      allWalkInProducts = await prisma.product.findMany({
+        where: {
+          category: {
+            slug: { in: ['walk-in-cooler-no-floor', 'walk-in-cooler-freezer', 'walk-in-cooler-with-floor', 'walk-in-freezer-with-floor', 'walk-in-combo-cooler-freezer'] }
+          }
+        },
+        include: { category: true }
+      });
+    } catch (error) {
+      console.error('Database connection error, using mock data:', error);
+      // Use mock data if database is not available
+      useMockData = true;
+      allWalkInProducts = mockProducts;
+    }
 
     // Filter products for the current subcategory: first check category slug, then walk-in type
     const targetWalkInType = slugToWalkInType[slug];
@@ -77,9 +88,18 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
   }
 
   // Otherwise, treat as product page
-  const product = await prisma.product.findUnique({
-    where: { slug }
-  });
+  let product = null;
+  let useMockData = false;
+
+  try {
+    product = await prisma.product.findUnique({
+      where: { slug }
+    });
+  } catch (error) {
+    console.error('Database connection error, using mock data:', error);
+    useMockData = true;
+    product = getMockProductBySlug(slug);
+  }
 
   if (!product) {
     notFound();
@@ -88,26 +108,40 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
   // Fetch related products from the same category
   let relatedProducts: any[] = [];
   if (product.categoryId) {
-    relatedProducts = await prisma.product.findMany({
-      where: {
-        categoryId: product.categoryId,
-        id: { not: product.id }
-      },
-      take: 20,
-      include: { category: true }
-    });
+    try {
+      if (!useMockData) {
+        relatedProducts = await prisma.product.findMany({
+          where: {
+            categoryId: product.categoryId,
+            id: { not: product.id }
+          },
+          take: 20,
+          include: { category: true }
+        });
 
-    // If we don't have enough, fetch other walk-in products
-    if (relatedProducts.length < 10) {
-      const moreProducts = await prisma.product.findMany({
-        where: {
-          id: { notIn: [product.id, ...relatedProducts.map(p => p.id)] },
-          title: { contains: 'Walk-In', mode: 'insensitive' }
-        },
-        take: 20 - relatedProducts.length,
-        include: { category: true }
-      });
-      relatedProducts = [...relatedProducts, ...moreProducts];
+        // If we don't have enough, fetch other walk-in products
+        if (relatedProducts.length < 10) {
+          const moreProducts = await prisma.product.findMany({
+            where: {
+              id: { notIn: [product.id, ...relatedProducts.map(p => p.id)] },
+              title: { contains: 'Walk-In', mode: 'insensitive' }
+            },
+            take: 20 - relatedProducts.length,
+            include: { category: true }
+          });
+          relatedProducts = [...relatedProducts, ...moreProducts];
+        }
+      } else {
+        // Use mock data for related products
+        relatedProducts = mockProducts.filter(
+          p => p.categoryId === product?.categoryId && p.id !== product?.id
+        ).slice(0, 20);
+      }
+    } catch (error) {
+      console.error('Error fetching related products, using mock data:', error);
+      relatedProducts = mockProducts.filter(
+        p => p.categoryId === product?.categoryId && p.id !== product?.id
+      ).slice(0, 20);
     }
   }
 

@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 import { logoAttachment } from '@/lib/logo';
+
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2026-03-25.dahlia',
+});
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -16,8 +22,69 @@ const transporter = nodemailer.createTransport({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { amount, items, email, fullName, phone, address, companyName, contactPersonRole, businessType, purchaseTimeline, numberLocations, billingSameAsShipping, deliveryRequirements, projectDetails } = body;
-    console.log("[CREATE-PAYMENT-INTENT] Received order request data:", { email, fullName, phone, address, companyName });
+    const { amount, currency = 'usd', cartItems, items, email, fullName, phone, address, companyName, contactPersonRole, businessType, purchaseTimeline, numberLocations, billingSameAsShipping, deliveryRequirements, projectDetails } = body;
+    console.log("[CREATE-PAYMENT-INTENT] Received order request data:", { email, fullName, phone, address, companyName, amount, currency, hasCartItems: !!cartItems });
+
+    // Handle checkout flow with cart items
+    if (amount && cartItems && cartItems.length > 0) {
+      // Determine category from cart items
+      const category = cartItems.some((item: any) =>
+        item.category === 'walk-in-cooler-freezer' ||
+        item.name?.toLowerCase().includes('walk-in') ||
+        item.name?.toLowerCase().includes('cooler') ||
+        item.name?.toLowerCase().includes('freezer')
+      ) ? 'walk-in-cooler-freezer' : 'refrigeration-equipment';
+
+      // Create PaymentIntent with cart metadata
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: currency.toLowerCase(),
+        automatic_payment_methods: {
+          enabled: false,
+        },
+        payment_method_types: ['card'],
+        metadata: {
+          orderType: 'checkout',
+          category: category,
+          cartItems: JSON.stringify(cartItems),
+          itemCount: cartItems.length.toString(),
+        },
+      });
+
+      console.log("[CREATE-PAYMENT-INTENT] Payment Intent created for checkout:", paymentIntent.id, "Category:", category);
+
+      return NextResponse.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+      });
+    }
+
+    // If only amount is provided without items (for custom checkout form)
+    if (amount && !items && !cartItems) {
+      // Create PaymentIntent for custom checkout
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: currency.toLowerCase(),
+        automatic_payment_methods: {
+          enabled: false, // Disable automatic payment methods to prevent Link
+        },
+        payment_method_types: ['card'], // Only allow card payments
+        metadata: {
+          email: email || '',
+          fullName: fullName || '',
+          phone: phone || '',
+        },
+      });
+
+      console.log("[CREATE-PAYMENT-INTENT] Payment Intent created:", paymentIntent.id);
+
+      return NextResponse.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+      });
+    }
+
+    // Original invoice request logic
 
     // Determine the category from the cart items
     const category = items.some((item: any) => item.category === 'walk-in-cooler-freezer')
@@ -67,34 +134,6 @@ Project Details: ${projectDetails || 'None'}
     });
 
     console.log("[CREATE-PAYMENT-INTENT] Order Request created with ID:", invoiceRequest.id);
-
-    // Call the QBO callback API to sync and create an invoice in QuickBooks automatically
-    const baseUrl = process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
-      : (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
-
-    try {
-      console.log(`[CREATE-PAYMENT-INTENT] Calling sync to QuickBooks at ${baseUrl}/api/admin/invoices/${invoiceRequest.id}/approve`);
-      // Internal call to approve endpoint to generate QBO invoice
-      const syncResponse = await fetch(`${baseUrl}/api/admin/invoices/${invoiceRequest.id}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'SYNC_QBO' }),
-      });
-      if (!syncResponse.ok) {
-        console.error("Failed to auto-sync with QuickBooks on checkout. Status:", syncResponse.status);
-        try {
-          const errBody = await syncResponse.text();
-          console.error("Sync error body:", errBody);
-        } catch (e) {
-          // ignore
-        }
-      } else {
-        console.log("Successfully synced with QuickBooks on checkout");
-      }
-    } catch (syncError) {
-      console.error("Error auto-syncing with QuickBooks:", syncError);
-    }
 
     const firstProduct = items && items.length > 0 ? items[0] : null;
     const productTitle = firstProduct ? (firstProduct.title || firstProduct.name) : 'Custom Project';
@@ -418,7 +457,7 @@ Project Details: ${projectDetails || 'None'}
     return NextResponse.json({
       success: true,
       invoiceId: invoiceRequest.id,
-      isQuickBooks: true
+      message: 'Invoice request created successfully. Admin will review and send you the final invoice.'
     });
   } catch (error: any) {
     console.error('Order request error:', error);

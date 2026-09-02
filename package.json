@@ -8,7 +8,16 @@
     "start": "next start",
     "lint": "eslint",
     "create-admin": "tsx scripts/create-admin-db.ts",
-    "verify-admin": "tsx scripts/verify-admin.ts"
+    "create-admin-user": "tsx scripts/create-admin-user.ts",
+    "verify-admin": "tsx scripts/verify-admin.ts",
+    "verify-admin-login": "tsx scripts/verify-admin-login.ts",
+    "seed": "tsx prisma/seed.ts",
+    "db:seed": "tsx prisma/seed.ts",
+    "verify-stripe": "tsx scripts/verify-stripe-setup.ts",
+    "test-checkout": "tsx scripts/test-checkout.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5",
@@ -16,6 +25,8 @@
     "@stripe/stripe-js": "^9.3.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3",
     "cheerio": "^1.2.0",
     "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",

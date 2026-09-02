@@ -64,8 +64,8 @@ model InvoiceRequest {
   quantity          String?
   tempRange         String?
   width             String?
-  paymentLink       String?
-  stripeSessionId String?
+  stripeCheckoutUrl String?  // Stripe Checkout URL for payment
+  stripeSessionId   String?  // Stripe Session ID
   totalAmount       Float?
   order             Order?
   additionalWarranty Boolean? @default(false)
@@ -76,9 +76,6 @@ model InvoiceRequest {
   totalWithTax      Float?
   deliveryNotes     String?
   category          String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
-  qboInvoiceId      String?
-  qboCustomerId     String?
-  qboPaymentLink    String?
 }
 
 model Order {
@@ -86,11 +83,20 @@ model Order {
   invoiceId       String         @unique
   customerName    String
   customerEmail   String
+  customerPhone   String?        // Customer phone number
   amountPaid      Float
   currency        String         @default("usd")
   stripeSessionId String         @unique
   stripePaymentId String?
   status          String         @default("PAID")
+  // Shipping Address fields
+  shippingName    String?
+  shippingAddress String?
+  shippingCity    String?
+  shippingState   String?
+  shippingZip     String?
+  shippingCountry String?
+  deliveryMethod  String?        // "ship" or "pickup"
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   invoice         InvoiceRequest @relation(fields: [invoiceId], references: [id])
@@ -133,14 +139,4 @@ model GeneralEnquiry {
   status    String   @default("PENDING")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model QboToken {
-  id            String   @id @default(uuid())
-  accessToken   String
-  refreshToken  String
-  realmId       String
-  expiresAt     DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
 }

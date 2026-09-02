@@ -1,12 +1,12 @@
 import { login } from './actions'
 import { Mail, Lock } from 'lucide-react'
 
-export default async function LoginPage({
+export default function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: { error?: string }
 }) {
-  const { error } = await searchParams;
+  const error = searchParams?.error;
 
   const inputClasses = "py-3 px-4 ps-11 block w-full border border-gray-200 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-white font-medium text-slate-900";
   const iconWrapperClasses = "absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4";
@@ -37,7 +37,8 @@ export default async function LoginPage({
                   name="email"
                   type="email"
                   required
-                  placeholder="admin@icemanz.com"
+                  placeholder="admin@gmail.com"
+                  defaultValue=""
                   className={inputClasses}
                 />
                 <div className={iconWrapperClasses}>
@@ -55,6 +56,7 @@ export default async function LoginPage({
                   type="password"
                   required
                   placeholder="••••••••"
+                  defaultValue=""
                   className={inputClasses}
                 />
                 <div className={iconWrapperClasses}>
@@ -70,9 +72,13 @@ export default async function LoginPage({
               Sign In
             </button>
           </form>
+
+          <div className="pt-4 border-t border-slate-100">
+            <p className="text-xs text-slate-400 text-center">
+              Admin login credentials: admin@gmail.com / admin123
+            </p>
+          </div>
         </div>
-
-
       </div>
     </div>
   )

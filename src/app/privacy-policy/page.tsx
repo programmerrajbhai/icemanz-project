@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
           <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-blue-100/40 blur-3xl" />
           <div className="absolute top-[20%] -left-[10%] w-[40%] h-[40%] rounded-full bg-emerald-50/40 blur-3xl" />
         </div>
-        
+
         <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto text-center relative z-10">
           <div className="inline-flex items-center justify-center p-3 bg-white rounded-xl shadow-sm mb-6 border border-gray-100">
             <ShieldCheck className="w-8 h-8 text-[#004a99]" />
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
       {/* Content Section */}
       <div className="flex-1 max-w-[85rem] w-full px-4 sm:px-6 lg:px-8 mx-auto pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12">
-          
+
           {/* Sticky Sidebar Navigation */}
           <div className="hidden lg:block lg:col-span-3">
             <div className="sticky top-32 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
           {/* Main Content */}
           <div className="lg:col-span-9 space-y-10">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-10 space-y-12">
-              
+
               {/* Section 1 */}
               <section id="information-collected" className="scroll-mt-32 group">
                 <div className="flex items-center gap-4 mb-4">
@@ -152,29 +152,19 @@ export default function PrivacyPolicyPage() {
                   <p className="leading-relaxed mb-6">
                     We utilize several trusted third-party services to operate our business efficiently and provide you with the best experience. These include:
                   </p>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="bg-[#f8fafc] p-5 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all duration-300">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm">
-                          <span className="text-sm font-bold text-[#004a99]">Q</span>
-                        </div>
-                        <h4 className="text-base font-bold text-gray-800">QuickBooks</h4>
-                      </div>
-                      <p className="text-gray-500 text-sm leading-relaxed">Used for accounting, invoicing, and managing financial records securely.</p>
-                    </div>
-                    
                     <div className="bg-[#f8fafc] p-5 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm">
                           <span className="text-sm font-bold text-[#004a99]">$</span>
                         </div>
-                        <h4 className="text-base font-bold text-gray-800">Stripe & PayPal</h4>
+                        <h4 className="text-base font-bold text-gray-800">Stripe</h4>
                       </div>
-                      <p className="text-gray-500 text-sm leading-relaxed">Secure payment gateways used to process your transactions safely.</p>
+                      <p className="text-gray-500 text-sm leading-relaxed">Secure payment gateway used to process your transactions safely.</p>
                     </div>
-                    
-                    <div className="bg-[#f8fafc] p-5 rounded-xl border border-gray-100 md:col-span-2 hover:border-blue-200 hover:shadow-sm transition-all duration-300">
+
+                    <div className="bg-[#f8fafc] p-5 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm">
                           <span className="text-sm font-bold text-[#004a99]">G</span>
@@ -184,7 +174,7 @@ export default function PrivacyPolicyPage() {
                       <p className="text-gray-500 text-sm leading-relaxed">Used to track website traffic, user behavior, and help us improve our website's performance and user experience.</p>
                     </div>
                   </div>
-                  
+
                   <p className="leading-relaxed">
                     These third-party services have their own privacy policies addressing how they use your information. We recommend reviewing their respective policies for more details.
                   </p>
@@ -205,7 +195,7 @@ export default function PrivacyPolicyPage() {
                   <p className="leading-relaxed">
                     If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please contact us. You can reach out to us via the contact form on our website or by emailing our support team directly.
                   </p>
-                  
+
                   <div className="mt-6 p-5 bg-blue-50/50 rounded-xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div>
                       <h4 className="text-base font-bold text-gray-800">Need more clarification?</h4>
@@ -219,7 +209,7 @@ export default function PrivacyPolicyPage() {
               </section>
 
             </div>
-            
+
             <div className="flex justify-center pb-10">
               <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white rounded-full shadow-sm border border-gray-100">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
@@ -231,8 +221,8 @@ export default function PrivacyPolicyPage() {
           </div>
         </div>
       </div>
-      
-    
+
+
     </main>
   );
 }

@@ -1,38 +1,153 @@
-import Link from 'next/link';
-import { CheckCircle } from 'lucide-react';
-import SuccessClient from './SuccessClient';
+'use client';
 
-export default async function SuccessPage({
-    searchParams,
-}: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-    const params = await searchParams;
-    const paymentIntentId = typeof params.payment_intent === 'string' ? params.payment_intent : null;
+import React, { useEffect, useState, Suspense } from 'react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { CheckCircle2, Package, Truck, Mail, ArrowRight, Home } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+
+function SuccessContent() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const { clearCart } = useCart();
+    const [sessionId, setSessionId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const session_id = searchParams.get('session_id');
+        if (session_id) {
+            setSessionId(session_id);
+            // Clear the cart after successful payment
+            clearCart();
+        } else {
+            // If no session_id, redirect to home
+            setTimeout(() => {
+                router.push('/');
+            }, 3000);
+        }
+    }, [searchParams, clearCart, router]);
 
     return (
-        <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
-            {paymentIntentId && <SuccessClient paymentIntentId={paymentIntentId} />}
-            <div className="bg-green-50 p-12 rounded-full mb-8">
-                <CheckCircle size={80} className="text-green-500" />
-            </div>
-            <h1 className="text-4xl font-black text-gray-900 mb-4">Payment Successful!</h1>
-            <p className="text-lg text-gray-600 mb-10 max-w-md">
-                Thank you for your purchase. Your order has been placed and is being processed. 
-                You will receive a confirmation email shortly.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/">
-                    <button className="bg-primary text-white cursor-pointer px-10 py-4 rounded-sm font-bold hover:bg-blue-800 transition-all">
-                        Back to Home
-                    </button>
-                </Link>
-                <Link href="/walk-in-cooler-freezer/walk-in-cooler-no-floor">
-                    <button className="bg-gray-100 text-gray-900 cursor-pointer px-10 py-4 rounded-sm font-bold hover:bg-gray-200 transition-all">
-                        Continue Shopping
-                    </button>
-                </Link>
+        <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-gray-50 flex items-center justify-center p-4">
+            <div className="max-w-2xl w-full">
+                {/* Success Card */}
+                <div className="bg-white rounded-2xl border-2 border-green-200 p-8 md:p-12 text-center shadow-xl">
+                    {/* Success Icon */}
+                    <div className="relative mb-6">
+                        <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                            <CheckCircle2 size={48} className="text-white" />
+                        </div>
+                        <div className="absolute inset-0 w-24 h-24 bg-green-400 rounded-full mx-auto animate-ping opacity-20"></div>
+                    </div>
+
+                    {/* Success Message */}
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                        Payment Successful!
+                    </h1>
+                    <p className="text-lg text-gray-600 mb-8">
+                        Thank you for your order. Your payment has been processed successfully.
+                    </p>
+
+                    {sessionId && (
+                        <div className="bg-gray-50 rounded-lg p-4 mb-8">
+                            <p className="text-sm text-gray-600 mb-1">Order Reference</p>
+                            <p className="text-xs font-mono text-gray-800 break-all">{sessionId}</p>
+                        </div>
+                    )}
+
+                    {/* What Happens Next */}
+                    <div className="bg-blue-50 rounded-xl p-6 mb-8 text-left">
+                        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <Mail size={24} className="text-blue-600" />
+                            What happens next?
+                        </h2>
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                                    1
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-900">Confirmation Email</p>
+                                    <p className="text-sm text-gray-600">You'll receive an order confirmation email shortly with all the details.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                                    2
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-900">Order Processing</p>
+                                    <p className="text-sm text-gray-600">Our team will prepare your order for shipment or pickup.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                                    3
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-900">Shipping Notification</p>
+                                    <p className="text-sm text-gray-600">You'll get tracking information when your order ships.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link
+                            href="/"
+                            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg"
+                        >
+                            <Home size={20} />
+                            Back to Home
+                        </Link>
+                        <Link
+                            href="/walk-in-cooler-freezer"
+                            className="inline-flex items-center justify-center gap-2 bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all"
+                        >
+                            Continue Shopping
+                            <ArrowRight size={20} />
+                        </Link>
+                    </div>
+
+                    {/* Contact Support */}
+                    <p className="text-sm text-gray-500 mt-8">
+                        Need help?{' '}
+                        <Link href="/support" className="text-blue-600 hover:underline font-medium">
+                            Contact our support team
+                        </Link>
+                    </p>
+                </div>
+
+                {/* Additional Info Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div className="bg-white rounded-lg border border-gray-200 p-5 flex items-start gap-3">
+                        <Package size={24} className="text-blue-600 flex-shrink-0 mt-1" />
+                        <div>
+                            <h3 className="font-semibold text-gray-900 mb-1">Track Your Order</h3>
+                            <p className="text-sm text-gray-600">Check your email for tracking updates</p>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-lg border border-gray-200 p-5 flex items-start gap-3">
+                        <Truck size={24} className="text-green-600 flex-shrink-0 mt-1" />
+                        <div>
+                            <h3 className="font-semibold text-gray-900 mb-1">Fast Delivery</h3>
+                            <p className="text-sm text-gray-600">Your order will be processed promptly</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    );
+}
+
+export default function CheckoutSuccess() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        }>
+            <SuccessContent />
+        </Suspense>
     );
 }

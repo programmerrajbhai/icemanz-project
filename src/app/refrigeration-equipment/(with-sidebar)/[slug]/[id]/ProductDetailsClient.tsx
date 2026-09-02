@@ -5,6 +5,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCart } from '@/context/CartContext';
 import {
   PhoneCall,
   FileText,
@@ -16,7 +18,10 @@ import {
   Maximize,
   ChevronUp,
   ChevronDown,
-  CheckCircle2
+  CheckCircle2,
+  ShoppingCart,
+  Plus,
+  Minus
 } from 'lucide-react';
 
 function extractProductInfo(text: string | null | undefined) {
@@ -41,6 +46,7 @@ type ProductType = {
   id: string;
   title: string;
   slug: string;
+  brand?: string | null;
   badge?: string | null;
   description?: string | null;
   keyFeatures?: string | null;
@@ -72,15 +78,21 @@ export default function ProductDetailsClient({
   relatedProducts: RelatedProduct[];
   slug: string;
 }) {
+  const { addToCart } = useCart();
+  const router = useRouter();
   const formattedInfo = extractProductInfo(product.keyFeatures) || extractProductInfo(product.description) || null;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('features');
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [quantity, setQuantity] = useState(1);
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.5, 3));
   const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.5, 1));
   const handleResetZoom = () => setZoomLevel(1);
+
+  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
 
   const handleFullscreen = () => {
     if (imageContainerRef.current) {
@@ -277,21 +289,59 @@ export default function ProductDetailsClient({
               </div>
 
               {/* Main Actions */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 mb-14">
-                <Link
-                  href={`/request-invoice?productId=${product.id}`}
-                  className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-transparent bg-[#004a99] text-white hover:bg-blue-800 transition-colors shadow-sm"
-                >
-                  <FileText size={18} />
-                  Request for Invoice
-                </Link>
-                <a
-                  href="tel:+17186786005"
-                  className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-gray-200 bg-white text-[#1f2937] hover:bg-gray-50 transition-colors shadow-sm"
-                >
-                  <PhoneCall size={18} />
-                  Call Specialist
-                </a>
+              <div className="space-y-4 mt-12 mb-14">
+                {/* Quantity Selector */}
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-semibold text-gray-700">Quantity:</span>
+                  <div className="flex items-center border border-gray-300 rounded-sm overflow-hidden">
+                    <button
+                      onClick={decrementQuantity}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span className="px-6 py-2 bg-white font-semibold text-gray-900 min-w-[60px] text-center">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={incrementQuantity}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Add to Cart & Call Specialist Buttons */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button
+                    onClick={() => {
+                      addToCart({
+                        id: product.id,
+                        name: product.title,
+                        brand: product.brand || 'IcemanZ',
+                        price: product.price,
+                        image: product.images[0] || '/placeholder.png',
+                        quantity: quantity,
+                        category: 'refrigeration-equipment'
+                      });
+                      router.push('/cart');
+                    }}
+                    className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-transparent bg-[#cc3300] text-white hover:bg-[#b32d00] transition-colors shadow-sm cursor-pointer"
+                  >
+                    <ShoppingCart size={18} />
+                    Add to Cart
+                  </button>
+                  <a
+                    href="tel:+17186786005"
+                    className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-gray-200 bg-white text-[#1f2937] hover:bg-gray-50 transition-colors shadow-sm"
+                  >
+                    <PhoneCall size={18} />
+                    Call Specialist
+                  </a>
+                </div>
               </div>
             </div>
           </div>

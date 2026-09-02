@@ -11,19 +11,28 @@ import Testimonials from "@/components/Testimonials";
 import ImageGallery from "@/components/ImageGallery";
 import CTA from "@/components/CTA";
 import prisma from "@/lib/prisma";
+import { getMockProductsByCategory } from "@/lib/mock-products";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-    const walkInProducts = await prisma.product.findMany({
-        where: {
-            category: {
-                slug: 'walk-in-cooler-no-floor'
-            }
-        },
-        take: 12,
-        include: { category: true }
-    });
+    let walkInProducts = [];
+
+    try {
+        walkInProducts = await prisma.product.findMany({
+            where: {
+                category: {
+                    slug: 'walk-in-cooler-no-floor'
+                }
+            },
+            take: 12,
+            include: { category: true }
+        });
+    } catch (error) {
+        console.error('Database connection error, using mock data:', error);
+        // Use mock data if database is not available
+        walkInProducts = getMockProductsByCategory('walk-in-cooler-no-floor');
+    }
 
     return (
         <div className="flex flex-col min-h-screen">

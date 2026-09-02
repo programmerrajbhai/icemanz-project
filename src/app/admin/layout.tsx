@@ -30,7 +30,6 @@ const navigation = [
       { name: 'Walk-in Cooler & Freezer', href: '/admin/orders/walk-in-cooler-freezer' }
     ]
   },
-  { name: 'Invoice Requests', href: '/admin/invoices', icon: FileText },
   { name: 'Quote Requests', href: '/admin/quotes', icon: FileText },
   { name: 'General Enquiry', href: '/admin/enquiries', icon: MessageSquare },
   {
