@@ -27,13 +27,34 @@ export async function POST(request: Request) {
 
     // Handle checkout flow with cart items
     if (amount && cartItems && cartItems.length > 0) {
-      // Determine category from cart items
-      const category = cartItems.some((item: any) =>
-        item.category === 'walk-in-cooler-freezer' ||
-        item.name?.toLowerCase().includes('walk-in') ||
-        item.name?.toLowerCase().includes('cooler') ||
-        item.name?.toLowerCase().includes('freezer')
-      ) ? 'walk-in-cooler-freezer' : 'refrigeration-equipment';
+      // Determine category based on majority of items in cart
+      const categoryCounts: { [key: string]: number } = {};
+
+      cartItems.forEach((item: any) => {
+        // Get category from item, or determine from name/type
+        let itemCategory = item.category;
+
+        // If no category set, determine from product name
+        if (!itemCategory) {
+          const nameOrTitle = (item.name || item.title || '').toLowerCase();
+          if (nameOrTitle.includes('walk-in') ||
+            nameOrTitle.includes('cooler') ||
+            nameOrTitle.includes('freezer') ||
+            nameOrTitle.includes('walk in')) {
+            itemCategory = 'walk-in-cooler-freezer';
+          } else {
+            itemCategory = 'refrigeration-equipment';
+          }
+        }
+
+        // Count items per category
+        categoryCounts[itemCategory] = (categoryCounts[itemCategory] || 0) + item.quantity;
+      });
+
+      // Find category with most items
+      const category = Object.keys(categoryCounts).reduce((a, b) =>
+        categoryCounts[a] > categoryCounts[b] ? a : b
+      );
 
       // Create PaymentIntent with cart metadata
       const paymentIntent = await stripe.paymentIntents.create({
