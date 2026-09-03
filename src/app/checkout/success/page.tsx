@@ -11,20 +11,47 @@ function SuccessContent() {
     const searchParams = useSearchParams();
     const { clearCart } = useCart();
     const [sessionId, setSessionId] = useState<string | null>(null);
+    const [orderCreated, setOrderCreated] = useState(false);
 
     useEffect(() => {
-        const session_id = searchParams.get('session_id');
-        if (session_id) {
-            setSessionId(session_id);
-            // Clear the cart after successful payment
-            clearCart();
-        } else {
-            // If no session_id, redirect to home
+        const payment_intent = searchParams.get('payment_intent');
+        const payment_intent_client_secret = searchParams.get('payment_intent_client_secret');
+        const redirect_status = searchParams.get('redirect_status');
+
+        console.log('[SUCCESS] Payment Intent:', payment_intent);
+        console.log('[SUCCESS] Redirect Status:', redirect_status);
+
+        if (payment_intent && redirect_status === 'succeeded' && !orderCreated) {
+            setSessionId(payment_intent);
+
+            // Create order from payment intent
+            fetch('/api/create-order-from-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ paymentIntentId: payment_intent })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('[SUCCESS] Order creation response:', data);
+                    if (data.success) {
+                        console.log('[SUCCESS] Order created successfully:', data.orderId);
+                        setOrderCreated(true);
+                        // Clear the cart after successful order creation
+                        clearCart();
+                    } else {
+                        console.error('[SUCCESS] Order creation failed:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('[SUCCESS] Failed to create order:', error);
+                });
+        } else if (!payment_intent) {
+            // If no payment_intent, redirect to home
             setTimeout(() => {
                 router.push('/');
             }, 3000);
         }
-    }, [searchParams, clearCart, router]);
+    }, [searchParams, clearCart, router, orderCreated]);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-gray-50 flex items-center justify-center p-4">

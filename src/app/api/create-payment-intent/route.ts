@@ -48,6 +48,7 @@ export async function POST(request: Request) {
           category: category,
           cartItems: JSON.stringify(cartItems),
           itemCount: cartItems.length.toString(),
+          // Customer info will be added by webhook from payment_method.billing_details
         },
       });
 

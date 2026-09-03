@@ -88,15 +88,61 @@ export async function POST(req: Request) {
         } else {
           const paymentIntent = event.data.object as Stripe.PaymentIntent;
           invoiceId = paymentIntent.metadata?.invoiceId;
-          customerName = paymentIntent.metadata?.customerName || 'Customer';
-          customerEmail = paymentIntent.metadata?.customerEmail || '';
-          customerPhone = paymentIntent.metadata?.customerPhone || '';
+
+          // Get customer information from billing_details if available
+          let billingDetails: any = null;
+          let shippingDetails: any = null;
+
+          // Fetch full payment intent to get payment_method details
+          try {
+            const fullPaymentIntent = await stripe.paymentIntents.retrieve(paymentIntent.id, {
+              expand: ['payment_method', 'shipping']
+            });
+
+            if (fullPaymentIntent.payment_method && typeof fullPaymentIntent.payment_method === 'object') {
+              billingDetails = fullPaymentIntent.payment_method.billing_details;
+            }
+
+            if (fullPaymentIntent.shipping) {
+              shippingDetails = fullPaymentIntent.shipping;
+            }
+          } catch (err) {
+            console.error('[WEBHOOK] Failed to retrieve full payment intent:', err);
+          }
+
+          // Extract customer info from billing details
+          customerName = billingDetails?.name || paymentIntent.metadata?.customerName || 'Customer';
+          customerEmail = billingDetails?.email || paymentIntent.metadata?.customerEmail || '';
+          customerPhone = billingDetails?.phone || paymentIntent.metadata?.customerPhone || '';
+
           amountPaid = paymentIntent.amount / 100;
           currency = paymentIntent.currency;
           stripePaymentId = paymentIntent.id;
           stripeSessionId = paymentIntent.id;
           category = paymentIntent.metadata?.category || 'general';
           deliveryMethod = paymentIntent.metadata?.deliveryMethod || '';
+
+          // Extract shipping details if available
+          if (shippingDetails) {
+            shippingName = shippingDetails.name || '';
+            shippingAddress = shippingDetails.address?.line1
+              ? `${shippingDetails.address.line1}${shippingDetails.address.line2 ? ', ' + shippingDetails.address.line2 : ''}`
+              : '';
+            shippingCity = shippingDetails.address?.city || '';
+            shippingState = shippingDetails.address?.state || '';
+            shippingZip = shippingDetails.address?.postal_code || '';
+            shippingCountry = shippingDetails.address?.country || '';
+
+            // Infer delivery method from presence of shipping address
+            if (shippingAddress) {
+              deliveryMethod = 'ship';
+            }
+          }
+
+          // If no shipping address, assume pickup
+          if (!deliveryMethod && !shippingAddress) {
+            deliveryMethod = 'pickup';
+          }
         }
 
         if (invoiceId) {
@@ -221,60 +267,67 @@ export async function POST(req: Request) {
           }
         } else {
           // Payment from direct checkout (cart flow without invoice)
+          const paymentIntent = event.data.object as Stripe.PaymentIntent;
           console.log('[WEBHOOK] Direct checkout payment received (no invoiceId)');
+          console.log('[WEBHOOK] Customer:', { customerName, customerEmail, customerPhone });
+          console.log('[WEBHOOK] Shipping:', { deliveryMethod, shippingName, shippingAddress, shippingCity, shippingState, shippingZip, shippingCountry });
 
-          // Create Order entry without invoice
+          // Extract cart items from metadata
+          let cartItemsData = [];
+          try {
+            const cartItemsStr = paymentIntent.metadata?.cartItems;
+            if (cartItemsStr) {
+              cartItemsData = JSON.parse(cartItemsStr);
+              console.log('[WEBHOOK] Cart items:', cartItemsData.length, 'items');
+            }
+          } catch (err) {
+            console.error('[WEBHOOK] Failed to parse cart items:', err);
+          }
+
+          // Create invoice request for direct checkout
+          console.log('[WEBHOOK] Creating invoice request for direct checkout order');
+          const tempInvoice = await prisma.invoiceRequest.create({
+            data: {
+              email: customerEmail,
+              fullName: customerName,
+              phone: customerPhone,
+              status: 'PAID',
+              totalAmount: amountPaid,
+              totalWithTax: amountPaid,
+              stripeSessionId,
+              products: cartItemsData,
+              category,
+              address: shippingAddress ? `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}` : undefined,
+              deliveryNotes: deliveryMethod === 'pickup' ? 'Customer will pick up from: 866 Newark Tpke, Kearny NJ 07032, United States' : undefined,
+            }
+          });
+
+          console.log('[WEBHOOK] Invoice request created:', tempInvoice.id);
+
+          // Now create order with the invoice
           const newOrder = await prisma.order.create({
             data: {
-              invoiceId: '', // No invoice for direct checkout - we'll need to handle this differently
+              invoiceId: tempInvoice.id,
               customerName,
               customerEmail,
+              customerPhone,
               amountPaid,
               currency,
               stripeSessionId,
               stripePaymentId,
               status: 'PAID',
-              category
+              category,
+              deliveryMethod,
+              shippingName,
+              shippingAddress,
+              shippingCity,
+              shippingState,
+              shippingZip,
+              shippingCountry,
             }
-          }).catch(async (err) => {
-            // If failed due to missing invoiceId, create a temporary invoice request
-            console.log('[WEBHOOK] Creating temporary invoice request for direct checkout');
-            const tempInvoice = await prisma.invoiceRequest.create({
-              data: {
-                email: customerEmail,
-                fullName: customerName,
-                status: 'PAID',
-                totalAmount: amountPaid,
-                totalWithTax: amountPaid,
-                stripeSessionId,
-                products: [],
-                category
-              }
-            });
-
-            // Now create order with the invoice
-            return prisma.order.create({
-              data: {
-                invoiceId: tempInvoice.id,
-                customerName,
-                customerEmail,
-                customerPhone,
-                amountPaid,
-                currency,
-                stripeSessionId,
-                stripePaymentId,
-                status: 'PAID',
-                category,
-                deliveryMethod,
-                shippingName,
-                shippingAddress,
-                shippingCity,
-                shippingState,
-                shippingZip,
-                shippingCountry,
-              }
-            });
           });
+
+          console.log('[WEBHOOK] Order created:', newOrder.id);
 
           // Send confirmation email
           const shippingInfo = deliveryMethod === 'ship' && shippingAddress
