@@ -221,6 +221,10 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'icemanz')) {
       existingBrands['Icemanz'] = 0; // Add it with 0 count if it doesn't exist
     }
+    // Always show Amerikooler with 0 products if it doesn't exist
+    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'amerikooler')) {
+      existingBrands['Amerikooler'] = 0;
+    }
 
     const brandList = Object.entries(existingBrands).map(([name, count]) => ({ name, count }));
     return brandList.sort((a, b) => {

@@ -50,6 +50,16 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
     // Filter products for the current subcategory: first check category slug, then walk-in type
     const targetWalkInType = slugToWalkInType[slug];
     const products = allWalkInProducts.filter(product => {
+      // Exclude ICEMANZ products from walk-in-cooler-no-floor page
+      if (slug === 'walk-in-cooler-no-floor' && product.brand === 'ICEMANZ') {
+        return false;
+      }
+
+      // Exclude Dade, Mr. Winter, and Norlake products from walk-in-freezer-with-floor page
+      if (slug === 'walk-in-freezer-with-floor' && ['Dade', 'Mr. Winter', 'Norlake'].includes(product.brand || '')) {
+        return false;
+      }
+
       // First: check if product's category slug matches exactly
       if (product.category?.slug === slug) {
         return true;
