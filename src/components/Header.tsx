@@ -52,8 +52,7 @@ export default function Header() {
       subItems: [
         { label: 'Glassdoor Walk-in Cooler', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-cooler' },
         { label: 'Glassdoor Walk-in Freezer', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-freezer' },
-        { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' },
-        { label: 'Shelving', href: '/glassdoor-walk-in-cooler/shelving' }
+        { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' }
       ]
     }
   ];
@@ -76,8 +75,7 @@ export default function Header() {
   const glassdoorImages: { [key: string]: string } = {
     'Glassdoor Walk-in Cooler': '/products/product_2.jpg',
     'Glassdoor Walk-in Freezer': '/slider/s_2.jpeg',
-    'Glassdoor': '/slider/s_3.jpeg',
-    'Shelving': '/products/product_1.jpg'
+    'Glassdoor': '/slider/s_3.jpeg'
   };
 
   const refrigerationImages: { [key: string]: string } = {
@@ -194,8 +192,7 @@ export default function Header() {
                   {[
                     { label: 'Glassdoor Walk-in Cooler', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-cooler' },
                     { label: 'Glassdoor Walk-in Freezer', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-freezer' },
-                    { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' },
-                    { label: 'Shelving', href: '/glassdoor-walk-in-cooler/shelving' }
+                    { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' }
                   ].map((item, index) => (
                     <Link
                       key={item.label}
