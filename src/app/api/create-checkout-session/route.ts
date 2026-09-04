@@ -57,6 +57,9 @@ export async function POST(req: NextRequest) {
             success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout?canceled=true`,
             billing_address_collection: 'required',
+            phone_number_collection: {
+                enabled: true, // Make phone number required
+            },
             metadata: {
                 deliveryMethod: deliveryMethod,
                 customerPhone: customerInfo?.phone || '',

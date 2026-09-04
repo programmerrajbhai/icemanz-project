@@ -28,6 +28,7 @@
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
     "@types/bcryptjs": "^2.4.6",
+    "axios": "^1.20.0",
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.2.0",
     "embla-carousel-auto-scroll": "^8.6.0",

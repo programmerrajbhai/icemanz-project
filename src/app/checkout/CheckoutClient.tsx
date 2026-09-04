@@ -166,8 +166,8 @@ const CheckoutClient = () => {
                             <div className="space-y-4">
                                 <div>
                                     <input
-                                        type="text"
-                                        placeholder="Email or mobile phone number"
+                                        type="email"
+                                        placeholder="Email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required

@@ -1,9 +1,9 @@
-https://www.atlanticse.com/collections/walk-in-freezers?sort_by=manual&filter.p.vendor=Astra&filter.v.price.gte=&filter.v.price.lte=&filter.p.m.custom.floor=With+Floor
+https://www.atlanticse.com/collections/turbo-air-evaporator-fan
 
-ekhany astra brand er Walk-In Combo (Cooler & Freezer)  a  total 101 ta product asy 
+ekhany Turbo Air total 23 ta product asy 
 
 amader ei category tay upload koro 
-http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer
+http://localhost:3000/refrigeration-equipment/evaporation-units
 
 -jay product gulo tay add to cart asy ogulo tay add to cart 
 -jay product gulo tay choose option asy ougulo choose option rkahty hobe 
@@ -13,6 +13,7 @@ http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer
 -sidebar filter gulo proparly work korty hobe 
 -ei category er exiting er product gulo delete koro 
 -product all details propalry anty hobe jaty details page a kono kisu miss na hoy 
+-filter a only ei brand thakby onno kono brand thakby na 
 
 
 
