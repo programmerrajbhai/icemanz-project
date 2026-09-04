@@ -48,12 +48,12 @@ export default function Header() {
     },
     {
       label: 'Glassdoor Walk-in Cooler',
-      href: '/walk-in-cooler-freezer',
+      href: '/glassdoor-walk-in-cooler',
       subItems: [
-        { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-        { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-        { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
-        { label: 'Shelving', href: '/refrigeration-equipment' }
+        { label: 'Glassdoor Walk-in Cooler', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-cooler' },
+        { label: 'Glassdoor Walk-in Freezer', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-freezer' },
+        { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' },
+        { label: 'Shelving', href: '/glassdoor-walk-in-cooler/shelving' }
       ]
     }
   ];
@@ -192,10 +192,10 @@ export default function Header() {
               <div className="absolute top-full left-0 w-[300px] bg-white shadow-2xl rounded-sm border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 p-6 z-50">
                 <div className="flex flex-col gap-1.5 flex-1">
                   {[
-                    { label: 'Glassdoor Walk-in Cooler', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-                    { label: 'Glassdoor Walk-in Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-                    { label: 'Glassdoor', href: '/walk-in-cooler-freezer' },
-                    { label: 'Shelving', href: '/refrigeration-equipment' }
+                    { label: 'Glassdoor Walk-in Cooler', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-cooler' },
+                    { label: 'Glassdoor Walk-in Freezer', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-freezer' },
+                    { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' },
+                    { label: 'Shelving', href: '/glassdoor-walk-in-cooler/shelving' }
                   ].map((item, index) => (
                     <Link
                       key={item.label}

@@ -1,13 +1,18 @@
+https://www.atlanticse.com/collections/walk-in-freezers?sort_by=manual&filter.p.vendor=Astra&filter.v.price.gte=&filter.v.price.lte=&filter.p.m.custom.floor=With+Floor
 
-https://www.atlanticse.com/a/search/walk-in-cooler-freezer-combo?filter_brand=Astra&filter_custom.walk_in_type=Cooler%2FFreezer+Combo
- 
+ekhany astra brand er Walk-In Combo (Cooler & Freezer)  a  total 101 ta product asy 
 
-ekhan thyky 10 ta product 
-
+amader ei category tay upload koro 
 http://localhost:3000/walk-in-cooler-freezer/walk-in-combo-cooler-freezer
 
-ei category tay add koro
-
+-jay product gulo tay add to cart asy ogulo tay add to cart 
+-jay product gulo tay choose option asy ougulo choose option rkahty hobe 
+-onno kono funtion a ba ui modify kora jaby na 
+-main task a focus koro 
+-summary DOCUMENTATION create kora jaby na 
+-sidebar filter gulo proparly work korty hobe 
+-ei category er exiting er product gulo delete koro 
+-product all details propalry anty hobe jaty details page a kono kisu miss na hoy 
 
 
 

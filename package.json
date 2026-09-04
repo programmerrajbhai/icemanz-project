@@ -14,7 +14,9 @@
     "seed": "tsx prisma/seed.ts",
     "db:seed": "tsx prisma/seed.ts",
     "verify-stripe": "tsx scripts/verify-stripe-setup.ts",
-    "test-checkout": "tsx scripts/test-checkout.ts"
+    "test-checkout": "tsx scripts/test-checkout.ts",
+    "scrape-astra": "tsx scrape-astra-with-floor.ts",
+    "scrape-freezer-with-floor": "tsx scripts/scrape-astra-freezer-with-floor.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
