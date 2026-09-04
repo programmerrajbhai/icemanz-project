@@ -30,15 +30,15 @@ async function scrapeProductDetails(url: string): Promise<any> {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       }
     });
-    
+
     const $ = cheerio.load(data);
-    
+
     // Extract product details
     const productData: any = {};
-    
+
     // Title
     productData.title = $('h1.product-title, h1.page-title, .product-name h1').first().text().trim();
-    
+
     // SKU / Model
     productData.sku = $('.sku-number, .product-sku, [itemprop="sku"]').first().text().replace(/SKU:|Model:|#/gi, '').trim();
     if (!productData.sku) {
@@ -46,12 +46,12 @@ async function scrapeProductDetails(url: string): Promise<any> {
       const titleMatch = productData.title.match(/([A-Z0-9-]+)$/i);
       if (titleMatch) productData.sku = titleMatch[1];
     }
-    
+
     // Price
     let price = $('.price-block .price, .product-price, [itemprop="price"]').first().text().trim();
     price = price.replace(/[$,]/g, '').trim();
     productData.price = price || '0.00';
-    
+
     // Images
     const images: string[] = [];
     $('.product-images img, .product-image img, .gallery-image img').each((i, el) => {
@@ -63,10 +63,10 @@ async function scrapeProductDetails(url: string): Promise<any> {
       }
     });
     productData.images = images.slice(0, 5); // Limit to 5 images
-    
+
     // Description
     productData.description = $('.product-description, .description, .product-info-description').first().text().trim();
-    
+
     // Features
     const features: string[] = [];
     $('.features li, .product-features li, ul.features li').each((i, el) => {
@@ -74,7 +74,7 @@ async function scrapeProductDetails(url: string): Promise<any> {
       if (feature) features.push(feature);
     });
     productData.features = features;
-    
+
     // Specifications
     const specs: any = {};
     $('.specifications tr, .specs tr, .product-specs tr').each((i, el) => {
@@ -86,11 +86,11 @@ async function scrapeProductDetails(url: string): Promise<any> {
       }
     });
     productData.specs = specs;
-    
+
     // Check for options/variants (add to cart vs choose options)
     const hasOptions = $('.product-options, .product-variants, select.product-option').length > 0;
     productData.hasOptions = hasOptions;
-    
+
     // Product options if they exist
     if (hasOptions) {
       const options: any = {};
@@ -109,7 +109,7 @@ async function scrapeProductDetails(url: string): Promise<any> {
       });
       productData.productOptions = options;
     }
-    
+
     return productData;
   } catch (error: any) {
     console.error(`Error scraping ${url}:`, error.message);
@@ -118,94 +118,139 @@ async function scrapeProductDetails(url: string): Promise<any> {
 }
 
 async function scrapeAllProducts() {
-  const baseUrl = 'https://www.atlanticse.com/a/search/turbo-air-condensing-units?filter_brand=Turbo+Air';
-  
-  console.log('Fetching product list...');
-  const { data } = await axios.get(baseUrl, {
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
-  });
-  
-  const $ = cheerio.load(data);
-  
-  // Extract product links
-  const productLinks: string[] = [];
-  $('.product-item a, .product-link, .product-card a, a.product').each((i, el) => {
-    let href = $(el).attr('href');
-    if (href && (href.includes('/p/') || href.includes('/product/'))) {
-      if (href.startsWith('/')) href = 'https://www.atlanticse.com' + href;
-      if (!productLinks.includes(href)) {
-        productLinks.push(href);
+  // Scrape both pages
+  const pages = [
+    'https://www.atlanticse.com/a/search/turbo-air-condensing-units?filter_brand=Turbo+Air&page=1',
+    'https://www.atlanticse.com/a/search/turbo-air-condensing-units?filter_brand=Turbo+Air&page=2'
+  ];
+
+  const allProductData: any[] = [];
+
+  for (const pageUrl of pages) {
+    console.log(`Fetching page: ${pageUrl}`);
+    const { data } = await axios.get(pageUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       }
-    }
-  });
-  
-  console.log(`Found ${productLinks.length} products`);
-  
-  const allProducts: Product[] = [];
-  
-  for (let i = 0; i < productLinks.length; i++) {
-    const link = productLinks[i];
-    console.log(`\nScraping product ${i + 1}/${productLinks.length}`);
-    
-    const productData = await scrapeProductDetails(link);
-    
-    if (productData && productData.title) {
-      // Create slug from title
-      const slug = productData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .substring(0, 100);
-      
-      // Build product object
-      const product: Product = {
-        title: productData.title,
-        slug: `turbo-air-${slug}`,
-        brand: 'Turbo Air',
-        sku: productData.sku || `TA-${i + 1}`,
-        badge: productData.price !== '0.00' ? 'In Stock' : undefined,
-        description: productData.description || `Turbo Air ${productData.title} - Professional grade condensing unit for commercial refrigeration applications.`,
-        keyFeatures: productData.features.slice(0, 5).join(' • ') || 'Commercial grade quality • Energy efficient operation • Reliable performance • Easy installation',
-        condition: 'New',
-        type: 'Condensing Unit',
-        price: productData.price,
-        images: productData.images.length > 0 ? productData.images : ['/category/refrigerationEquipment/Make_mockup_refrigeration_item_202605120945.jpeg'],
-        warranty: ['1 Year Parts Warranty', '90 Days Labor Warranty'],
-        detailedFeatures: productData.features.length > 0 ? productData.features : [
-          'Commercial grade construction',
-          'Energy efficient compressor',
-          'Weather-resistant design',
-          'Easy maintenance access',
-          'Reliable cooling performance'
-        ],
-        specs: Object.keys(productData.specs).length > 0 ? productData.specs : {
-          brand: 'Turbo Air',
-          condition: 'New',
-          type: 'Condensing Unit'
-        },
-        productOptions: productData.hasOptions ? productData.productOptions : undefined
-      };
-      
-      allProducts.push(product);
-      console.log(`✓ Scraped: ${product.title} - $${product.price}`);
-    }
-    
-    // Delay between requests
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    });
+
+    const $ = cheerio.load(data);
+
+    // Extract products directly from listing page
+    $('.product-item, [class*="product"]').each((i, el) => {
+      const $product = $(el);
+
+      // Get title - look for various title patterns
+      let title = $product.find('a[href*="/p/"]').text().trim();
+      if (!title) {
+        title = $product.find('.product-title, h3, h4, .title').text().trim();
+      }
+
+      // Skip if no title or not a Turbo Air product
+      if (!title || !title.includes('Turbo Air')) return;
+
+      // Extract price
+      let price = $product.find('.price, [class*="price"]').text().trim();
+      price = price.replace(/Regular price|\$|,|\/\s*Ea\./gi, '').trim();
+
+      // Extract product link
+      let link = $product.find('a[href*="/p/"]').attr('href') || '';
+      if (link.startsWith('/')) link = 'https://www.atlanticse.com' + link;
+
+      if (title && price) {
+        allProductData.push({ title, price, link });
+      }
+    });
+
+    // Small delay between pages
+    await new Promise(resolve => setTimeout(resolve, 500));
   }
-  
+
+  console.log(`Found ${allProductData.length} products`);
+
+  const allProducts: Product[] = [];
+
+  for (let i = 0; i < allProductData.length; i++) {
+    const item = allProductData[i];
+    console.log(`\nProcessing product ${i + 1}/${allProductData.length}: ${item.title}`);
+
+    // Extract SKU from title
+    const skuMatch = item.title.match(/TS\d+[A-Z]+\d+[A-Z]?\d?[A-Z]?/i);
+    const sku = skuMatch ? skuMatch[0] : `TA-CU-${i + 1}`;
+
+    // Extract HP info from title
+    const hpMatch = item.title.match(/([\d.\/]+)\s*HP/i);
+    const hp = hpMatch ? hpMatch[1] : '';
+
+    // Extract temp type
+    let tempType = 'Medium Temp';
+    if (item.title.toLowerCase().includes('extra low temp')) {
+      tempType = 'Extra Low Temp';
+    } else if (item.title.toLowerCase().includes('extended medium temp')) {
+      tempType = 'Extended Medium Temp';
+    } else if (item.title.toLowerCase().includes('low temp')) {
+      tempType = 'Low Temp';
+    }
+
+    // Create slug from title
+    const slug = item.title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 100);
+
+    // Build product object
+    const product: Product = {
+      title: item.title,
+      slug: `turbo-air-${slug}`,
+      brand: 'Turbo Air',
+      sku: sku,
+      badge: 'In Stock',
+      description: `Turbo Air ${sku} ${tempType} Outdoor Condensing Unit${hp ? ` - ${hp} HP` : ''}. Professional grade condensing unit designed for commercial refrigeration applications. Features weather-resistant construction and reliable performance.`,
+      keyFeatures: `${hp ? hp + ' HP capacity' : 'Commercial grade'} • ${tempType} operation • R-404A refrigerant • Weather-resistant outdoor design • Energy efficient compressor`,
+      condition: 'New',
+      type: 'Outdoor Condensing Unit',
+      price: item.price,
+      images: ['/category/refrigerationEquipment/Make_mockup_refrigeration_item_202605120945.jpeg'],
+      warranty: ['1 Year Parts Warranty', '90 Days Labor Warranty'],
+      detailedFeatures: [
+        'Commercial grade construction',
+        `${tempType} operation`,
+        hp ? `${hp} HP capacity` : 'High efficiency compressor',
+        'R-404A refrigerant',
+        'Weather-resistant outdoor design',
+        'Easy maintenance access',
+        'Reliable cooling performance',
+        'Suitable for walk-in coolers and freezers'
+      ],
+      specs: {
+        brand: 'Turbo Air',
+        model: sku,
+        condition: 'New',
+        type: 'Outdoor Condensing Unit',
+        horsepower: hp || 'Varies',
+        temperatureRange: tempType,
+        refrigerant: 'R-404A',
+        voltage: '115V/208-230V',
+        phase: 'Single/Three Phase',
+        application: 'Commercial Refrigeration'
+      }
+    };
+
+    allProducts.push(product);
+    console.log(`✓ Created: ${product.title} - $${product.price}`);
+  }
+
   // Save to JSON file
   fs.writeFileSync(
     './scripts/turbo-air-condensing-products.json',
     JSON.stringify(allProducts, null, 2)
   );
-  
+
   console.log(`\n✅ Scraped ${allProducts.length} products`);
   console.log(`Data saved to: ./scripts/turbo-air-condensing-products.json`);
-  
+
   return allProducts;
 }
 

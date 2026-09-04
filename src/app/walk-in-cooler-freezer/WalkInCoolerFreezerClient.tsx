@@ -632,6 +632,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                       <button
                         onClick={() => addToCart({
                           id: product.id,
+                          name: product.title,
                           title: product.title,
                           price: cleanPrice(product.price),
                           image: product.images[0],
@@ -680,6 +681,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                         <button
                           onClick={() => addToCart({
                             id: product.id,
+                            name: product.title,
                             title: product.title,
                             price: cleanPrice(product.price),
                             image: product.images[0],

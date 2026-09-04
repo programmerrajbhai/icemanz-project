@@ -243,7 +243,7 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                     value={customerEmail}
                                     onChange={(e) => setCustomerEmail(e.target.value)}
                                     className="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
-                                    placeholder="Email or mobile phone number"
+                                    placeholder="Email"
                                 />
                                 <label className="flex items-center gap-2.5 mt-2.5 cursor-pointer">
                                     <input type="checkbox" defaultChecked className="rounded border-gray-300 text-blue-600 focus:ring-0 w-4 h-4" />
@@ -282,6 +282,11 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                             mode: 'shipping',
                                             allowedCountries: ['US'],
                                             fields: { phone: 'always' },
+                                            validation: {
+                                                phone: {
+                                                    required: 'always',
+                                                },
+                                            },
                                             display: { name: 'split' }
                                         }}
                                         onChange={handleAddressChange}
@@ -350,6 +355,11 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                             mode: 'billing',
                                             allowedCountries: ['US'],
                                             fields: { phone: 'always' },
+                                            validation: {
+                                                phone: {
+                                                    required: 'always',
+                                                },
+                                            },
                                             display: { name: 'split' },
                                         }}
                                         onChange={handleBillingAddressChange}
@@ -386,20 +396,29 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                     <div className="lg:col-span-5 px-5 sm:px-6 lg:px-8 py-6 bg-[#fafafa] space-y-5">
 
                         {/* Products List */}
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {cartItems.map((item) => (
-                                <div key={item.id} className="flex items-start gap-3">
-                                    <div className="relative w-16 h-16 bg-white rounded-md border border-gray-200 flex-shrink-0 p-1">
-                                        <Image src={item.image} alt={item.name} fill className="object-contain" />
-                                        <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                                <div key={item.id} className="flex items-center gap-3 p-2.5 bg-white rounded-lg border border-gray-200/80 shadow-sm">
+                                    <div className="relative w-16 h-16 bg-white rounded-md border border-gray-100 flex-shrink-0 p-1">
+                                        <Image src={item.image} alt={item.name || 'Product Image'} fill className="object-contain p-0.5" />
+                                        <span className="absolute -top-2 -right-2 bg-gray-800 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md border-2 border-white">
                                             {item.quantity}
                                         </span>
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-sm font-semibold text-gray-900 leading-tight">{item.name}</h3>
-                                        <p className="text-xs text-gray-500 mt-0.5 leading-tight">{item.brand}</p>
+                                        <h3 className="text-xs font-semibold text-gray-900 leading-snug break-words line-clamp-2">
+                                            {item.name}
+                                        </h3>
+                                        {item.brand && (
+                                            <p className="text-[11px] text-gray-400 mt-0.5">
+                                                {item.brand}
+                                            </p>
+                                        )}
+                                        <p className="text-[11px] text-gray-400">
+                                            Qty: {item.quantity}
+                                        </p>
                                     </div>
-                                    <div className="text-base font-semibold text-gray-900">
+                                    <div className="text-sm font-bold text-gray-900 flex-shrink-0 text-right">
                                         ${(item.price * item.quantity).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                     </div>
                                 </div>

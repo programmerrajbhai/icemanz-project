@@ -62,6 +62,11 @@ const CheckoutClient = () => {
             return;
         }
 
+        if (!phone) {
+            toast.error('Please enter your phone number');
+            return;
+        }
+
         setIsProcessing(true);
 
         try {
@@ -360,29 +365,28 @@ const CheckoutClient = () => {
                             {/* Cart Items */}
                             <div className="space-y-5 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                 <h2 className="text-lg font-bold text-gray-900 pb-2 border-b border-gray-200">Order Summary</h2>
-                                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                     {cartItems.map((item) => (
-                                        <div key={item.id} className="flex gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                            <div className="relative w-20 h-20 bg-white rounded-lg border border-gray-200 flex-shrink-0 shadow-sm">
+                                        <div key={item.id} className="flex items-center gap-3 p-2.5 bg-gray-50 rounded-lg border border-gray-200/80 hover:bg-gray-100/80 transition-colors">
+                                            <div className="relative w-16 h-16 bg-white rounded-md border border-gray-200 flex-shrink-0 p-1 shadow-sm">
                                                 <Image
                                                     src={item.image}
-                                                    alt={item.name}
+                                                    alt={item.name || 'Product Image'}
                                                     fill
-                                                    className="object-contain p-2 rounded-lg"
+                                                    className="object-contain p-0.5 rounded-md"
                                                 />
-                                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-md">
+                                                <div className="absolute -top-2 -right-2 w-5 h-5 bg-blue-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold shadow-md border-2 border-white">
                                                     {item.quantity}
                                                 </div>
                                             </div>
-                                            <div className="flex-1 flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug">{item.name}</h3>
-                                                    <p className="text-xs text-gray-500 mt-1">Qty: {item.quantity}</p>
-                                                </div>
-                                                <p className="text-base font-bold text-gray-900 ml-4">
-                                                    ${(item.price * item.quantity).toFixed(2)}
-                                                </p>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="text-xs font-semibold text-gray-900 leading-snug break-words line-clamp-2">{item.name}</h3>
+                                                {item.brand && <p className="text-[11px] text-gray-400 mt-0.5">{item.brand}</p>}
+                                                <p className="text-[11px] text-gray-400">Qty: {item.quantity}</p>
                                             </div>
+                                            <p className="text-sm font-bold text-gray-900 flex-shrink-0 text-right">
+                                                ${(item.price * item.quantity).toFixed(2)}
+                                            </p>
                                         </div>
                                     ))}
                                 </div>

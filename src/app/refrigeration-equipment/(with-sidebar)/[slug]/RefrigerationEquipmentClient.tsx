@@ -403,7 +403,7 @@ export default function RefrigerationEquipmentClient({
               </div>
 
               {/* Products Grid */}
-              <div className={`${viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4' : 'flex flex-col'} bg-white`}>
+              <div className={`${viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5' : 'flex flex-col'} bg-white`}>
                 {displayedProducts.length === 0 ? (
                   <div className="col-span-full py-12 text-center text-gray-500 font-medium border border-dashed border-gray-300 rounded-sm">
                     No products found in this category!
@@ -414,10 +414,10 @@ export default function RefrigerationEquipmentClient({
                     return viewMode === 'grid' ? (
                       <div
                         key={product.id}
-                        className="group bg-white border border-t-0 border-gray-200 py-2 flex flex-col transition-all duration-300"
+                        className="bg-white border-t-0 border border-gray-200 py-2 flex flex-col transition-all duration-300 group"
                       >
                         {/* Image Area */}
-                        <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`} className="block">
+                        <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`} className="cursor-pointer">
                           <div className="h-45 relative overflow-hidden bg-white flex items-center justify-center">
                             {product.images && product.images[0] ? (
                               <img
@@ -437,55 +437,41 @@ export default function RefrigerationEquipmentClient({
                             {product.brand || product.title.split(' ')[0]}
                           </div>
 
-                          <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`}>
-                            <h3 className="text-xs font-medium text-gray-800 mb-2 text-center max-w-[200px] mx-auto group-hover:text-primary transition-colors line-clamp-2 cursor-pointer" title={product.title}>
+                          <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`} className="cursor-pointer">
+                            <h3 className="text-xs font-medium text-gray-800 mb-2 text-center max-w-[200px] mx-auto group-hover:text-primary transition-colors line-clamp-2" title={product.title}>
                               {product.title}
                             </h3>
                           </Link>
 
-                          <div className="text-lg font-semibold text-[#004a99] mb-1">${cleanPrice(product.price)}</div>
+                          <div className="text-lg font-semibold text-[#004a99] mb-4">${cleanPrice(product.price)} / Ea.</div>
 
-                          <div className="flex items-center justify-center gap-1.5 mb-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                            <span className="text-[9px] font-black text-gray-500 uppercase">IN STOCK</span>
-                          </div>
-
-                          <div className="flex gap-2 w-full">
-                            <Link
-                              href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`}
-                              className="flex-1 py-2 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
-                            >
-                              <ArrowRight size={12} />
-                              View
-                            </Link>
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                addToCart({
-                                  id: product.id,
-                                  name: product.title,
-                                  brand: product.brand || product.title.split(' ')[0],
-                                  price: product.price,
-                                  image: product.images[0] || '/placeholder.png',
-                                  quantity: 1,
-                                  category: 'refrigeration-equipment'
-                                });
-                              }}
-                              className="flex-1 py-2 cursor-pointer rounded-sm bg-[#cc3300] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#b32d00] transition-colors"
-                            >
-                              <ShoppingCart size={12} />
-                              Add
-                            </button>
-                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              addToCart({
+                                id: product.id,
+                                name: product.title,
+                                title: product.title,
+                                price: cleanPrice(product.price),
+                                image: product.images[0] || '/placeholder.png',
+                                quantity: 1,
+                                category: 'refrigeration-equipment'
+                              });
+                            }}
+                            className="w-full py-2 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
+                          >
+                            <ShoppingCart size={12} />
+                            Add to Cart
+                          </button>
                         </div>
                       </div>
                     ) : (
                       <div
                         key={product.id}
-                        className="group bg-white border border-gray-200 rounded-sm shadow-sm hover:shadow-md p-4 flex gap-4 transition-all duration-300"
+                        className="bg-white border border-gray-200 rounded-sm shadow-sm hover:shadow-md p-4 flex gap-4 transition-all duration-300 group"
                       >
                         {/* Image */}
-                        <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`} className="block">
+                        <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`} className="cursor-pointer">
                           <div className="w-40 h-40 flex-shrink-0 relative overflow-hidden bg-white flex items-center justify-center">
                             {product.images && product.images[0] ? (
                               <img
@@ -506,46 +492,32 @@ export default function RefrigerationEquipmentClient({
                               {product.brand || product.title.split(' ')[0]}
                             </div>
 
-                            <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`}>
-                              <h3 className="text-sm font-medium text-gray-800 mb-2 group-hover:text-primary transition-colors cursor-pointer">{product.title}</h3>
+                            <Link href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`} className="cursor-pointer">
+                              <h3 className="text-sm font-medium text-gray-800 mb-2 group-hover:text-primary transition-colors">{product.title}</h3>
                             </Link>
-
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                              <span className="text-[9px] font-bold text-gray-500 uppercase">IN STOCK</span>
-                            </div>
                           </div>
 
                           <div className="flex items-center justify-between">
-                            <div className="text-lg font-semibold text-[#004a99]">${cleanPrice(product.price)}</div>
+                            <div className="text-lg font-semibold text-[#004a99]">${cleanPrice(product.price)} / Ea.</div>
 
-                            <div className="flex gap-2">
-                              <Link
-                                href={`/refrigeration-equipment/${product.category?.slug || slug}/${product.id}`}
-                                className="py-2 px-4 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
-                              >
-                                <ArrowRight size={12} />
-                                View Details
-                              </Link>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  addToCart({
-                                    id: product.id,
-                                    name: product.title,
-                                    brand: product.brand || product.title.split(' ')[0],
-                                    price: product.price,
-                                    image: product.images[0] || '/placeholder.png',
-                                    quantity: 1,
-                                    category: 'refrigeration-equipment'
-                                  });
-                                }}
-                                className="py-2 px-4 cursor-pointer rounded-sm bg-[#cc3300] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#b32d00] transition-colors"
-                              >
-                                <ShoppingCart size={12} />
-                                Add to Cart
-                              </button>
-                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                addToCart({
+                                  id: product.id,
+                                  name: product.title,
+                                  title: product.title,
+                                  price: cleanPrice(product.price),
+                                  image: product.images[0] || '/placeholder.png',
+                                  quantity: 1,
+                                  category: 'refrigeration-equipment'
+                                });
+                              }}
+                              className="px-6 py-2.5 cursor-pointer rounded-sm bg-[#004a99] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#003d80] transition-colors flex items-center gap-2"
+                            >
+                              <ShoppingCart size={14} />
+                              Add to Cart
+                            </button>
                           </div>
                         </div>
                       </div>

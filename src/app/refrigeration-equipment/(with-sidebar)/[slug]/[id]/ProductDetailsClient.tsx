@@ -3,26 +3,33 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { useCart } from '@/context/CartContext';
 import {
   PhoneCall,
   FileText,
-  FileDown,
-  ArrowRight,
-  ZoomIn,
-  ZoomOut,
-  RotateCcw,
-  Maximize,
-  ChevronUp,
-  ChevronDown,
   CheckCircle2,
-  ShoppingCart,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  Minus,
   Plus,
-  Minus
+  Facebook,
+  Twitter,
+  Mail,
+  Info,
+  Truck,
+  ArrowRight,
+  Share2,
+  Star,
+  ShieldCheck,
+  CreditCard,
+  ShoppingCart
 } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 function extractProductInfo(text: string | null | undefined) {
   if (!text) return null;
@@ -47,6 +54,7 @@ type ProductType = {
   title: string;
   slug: string;
   brand?: string | null;
+  sku?: string | null;
   badge?: string | null;
   description?: string | null;
   keyFeatures?: string | null;
@@ -54,11 +62,12 @@ type ProductType = {
   type?: string | null;
   price?: string | null;
   images: string[];
-  warranty: string[];
-  detailedFeatures: string[];
+  warranty?: string[];
+  detailedFeatures?: string[];
   specs?: { label: string; value: string }[] | null;
   documents?: { name: string; url: string }[] | null;
   category?: { name: string; slug: string } | null;
+  faqs?: { question: string; answer: string }[];
 };
 
 type RelatedProduct = {
@@ -67,6 +76,8 @@ type RelatedProduct = {
   images: string[];
   price?: string | null;
   category?: { slug: string } | null;
+  slug?: string;
+  brand?: string | null;
 };
 
 export default function ProductDetailsClient({
@@ -80,430 +91,424 @@ export default function ProductDetailsClient({
 }) {
   const { addToCart } = useCart();
   const router = useRouter();
-  const formattedInfo = extractProductInfo(product.keyFeatures) || extractProductInfo(product.description) || null;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState('features');
-  const [zoomLevel, setZoomLevel] = useState(1);
   const [quantity, setQuantity] = useState(1);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [containerSize, setContainerSize] = useState({ width: 600, height: 600 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    description: true,
+    faqs: true
+  });
 
-  const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.5, 3));
-  const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.5, 1));
-  const handleResetZoom = () => setZoomLevel(1);
-
-  const incrementQuantity = () => setQuantity(prev => prev + 1);
-  const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
-
-  const handleFullscreen = () => {
-    if (imageContainerRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        imageContainerRef.current.requestFullscreen();
-      }
-    }
+  const toggleSection = (key: string) => {
+    setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const documents = (product.documents as { name: string; url: string }[] | null) || [];
-  const specs = (product.specs as { label: string; value: string }[] | null) || [];
-
-  const cleanPrice = (priceStr: string | null) => {
+  const cleanPrice = (priceStr: string | null | undefined) => {
     if (!priceStr) return '0.00';
     const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
     return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  // Determine which tabs to show
-  const hasTabs = product.detailedFeatures.length > 0 || specs.length > 0 || product.description;
+  const formattedInfo = extractProductInfo(product.keyFeatures) || extractProductInfo(product.description) || null;
+  const productImages = product.images && product.images.length > 0 ? product.images : ['/placeholder.png'];
+  const documents = product.documents || [];
+  const detailedFeatures = product.detailedFeatures || [];
+
+  const defaultFaqs = [
+    {
+      q: 'What is refrigeration equipment used for?',
+      a: 'Refrigeration equipment such as condensing units and evaporators are designed to maintain required cold temperatures for walk-in coolers, freezers, and commercial display cases.'
+    },
+    {
+      q: 'How do I choose the right unit capacity?',
+      a: 'Unit capacity depends on your box volume (cubic feet), target temperature (cooler vs freezer), ambient temperature, and usage level. Contact our specialists for custom calculations.'
+    },
+    {
+      q: 'What warranty is included?',
+      a: 'Our refrigeration units come with standard manufacturer warranties covering compressors and components. Additional extended warranty options may be available.'
+    },
+    {
+      q: 'How do I maintain condensing and evaporation units?',
+      a: 'Clean condenser coils quarterly, ensure proper airflow around external units, check door gaskets regularly, and inspect refrigerant levels during annual maintenance.'
+    }
+  ];
 
   return (
     <main className="min-h-screen bg-white">
       <Header />
 
-      <div className="pt-32 pb-20 md:pt-44 md:pb-24">
-        <div className="container px-4 relative">
+      <div className="pt-32 pb-20 md:pt-40 md:pb-24 bg-white transition-all duration-300">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Left Column: Product Gallery & Description / FAQ Accordions */}
+            <div className="w-full lg:w-[60%] flex flex-col">
+              {/* Product Featured Image & Thumbnails */}
+              <div className="grid grid-cols-[80px_1fr] border border-gray-200 pl-4 pt-4 gap-4">
+                {/* Left: Vertical Thumbnails */}
+                <div className="flex flex-col gap-2">
+                  {productImages.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImageIndex(i)}
+                      className={`cursor-pointer w-full aspect-square bg-white border rounded-sm overflow-hidden transition-all focus:outline-none p-1 relative ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
+                    >
+                      <Image
+                        src={img}
+                        alt={`View ${i + 1}`}
+                        fill
+                        className="object-contain p-1"
+                        sizes="80px"
+                      />
+                    </button>
+                  ))}
+                </div>
 
-
-          <div className="grid lg:grid-cols-[100px_6fr_4fr] gap-4 items-start bg-white p-0">
-            {/* Left: Product Gallery - Vertical Thumbnails */}
-            {product.images.length > 0 ? (
-              <div className="flex md:flex-col gap-2 w-full lg:col-span-1 h-auto max-h-[600px] overflow-x-auto md:overflow-y-auto no-scrollbar">
-                {product.images.length > 1 && (
-                  <button
-                    onClick={() => {
-                      const prevIdx = activeImageIndex === 0 ? product.images.length - 1 : activeImageIndex - 1;
-                      setActiveImageIndex(prevIdx);
-                      handleResetZoom();
+                {/* Main Image View with Zoom */}
+                <div className="flex items-center justify-center bg-white rounded-sm relative">
+                  <div
+                    className="relative w-full h-[600px] cursor-crosshair overflow-hidden"
+                    onMouseMove={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setMousePosition({
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                      });
+                      setContainerSize({
+                        width: rect.width,
+                        height: rect.height
+                      });
                     }}
-                    className="hidden md:flex w-full cursor-pointer h-8 bg-gray-100 hover:bg-gray-200 rounded-sm items-center justify-center transition-colors focus:outline-none shrink-0"
-                    aria-label="Previous image"
-                  >
-                    <ChevronUp className="text-gray-600" size={16} />
-                  </button>
-                )}
-
-                {product.images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setActiveImageIndex(i); handleResetZoom(); }}
-                    className={`cursor-pointer md:w-full md:aspect-square bg-white border rounded-sm overflow-hidden transition-all focus:outline-none p-1.5 relative ${i === activeImageIndex ? 'border-[#003d80]' : 'border-gray-200 hover:border-gray-300'}`}
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
                   >
                     <Image
-                      src={img}
-                      alt={`View ${i + 1}`}
+                      src={productImages[activeImageIndex]}
+                      alt={product.title}
                       fill
-                      className="object-contain p-1"
-                      sizes="(max-width: 1024px) 80px, 100px"
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 60vw"
                     />
-                  </button>
-                ))}
 
-                {product.images.length > 1 && (
+                    {/* Square Zoom Lens */}
+                    {isHovering && (
+                      <div
+                        className="absolute border border-blue-500 bg-white/30 pointer-events-none z-20"
+                        style={{
+                          left: Math.max(0, Math.min(mousePosition.x - 100, containerSize.width - 200)),
+                          top: Math.max(0, Math.min(mousePosition.y - 100, containerSize.height - 200)),
+                          width: '200px',
+                          height: '200px',
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Zoom Preview Panel */}
+                  {isHovering && (
+                    <div
+                      className="hidden lg:block absolute top-0 left-full ml-4 z-50 bg-white border border-gray-200 shadow-2xl pointer-events-none"
+                      style={{
+                        width: '500px',
+                        height: '500px',
+                        backgroundImage: `url(${productImages[activeImageIndex]})`,
+                        backgroundPosition: `${(mousePosition.x / containerSize.width) * 100}% ${(mousePosition.y / containerSize.height) * 100}%`,
+                        backgroundSize: `${containerSize.width * 2.5}px ${containerSize.height * 2.5}px`,
+                        backgroundRepeat: 'no-repeat'
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div>
+                {/* Description Section Accordion */}
+                <section className="bg-white p-8 mt-4 border border-gray-200">
                   <button
-                    onClick={() => {
-                      const nextIdx = activeImageIndex === product.images.length - 1 ? 0 : activeImageIndex + 1;
-                      setActiveImageIndex(nextIdx);
-                      handleResetZoom();
-                    }}
-                    className="hidden md:flex w-full cursor-pointer h-8 bg-gray-100 hover:bg-gray-200 rounded-sm items-center justify-center transition-colors focus:outline-none shrink-0"
-                    aria-label="Next image"
+                    onClick={() => toggleSection('description')}
+                    className="w-full flex items-center cursor-pointer justify-between mb-6 text-left"
                   >
-                    <ChevronDown className="text-gray-600" size={16} />
+                    <h2 className="text-xl font-bold text-gray-900">Description</h2>
+                    {expandedSections.description ? (
+                      <Minus size={24} className="text-gray-900" />
+                    ) : (
+                      <Plus size={24} className="text-gray-900" />
+                    )}
                   </button>
-                )}
-              </div>
-            ) : (
-              <div className="lg:col-span-1" />
-            )}
 
-            {/* Main Image View */}
-            <div ref={imageContainerRef} className="flex-1 bg-white border h-[500px] border-gray-200 overflow-hidden aspect-square w-full flex items-center justify-center relative lg:col-span-1 rounded-sm">
-              {/* Badge */}
-              {product.badge && (
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="inline-flex items-center bg-green-100 text-green-700 px-3 py-1 text-xs font-bold rounded-sm">
-                    {product.badge}
-                  </span>
-                </div>
-              )}
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedSections.description ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="space-y-4">
+                      {product.description && (
+                        <p className="text-sm text-gray-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: product.description }} />
+                      )}
 
-              <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
-                {product.images.length > 0 ? (
-                  <Image
-                    src={product.images[activeImageIndex]}
-                    alt={formattedInfo || product.title}
-                    fill
-                    priority
-                    style={{ transform: `scale(${zoomLevel})` }}
-                    className="object-contain transition-transform duration-300 ease-out"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                ) : (
-                  <div className="text-gray-400 font-semibold text-lg">No Image</div>
-                )}
-              </div>
+                      {detailedFeatures.length > 0 && (
+                        <div>
+                          <h3 className="text-sm font-bold text-gray-900 mb-3">Features:</h3>
+                          <ul className="space-y-2">
+                            {detailedFeatures.map((feature, idx) => (
+                              <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
+                                <span className="mt-2 size-1.5 rounded-full bg-gray-800 shrink-0"></span>
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-              {/* Image Controls */}
-              {product.images.length > 0 && (
-                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
-                  <div className="flex items-center gap-2">
-                    <button onClick={handleResetZoom} className="size-8 cursor-pointer bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
-                      <RotateCcw size={14} />
-                    </button>
-                    <button onClick={handleZoomIn} className="size-8 bg-white cursor-pointer border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
-                      <ZoomIn size={14} />
-                    </button>
-                    <button onClick={handleZoomOut} className="size-8 bg-white border cursor-pointer border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
-                      <ZoomOut size={14} />
-                    </button>
+                      {documents.length > 0 && (
+                        <div>
+                          {documents.map((doc, idx) => {
+                            if (doc.name === 'Spec Sheet') {
+                              return (
+                                <div key={idx} className="mt-6">
+                                  <h3 className="text-sm font-bold text-gray-900 mb-4">{doc.name}</h3>
+                                  <a href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-block">
+                                    <img
+                                      src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
+                                      alt="Download PDF"
+                                      className="h-12 object-contain"
+                                    />
+                                  </a>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <button onClick={handleFullscreen} className="size-8 bg-white border cursor-pointer border-gray-200 hover:bg-gray-50 text-gray-600 rounded-sm flex items-center justify-center transition-colors shadow-sm">
-                    <Maximize size={14} />
+                </section>
+
+                {/* FAQ Section Accordion */}
+                <section className="bg-white p-8 mt-4 border border-gray-200">
+                  <button
+                    onClick={() => toggleSection('faqs')}
+                    className="w-full flex items-center cursor-pointer justify-between mb-8 text-left"
+                  >
+                    <h2 className="text-xl font-bold text-gray-900">FAQ's</h2>
+                    {expandedSections.faqs ? (
+                      <Minus size={24} className="text-gray-900" />
+                    ) : (
+                      <Plus size={24} className="text-gray-900" />
+                    )}
                   </button>
-                </div>
-              )}
-            </div>
 
-            {/* Right: Product Info */}
-            <div className="flex flex-col lg:col-span-1 px-0 lg:pl-8">
-              <div className="mb-8 mt-3">
-                <h1 className="text-2xl  font-bold text-[#1f2937] tracking-tight">
-                  {product.title}
-                </h1>
-                {product.price && (
-                  <p className="text-xl font-bold text-[#004a99] mt-3">
-                    ${cleanPrice(product.price)}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-8">
-                {/* Key Features */}
-                {product.description && (
-                  <div>
-                    <h3 className="text-md font-bold text-[#1f2937] mb-4">Key Features</h3>
-                    <p className="text-gray-600 pl-4 text-[15px] leading-relaxed">
-                      {product.description}
-                    </p>
-                  </div>
-                )}
-
-                {/* Warranty */}
-                {product.warranty.length > 0 && (
-                  <div>
-                    <h3 className="text-md font-bold text-[#1f2937] mb-4">Warranty</h3>
-                    <ul className="space-y-4 pl-4">
-                      {product.warranty.map((item, i) => (
-                        <li key={i} className="text-gray-600 text-[15px] leading-relaxed">
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Documents */}
-                {documents.length > 0 && (
-                  <div>
-                    <h3 className="text-md font-bold text-[#1f2937] mb-4">Documents</h3>
-                    <div className="flex flex-wrap gap-x-6 gap-y-4 pl-4">
-                      {documents.map((doc, i) => (
-                        <a
-                          key={i}
-                          href={doc.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-3 text-[15px] font-semibold text-[#1f2937] hover:text-[#004a99] transition-colors"
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedSections.faqs ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <h3 className="text-lg font-bold text-gray-900 text-center mb-6">
+                      Refrigeration Equipment
+                    </h3>
+                    <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
+                      {defaultFaqs.map((item, index) => (
+                        <div
+                          key={index}
+                          className="border-b border-gray-200 last:border-b-0"
                         >
-                          <div className="size-9 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-400 transition-colors shadow-sm">
-                            <FileDown size={18} strokeWidth={1.5} />
+                          <button
+                            onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                            className="w-full text-left cursor-pointer p-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
+                          >
+                            <span className="font-bold text-sm text-gray-900 pr-4">
+                              {item.q}
+                            </span>
+                            {openFaqIndex === index ? (
+                              <Minus size={16} className="text-gray-500 shrink-0" />
+                            ) : (
+                              <Plus size={16} className="text-gray-500 shrink-0" />
+                            )}
+                          </button>
+                          <div
+                            className={`bg-white overflow-hidden transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+                          >
+                            <div className="p-4 border-t border-gray-100">
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {item.a}
+                              </p>
+                            </div>
                           </div>
-                          <span className="underline decoration-1 underline-offset-4 decoration-gray-300 hover:decoration-[#004a99]">
-                            {doc.name}
-                          </span>
-                        </a>
+                        </div>
                       ))}
                     </div>
                   </div>
-                )}
+                </section>
+              </div>
+            </div>
+
+            {/* Right Column: Product Info & Actions Panel */}
+            <div className="w-full lg:w-[35%] border border-gray-200 bg-white lg:sticky lg:top-24 self-start p-4 flex flex-col gap-6">
+              {/* Title */}
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+                {product.title}
+              </h1>
+
+              {/* Brand, SKU & Social Share */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 text-xs font-medium uppercase tracking-wider">
+                  <span className="text-black">{product.brand || product.title.split(' ')[0] || 'ICEMANZ'}</span>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-black">SKU: {product.sku || product.id.substring(0, 8).toUpperCase()}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Facebook size={18} className="text-gray-400 cursor-pointer hover:text-blue-600" />
+                  <Twitter size={18} className="text-gray-400 cursor-pointer hover:text-blue-400" />
+                  <Mail size={18} className="text-gray-400 cursor-pointer hover:text-red-500" />
+                </div>
               </div>
 
-              {/* Main Actions */}
-              <div className="space-y-4 mt-12 mb-14">
-                {/* Quantity Selector */}
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-semibold text-gray-700">Quantity:</span>
-                  <div className="flex items-center border border-gray-300 rounded-sm overflow-hidden">
-                    <button
-                      onClick={decrementQuantity}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus size={16} />
-                    </button>
-                    <span className="px-6 py-2 bg-white font-semibold text-gray-900 min-w-[60px] text-center">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={incrementQuantity}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus size={16} />
-                    </button>
-                  </div>
+              {/* Service Badges */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 bg-[#e7f3ff] border border-[#73a6ff] px-4 py-2 rounded-md">
+                  <CheckCircle2 size={16} className="text-green-600" />
+                  <p className="text-sm font-semibold text-blue-800">
+                    Price Match - Call Us For Best Price!
+                  </p>
                 </div>
+                <div className="flex items-center gap-2 bg-[#e7f3ff] border border-[#73a6ff] px-4 py-2 rounded-md">
+                  <Info size={16} className="text-blue-600" />
+                  <p className="text-sm font-semibold text-blue-800">
+                    Need a Custom Size? - Contact Us
+                  </p>
+                </div>
+              </div>
 
-                {/* Add to Cart & Call Specialist Buttons */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Price Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-2xl font-bold text-[#003366]">${cleanPrice(product.price)}</span>
+                  <span className="text-lg font-normal text-gray-500">/ Ea.</span>
+                </div>
+              </div>
+
+              {/* Quantity Selector */}
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-bold text-gray-800 uppercase">Quantity:</span>
+                <div className="flex items-center border border-gray-300 rounded-md">
                   <button
-                    onClick={() => {
-                      addToCart({
-                        id: product.id,
-                        name: product.title,
-                        brand: product.brand || 'IcemanZ',
-                        price: product.price,
-                        image: product.images[0] || '/placeholder.png',
-                        quantity: quantity,
-                        category: 'refrigeration-equipment'
-                      });
-                      router.push('/cart');
-                    }}
-                    className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-transparent bg-[#cc3300] text-white hover:bg-[#b32d00] transition-colors shadow-sm cursor-pointer"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
                   >
-                    <ShoppingCart size={18} />
-                    Add to Cart
+                    <Minus size={18} />
                   </button>
-                  <a
-                    href="tel:+17186786005"
-                    className="flex-1 py-4 px-6 inline-flex justify-center items-center gap-x-2 text-[15px] font-bold rounded-md border border-gray-200 bg-white text-[#1f2937] hover:bg-gray-50 transition-colors shadow-sm"
+                  <div className="w-12 h-10 flex items-center justify-center border-x border-gray-300 text-base font-semibold">
+                    {quantity}
+                  </div>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
                   >
-                    <PhoneCall size={18} />
-                    Call Specialist
-                  </a>
+                    <Plus size={18} />
+                  </button>
                 </div>
               </div>
+
+              {/* Action Button */}
+              <div>
+                <button
+                  onClick={() => {
+                    addToCart({
+                      id: product.id,
+                      name: product.title,
+                      title: product.title,
+                      price: cleanPrice(product.price),
+                      image: productImages[0] || '/placeholder.png',
+                      quantity: quantity,
+                      category: 'refrigeration-equipment'
+                    });
+                    router.push('/cart');
+                  }}
+                  className="bg-[#cc3300] w-full cursor-pointer text-white py-3 px-4 font-semibold rounded-sm hover:bg-[#b32d00] transition-colors tracking-wider text-sm"
+                >
+                  Add to Cart
+                </button>
+              </div>
+
+              {/* Product Attachments */}
+              {documents.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-base font-bold text-gray-900">Product Attachments</h3>
+                  {documents
+                    .filter(doc => doc.name !== 'Spec Sheet')
+                    .map((doc, idx) => (
+                      <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition-all shadow-sm">
+                        <div className="size-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+                          <FileText size={24} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900">{doc.name}</p>
+                        </div>
+                      </a>
+                    ))}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Bottom Tabs Section */}
-          {hasTabs && (
-            <div className="mt-16 bg-white border border-gray-200 rounded-sm">
-              {/* Tab Headers */}
-              <div className="flex flex-wrap justify-center border-b border-gray-200 px-4">
-                {product.detailedFeatures.length > 0 && (
-                  <button
-                    onClick={() => setActiveTab('features')}
-                    className="py-5 px-6 text-md font-semibold relative cursor-pointer"
-                  >
-                    Features
-                    {activeTab === 'features' && (
-                      <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#004a99]" />
-                    )}
-                  </button>
-                )}
-
-                {specs.length > 0 && (
-                  <button
-                    onClick={() => setActiveTab('additional_info')}
-                    className="py-5 px-6 text-md font-semibold relative cursor-pointer"
-                  >
-                    Additional information
-                    {activeTab === 'additional_info' && (
-                      <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#004a99]" />
-                    )}
-                  </button>
-                )}
-
-                {product.description && (
-                  <button
-                    onClick={() => setActiveTab('description')}
-                    className="py-5 px-6 text-md font-semibold relative cursor-pointer"
-                  >
-                    Description
-                    {activeTab === 'description' && (
-                      <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#004a99]" />
-                    )}
-                  </button>
-                )}
-              </div>
-
-              {/* Tab Content */}
-              <div className="p-8 md:p-12 max-w-6xl mx-auto">
-                {activeTab === 'features' && product.detailedFeatures.length > 0 && (
-                  <div className="space-y-8">
-                    <div className="grid md:grid-cols-2 gap-x-16 gap-y-10">
-                      <div className="space-y-5">
-                        {product.detailedFeatures
-                          .slice(0, Math.ceil(product.detailedFeatures.length / 2))
-                          .map((feature, idx) => (
-                            <div key={`left-${idx}`} className="flex items-start gap-4">
-                              <CheckCircle2 className="text-[#004a99] shrink-0 mt-0.5" size={22} strokeWidth={2} />
-                              <p className="text-gray-600 text-[15px] leading-relaxed">{feature}</p>
-                            </div>
-                          ))}
-                      </div>
-                      <div className="space-y-5 mt-10 md:mt-0">
-                        {product.detailedFeatures
-                          .slice(Math.ceil(product.detailedFeatures.length / 2))
-                          .map((feature, idx) => (
-                            <div key={`right-${idx}`} className="flex items-start gap-4">
-                              <CheckCircle2 className="text-[#004a99] shrink-0 mt-0.5" size={22} strokeWidth={2} />
-                              <p className="text-gray-600 text-[15px] leading-relaxed">{feature}</p>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'additional_info' && specs.length > 0 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-[#1f2937] tracking-tight mb-6">Specifications</h3>
-                    <table className="w-full text-left text-sm text-gray-600 border border-gray-200">
-                      <tbody>
-                        {specs.map((spec, i) => (
-                          <tr key={i} className="border-b border-gray-200">
-                            <th className="py-3 px-4 font-semibold text-gray-800 bg-gray-50 w-1/3">{spec.label}</th>
-                            <td className="py-3 px-4">{spec.value}</td>
-                          </tr>
-                        ))}
-                        {product.warranty.length > 0 && (
-                          <tr className="border-b border-gray-200">
-                            <th className="py-3 px-4 font-semibold text-gray-800 bg-gray-50">Warranty</th>
-                            <td className="py-3 px-4">
-                              <ul className="list-disc pl-4 space-y-1">
-                                {product.warranty.map((w, i) => <li key={i}>{w}</li>)}
-                              </ul>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {activeTab === 'description' && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-[#1f2937] tracking-tight mb-6">Product Description</h3>
-                    <div className="text-gray-600 text-[15px] leading-relaxed whitespace-pre-line">
-                      {formattedInfo}
-                      {product.description && <><br /><br />{product.description}</>}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Related Products */}
-          {relatedProducts.length > 0 && (
-            <div className="mt-12 md:mt-18 border-gray-100">
-              <h2 className="text-xl md:text-2xl font-bold text-[#1f2937] tracking-tight mb-8">
-                Related products
+          {/* Bottom Full-Width Sections: Google Reviews */}
+          <div className="w-full flex flex-col gap-8">
+            <section className="bg-white p-8 mt-4">
+              <h2 className="text-xl font-bold underline underline-offset-4 underline-yellow text-gray-900 text-center mb-8">
+                GOOGLE REVIEWS
               </h2>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6 mb-8">
-                {relatedProducts.map((rp) => (
-                  <Link
-                    key={rp.id}
-                    href={`/refrigeration-equipment/${rp.category?.slug || slug}/${rp.id}`}
-                    className="group bg-white border border-gray-200 rounded-sm p-2 overflow-hidden hover:-translate-y-1 transition-all duration-500 flex flex-col"
-                  >
-                    <div className="border-b border-gray-200 w-full rounded-sm bg-gray-50 overflow-hidden mb-3">
-                      {rp.images && rp.images[0] ? (
-                        <img src={rp.images[0]} alt={rp.title} className="size-full aspect-square object-contain transition-transform duration-700 group-hover:scale-105" />
-                      ) : (
-                        <div className="aspect-square flex items-center justify-center text-gray-400 font-semibold bg-gray-100">No Image</div>
-                      )}
-                    </div>
-                    <div className="flex flex-col text-center items-center px-1 mt-2 flex-1">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-1 tracking-tight group-hover:text-[#004a99] transition-colors line-clamp-2">
-                        {rp.title}
-                      </h3>
-                      {rp.price && (
-                        <p className="text-sm font-bold text-[#004a99] mb-2">
-                          ${cleanPrice(rp.price)}
-                        </p>
-                      )}
-                      <div className="flex items-center justify-center gap-1.5 mb-4">
-                        <div className="w-1.5 h-1.5 rounded-sm bg-[#00C853]"></div>
-                        <span className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest">In Stock</span>
-                      </div>
-                      <div className="w-full mt-auto pb-1">
-                        <div className="cursor-pointer w-full py-2.5 px-3 border-[1.5px] border-gray-200 rounded-sm flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-black text-[#0f172a] uppercase tracking-[0.2em] group-hover:border-[#004a99] group-hover:bg-[#004a99] group-hover:text-white transition-all duration-300 shadow-sm">
-                          View Details
+              <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
+                <div className="flex gap-4 overflow-x-auto pb-2">
+                  {[
+                    {
+                      name: "tysheantis walker",
+                      date: "Aug 5, 2025",
+                      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+                    },
+                    {
+                      name: "Alisha Finney",
+                      date: "Aug 3, 2025",
+                      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face"
+                    },
+                    {
+                      name: "Clarence Calhoun",
+                      date: "Jul 31, 2025",
+                      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+                    },
+                    {
+                      name: "Shee Kay",
+                      date: "Jul 28, 2025",
+                      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
+                    }
+                  ].map((review, index) => (
+                    <div key={index} className="w-64 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full overflow-hidden">
+                            <Image
+                              src={review.avatar}
+                              alt={review.name}
+                              width={32}
+                              height={32}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-gray-900">{review.name}</p>
+                            <p className="text-xs text-gray-500">{review.date}</p>
+                          </div>
                         </div>
                       </div>
+                      <div className="flex gap-0.5 mb-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} size={14} className="fill-yellow-400 text-yellow-400" />
+                        ))}
+                      </div>
                     </div>
-                  </Link>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-
+            </section>
+          </div>
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }
