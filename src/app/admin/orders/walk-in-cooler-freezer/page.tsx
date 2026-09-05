@@ -8,7 +8,7 @@ export default async function WalkInCoolerOrdersPage() {
     where: {
       OR: [
         { category: 'walk-in-cooler-freezer' },
-        { category: null }
+        { invoice: { category: 'walk-in-cooler-freezer' } }
       ]
     },
     include: {

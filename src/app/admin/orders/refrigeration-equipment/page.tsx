@@ -8,7 +8,7 @@ export default async function OrdersPage() {
     where: {
       OR: [
         { category: 'refrigeration-equipment' },
-        { category: null }
+        { invoice: { category: 'refrigeration-equipment' } }
       ]
     },
     include: {

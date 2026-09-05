@@ -17,6 +17,7 @@ import {
   Truck,
   ArrowLeft,
   ChevronDown,
+  ChevronUp,
   Plus,
   Minus,
   ArrowRight,
@@ -24,7 +25,7 @@ import {
   Grid3X3,
   ShoppingCart
 } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Product, Category } from '@prisma/client';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
@@ -35,13 +36,13 @@ const FilterSection = ({ id, title, children, expandedFilters, toggleFilter }: {
   <div className="flex flex-col bg-white border rounded-sm border-gray-200 mb-2">
     <button
       onClick={() => toggleFilter(id)}
-      className=" p-3 flex items-center cursor-pointer justify-between w-full border-b border-gray-200"
+      className="p-3 flex items-center cursor-pointer gap-2.5 w-full border-b border-gray-200 text-left"
     >
-      <span className="text-sm font-semibold text-gray-900">{title}</span>
-      {expandedFilters.includes(id) ? <Minus size={14} className="text-gray-800" /> : <Plus size={14} className="text-gray-800" />}
+      {expandedFilters.includes(id) ? <ChevronUp size={16} className="text-gray-900 shrink-0" /> : <ChevronDown size={16} className="text-gray-900 shrink-0" />}
+      <span className="text-sm font-semibold uppercase text-gray-900 tracking-wide">{title}</span>
     </button>
     {expandedFilters.includes(id) && (
-      <div className="p-5 space-y-4">
+      <div className="p-4 space-y-3">
         {children}
       </div>
     )}
@@ -58,6 +59,42 @@ const Checkbox = ({ label, count, checked, onChange }: { label: string, count?: 
     </span>
   </label>
 );
+
+const initialSizes = [
+  { name: '24.5(D) x 28.25(W) x 20.75(H)', defaultCount: 6 },
+  { name: '38.5(D) x 28.25(W) x 20.75(H)', defaultCount: 18 },
+  { name: '38.5(D) x 30.25(W) x 27.25(H)', defaultCount: 5 },
+  { name: '42.4(D) x 30.25(W) x 29.75(H)', defaultCount: 2 },
+  { name: '46.4 (D) x 38.1 (W) x 38 (H)', defaultCount: 2 },
+  { name: '58.2(D) x 38.1(W) x 39.25(H)', defaultCount: 2 },
+];
+
+const initialProductTypes = [
+  { name: 'Condensing Unit', defaultCount: 35 }
+];
+
+const initialWidths = [
+  { name: '28.5 Inches', defaultCount: 9 },
+  { name: '28.25 Inches', defaultCount: 15 },
+  { name: '30.25 Inches', defaultCount: 7 },
+  { name: '38.1 Inches', defaultCount: 4 },
+];
+
+const initialVoltages = [
+  { name: '208-230V/1Ph/60Hz', defaultCount: 13 },
+  { name: '208-230V/3Ph/60Hz', defaultCount: 22 },
+];
+
+const initialCondenserTypes = [
+  { name: 'Compressor', defaultCount: 35 }
+];
+
+const initialHeights = [
+  { name: '20.75 inches', defaultCount: 26 },
+  { name: '27.25 inches', defaultCount: 5 },
+  { name: '29.75 inches', defaultCount: 2 },
+  { name: '39.25 inches', defaultCount: 2 },
+];
 
 function extractProductInfo(text: string | null | undefined) {
   if (!text) return null;
@@ -129,6 +166,117 @@ function generateOptimizedTitle(product: any) {
   return [brand, model, capacity, temp, context].filter(Boolean).join(' ');
 }
 
+const skuToSpecs: Record<string, { size: string, width: string, height: string, voltage: string }> = {
+  // Size 1: 24.5(D) x 28.25(W) x 20.75(H) (6 products)
+  'TS006MR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS008MR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS010MR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS015XR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS015XR404A3': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS010XR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS010XR404A2A': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS006XR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS008XR404A2': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS006MR404A3': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS008MR404A3': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS010MR404A3': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS010XR404A3': { size: '24.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+
+  // Size 2: 38.5(D) x 28.25(W) x 20.75(H) (18 products)
+  'TS020MR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS015MR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS030XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS020XR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS015MR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS030XR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS025XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS060XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS025MR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS020MR404A3': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS020MR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS025MR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.5 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS020XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS035XR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS035XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS045XR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS045XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS055XR404A2A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS055XR404A3A': { size: '38.5(D) x 28.25(W) x 20.75(H)', width: '28.25 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+
+  // Size 3: 38.5(D) x 30.25(W) x 27.25(H) (5 products)
+  'TS040MR404A2': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS030MR404A2': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS030MR404A3': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS040MR404A3': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS060MR404A3A': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS060MR404A3': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS040XR404A3A': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS050XR404A3A': { size: '38.5(D) x 30.25(W) x 27.25(H)', width: '30.25 Inches', height: '27.25 inches', voltage: '208-230V/3Ph/60Hz' },
+
+  // Size 4: 42.4(D) x 30.25(W) x 29.75(H) (2 products)
+  'TS050MR404A2A': { size: '42.4(D) x 30.25(W) x 29.75(H)', width: '30.25 Inches', height: '29.75 inches', voltage: '208-230V/1Ph/60Hz' },
+  'TS050MR404A3A': { size: '42.4(D) x 30.25(W) x 29.75(H)', width: '30.25 Inches', height: '29.75 inches', voltage: '208-230V/3Ph/60Hz' },
+
+  // Size 5: 46.4 (D) x 38.1 (W) x 38 (H) (2 products)
+  'TS075XR404A3A': { size: '46.4 (D) x 38.1 (W) x 38 (H)', width: '38.1 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS100XR404A3': { size: '46.4 (D) x 38.1 (W) x 38 (H)', width: '38.1 Inches', height: '20.75 inches', voltage: '208-230V/3Ph/60Hz' },
+
+  // Size 6: 58.2(D) x 38.1(W) x 39.25(H) (2 products)
+  'TS075MR404A3A': { size: '58.2(D) x 38.1(W) x 39.25(H)', width: '38.1 Inches', height: '39.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS100MR404A3A': { size: '58.2(D) x 38.1(W) x 39.25(H)', width: '38.1 Inches', height: '39.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS075MR404A3': { size: '58.2(D) x 38.1(W) x 39.25(H)', width: '38.1 Inches', height: '39.25 inches', voltage: '208-230V/3Ph/60Hz' },
+  'TS100MR404A3': { size: '58.2(D) x 38.1(W) x 39.25(H)', width: '38.1 Inches', height: '39.25 inches', voltage: '208-230V/3Ph/60Hz' },
+
+  // STI Top Mount Combo Units Mappings
+  'STI110MP2': { size: '28.05 (D) x 53.5 (W) x 25.6 (H)', width: '53.5 Inches', height: '25.6 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI038LP2': { size: '28.05 (D) x 53.5 (W) x 25.6 (H)', width: '53.5 Inches', height: '25.6 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI155MP2': { size: '28.05 (D) x 53.5 (W) x 25.6 (H)', width: '53.5 Inches', height: '25.6 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI078MP2': { size: '28.05 (D) x 53.5 (W) x 25.6 (H)', width: '53.5 Inches', height: '25.6 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI075LP2': { size: '38.06 (D) x 53.5 (W) x 21 (H)', width: '53.5 Inches', height: '21 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI050LP2': { size: '38.06 (D) x 53.5 (W) x 21 (H)', width: '53.5 Inches', height: '21 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI055MP2': { size: '28 (D) x 52 (W) x 18 (H)', width: '52 Inches', height: '18 Inches', voltage: '208-230V/1Ph/60Hz' },
+  'STI025LP2': { size: '28 (D) x 53 (W) x 21 (H)', width: '53 Inches', height: '21 Inches', voltage: '208-230V/1Ph/60Hz' }
+};
+
+function getProductSpecs(product: any) {
+  let sku = (product.sku || '').toUpperCase();
+  if (!sku) {
+    const match = (product.title || '').match(/TS\d+[MX]R404A\w*/i);
+    if (match) sku = match[0].toUpperCase();
+  }
+
+  const mapped = sku ? skuToSpecs[sku] : null;
+
+  const rawSpecs = product.specs;
+  let specsObj: Record<string, any> = {};
+  if (rawSpecs && typeof rawSpecs === 'object' && !Array.isArray(rawSpecs)) {
+    specsObj = rawSpecs;
+  } else if (Array.isArray(rawSpecs)) {
+    rawSpecs.forEach((s: any) => {
+      if (s && s.label && s.value) {
+        specsObj[s.label.toLowerCase()] = s.value;
+      }
+    });
+  }
+
+  const size = mapped?.size || specsObj.size || (product.keyFeatures?.match(/Size:\s*([^•]+)/i)?.[1]?.trim());
+  const width = mapped?.width || specsObj.width || (product.keyFeatures?.match(/Width:\s*([^•]+)/i)?.[1]?.trim());
+  const height = mapped?.height || specsObj.height || (product.keyFeatures?.match(/Height:\s*([^•]+)/i)?.[1]?.trim());
+  const voltage = mapped?.voltage || specsObj.voltage || (product.keyFeatures?.match(/Voltage:\s*([^•]+)/i)?.[1]?.trim()) || (sku?.endsWith('2') || sku?.endsWith('2A') ? '208-230V/1Ph/60Hz' : sku?.endsWith('3') || sku?.endsWith('3A') ? '208-230V/3Ph/60Hz' : null);
+  const condenserType = mapped ? 'Compressor' : (specsObj.condenserType || 'Compressor');
+  const productType = mapped ? 'Condensing Unit' : (product.type || 'Condensing Unit');
+
+  return {
+    sku,
+    size: size || '',
+    width: width || '',
+    height: height || '',
+    voltage: voltage || '',
+    condenserType,
+    productType
+  };
+}
+
 export default function RefrigerationEquipmentClient({
   products,
   categories,
@@ -142,6 +290,9 @@ export default function RefrigerationEquipmentClient({
 }) {
   const { addToCart } = useCart();
   const router = useRouter();
+  const isEvaporationPage = slug === 'evaporation-units' || slug.includes('evaporat');
+  const isComboPage = slug === 'combo-units-package-units' || slug.includes('combo') || slug.includes('package');
+
   const [expandedItems, setExpandedItems] = useState<string[]>([
     'evaporation-units',
     'condensing-units',
@@ -153,27 +304,120 @@ export default function RefrigerationEquipmentClient({
     'indoor-pemmvl',
     'outdoor-bueip'
   ]);
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(8);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortOption, setSortOption] = useState<string>('default');
-  const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand']);
+  const [expandedFilters, setExpandedFilters] = useState<string[]>([
+    'brand',
+    'size',
+    'product-type',
+    'power-type',
+    'btu',
+    'width',
+    'voltage',
+    'depth',
+    'condenser-type',
+    'height'
+  ]);
 
   // Filter states
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedProductTypes, setSelectedProductTypes] = useState<string[]>([]);
+  const [selectedPowerTypes, setSelectedPowerTypes] = useState<string[]>([]);
+  const [selectedBtus, setSelectedBtus] = useState<string[]>([]);
+  const [selectedWidths, setSelectedWidths] = useState<string[]>([]);
+  const [selectedVoltages, setSelectedVoltages] = useState<string[]>([]);
+  const [selectedDepths, setSelectedDepths] = useState<string[]>([]);
+  const [selectedCondenserTypes, setSelectedCondenserTypes] = useState<string[]>([]);
+  const [selectedHeights, setSelectedHeights] = useState<string[]>([]);
 
   // Calculate filter counts from products
   const filterCounts = useMemo(() => {
     const counts = {
-      brands: {} as Record<string, number>
+      brands: {} as Record<string, number>,
+      sizes: {} as Record<string, number>,
+      productTypes: {} as Record<string, number>,
+      widths: {} as Record<string, number>,
+      voltages: {} as Record<string, number>,
+      condenserTypes: {} as Record<string, number>,
+      heights: {} as Record<string, number>,
     };
 
     products.forEach(product => {
-      // Brand - extract from product.brand or title
+      // Brand
       const brand = product.brand || product.title.split(' ')[0];
       if (brand) {
         counts.brands[brand] = (counts.brands[brand] || 0) + 1;
       }
+
+      const specs = getProductSpecs(product);
+      const textToSearch = `${product.title || ''} ${product.keyFeatures || ''} ${product.description || ''} ${JSON.stringify(product.specs || '')} ${product.brand || ''}`.toLowerCase();
+
+      // Sizes
+      initialSizes.forEach(item => {
+        if (specs.size && specs.size.toLowerCase() === item.name.toLowerCase()) {
+          counts.sizes[item.name] = (counts.sizes[item.name] || 0) + 1;
+        } else {
+          const numbers = item.name.match(/[\d.]+/g);
+          if (numbers && numbers.length >= 2) {
+            if (numbers.every(n => textToSearch.includes(n.toLowerCase()))) {
+              counts.sizes[item.name] = (counts.sizes[item.name] || 0) + 1;
+            }
+          }
+        }
+      });
+
+      // Product Types
+      initialProductTypes.forEach(item => {
+        if (specs.productType?.toLowerCase().includes(item.name.toLowerCase()) || textToSearch.includes(item.name.toLowerCase()) || (product.type && product.type.toLowerCase().includes(item.name.toLowerCase()))) {
+          counts.productTypes[item.name] = (counts.productTypes[item.name] || 0) + 1;
+        }
+      });
+
+      // Widths
+      initialWidths.forEach(item => {
+        const cleanWidthName = item.name.toLowerCase().replace(' inches', '').trim();
+        if (specs.width?.toLowerCase().includes(cleanWidthName)) {
+          counts.widths[item.name] = (counts.widths[item.name] || 0) + 1;
+        } else {
+          const num = item.name.match(/[\d.]+/)?.[0];
+          if (num && textToSearch.includes(num)) {
+            counts.widths[item.name] = (counts.widths[item.name] || 0) + 1;
+          }
+        }
+      });
+
+      // Voltages
+      initialVoltages.forEach(item => {
+        if (specs.voltage && specs.voltage.toLowerCase().includes(item.name.toLowerCase())) {
+          counts.voltages[item.name] = (counts.voltages[item.name] || 0) + 1;
+        } else if (item.name.includes('1Ph') && (specs.sku?.endsWith('2') || specs.sku?.endsWith('2A') || textToSearch.includes('1ph') || textToSearch.includes('1 ph') || textToSearch.includes('208-230v/1ph'))) {
+          counts.voltages[item.name] = (counts.voltages[item.name] || 0) + 1;
+        } else if (item.name.includes('3Ph') && (specs.sku?.endsWith('3') || specs.sku?.endsWith('3A') || textToSearch.includes('3ph') || textToSearch.includes('3 ph') || textToSearch.includes('208-230v/3ph'))) {
+          counts.voltages[item.name] = (counts.voltages[item.name] || 0) + 1;
+        }
+      });
+
+      // Condenser Types
+      initialCondenserTypes.forEach(item => {
+        counts.condenserTypes[item.name] = (counts.condenserTypes[item.name] || 0) + 1;
+      });
+
+      // Heights
+      initialHeights.forEach(item => {
+        const cleanHeightName = item.name.toLowerCase().replace(' inches', '').trim();
+        if (specs.height?.toLowerCase().includes(cleanHeightName)) {
+          counts.heights[item.name] = (counts.heights[item.name] || 0) + 1;
+        } else {
+          const num = item.name.match(/[\d.]+/)?.[0];
+          if (num && textToSearch.includes(num)) {
+            counts.heights[item.name] = (counts.heights[item.name] || 0) + 1;
+          }
+        }
+      });
     });
 
     return counts;
@@ -181,7 +425,14 @@ export default function RefrigerationEquipmentClient({
 
   // Derive brands list, sorting "Icemanz" to the top
   const brands = useMemo(() => {
+    if (isEvaporationPage) {
+      return [{ name: 'Turbo Air', count: 23 }];
+    }
+
     const existingBrands = { ...filterCounts.brands };
+    if (isComboPage) {
+      existingBrands['Turbo Air'] = filterCounts.brands['Turbo Air'] || (products.length || 8);
+    }
     if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'icemanz')) {
       existingBrands['Icemanz'] = 0;
     }
@@ -194,7 +445,142 @@ export default function RefrigerationEquipmentClient({
       if (bName === 'icemanz') return 1;
       return aName.localeCompare(bName);
     });
-  }, [filterCounts.brands]);
+  }, [filterCounts.brands, isEvaporationPage, isComboPage, products.length]);
+
+  const sizesList = useMemo(() => {
+    if (isComboPage) {
+      return [
+        { name: '28 (D) x 52 (W) x 18 (H)', count: 1 },
+        { name: '28 (D) x 53 (W) x 21 (H)', count: 1 },
+        { name: '28.05 (D) x 53.5 (W) x 25.6 (H)', count: 4 },
+        { name: '38.06 (D) x 53.5 (W) x 21 (H)', count: 2 }
+      ];
+    }
+    return initialSizes.map(item => ({
+      name: item.name,
+      count: item.defaultCount
+    }));
+  }, [isComboPage]);
+
+  const productTypesList = useMemo(() => {
+    if (isEvaporationPage) {
+      return [{ name: 'Evaporator Coil', count: 23 }];
+    }
+    if (isComboPage) {
+      return [
+        { name: 'Indoor Package Unit', count: 7 },
+        { name: 'Self-Contained Package Unit', count: 1 }
+      ];
+    }
+    return initialProductTypes.map(item => ({
+      name: item.name,
+      count: item.defaultCount
+    }));
+  }, [isEvaporationPage, isComboPage]);
+
+  const powerTypesList = useMemo(() => {
+    if (isEvaporationPage) {
+      return [{ name: 'Evaporator Coil', count: 23 }];
+    }
+    return [];
+  }, [isEvaporationPage]);
+
+  const btusList = useMemo(() => {
+    if (isComboPage) {
+      const countsMap: Record<string, number> = {};
+      products.forEach(p => {
+        const text = `${p.title || ''} ${p.keyFeatures || ''} ${JSON.stringify(p.specs || '')}`;
+        const match = text.match(/([\d,]+)\s*BTU/i);
+        if (match) {
+          const formatted = `${match[1]} BTU`;
+          countsMap[formatted] = (countsMap[formatted] || 0) + 1;
+        }
+      });
+      const entries = Object.entries(countsMap).map(([name, count]) => ({ name, count }));
+      if (entries.length > 0) {
+        return entries.sort((a, b) => parseInt(a.name.replace(/[^0-9]/g, '')) - parseInt(b.name.replace(/[^0-9]/g, '')));
+      }
+      return [
+        { name: '2,200 BTU', count: 1 },
+        { name: '2,500 BTU', count: 1 },
+        { name: '3,800 BTU', count: 1 },
+        { name: '5,000 BTU', count: 1 },
+        { name: '5,500 BTU', count: 1 },
+        { name: '7,500 BTU', count: 1 },
+        { name: '7,800 BTU', count: 1 },
+        { name: '15,500 BTU', count: 1 }
+      ];
+    }
+    return [];
+  }, [isComboPage, products]);
+
+  const widthsList = useMemo(() => {
+    if (isComboPage) {
+      return [
+        { name: '52 Inches', count: 1 },
+        { name: '53 Inches', count: 1 },
+        { name: '53.5 Inches', count: 6 }
+      ];
+    }
+    return initialWidths.map(item => ({
+      name: item.name,
+      count: item.defaultCount
+    }));
+  }, [isComboPage]);
+
+  const voltagesList = useMemo(() => {
+    if (isEvaporationPage) {
+      return [
+        { name: '115V/1Ph/60Hz', count: 11 },
+        { name: '208-230V/1Ph/60Hz', count: 12 }
+      ];
+    }
+    if (isComboPage) {
+      return [{ name: '208-230V/1Ph/60Hz', count: 8 }];
+    }
+    return initialVoltages.map(item => ({
+      name: item.name,
+      count: item.defaultCount
+    }));
+  }, [isEvaporationPage, isComboPage]);
+
+  const depthsList = useMemo(() => {
+    if (isComboPage) {
+      return [
+        { name: '28 Inches', count: 2 },
+        { name: '28.05 Inches', count: 4 },
+        { name: '38.06 Inches', count: 2 }
+      ];
+    }
+    return [];
+  }, [isComboPage]);
+
+  const condenserTypesList = useMemo(() => {
+    if (isComboPage) {
+      return [
+        { name: 'Scroll Compressor', count: 7 },
+        { name: 'Self-Contained Compressor', count: 1 }
+      ];
+    }
+    return initialCondenserTypes.map(item => ({
+      name: item.name,
+      count: item.defaultCount
+    }));
+  }, [isComboPage]);
+
+  const heightsList = useMemo(() => {
+    if (isComboPage) {
+      return [
+        { name: '18 Inches', count: 1 },
+        { name: '21 Inches', count: 3 },
+        { name: '25.6 Inches', count: 4 }
+      ];
+    }
+    return initialHeights.map(item => ({
+      name: item.name,
+      count: item.defaultCount
+    }));
+  }, [isComboPage]);
 
   const toggleExpand = (e: React.MouseEvent, itemSlug: string) => {
     e.preventDefault();
@@ -218,18 +604,308 @@ export default function RefrigerationEquipmentClient({
     );
   };
 
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev =>
+      prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
+    );
+  };
+
+  const toggleProductType = (type: string) => {
+    setSelectedProductTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
+  const togglePowerType = (type: string) => {
+    setSelectedPowerTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
+  const toggleBtu = (btu: string) => {
+    setSelectedBtus(prev =>
+      prev.includes(btu) ? prev.filter(b => b !== btu) : [...prev, btu]
+    );
+  };
+
+  const toggleWidth = (width: string) => {
+    setSelectedWidths(prev =>
+      prev.includes(width) ? prev.filter(w => w !== width) : [...prev, width]
+    );
+  };
+
+  const toggleVoltage = (voltage: string) => {
+    setSelectedVoltages(prev =>
+      prev.includes(voltage) ? prev.filter(v => v !== voltage) : [...prev, voltage]
+    );
+  };
+
+  const toggleDepth = (depth: string) => {
+    setSelectedDepths(prev =>
+      prev.includes(depth) ? prev.filter(d => d !== depth) : [...prev, depth]
+    );
+  };
+
+  const toggleCondenserType = (type: string) => {
+    setSelectedCondenserTypes(prev =>
+      prev.includes(type) ? prev.filter(c => c !== type) : [...prev, type]
+    );
+  };
+
+  const toggleHeight = (height: string) => {
+    setSelectedHeights(prev =>
+      prev.includes(height) ? prev.filter(h => h !== height) : [...prev, height]
+    );
+  };
+
   const clearAllFilters = () => {
     setSelectedBrands([]);
+    setSelectedSizes([]);
+    setSelectedProductTypes([]);
+    setSelectedPowerTypes([]);
+    setSelectedBtus([]);
+    setSelectedWidths([]);
+    setSelectedVoltages([]);
+    setSelectedDepths([]);
+    setSelectedCondenserTypes([]);
+    setSelectedHeights([]);
   };
+
+  const hasActiveFilters = useMemo(() => {
+    return (
+      selectedBrands.length > 0 ||
+      selectedSizes.length > 0 ||
+      selectedProductTypes.length > 0 ||
+      selectedPowerTypes.length > 0 ||
+      selectedBtus.length > 0 ||
+      selectedWidths.length > 0 ||
+      selectedVoltages.length > 0 ||
+      selectedDepths.length > 0 ||
+      selectedCondenserTypes.length > 0 ||
+      selectedHeights.length > 0
+    );
+  }, [
+    selectedBrands,
+    selectedSizes,
+    selectedProductTypes,
+    selectedPowerTypes,
+    selectedBtus,
+    selectedWidths,
+    selectedVoltages,
+    selectedDepths,
+    selectedCondenserTypes,
+    selectedHeights
+  ]);
 
   // Filter products based on selected filters
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
+      // Brand filter
       const brand = product.brand || product.title.split(' ')[0];
-      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand);
-      return brandMatch;
+      const brandMatch = selectedBrands.length === 0 || selectedBrands.some(b => {
+        const bLower = b.toLowerCase();
+        const prodBrand = (product.brand || '').toLowerCase();
+        const prodTitle = (product.title || '').toLowerCase();
+        return bLower === brand.toLowerCase() || prodBrand.includes(bLower) || prodTitle.includes(bLower);
+      });
+      if (!brandMatch) return false;
+
+      const textToSearch = `${product.title || ''} ${product.keyFeatures || ''} ${product.description || ''} ${JSON.stringify(product.specs || '')} ${product.brand || ''}`.toLowerCase();
+
+      // Evaporation Page Specific Filtering
+      if (isEvaporationPage) {
+        // Product Type filter
+        if (selectedProductTypes.length > 0) {
+          const typeMatch = selectedProductTypes.some(type =>
+            textToSearch.includes(type.toLowerCase()) || textToSearch.includes('evaporat') || textToSearch.includes('coil')
+          );
+          if (!typeMatch) return false;
+        }
+
+        // Power Type filter
+        if (selectedPowerTypes.length > 0) {
+          const powerMatch = selectedPowerTypes.some(type =>
+            textToSearch.includes(type.toLowerCase()) || textToSearch.includes('evaporat') || textToSearch.includes('coil')
+          );
+          if (!powerMatch) return false;
+        }
+
+        // Voltage filter
+        if (selectedVoltages.length > 0) {
+          const voltageMatch = selectedVoltages.some(v => {
+            if (v.includes('115V')) return textToSearch.includes('115v');
+            if (v.includes('208-230V')) return textToSearch.includes('208-230v');
+            return textToSearch.includes(v.toLowerCase());
+          });
+          if (!voltageMatch) return false;
+        }
+
+        return true;
+      }
+
+      // Combo Page Specific Filtering
+      if (isComboPage) {
+        if (selectedSizes.length > 0) {
+          const sizeMatch = selectedSizes.some(s => {
+            const numbers = s.match(/[\d.]+/g);
+            if (numbers && numbers.length >= 2) {
+              return numbers.every(n => textToSearch.includes(n));
+            }
+            return textToSearch.includes(s.toLowerCase()) || JSON.stringify(product).toLowerCase().includes(s.toLowerCase());
+          });
+          if (!sizeMatch) return false;
+        }
+
+        if (selectedProductTypes.length > 0) {
+          const typeMatch = selectedProductTypes.some(t => {
+            const term = t.toLowerCase();
+            if (term.includes('self-contained')) return textToSearch.includes('self-contained');
+            if (term.includes('indoor package') || term.includes('top mount')) {
+              return textToSearch.includes('indoor package') || textToSearch.includes('top mount') || textToSearch.includes('refrigeration system') || (product.type && product.type.toLowerCase().includes('top mount'));
+            }
+            return textToSearch.includes(term);
+          });
+          if (!typeMatch) return false;
+        }
+
+        if (selectedBtus.length > 0) {
+          const btuMatch = selectedBtus.some(b => {
+            const rawDigits = b.replace(/[^0-9]/g, '');
+            if (!rawDigits) return textToSearch.includes(b.toLowerCase());
+            const formatted = rawDigits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return textToSearch.includes(rawDigits) || textToSearch.includes(formatted);
+          });
+          if (!btuMatch) return false;
+        }
+
+        if (selectedWidths.length > 0) {
+          const widthMatch = selectedWidths.some(w => {
+            const num = w.match(/[\d.]+/)?.[0];
+            return num ? textToSearch.includes(num) : textToSearch.includes(w.toLowerCase());
+          });
+          if (!widthMatch) return false;
+        }
+
+        if (selectedVoltages.length > 0) {
+          const voltageMatch = selectedVoltages.some(v => {
+            return textToSearch.includes('208-230v') || textToSearch.includes('208-230') || textToSearch.includes('1ph');
+          });
+          if (!voltageMatch) return false;
+        }
+
+        if (selectedDepths.length > 0) {
+          const depthMatch = selectedDepths.some(d => {
+            const num = d.match(/[\d.]+/)?.[0];
+            return num ? textToSearch.includes(num) : textToSearch.includes(d.toLowerCase());
+          });
+          if (!depthMatch) return false;
+        }
+
+        if (selectedCondenserTypes.length > 0) {
+          const condenserMatch = selectedCondenserTypes.some(c => {
+            const term = c.toLowerCase();
+            if (term.includes('scroll')) return textToSearch.includes('scroll');
+            if (term.includes('self-contained')) return textToSearch.includes('self-contained');
+            return textToSearch.includes(term) || textToSearch.includes('compressor');
+          });
+          if (!condenserMatch) return false;
+        }
+
+        if (selectedHeights.length > 0) {
+          const heightMatch = selectedHeights.some(h => {
+            const num = h.match(/[\d.]+/)?.[0];
+            return num ? textToSearch.includes(num) : textToSearch.includes(h.toLowerCase());
+          });
+          if (!heightMatch) return false;
+        }
+
+        return true;
+      }
+
+      const specs = getProductSpecs(product);
+
+      // Size filter
+      if (selectedSizes.length > 0) {
+        const sizeMatch = selectedSizes.some(selectedSize => {
+          if (specs.size && specs.size.toLowerCase() === selectedSize.toLowerCase()) return true;
+          const numbers = selectedSize.match(/[\d.]+/g);
+          if (numbers && numbers.length >= 2) {
+            return numbers.every(n => textToSearch.includes(n.toLowerCase()));
+          }
+          return textToSearch.includes(selectedSize.toLowerCase());
+        });
+        if (!sizeMatch) return false;
+      }
+
+      // Product Type filter
+      if (selectedProductTypes.length > 0) {
+        const typeMatch = selectedProductTypes.some(type => {
+          if (specs.productType && specs.productType.toLowerCase().includes(type.toLowerCase())) return true;
+          return textToSearch.includes(type.toLowerCase()) || (product.type && product.type.toLowerCase().includes(type.toLowerCase()));
+        });
+        if (!typeMatch) return false;
+      }
+
+      // Width filter
+      if (selectedWidths.length > 0) {
+        const widthMatch = selectedWidths.some(w => {
+          const cleanWidth = w.toLowerCase().replace(' inches', '').trim();
+          if (specs.width && specs.width.toLowerCase().includes(cleanWidth)) return true;
+          const num = w.match(/[\d.]+/)?.[0];
+          return num ? textToSearch.includes(num) : textToSearch.includes(w.toLowerCase());
+        });
+        if (!widthMatch) return false;
+      }
+
+      // Voltage filter
+      if (selectedVoltages.length > 0) {
+        const voltageMatch = selectedVoltages.some(v => {
+          if (specs.voltage && specs.voltage.toLowerCase().includes(v.toLowerCase())) return true;
+          if (v.includes('1Ph')) {
+            if (specs.sku && (specs.sku.endsWith('2') || specs.sku.endsWith('2A'))) return true;
+            return textToSearch.includes('1ph') || textToSearch.includes('1 ph') || textToSearch.includes('208-230v/1ph');
+          }
+          if (v.includes('3Ph')) {
+            if (specs.sku && (specs.sku.endsWith('3') || specs.sku.endsWith('3A'))) return true;
+            return textToSearch.includes('3ph') || textToSearch.includes('3 ph') || textToSearch.includes('208-230v/3ph');
+          }
+          return textToSearch.includes(v.toLowerCase());
+        });
+        if (!voltageMatch) return false;
+      }
+
+      // Condenser Type filter
+      if (selectedCondenserTypes.length > 0) {
+        const condenserMatch = selectedCondenserTypes.some(c => {
+          if (c.toLowerCase() === 'compressor') return true;
+          return textToSearch.includes(c.toLowerCase()) || textToSearch.includes('condens') || textToSearch.includes('unit');
+        });
+        if (!condenserMatch) return false;
+      }
+
+      // Height filter
+      if (selectedHeights.length > 0) {
+        const heightMatch = selectedHeights.some(h => {
+          const cleanHeight = h.toLowerCase().replace(' inches', '').trim();
+          if (specs.height && specs.height.toLowerCase().includes(cleanHeight)) return true;
+          const num = h.match(/[\d.]+/)?.[0];
+          return num ? textToSearch.includes(num) : textToSearch.includes(h.toLowerCase());
+        });
+        if (!heightMatch) return false;
+      }
+
+      return true;
     });
-  }, [products, selectedBrands]);
+  }, [
+    products,
+    selectedBrands,
+    selectedSizes,
+    selectedProductTypes,
+    selectedWidths,
+    selectedVoltages,
+    selectedCondenserTypes,
+    selectedHeights
+  ]);
 
   // Sort products based on selected sort option
   const sortedProducts = useMemo(() => {
@@ -258,6 +934,29 @@ export default function RefrigerationEquipmentClient({
   }, [filteredProducts, sortOption]);
 
   const displayedProducts = sortedProducts;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    selectedBrands,
+    selectedSizes,
+    selectedProductTypes,
+    selectedPowerTypes,
+    selectedBtus,
+    selectedWidths,
+    selectedVoltages,
+    selectedDepths,
+    selectedCondenserTypes,
+    selectedHeights,
+    sortOption
+  ]);
+
+  const totalPages = Math.ceil(displayedProducts.length / ITEMS_PER_PAGE);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return displayedProducts.slice(start, start + ITEMS_PER_PAGE);
+  }, [displayedProducts, currentPage]);
 
   const cleanPrice = (priceStr: string | null) => {
     if (!priceStr) return '0.00';
@@ -326,8 +1025,107 @@ export default function RefrigerationEquipmentClient({
                           </button>
                         </div>
                       ))}
+                      {selectedSizes.map(size => (
+                        <div key={size} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Size: {size}
+                          <button
+                            onClick={() => toggleSize(size)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedProductTypes.map(type => (
+                        <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Type: {type}
+                          <button
+                            onClick={() => toggleProductType(type)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedPowerTypes.map(type => (
+                        <div key={type} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Power Type: {type}
+                          <button
+                            onClick={() => togglePowerType(type)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedBtus.map(btu => (
+                        <div key={btu} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          BTU: {btu}
+                          <button
+                            onClick={() => toggleBtu(btu)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedWidths.map(w => (
+                        <div key={w} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Width: {w}
+                          <button
+                            onClick={() => toggleWidth(w)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedVoltages.map(v => (
+                        <div key={v} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Voltage: {v}
+                          <button
+                            onClick={() => toggleVoltage(v)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedDepths.map(depth => (
+                        <div key={depth} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Depth: {depth}
+                          <button
+                            onClick={() => toggleDepth(depth)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedCondenserTypes.map(c => (
+                        <div key={c} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Condenser: {c}
+                          <button
+                            onClick={() => toggleCondenserType(c)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      {selectedHeights.map(h => (
+                        <div key={h} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                          Height: {h}
+                          <button
+                            onClick={() => toggleHeight(h)}
+                            className="hover:text-primary cursor-pointer transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                    {selectedBrands.length > 0 && (
+                    {hasActiveFilters && (
                       <button
                         onClick={clearAllFilters}
                         className="text-sm mt-5 cursor-pointer font-normal underline text-black decoration-gray-900 underline-offset-2 hover:text-primary hover:decoration-primary transition-all"
@@ -338,17 +1136,253 @@ export default function RefrigerationEquipmentClient({
                   </div>
 
                   <div className="bg-white p-2">
-                    <FilterSection id="brand" title="Brand" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                      {brands.map((brand) => (
-                        <Checkbox
-                          key={brand.name}
-                          label={brand.name}
-                          count={brand.count}
-                          checked={selectedBrands.includes(brand.name)}
-                          onChange={() => toggleBrand(brand.name)}
-                        />
-                      ))}
-                    </FilterSection>
+                    {isEvaporationPage ? (
+                      <>
+                        <FilterSection id="brand" title="BRAND" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {brands.map((brand) => (
+                            <Checkbox
+                              key={brand.name}
+                              label={brand.name}
+                              count={brand.count}
+                              checked={selectedBrands.includes(brand.name)}
+                              onChange={() => toggleBrand(brand.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="product-type" title="PRODUCT TYPE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {productTypesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedProductTypes.includes(item.name)}
+                              onChange={() => toggleProductType(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="power-type" title="POWER TYPE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {powerTypesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedPowerTypes.includes(item.name)}
+                              onChange={() => togglePowerType(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="voltage" title="VOLTAGE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {voltagesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedVoltages.includes(item.name)}
+                              onChange={() => toggleVoltage(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+                      </>
+                    ) : isComboPage ? (
+                      <>
+                        <FilterSection id="brand" title="BRAND" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {brands.map((brand) => (
+                            <Checkbox
+                              key={brand.name}
+                              label={brand.name}
+                              count={brand.count}
+                              checked={selectedBrands.includes(brand.name)}
+                              onChange={() => toggleBrand(brand.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="size" title="SIZE W X L" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {sizesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedSizes.includes(item.name)}
+                              onChange={() => toggleSize(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="product-type" title="PRODUCT TYPE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {productTypesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedProductTypes.includes(item.name)}
+                              onChange={() => toggleProductType(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="btu" title="BTU" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {btusList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedBtus.includes(item.name)}
+                              onChange={() => toggleBtu(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="width" title="WIDTH" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {widthsList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedWidths.includes(item.name)}
+                              onChange={() => toggleWidth(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="voltage" title="VOLTAGE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {voltagesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedVoltages.includes(item.name)}
+                              onChange={() => toggleVoltage(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="depth" title="DEPTH" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {depthsList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedDepths.includes(item.name)}
+                              onChange={() => toggleDepth(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="condenser-type" title="CONDENSER TYPE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {condenserTypesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedCondenserTypes.includes(item.name)}
+                              onChange={() => toggleCondenserType(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="height" title="HEIGHT" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {heightsList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedHeights.includes(item.name)}
+                              onChange={() => toggleHeight(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+                      </>
+                    ) : (
+                      <>
+                        <FilterSection id="brand" title="BRAND" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {brands.map((brand) => (
+                            <Checkbox
+                              key={brand.name}
+                              label={brand.name}
+                              count={brand.count}
+                              checked={selectedBrands.includes(brand.name)}
+                              onChange={() => toggleBrand(brand.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="size" title="SIZE W X L" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {sizesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedSizes.includes(item.name)}
+                              onChange={() => toggleSize(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="product-type" title="PRODUCT TYPE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {productTypesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedProductTypes.includes(item.name)}
+                              onChange={() => toggleProductType(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="width" title="WIDTH" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {widthsList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedWidths.includes(item.name)}
+                              onChange={() => toggleWidth(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="voltage" title="VOLTAGE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {voltagesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedVoltages.includes(item.name)}
+                              onChange={() => toggleVoltage(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="condenser-type" title="CONDENSER TYPE" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {condenserTypesList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedCondenserTypes.includes(item.name)}
+                              onChange={() => toggleCondenserType(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+
+                        <FilterSection id="height" title="HEIGHT" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                          {heightsList.map((item) => (
+                            <Checkbox
+                              key={item.name}
+                              label={item.name}
+                              count={item.count}
+                              checked={selectedHeights.includes(item.name)}
+                              onChange={() => toggleHeight(item.name)}
+                            />
+                          ))}
+                        </FilterSection>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -364,7 +1398,7 @@ export default function RefrigerationEquipmentClient({
                   <div className="flex flex-col">
                     <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
                     <p className="text-sm text-gray-500 mt-0.5">
-                      Showing {displayedProducts.length > 0 ? 1 : 0}–{Math.min(visibleCount, displayedProducts.length)} of {displayedProducts.length} results
+                      Showing {displayedProducts.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0}–{Math.min(currentPage * ITEMS_PER_PAGE, displayedProducts.length)} of {displayedProducts.length} results
                     </p>
                   </div>
 
@@ -409,7 +1443,7 @@ export default function RefrigerationEquipmentClient({
                     No products found in this category!
                   </div>
                 ) : (
-                  displayedProducts.slice(0, visibleCount).map((product) => {
+                  paginatedProducts.map((product) => {
                     const formattedInfo = extractProductInfo(product.keyFeatures) || extractProductInfo(product.description) || product.title;
                     return viewMode === 'grid' ? (
                       <div
@@ -526,13 +1560,48 @@ export default function RefrigerationEquipmentClient({
                 )}
               </div>
 
-              {displayedProducts.length > visibleCount && (
-                <div className="flex items-center justify-center gap-4 py-5">
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center my-10 gap-2">
                   <button
-                    onClick={() => setVisibleCount(displayedProducts.length)}
-                    className="bg-[#003d80] text-center uppercase font-semibold text-sm cursor-pointer text-white py-2 px-4 rounded-sm"
+                    onClick={() => {
+                      setCurrentPage(prev => Math.max(prev - 1, 1));
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    disabled={currentPage === 1}
+                    className="p-2 border border-gray-300 cursor-pointer rounded-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Load More
+                    <ChevronLeft size={20} className="text-gray-600" />
+                  </button>
+
+                  <div className="flex gap-1 overflow-x-auto max-w-full">
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          setCurrentPage(i + 1);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={`w-10 h-10 flex items-center cursor-pointer justify-center rounded-sm text-sm font-medium transition-colors ${
+                          currentPage === i + 1
+                            ? 'bg-[#004a99] text-white border border-[#004a99]'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    disabled={currentPage === totalPages}
+                    className="p-2 border border-gray-300 cursor-pointer rounded-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronRight size={20} className="text-gray-600" />
                   </button>
                 </div>
               )}

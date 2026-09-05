@@ -37,7 +37,7 @@ const FilterSection = ({ id, title, children, expandedFilters, toggleFilter }: {
       {expandedFilters.includes(id) ? <Minus size={14} className="text-gray-800" /> : <Plus size={14} className="text-gray-800" />}
     </button>
     {expandedFilters.includes(id) && (
-      <div className="p-5 space-y-4">
+      <div className="p-5 space-y-4 max-h-60 overflow-y-auto pr-1">
         {children}
       </div>
     )}
@@ -122,7 +122,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
-  const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'custom-product']);
+  const [expandedFilters, setExpandedFilters] = useState<string[]>(['brand', 'floor', 'size', 'refrigeration', 'walk-in-type', 'product-type', 'custom-product']);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [selectedBoxType, setSelectedBoxType] = useState<string | null>(null);
   const [visibleProductCount, setVisibleProductCount] = useState(40); // Increased initial count to show more products
@@ -130,117 +130,23 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [activeRefrigerationType, setActiveRefrigerationType] = useState<string | null>(null);
   const [sortOption, setSortOption] = useState<string>('default');
 
-  // Derive filter counts from products
-  const filterCounts = useMemo(() => {
-    const counts = {
-      brands: {} as Record<string, number>,
-      sizes: {
-        "6' x 6'": 0,
-        "6' x 8'": 0,
-        "6' x 10'": 0,
-        "6' x 12'": 0,
-        "8' x 8'": 0,
-        "8' x 10'": 0,
-        "8' x 12'": 0,
-        "10' x 10'": 0
-      } as Record<string, number>,
-      refrigeration: {
-        'No Refrigeration': 0,
-        'Top-Mount Refrigeration': 0
-      } as Record<string, number>,
-      walkInTypes: {
-        'Cooler (Refrigerator) No Floor': 0,
-        'Cooler (Refrigerator) with Floor': 0,
-        'Freezer with Floor': 0,
-        'Combo (Cooler & Freezer)': 0
-      } as Record<string, number>
-    };
-
-    initialProducts.forEach(product => {
-      // Brand
-      const brand = product.brand || product.title.split(' ')[0];
-      if (brand) {
-        counts.brands[brand] = (counts.brands[brand] || 0) + 1;
-      }
-
-      // Size
-      let size = product.features?.size;
-      if (!size) {
-        const sizeMatch = product.title.match(/(\d+')\s*x\s*(\d+')/);
-        if (sizeMatch) {
-          size = `${sizeMatch[1]} x ${sizeMatch[2]}`;
-        }
-      }
-      if (size) {
-        if (counts.sizes[size] !== undefined) {
-          counts.sizes[size] += 1;
-        } else {
-          counts.sizes[size] = 1;
-        }
-      }
-
-      // Refrigeration
-      if (product.type) {
-        counts.refrigeration[product.type] = (counts.refrigeration[product.type] || 0) + 1;
-      }
-
-      // Walk In Type
-      let walkInType = product.features?.walkInType;
-      if (!walkInType) {
-        // Try to extract walk-in type from title if not in features
-        if (product.title.includes('Cooler')) {
-          if (product.title.includes('No Floor') || product.title.includes('Floorless')) {
-            walkInType = 'Cooler (Refrigerator) No Floor';
-          } else {
-            walkInType = 'Cooler (Refrigerator) with Floor';
-          }
-        } else if (product.title.includes('Freezer')) {
-          walkInType = 'Freezer with Floor';
-        } else if (product.title.includes('Combo')) {
-          walkInType = 'Combo (Cooler & Freezer)';
-        }
-      }
-      if (walkInType) {
-        counts.walkInTypes[walkInType] = (counts.walkInTypes[walkInType] || 0) + 1;
-      }
-    });
-
-    return counts;
-  }, [initialProducts]);
-
-  // Dynamic Filter States
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedRefrigerationTypes, setSelectedRefrigerationTypes] = useState<string[]>([]);
-  const [selectedWalkInTypes, setSelectedWalkInTypes] = useState<string[]>([]);
-
-  // Derive brands and counts from products, sorting "Icemanz" to the top
-  const brands = useMemo(() => {
-    // If Icemanz is not in the list but we want to show it, we can inject it
-    const existingBrands = { ...filterCounts.brands };
-    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'icemanz')) {
-      existingBrands['Icemanz'] = 0; // Add it with 0 count if it doesn't exist
-    }
-    // Always show Amerikooler with 0 products if it doesn't exist
-    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'amerikooler')) {
-      existingBrands['Amerikooler'] = 0;
-    }
-
-    const brandList = Object.entries(existingBrands).map(([name, count]) => ({ name, count }));
-    return brandList.sort((a, b) => {
-      const aName = a.name.toLowerCase();
-      const bName = b.name.toLowerCase();
-      if (aName === 'icemanz') return -1;
-      if (bName === 'icemanz') return 1;
-      return aName.localeCompare(bName);
-    });
-  }, [filterCounts.brands]);
-
-  // Helper to extract size from product title
+  // Helpers to extract product metadata
   const extractSize = (product: Product) => {
     if (product.features?.size) return product.features.size;
-    const match = product.title.match(/(\d+')\s*x\s*(\d+')/);
-    return match ? `${match[1]} x ${match[2]}` : '';
+    const matchWithQuote = product.title.match(/(\d+)'\s*x\s*(\d+)'/i);
+    if (matchWithQuote) return `${matchWithQuote[1]}' x ${matchWithQuote[2]}'`;
+    const matchNoQuote = product.title.match(/(\d+)\s*x\s*(\d+)/i);
+    if (matchNoQuote) return `${matchNoQuote[1]}' x ${matchNoQuote[2]}'`;
+    return '';
+  };
+
+  const getFloorType = (product: Product) => {
+    if (product.features?.floorType) return product.features.floorType;
+    const text = (product.title + ' ' + (product.features?.walkInType || '')).toLowerCase();
+    if (text.includes('floorless') || text.includes('no floor') || text.includes('without floor')) {
+      return 'No Floor';
+    }
+    return 'With Floor';
   };
 
   const getWalkInType = (product: Product) => {
@@ -260,20 +166,113 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     return '';
   };
 
+  // Derive filter counts from products
+  const filterCounts = useMemo(() => {
+    const counts = {
+      brands: {} as Record<string, number>,
+      floors: {} as Record<string, number>,
+      sizes: {} as Record<string, number>,
+      refrigeration: {} as Record<string, number>,
+      walkInTypes: {} as Record<string, number>
+    };
+
+    initialProducts.forEach(product => {
+      // Brand
+      const brand = product.brand || product.title.split(' ')[0];
+      if (brand) {
+        counts.brands[brand] = (counts.brands[brand] || 0) + 1;
+      }
+
+      // Floor
+      const floorType = getFloorType(product);
+      if (floorType) {
+        counts.floors[floorType] = (counts.floors[floorType] || 0) + 1;
+      }
+
+      // Size
+      const size = extractSize(product);
+      if (size) {
+        counts.sizes[size] = (counts.sizes[size] || 0) + 1;
+      }
+
+      // Refrigeration
+      const refrig = product.type || (product.features?.refrigerationType) || '';
+      if (refrig) {
+        counts.refrigeration[refrig] = (counts.refrigeration[refrig] || 0) + 1;
+      }
+
+      // Walk In Type
+      const walkInType = getWalkInType(product);
+      if (walkInType) {
+        counts.walkInTypes[walkInType] = (counts.walkInTypes[walkInType] || 0) + 1;
+      }
+    });
+
+    return counts;
+  }, [initialProducts]);
+
+  // Dynamic Filter States
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedFloorTypes, setSelectedFloorTypes] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedRefrigerationTypes, setSelectedRefrigerationTypes] = useState<string[]>([]);
+  const [selectedWalkInTypes, setSelectedWalkInTypes] = useState<string[]>([]);
+
+  // Derive brands and counts from products, sorting "Icemanz" to the top
+  const brands = useMemo(() => {
+    const existingBrands = { ...filterCounts.brands };
+    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'icemanz')) {
+      existingBrands['Icemanz'] = 0; // Add it with 0 count if it doesn't exist
+    }
+    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'amerikooler')) {
+      existingBrands['Amerikooler'] = 0;
+    }
+    if (!Object.keys(existingBrands).some(k => k.toLowerCase() === 'astra')) {
+      existingBrands['Astra'] = 0;
+    }
+
+    const brandList = Object.entries(existingBrands).map(([name, count]) => ({ name, count }));
+    return brandList.sort((a, b) => {
+      const aName = a.name.toLowerCase();
+      const bName = b.name.toLowerCase();
+      if (aName === 'icemanz') return -1;
+      if (bName === 'icemanz') return 1;
+      return aName.localeCompare(bName);
+    });
+  }, [filterCounts.brands]);
+
+  // Derive sorted sizes (numerically ordered by width & length)
+  const sortedSizes = useMemo(() => {
+    return Object.entries(filterCounts.sizes).sort(([aSize], [bSize]) => {
+      const parseDim = (s: string) => {
+        const match = s.match(/(\d+)\s*'\s*x\s*(\d+)/i) || s.match(/(\d+)\s*x\s*(\d+)/i);
+        if (!match) return [999, 999];
+        return [parseInt(match[1], 10), parseInt(match[2], 10)];
+      };
+      const [wA, lA] = parseDim(aSize);
+      const [wB, lB] = parseDim(bSize);
+      if (wA !== wB) return wA - wB;
+      return lA - lB;
+    });
+  }, [filterCounts.sizes]);
+
   // Filter products based on selected filters
   const filteredProducts = useMemo(() => {
     return initialProducts.filter(product => {
-      const brand = product.title.split(' ')[0];
+      const brand = product.brand || product.title.split(' ')[0];
       const size = extractSize(product);
+      const floorType = getFloorType(product);
+      const refrigType = product.type || (product.features?.refrigerationType) || '';
 
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand) || (product.brand && selectedBrands.includes(product.brand));
+      const floorMatch = selectedFloorTypes.length === 0 || selectedFloorTypes.includes(floorType);
       const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(size);
-      const refrigerationMatch = selectedRefrigerationTypes.length === 0 || selectedRefrigerationTypes.includes(product.type || '');
+      const refrigerationMatch = selectedRefrigerationTypes.length === 0 || selectedRefrigerationTypes.includes(refrigType);
       const walkInTypeMatch = selectedWalkInTypes.length === 0 || selectedWalkInTypes.includes(getWalkInType(product));
 
-      return brandMatch && sizeMatch && refrigerationMatch && walkInTypeMatch;
+      return brandMatch && floorMatch && sizeMatch && refrigerationMatch && walkInTypeMatch;
     });
-  }, [initialProducts, selectedBrands, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes]);
+  }, [initialProducts, selectedBrands, selectedFloorTypes, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes]);
 
   // Sort products based on selected sort option
   const sortedProducts = useMemo(() => {
@@ -313,6 +312,13 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     setCurrentPage(1);
   };
 
+  const toggleFloorType = (floor: string) => {
+    setSelectedFloorTypes(prev =>
+      prev.includes(floor) ? prev.filter(f => f !== floor) : [...prev, floor]
+    );
+    setCurrentPage(1);
+  };
+
   const toggleSize = (size: string) => {
     setSelectedSizes(prev =>
       prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
@@ -336,6 +342,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
   const clearAllFilters = () => {
     setSelectedBrands([]);
+    setSelectedFloorTypes([]);
     setSelectedSizes([]);
     setSelectedRefrigerationTypes([]);
     setSelectedWalkInTypes([]);
@@ -454,6 +461,17 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                         </button>
                       </div>
                     ))}
+                    {selectedFloorTypes.map(floor => (
+                      <div key={floor} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                        Floor: {floor}
+                        <button
+                          onClick={() => toggleFloorType(floor)}
+                          className="hover:text-primary cursor-pointer transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
                     {selectedSizes.map(size => (
                       <div key={size} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
                         Size: {size}
@@ -488,7 +506,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                       </div>
                     ))}
                   </div>
-                  {(selectedBrands.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0) && (
+                  {(selectedBrands.length > 0 || selectedFloorTypes.length > 0 || selectedSizes.length > 0 || selectedRefrigerationTypes.length > 0 || selectedWalkInTypes.length > 0) && (
                     <button
                       onClick={clearAllFilters}
                       className="text-sm mt-5 cursor-pointer font-normal underline text-black decoration-gray-900 underline-offset-2 hover:text-primary hover:decoration-primary transition-all"
@@ -510,8 +528,22 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                     ))}
                   </FilterSection>
 
+                  {Object.keys(filterCounts.floors).length > 0 && (
+                    <FilterSection id="floor" title="Floor Option" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
+                      {Object.entries(filterCounts.floors).map(([floor, count]) => (
+                        <Checkbox
+                          key={floor}
+                          label={floor}
+                          count={count}
+                          checked={selectedFloorTypes.includes(floor)}
+                          onChange={() => toggleFloorType(floor)}
+                        />
+                      ))}
+                    </FilterSection>
+                  )}
+
                   <FilterSection id="size" title="Size W x L" expandedFilters={expandedFilters} toggleFilter={toggleFilter}>
-                    {Object.entries(filterCounts.sizes).map(([size, count]) => (
+                    {sortedSizes.map(([size, count]) => (
                       <Checkbox
                         key={size}
                         label={size}
@@ -636,7 +668,8 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                           title: product.title,
                           price: cleanPrice(product.price),
                           image: product.images[0],
-                          quantity: 1
+                          quantity: 1,
+                          category: 'walk-in-cooler-freezer'
                         })}
                         className="w-full py-2 cursor-pointer rounded-sm bg-[#004a99] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#003d80] transition-colors"
                       >
@@ -685,7 +718,8 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
                             title: product.title,
                             price: cleanPrice(product.price),
                             image: product.images[0],
-                            quantity: 1
+                            quantity: 1,
+                            category: 'walk-in-cooler-freezer'
                           })}
                           className="px-6 py-2.5 cursor-pointer rounded-sm bg-[#004a99] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#003d80] transition-colors flex items-center gap-2"
                         >

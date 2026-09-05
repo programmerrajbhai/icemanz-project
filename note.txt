@@ -1,27 +1,15 @@
-===============================================
-✅ TURBO AIR TOP MOUNT REFRIGERATION IMPORT COMPLETE ✅
-===============================================
 
-Source: https://www.atlanticse.com/collections/turbo-air-top-mount-refrigeration
-Category: http://localhost:3000/refrigeration-equipment/combo-units-package-units
 
-COMPLETED TASKS:
-✅ 8 Turbo Air top mount refrigeration products added to category "Combo Units / Package Units"
-✅ Products:
-   1. STI110MP2 - Turbo Air STI110MP2 Medium Temperature Indoor Refrigeration System ($5,560.00)
-   2. STI055MP2 - Turbo Air STI055MP2 Self-Contained Refrigeration System ($5,017.00)
-   3. STI075LP2 - Turbo Air STI075LP2 Low Temperature Indoor Refrigeration System ($8,565.00)
-   4. STI050LP2 - Turbo Air STI050LP2 Low Temperature Indoor Refrigeration System ($8,008.00)
-   5. STI038LP2 - Turbo Air STI038LP2 Low Temperature Indoor Refrigeration System ($6,817.00)
-   6. STI025LP2 - Turbo Air STI025LP2 Low Temperature Indoor Refrigeration System ($5,320.00)
-   7. STI155MP2 - Turbo Air STI155MP2 Medium Temperature Indoor Refrigeration System ($6,152.00)
-   8. STI078MP2 - Turbo Air STI078MP2 Medium Temperature Indoor Refrigeration System ($5,149.00)
+Due Task | 05-09-2026
+========
 
-✅ All products have working "Add to Cart" button
-✅ Full specifications, features, PDF spec sheets, and warranty added
-✅ High quality images & badges included
+1. Refrigeration equipment page er filters gulo accurate korty hobe. 
 
-View imported products at:
-http://localhost:3000/refrigeration-equipment/combo-units-package-units
 
-===============================================
+
+Order ID / Date 
+Product Title 
+Amount
+Customer Info
+Status
+Actions

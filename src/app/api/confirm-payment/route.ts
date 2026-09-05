@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { logoAttachment } from '@/lib/logo';
+import { generateOrderReceiptEmailHtml } from '@/lib/orderEmailTemplate';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -87,52 +89,45 @@ export async function POST(req: Request) {
       }
     });
 
-    // Send confirmation email to customer
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-        <div style="text-align: center; margin-bottom: 25px;">
-          <h1 style="color: #2563eb; margin: 0; font-size: 32px; font-weight: bold;">ICEMANZ</h1>
-        </div>
-        
-        <h2 style="color: #10b981; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Payment Successful!</h2>
-        
-        <div style="color: #334155; font-size: 16px; line-height: 1.6;">
-          <p>Hello <strong>${customerName}</strong>,</p>
-          <p>We have successfully received your payment of <strong>$${amountPaid.toFixed(2)}</strong>.</p>
-        </div>
-        
-        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #10b981;">
-          <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 18px;">Order Details</h3>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Order ID:</strong> <span style="color: #0f172a;">${newOrder.id}</span></p>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Amount Paid:</strong> <span style="color: #0f172a; font-weight: bold;">$${amountPaid.toFixed(2)}</span></p>
-          <p style="margin: 0; font-size: 15px; color: #475569;"><strong>Status:</strong> <span style="color: #10b981; font-weight: bold;">Paid</span></p>
-        </div>
+    // Parse invoice products if available
+    let invoiceProducts: any[] = [];
+    if (invoice?.products) {
+      if (Array.isArray(invoice.products)) {
+        invoiceProducts = invoice.products;
+      } else if (typeof invoice.products === 'string') {
+        try {
+          invoiceProducts = JSON.parse(invoice.products);
+        } catch (e) {}
+      }
+    }
 
-        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
-
-        <p style="color: #64748b; font-size: 13px; text-align: center; margin-bottom: 0; line-height: 1.5;">
-          Our team will start processing your order right away. You will receive further updates soon.<br/><br/>
-          If you have any questions, please contact our support team.<br/>
-          &copy; ${new Date().getFullYear()} ICEMANZ. All rights reserved.
-        </p>
-      </div>
-    `;
+    const emailHtml = generateOrderReceiptEmailHtml({
+      orderId: newOrder.id,
+      customerName,
+      customerEmail,
+      amountPaid,
+      currency,
+      deliveryCost: invoice?.deliveryCost,
+      tax: invoice?.tax,
+      subtotal: invoice?.totalAmount,
+      products: invoiceProducts,
+      invoiceDetails: {
+        projectName: invoice?.projectName || undefined,
+        description: invoice?.description || undefined,
+        deliveryTime: invoice?.deliveryTime || undefined,
+        deliveryNotes: invoice?.deliveryNotes || undefined,
+      }
+    });
 
     console.log("Attempting to send email to:", customerEmail);
-    console.log("SMTP config:", {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_SECURE,
-      user: process.env.SMTP_USERNAME || process.env.SMTP_USER,
-      from: process.env.SMTP_FROM || process.env.SMTP_USERNAME || process.env.SMTP_USER
-    });
 
     try {
       const info = await transporter.sendMail({
         from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME || process.env.SMTP_USER}>`,
         to: customerEmail,
-        subject: `Payment Receipt - Order #${newOrder.id}`,
+        subject: `Payment Receipt & Order Confirmation - Order #${newOrder.id}`,
         html: emailHtml,
+        attachments: [logoAttachment]
       });
       console.log("Email sent successfully! Message ID:", info.messageId);
     } catch (emailError) {

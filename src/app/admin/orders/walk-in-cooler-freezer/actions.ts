@@ -5,7 +5,10 @@ import prisma from '@/lib/prisma';
 export async function getOrders() {
     const orders = await prisma.order.findMany({
         where: {
-            category: 'walk-in-cooler-freezer'
+            OR: [
+                { category: 'walk-in-cooler-freezer' },
+                { invoice: { category: 'walk-in-cooler-freezer' } }
+            ]
         },
         include: {
             invoice: true,

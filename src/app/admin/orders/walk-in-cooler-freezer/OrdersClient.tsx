@@ -16,7 +16,10 @@ import {
   User,
   Calendar,
   DollarSign,
-  Trash2
+  Trash2,
+  Package,
+  CreditCard,
+  Truck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -25,11 +28,19 @@ type Order = {
   invoiceId: string;
   customerName: string;
   customerEmail: string;
+  customerPhone?: string | null;
   amountPaid: number;
   currency: string;
   stripeSessionId: string;
   stripePaymentId: string | null;
   status: string;
+  shippingName?: string | null;
+  shippingAddress?: string | null;
+  shippingCity?: string | null;
+  shippingState?: string | null;
+  shippingZip?: string | null;
+  shippingCountry?: string | null;
+  deliveryMethod?: string | null;
   createdAt: Date;
   invoice: any;
 };
@@ -40,25 +51,58 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [deleteConfirmOrder, setDeleteConfirmOrder] = useState<Order | null>(null);
 
-  const handleDelete = async () => {
-    if (!deleteConfirmOrder) return;
+  const handleDelete = async (orderId: string) => {
     try {
-      await deleteOrder(deleteConfirmOrder.id);
+      await deleteOrder(orderId);
+      toast.success('Order deleted successfully');
       mutate();
-      toast.success('Order deleted successfully!');
       setDeleteConfirmOrder(null);
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(null);
+      }
     } catch (error) {
       toast.error('Failed to delete order');
       console.error(error);
     }
   };
 
-  const filteredOrders = (orders || []).filter(ord =>
-    ord.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ord.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ord.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (ord.invoice?.projectName && ord.invoice.projectName.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const getOrderProducts = (order: any) => {
+    if (!order?.invoice?.products) return [];
+    if (Array.isArray(order.invoice.products)) return order.invoice.products;
+    if (typeof order.invoice.products === 'string') {
+      try {
+        return JSON.parse(order.invoice.products);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  };
+
+  const getProductTitle = (order: Order) => {
+    const productsList = getOrderProducts(order);
+    if (productsList.length > 0) {
+      const titles = productsList
+        .map((p: any) => p.name || p.title || p.projectName)
+        .filter(Boolean);
+      if (titles.length > 0) {
+        return titles.join(', ');
+      }
+    }
+    return order.invoice?.projectName || 'N/A';
+  };
+
+  const filteredOrders = (orders || []).filter(ord => {
+    const term = searchTerm.toLowerCase();
+    const prodTitle = getProductTitle(ord).toLowerCase();
+    return (
+      ord.customerName.toLowerCase().includes(term) ||
+      ord.customerEmail.toLowerCase().includes(term) ||
+      ord.id.toLowerCase().includes(term) ||
+      prodTitle.includes(term) ||
+      (ord.invoice?.projectName && ord.invoice.projectName.toLowerCase().includes(term))
+    );
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status.toUpperCase()) {
@@ -97,9 +141,9 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Order ID / Date</th>
-                <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Customer Info</th>
-                <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Project</th>
+                <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Product Title</th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Amount</th>
+                <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Customer Info</th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
                 <th scope="col" className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
@@ -112,18 +156,18 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                       <div className="text-sm font-bold text-gray-900">{order.id.substring(0, 8)}...</div>
                       <div className="text-xs text-gray-500 mt-1">{new Date(order.createdAt).toLocaleDateString()}</div>
                     </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900 font-medium line-clamp-2 max-w-xs">{getProductTitle(order)}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-bold text-emerald-600">${order.amountPaid.toFixed(2)}</div>
+                      <div className="text-xs text-gray-500 uppercase">{order.currency}</div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-gray-900">{order.customerName}</span>
                         <span className="text-sm text-gray-500">{order.customerEmail}</span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 font-medium line-clamp-1">{order.invoice?.projectName || <span className="text-gray-400 italic">No project name</span>}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-bold text-emerald-600">${order.amountPaid.toFixed(2)}</div>
-                      <div className="text-xs text-gray-500 uppercase">{order.currency}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(order.status)}
@@ -161,13 +205,18 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
       {/* Modal Overlay */}
       {selectedOrder && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
 
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white shrink-0">
               <div className="flex items-center gap-3">
-                <FileText className="text-[#004a99]" size={24} />
-                <h2 className="text-2xl font-black text-gray-900 tracking-tight">Order Details</h2>
+                <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-[#004a99]">
+                  <FileText size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 tracking-tight">Order Details</h2>
+                  <p className="text-xs text-gray-400">Order #{selectedOrder.id}</p>
+                </div>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
@@ -178,138 +227,193 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto custom-scrollbar bg-gray-50/30">
-              <div className="flex items-center justify-between bg-white p-5 rounded-lg border border-gray-100 shadow-sm mb-6">
+            <div className="p-6 overflow-y-auto custom-scrollbar bg-gray-50/50 space-y-6">
+              {/* Order Status & Amount Paid Banner */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-5 rounded-xl border border-gray-100 shadow-sm gap-4">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Order Status</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider font-bold mb-1">Order Status</p>
                   {getStatusBadge(selectedOrder.status)}
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Amount Paid</p>
-                  <p className="text-2xl font-black text-emerald-600">${selectedOrder.amountPaid.toFixed(2)} <span className="text-sm font-bold text-gray-400 uppercase">{selectedOrder.currency}</span></p>
+                <div className="sm:text-right">
+                  <p className="text-xs text-gray-400 uppercase tracking-wider font-bold mb-1">Total Amount Paid</p>
+                  <p className="text-3xl font-black text-emerald-600 tracking-tight">
+                    ${selectedOrder.amountPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    <span className="text-xs font-bold text-gray-400 uppercase ml-1.5">{selectedOrder.currency}</span>
+                  </p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Customer Details</h3>
-                  <div className="bg-white p-4 rounded-lg border border-gray-100 space-y-3 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <User size={16} className="text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Name</p>
-                        <p className="text-sm font-bold text-gray-900">{selectedOrder.customerName}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail size={16} className="text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Email</p>
-                        <p className="text-sm font-bold text-gray-900">{selectedOrder.customerEmail}</p>
-                      </div>
-                    </div>
-                    {selectedOrder.invoice?.phone && (
-                      <div className="flex items-center gap-3">
-                        <Phone size={16} className="text-gray-400" />
-                        <div>
-                          <p className="text-xs text-gray-500">Phone</p>
-                          <p className="text-sm font-bold text-gray-900">{selectedOrder.invoice.phone}</p>
-                        </div>
-                      </div>
-                    )}
-                    {selectedOrder.invoice?.address && (
-                      <div className="flex items-center gap-3">
-                        <MapPin size={16} className="text-gray-400" />
-                        <div>
-                          <p className="text-xs text-gray-500">Address</p>
-                          <p className="text-sm font-bold text-gray-900">{selectedOrder.invoice.address}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Payment Details</h3>
-                  <div className="bg-white p-4 rounded-lg border border-gray-100 space-y-3 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <Calendar size={16} className="text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Date Paid</p>
-                        <p className="text-sm font-bold text-gray-900">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <DollarSign size={16} className="text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Stripe Payment ID</p>
-                        <p className="text-xs font-mono text-gray-900 break-all">{selectedOrder.stripePaymentId || 'N/A'}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <FileText size={16} className="text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Invoice ID</p>
-                        <p className="text-xs font-mono text-gray-900 break-all">{selectedOrder.invoiceId}</p>
-                      </div>
+              {/* Customer Details Card */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                  <User size={16} className="text-[#004a99]" /> Customer Details
+                </h3>
+                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <User size={16} className="text-gray-400 mt-1 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium">Customer Name</p>
+                      <p className="text-sm font-bold text-gray-900">{selectedOrder.customerName || 'N/A'}</p>
                     </div>
                   </div>
+                  <div className="flex items-start gap-3">
+                    <Mail size={16} className="text-gray-400 mt-1 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium">Email Address</p>
+                      <p className="text-sm font-bold text-gray-900">{selectedOrder.customerEmail || 'N/A'}</p>
+                    </div>
+                  </div>
+                  {(selectedOrder.customerPhone || selectedOrder.invoice?.phone) && (
+                    <div className="flex items-start gap-3">
+                      <Phone size={16} className="text-gray-400 mt-1 shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Phone Number</p>
+                        <p className="text-sm font-bold text-gray-900">{selectedOrder.customerPhone || selectedOrder.invoice?.phone}</p>
+                      </div>
+                    </div>
+                  )}
+                  {(selectedOrder.shippingAddress || selectedOrder.invoice?.address) && (
+                    <div className="flex items-start gap-3 sm:col-span-2">
+                      <MapPin size={16} className="text-gray-400 mt-1 shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Shipping Address</p>
+                        <p className="text-sm font-bold text-gray-900">
+                          {selectedOrder.shippingAddress
+                            ? `${selectedOrder.shippingName ? selectedOrder.shippingName + ' - ' : ''}${selectedOrder.shippingAddress}${selectedOrder.shippingCity ? ', ' + selectedOrder.shippingCity : ''}${selectedOrder.shippingState ? ', ' + selectedOrder.shippingState : ''}${selectedOrder.shippingZip ? ' ' + selectedOrder.shippingZip : ''}`
+                            : selectedOrder.invoice?.address}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {selectedOrder.invoice?.products && selectedOrder.invoice.products.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-sm font-bold text-gray-900 border-b pb-2 mb-4">Products</h3>
-                  <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
-                    <div className="divide-y divide-gray-100">
-                      {(selectedOrder.invoice.products as any[]).map((product: any, index: number) => (
-                        <div key={index} className="p-4">
-                          <div className="flex gap-4">
-                            {product.image && (
-                              <img 
-                                src={product.image} 
-                                alt={product.name || 'Product'} 
-                                className="w-20 h-20 object-cover rounded border border-gray-200"
+              {/* PRODUCTS SECTION - PLACED FIRST ABOVE PAYMENT DETAILS */}
+              {getOrderProducts(selectedOrder).length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                    <Package size={16} className="text-[#004a99]" /> Products Ordered ({getOrderProducts(selectedOrder).length})
+                  </h3>
+                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-100">
+                    {getOrderProducts(selectedOrder).map((product: any, index: number) => {
+                      const title = product.title || product.name || product.model || 'Featured Product';
+                      const brand = product.brand || 'ICEMANZ';
+                      const qty = product.quantity || 1;
+                      const priceNum = parseFloat(String(product.price || '0').replace(/[^0-9.]/g, '')) || 0;
+                      const formattedPrice = priceNum > 0 ? `$${priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (product.price ? `$${product.price}` : '$0.00');
+
+                      return (
+                        <div key={index} className="p-4 sm:p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:bg-gray-50/50 transition-colors">
+                          {/* Image */}
+                          <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl bg-white border border-gray-200 p-2.5 flex items-center justify-center overflow-hidden shadow-sm">
+                            {product.image || (product.images && product.images[0]) ? (
+                              <img
+                                src={product.image || product.images[0]}
+                                alt={title}
+                                className="w-full h-full object-contain"
                               />
+                            ) : (
+                              <Package size={36} className="text-gray-300" />
                             )}
-                            <div className="flex-1">
-                              <p className="text-sm font-bold text-gray-900">{product.name || 'Product'}</p>
-                              <p className="text-xs text-gray-500 mt-1">{product.brand || 'ICEMANZ'}</p>
-                              <div className="flex gap-4 mt-2 text-sm">
-                                <span className="text-gray-600">Qty: <span className="font-semibold">{product.quantity || 1}</span></span>
-                                <span className="text-gray-600">Price: <span className="font-semibold">{product.price}</span></span>
-                                {product.category && (
-                                  <span className="text-gray-600">Category: <span className="font-semibold">{product.category}</span></span>
-                                )}
-                              </div>
+                          </div>
+
+                          {/* Info */}
+                          <div className="flex-1 min-w-0 w-full space-y-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="px-2.5 py-0.5 bg-blue-50 text-[#004a99] font-bold text-[10px] uppercase rounded-md tracking-wider">
+                                {brand}
+                              </span>
+                              {product.category && (
+                                <span className="px-2.5 py-0.5 bg-gray-100 text-gray-600 font-semibold text-[10px] rounded-md">
+                                  {product.category}
+                                </span>
+                              )}
+                            </div>
+
+                            <h4 className="text-base font-bold text-gray-900 leading-snug">
+                              {title}
+                            </h4>
+
+                            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-gray-500 pt-1">
+                              <span className="bg-gray-100 px-2.5 py-1 rounded-md text-gray-700 font-bold">Qty: {qty}</span>
+                              <span className="bg-emerald-50 px-2.5 py-1 rounded-md text-emerald-700 font-bold">Price: {formattedPrice}</span>
+                              {priceNum > 0 && (
+                                <span className="bg-blue-50 px-2.5 py-1 rounded-md text-[#004a99] font-bold">
+                                  Total: ${(priceNum * qty).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
+              {/* Project Details (if applicable) */}
               {selectedOrder.invoice && (
-                <div className="mt-6">
-                  <h3 className="text-sm font-bold text-gray-900 border-b pb-2 mb-4">Project Details</h3>
-                  <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
-                    <p className="text-sm font-bold text-[#004a99] mb-2">{selectedOrder.invoice.projectName || 'Custom Project'}</p>
-                    <div className="text-sm text-gray-600 grid grid-cols-2 gap-2">
+                <div className="space-y-3">
+                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                    <FileText size={16} className="text-[#004a99]" /> Project Details
+                  </h3>
+                  <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-3">
+                    <p className="text-base font-bold text-[#004a99]">
+                      {selectedOrder.invoice.projectName || 'Custom Project'}
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600">
                       {(selectedOrder.invoice.width && selectedOrder.invoice.length && selectedOrder.invoice.height) && (
-                        <p><span className="font-semibold">Dimensions:</span> {selectedOrder.invoice.width}x{selectedOrder.invoice.length}x{selectedOrder.invoice.height}</p>
+                        <p><span className="font-bold text-gray-700">Dimensions:</span> {selectedOrder.invoice.width} x {selectedOrder.invoice.length} x {selectedOrder.invoice.height}</p>
                       )}
-                      <p><span className="font-semibold">Temp Range:</span> {selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp || 'N/A'}</p>
+                      <p><span className="font-bold text-gray-700">Temp Range:</span> {selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp || 'N/A'}</p>
                     </div>
                     {selectedOrder.invoice.description && (
-                      <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-700">
+                      <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-700 leading-relaxed border border-gray-100">
                         {selectedOrder.invoice.description}
                       </div>
                     )}
                   </div>
                 </div>
               )}
+
+              {/* PAYMENT DETAILS CARD - PLACED AT THE BOTTOM */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                  <CreditCard size={16} className="text-[#004a99]" /> Payment Details
+                </h3>
+                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Calendar size={16} className="text-gray-400 mt-1 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium">Date Paid</p>
+                      <p className="text-sm font-bold text-gray-900">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <DollarSign size={16} className="text-gray-400 mt-1 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium">Stripe Payment ID</p>
+                      <p className="text-xs font-mono font-semibold text-gray-800 break-all">{selectedOrder.stripePaymentId || 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <FileText size={16} className="text-gray-400 mt-1 shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium">Invoice ID</p>
+                      <p className="text-xs font-mono font-semibold text-gray-800 break-all">{selectedOrder.invoiceId}</p>
+                    </div>
+                  </div>
+                  {selectedOrder.deliveryMethod && (
+                    <div className="flex items-start gap-3">
+                      <Truck size={16} className="text-gray-400 mt-1 shrink-0" />
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Delivery Method</p>
+                        <p className="text-sm font-bold text-gray-900 capitalize">{selectedOrder.deliveryMethod}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -343,7 +447,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                   Cancel
                 </button>
                 <button
-                  onClick={handleDelete}
+                  onClick={() => handleDelete(deleteConfirmOrder.id)}
                   className="px-4 py-2 bg-red-600 text-white rounded-sm font-medium hover:bg-red-700 transition-colors cursor-pointer"
                 >
                   Delete

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { buildOrderEmailAttachments, generateOrderReceiptEmailHtml, generateOrderReceiptEmailText } from '@/lib/orderEmailTemplate';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-03-25.dahlia',
@@ -153,72 +154,35 @@ export async function POST(req: Request) {
     console.log('[CREATE-ORDER] Order created:', newOrder.id);
 
     // Send confirmation email
-    const shippingInfo = deliveryMethod === 'ship' && shippingAddress
-      ? `
-        <div style="background-color: #eff6ff; padding: 20px 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb;">
-          <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 18px;">Shipping Information</h3>
-          <p style="margin: 0 0 8px 0; font-size: 15px; color: #475569;"><strong>Name:</strong> <span style="color: #0f172a;">${shippingName || customerName}</span></p>
-          <p style="margin: 0 0 8px 0; font-size: 15px; color: #475569;"><strong>Address:</strong> <span style="color: #0f172a;">${shippingAddress}</span></p>
-          <p style="margin: 0 0 8px 0; font-size: 15px; color: #475569;"><strong>City:</strong> <span style="color: #0f172a;">${shippingCity}</span></p>
-          <p style="margin: 0 0 8px 0; font-size: 15px; color: #475569;"><strong>State:</strong> <span style="color: #0f172a;">${shippingState}</span></p>
-          <p style="margin: 0 0 8px 0; font-size: 15px; color: #475569;"><strong>Zip:</strong> <span style="color: #0f172a;">${shippingZip}</span></p>
-          <p style="margin: 0; font-size: 15px; color: #475569;"><strong>Country:</strong> <span style="color: #0f172a;">${shippingCountry}</span></p>
-        </div>
-      `
-      : deliveryMethod === 'pickup'
-        ? `
-          <div style="background-color: #f0fdf4; padding: 20px 25px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981;">
-            <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 18px;">Pickup Information</h3>
-            <p style="margin: 0 0 8px 0; font-size: 15px; color: #475569;"><strong>Pickup Location:</strong></p>
-            <p style="margin: 0 0 8px 0; font-size: 15px; color: #0f172a;">866 Newark Tpke, Kearny NJ 07032, United States</p>
-            <p style="margin: 0; font-size: 14px; color: #059669; font-weight: 600;">✓ Usually ready in 2-4 days</p>
-          </div>
-        `
-        : '';
+    const emailParams = {
+      orderId: newOrder.id,
+      customerName,
+      customerEmail,
+      customerPhone,
+      amountPaid,
+      currency,
+      deliveryMethod,
+      shippingName,
+      shippingAddress,
+      shippingCity,
+      shippingState,
+      shippingZip,
+      shippingCountry,
+      products: cartItemsData,
+    };
 
-    const contactInfo = customerPhone
-      ? `<p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Phone:</strong> <span style="color: #0f172a;">${customerPhone}</span></p>`
-      : '';
-
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-        <div style="text-align: center; margin-bottom: 25px;">
-          <h1 style="color: #2563eb; margin: 0; font-size: 32px; font-weight: bold;">ICEMANZ</h1>
-        </div>
-        
-        <h2 style="color: #10b981; text-align: center; margin-top: 0; font-size: 24px; font-weight: bold;">Payment Successful!</h2>
-        
-        <div style="color: #334155; font-size: 16px; line-height: 1.6;">
-          <p>Hello <strong>${customerName}</strong>,</p>
-          <p>We have successfully received your payment of <strong>$${amountPaid.toFixed(2)}</strong>.</p>
-        </div>
-        
-        <div style="background-color: #f8fafc; padding: 20px 25px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #10b981;">
-          <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 18px;">Order Details</h3>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Order ID:</strong> <span style="color: #0f172a;">${newOrder.id}</span></p>
-          <p style="margin: 0 0 10px 0; font-size: 15px; color: #475569;"><strong>Amount Paid:</strong> <span style="color: #0f172a; font-weight: bold;">$${amountPaid.toFixed(2)}</span></p>
-          ${contactInfo}
-          <p style="margin: 0; font-size: 15px; color: #475569;"><strong>Status:</strong> <span style="color: #10b981; font-weight: bold;">Paid</span></p>
-        </div>
-
-        ${shippingInfo}
-
-        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
-
-        <p style="color: #64748b; font-size: 13px; text-align: center; margin-bottom: 0; line-height: 1.5;">
-          Our team will start processing your order right away. You will receive further updates soon.<br/><br/>
-          If you have any questions, please contact our support team.<br/>
-          &copy; ${new Date().getFullYear()} ICEMANZ. All rights reserved.
-        </p>
-      </div>
-    `;
+    const { attachments, imageCidMap } = buildOrderEmailAttachments(cartItemsData);
+    const emailHtml = generateOrderReceiptEmailHtml(emailParams, imageCidMap);
+    const emailText = generateOrderReceiptEmailText(emailParams);
 
     try {
       await transporter.sendMail({
         from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME || process.env.SMTP_USER}>`,
         to: customerEmail,
-        subject: `Payment Receipt - Order #${newOrder.id}`,
+        subject: `ICEMANZ Order Summary - #${newOrder.id}`,
+        text: emailText,
         html: emailHtml,
+        attachments
       });
       console.log('[CREATE-ORDER] Email sent successfully');
     } catch (emailError) {

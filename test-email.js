@@ -2,14 +2,11 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 require('dotenv').config();
 
+const { generateOrderReceiptEmailHtml } = require('./src/lib/orderEmailTemplate');
+const { logoAttachment } = require('./src/lib/logo');
+
 async function testEmail() {
-  console.log('Testing SMTP configuration...');
-  console.log('SMTP_HOST:', process.env.SMTP_HOST);
-  console.log('SMTP_PORT:', process.env.SMTP_PORT);
-  console.log('SMTP_USERNAME:', process.env.SMTP_USERNAME);
-  console.log('SMTP_FROM:', process.env.SMTP_FROM);
-  console.log('SMTP_SECURE:', process.env.SMTP_SECURE);
-  console.log('---');
+  console.log('Testing SMTP configuration to rabbihasan151537@gmail.com ...');
 
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -21,34 +18,49 @@ async function testEmail() {
     },
   });
 
-  try {
-    console.log('Verifying SMTP connection...');
-    await transporter.verify();
-    console.log('✓ SMTP connection verified successfully!\n');
+  const emailHtml = generateOrderReceiptEmailHtml({
+    orderId: '8f1361f1-c68e-41a0-aa12-af7b827b8b4a',
+    customerName: 'Rabbi Hasan',
+    customerEmail: 'rabbihasan151537@gmail.com',
+    customerPhone: '+8801992151537',
+    amountPaid: 4748.66,
+    currency: 'USD',
+    deliveryMethod: 'ship',
+    shippingName: 'Rabbi Hasan',
+    shippingAddress: '248 Elizabeth Street',
+    shippingCity: 'Bogura',
+    shippingState: 'NY',
+    shippingZip: '10100',
+    shippingCountry: 'US',
+    subtotal: 4748.66,
+    products: [
+      {
+        title: 'Walk-in Cooler No Floor',
+        brand: 'ICEMANZ',
+        quantity: 1,
+        price: 4748.66,
+        category: 'Walk-in Cooler & Freezer',
+      }
+    ]
+  });
 
-    console.log('Sending test email...');
+  try {
+    await transporter.verify();
+    console.log('✓ SMTP connection verified successfully!');
+
     const info = await transporter.sendMail({
-      from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME || process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USERNAME || process.env.SMTP_USER,
-      subject: 'Test Email - ICEMANZ Invoice System',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <h1 style="color: #004a99;">Test Email</h1>
-          <p>This is a test email from the ICEMANZ invoice request system.</p>
-          <p>If you received this, your SMTP configuration is working correctly!</p>
-        </div>
-      `,
+      from: `"ICEMANZ Support" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME}>`,
+      to: 'rabbihasan151537@gmail.com',
+      subject: 'Order Confirmation & Payment Receipt - Order #8f1361f1',
+      html: emailHtml,
+      attachments: [logoAttachment]
     });
 
     console.log('✓ Email sent successfully!');
     console.log('Message ID:', info.messageId);
-    console.log('\nCheck your inbox:', process.env.SMTP_USERNAME || process.env.SMTP_USER);
+    console.log('Response:', info.response);
   } catch (error) {
-    console.error('✗ Error occurred:');
-    console.error('Message:', error.message);
-    if (error.code) console.error('Code:', error.code);
-    if (error.response) console.error('Response:', error.response);
-    if (error.command) console.error('Command:', error.command);
+    console.error('✗ Error occurred:', error);
   }
 }
 
