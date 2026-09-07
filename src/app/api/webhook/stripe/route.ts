@@ -275,7 +275,7 @@ export async function POST(req: Request) {
               products: cartItemsData,
               category,
               address: shippingAddress ? `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}` : undefined,
-              deliveryNotes: deliveryMethod === 'pickup' ? 'Customer will pick up from: 866 Newark Tpke, Kearny NJ 07032, United States' : undefined,
+              deliveryNotes: deliveryMethod === 'pickup' ? 'Customer will pick up from: 184-60 Jamaica Ave, Hollis, NY 11423, United States' : undefined,
             }
           });
 

@@ -168,7 +168,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           </div>
         </div>
       </div>
-      <Footer />
     </main>
   );
 }

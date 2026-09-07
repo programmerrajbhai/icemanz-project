@@ -137,8 +137,8 @@ export default function WalkInCoolerFreezerPage() {
           </div>
         </div>
       </div>
-      
-      
+
+
     </main>
   );
 }

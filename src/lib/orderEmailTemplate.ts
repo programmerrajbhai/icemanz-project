@@ -218,7 +218,7 @@ export function generateOrderReceiptEmailHtml(params: OrderEmailParams, imageCid
                 </td>
                 <td valign="top" style="padding-left: 12px;">
                   <h3 style="margin: 0 0 6px 0; color: #166534; font-size: 16px; font-weight: 700;">Store Pickup Location</h3>
-                  <p style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600;">866 Newark Tpke, Kearny NJ 07032, United States</p>
+                  <p style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600;">184-60 Jamaica Ave, Hollis, NY 11423, United States</p>
                   <p style="margin: 0; color: #15803d; font-size: 13px; font-weight: 600;">✓ Usually ready for pickup in 2-4 business days</p>
                 </td>
               </tr>

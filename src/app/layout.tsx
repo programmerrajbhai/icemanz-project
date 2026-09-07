@@ -22,6 +22,13 @@ export const metadata: Metadata = {
   description: "Fast, reliable, and high-performance walk-in coolers and freezers. Ready to ship in 36-48 hours with 10-year panel warranty.",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

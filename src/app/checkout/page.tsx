@@ -310,8 +310,8 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-sm font-bold text-gray-900 mb-1">Pickup Location</p>
-                                            <p className="text-sm text-gray-800 font-semibold">899 NEWARK TPKE</p>
-                                            <p className="text-sm text-gray-700 mt-1">866 Newark Tpke, Kearny NJ 07032, United States</p>
+                                            <p className="text-sm text-gray-800 font-semibold">184-60 JAMAICA AVE</p>
+                                            <p className="text-sm text-gray-700 mt-1">184-60 Jamaica Ave, Hollis, NY 11423, United States</p>
                                             <div className="flex items-center gap-2 mt-2.5">
                                                 <span className="text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">FREE</span>
                                                 <span className="text-xs text-gray-600">⏱ Usually ready in 2-4 days</span>

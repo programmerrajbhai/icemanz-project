@@ -370,11 +370,11 @@ export default async function CompletedProjectsPage({
                                     </Link>
 
                                     <a
-                                        href="tel:+17186706005"
+                                        href="tel:+17186786005"
                                         className="inline-flex items-center gap-2 px-5 py-3.5 bg-white hover:bg-slate-50 text-slate-900 border border-slate-300 text-xs font-extrabold uppercase tracking-wider rounded-lg shadow-2xs transition-all"
                                     >
                                         <PhoneCall className="w-4 h-4 text-[#0a58ca]" />
-                                        <span>+1 (718) 670-6005</span>
+                                        <span>+1 (718) 678-6005</span>
                                     </a>
                                 </div>
                             </div>

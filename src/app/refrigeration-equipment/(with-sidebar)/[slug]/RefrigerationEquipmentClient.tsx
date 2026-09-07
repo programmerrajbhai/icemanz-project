@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Pagination from '@/components/Pagination';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -1561,50 +1562,14 @@ export default function RefrigerationEquipmentClient({
               </div>
 
               {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="flex justify-center items-center my-10 gap-2">
-                  <button
-                    onClick={() => {
-                      setCurrentPage(prev => Math.max(prev - 1, 1));
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    disabled={currentPage === 1}
-                    className="p-2 border border-gray-300 cursor-pointer rounded-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <ChevronLeft size={20} className="text-gray-600" />
-                  </button>
-
-                  <div className="flex gap-1 overflow-x-auto max-w-full">
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          setCurrentPage(i + 1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className={`w-10 h-10 flex items-center cursor-pointer justify-center rounded-sm text-sm font-medium transition-colors ${
-                          currentPage === i + 1
-                            ? 'bg-[#004a99] text-white border border-[#004a99]'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                        }`}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setCurrentPage(prev => Math.min(prev + 1, totalPages));
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    disabled={currentPage === totalPages}
-                    className="p-2 border border-gray-300 cursor-pointer rounded-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <ChevronRight size={20} className="text-gray-600" />
-                  </button>
-                </div>
-              )}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
 
             </div>
 

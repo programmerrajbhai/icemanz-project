@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
             // For pickup, add metadata but no shipping options
             sessionParams.metadata = {
                 ...sessionParams.metadata,
-                pickupLocation: '866 Newark Tpke, Kearny NJ 07032, United States',
+                pickupLocation: '184-60 Jamaica Ave, Hollis, NY 11423, United States',
             };
         }
 
