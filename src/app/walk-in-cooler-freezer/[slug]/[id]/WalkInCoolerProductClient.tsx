@@ -28,6 +28,7 @@ import {
   CreditCard
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import StandardFeatures from '@/components/StandardFeatures';
 
 type ProductOption = {
   label: string;
@@ -314,29 +315,55 @@ export default function WalkInCoolerProductClient({
 
               {/* Product Options */}
               <div className="space-y-5">
-                {/* Door Hinge Option */}
-                <div>
-                  <label className="text-sm font-bold text-gray-900 mb-2 block">Door Hinge: Left Hinged Door</label>
-                  <select className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-800 font-medium">
-                    <option>Left Hinged Door</option>
-                    <option>Right Hinged Door</option>
-                  </select>
-                </div>
+                {/* Dynamic Options from Product Options */}
+                {product.productOptions && product.productOptions.length > 0 ? (
+                  product.productOptions.map((option: any, idx: number) => {
+                    const selectedValue = selectedOptions[option.name] || option.options[0]?.label;
+                    return (
+                      <div key={idx}>
+                        <label className="text-sm font-bold text-gray-900 mb-2 block">
+                          {option.label}: {selectedValue}
+                        </label>
+                        <select
+                          value={selectedValue}
+                          onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                          className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-800 font-medium cursor-pointer"
+                        >
+                          {option.options.map((opt: any, vIdx: number) => (
+                            <option key={vIdx} value={opt.label}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <>
+                    {/* Default Options if no dynamic options available */}
+                    <div>
+                      <label className="text-sm font-bold text-gray-900 mb-2 block">Door Hinge: Left Hinged Door</label>
+                      <select className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-800 font-medium cursor-pointer">
+                        <option>Left Hinged Door</option>
+                        <option>Right Hinged Door</option>
+                      </select>
+                    </div>
 
-                {/* Door Width Option */}
-                <div>
-                  <label className="text-sm font-bold text-gray-900 mb-2 block">Door Width: 30" Wide Door</label>
-                  <select className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-800 font-medium">
-                    <option>30" Wide Door</option>
-                    <option>36" Wide Door</option>
-                  </select>
-                </div>
+                    <div>
+                      <label className="text-sm font-bold text-gray-900 mb-2 block">Door Width: 30" Wide Door</label>
+                      <select className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-800 font-medium cursor-pointer">
+                        <option>30" Wide Door</option>
+                        <option>36" Wide Door</option>
+                      </select>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Price Section */}
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-2xl font-bold text-[#003366]">${product.price}</span>
+                  <span className="text-2xl font-bold text-[#003366]">${cleanPrice(product.price)}</span>
                   <span className="text-lg font-normal text-gray-500">/ Ea.</span>
                 </div>
               </div>
@@ -442,25 +469,22 @@ export default function WalkInCoolerProductClient({
                     )}
 
                     {product.documents && product.documents.length > 0 && (
-                      <div>
-                        {product.documents.map((doc, idx) => {
-                          if (doc.name === 'Spec Sheet') {
-                            return (
-                              <div key={idx} className="mt-6">
-                                <h3 className="text-sm font-bold text-gray-900 mb-4">{doc.name}</h3>
-                                <a href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-block">
-                                  <img
-                                    src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
-                                    alt="Download PDF"
-                                    className="h-12 object-contain"
-                                  />
-                                </a>
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
-                      </div>
+                      (() => {
+                        const specSheet = product.documents.find(doc => doc.name === 'Spec Sheet');
+                        if (!specSheet) return null;
+                        return (
+                          <div className="mt-6">
+                            <h3 className="text-sm font-bold text-gray-900 mb-4">Spec Sheet</h3>
+                            <a href={specSheet.url} target="_blank" rel="noopener noreferrer" className="inline-block">
+                              <img
+                                src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
+                                alt="Download PDF"
+                                className="h-12 object-contain"
+                              />
+                            </a>
+                          </div>
+                        );
+                      })()
                     )}
                   </div>
                 </div>
@@ -619,9 +643,9 @@ export default function WalkInCoolerProductClient({
                 </button>
               </div>
             </section>
-            {/* <h2 className="text-2xl  text-center font-bold text-gray-900">Standard Features</h2> */}
+            {/* Standard Features Section */}
 
-            {/* More Walk-In Options Section (Commented out)
+
             {relatedProducts.length > 0 && (
               <section className="py-4">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">More Walk-In Options!</h2>
@@ -677,85 +701,71 @@ export default function WalkInCoolerProductClient({
                 </div>
               </section>
             )}
-            */}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        {/* Recently Viewed Section */}
-        {relatedProducts.length > 0 && (
-          <section className="py-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Recently viewed</h2>
-            <div className="relative">
-              {/* Left Slider Button */}
-              <button
-                onClick={() => scrollRecentlyViewed('left')}
-                className="hidden sm:flex absolute -left-3 sm:-left-5 top-1/2 cursor-pointer -translate-y-1/2 w-10 h-10 bg-[#b3b3b3] rounded-full items-center justify-center text-white shadow-md z-10 hover:bg-gray-400 transition-colors"
-              >
-                <ChevronLeft size={24} />
-              </button>
-
-              {/* Slider Container */}
-              <div
-                ref={recentlyViewedSliderRef}
-                className="flex overflow-x-auto snap-x scroll-smooth shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] border border-gray-100"
-              >
-                {/* Reversing the relatedProducts array to simulate recently viewed items */}
-                {[...relatedProducts].reverse().map((viewedProduct) => (
-                  <Link
-                    key={`recent-${viewedProduct.id}`}
-                    href={`/walk-in-cooler-freezer/${viewedProduct.slug || viewedProduct.category?.slug || 'product'}/${viewedProduct.id}`}
-                    className="flex-shrink-0 w-[240px] md:w-[220px] lg:w-[calc(100%/6)] bg-white border-r border-gray-100 last:border-r-0 hover:shadow-md transition-shadow snap-start flex flex-col"
+            <StandardFeatures />
+            {/* Recently Viewed Section */}
+            {relatedProducts.length > 0 && (
+              <section className="py-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">Recently viewed</h2>
+                <div className="relative">
+                  {/* Left Slider Button */}
+                  <button
+                    onClick={() => scrollRecentlyViewed('left')}
+                    className="hidden sm:flex absolute -left-3 sm:-left-5 top-1/2 cursor-pointer -translate-y-1/2 w-10 h-10 bg-[#b3b3b3] rounded-full items-center justify-center text-white shadow-md z-10 hover:bg-gray-400 transition-colors"
                   >
-                    <div className="relative aspect-square p-4 bg-white">
-                      <Image
-                        src={viewedProduct.images?.[0] || '/placeholder.png'}
-                        alt={viewedProduct.title}
-                        fill
-                        className="object-contain p-4"
-                      />
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col text-left">
-                      <p className="text-[10px] font-bold text-gray-800 uppercase mb-2 text-center tracking-wider">
-                        {viewedProduct.brand || 'AMERIKOOLER'}
-                      </p>
-                      <p className="text-xs text-gray-800 line-clamp-2 mb-3 leading-relaxed h-[36px]">
-                        {viewedProduct.title}
-                      </p>
-                      <div className="mt-auto text-center">
-                        <p className="text-sm font-bold text-[#003366]">
-                          ${cleanPrice(viewedProduct.price || '')} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    <ChevronLeft size={24} />
+                  </button>
 
-              {/* Right Slider Button */}
-              <button
-                onClick={() => scrollRecentlyViewed('right')}
-                className="hidden sm:flex absolute -right-3 sm:-right-5 top-1/2 cursor-pointer -translate-y-1/2 w-10 h-10 bg-[#b3b3b3] rounded-full items-center justify-center text-white shadow-md z-10 hover:bg-gray-400 transition-colors"
-              >
-                <ChevronRight size={24} />
-              </button>
-            </div>
-          </section>
-        )}
+                  {/* Slider Container */}
+                  <div
+                    ref={recentlyViewedSliderRef}
+                    className="flex overflow-x-auto snap-x scroll-smooth shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] border border-gray-100"
+                  >
+                    {/* Reversing the relatedProducts array to simulate recently viewed items */}
+                    {[...relatedProducts].reverse().map((viewedProduct) => (
+                      <Link
+                        key={`recent-${viewedProduct.id}`}
+                        href={`/walk-in-cooler-freezer/${viewedProduct.slug || viewedProduct.category?.slug || 'product'}/${viewedProduct.id}`}
+                        className="flex-shrink-0 w-[240px] md:w-[220px] lg:w-[calc(100%/6)] bg-white border-r border-gray-100 last:border-r-0 hover:shadow-md transition-shadow snap-start flex flex-col"
+                      >
+                        <div className="relative aspect-square p-4 bg-white">
+                          <Image
+                            src={viewedProduct.images?.[0] || '/placeholder.png'}
+                            alt={viewedProduct.title}
+                            fill
+                            className="object-contain p-4"
+                          />
+                        </div>
+                        <div className="p-4 flex-1 flex flex-col text-left">
+                          <p className="text-[10px] font-bold text-gray-800 uppercase mb-2 text-center tracking-wider">
+                            {viewedProduct.brand || 'AMERIKOOLER'}
+                          </p>
+                          <p className="text-xs text-gray-800 line-clamp-2 mb-3 leading-relaxed h-[36px]">
+                            {viewedProduct.title}
+                          </p>
+                          <div className="mt-auto text-center">
+                            <p className="text-sm font-bold text-[#003366]">
+                              ${cleanPrice(viewedProduct.price || '')} <span className="text-xs font-normal text-gray-500">/ Ea.</span>
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Right Slider Button */}
+                  <button
+                    onClick={() => scrollRecentlyViewed('right')}
+                    className="hidden sm:flex absolute -right-3 sm:-right-5 top-1/2 cursor-pointer -translate-y-1/2 w-10 h-10 bg-[#b3b3b3] rounded-full items-center justify-center text-white shadow-md z-10 hover:bg-gray-400 transition-colors"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</main>
+    </main>
   );
 }
