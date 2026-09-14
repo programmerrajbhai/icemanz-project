@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
   PhoneCall,
   FileText,
@@ -136,6 +136,7 @@ export default function AstraProductClient({
     warranty: false,
   });
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [addonQuantities, setAddonQuantities] = useState<Record<string, number>>({});
   const accessoriesSliderRef = useRef<HTMLDivElement>(null);
 
   const toggleSection = (key: string) => {
@@ -143,7 +144,12 @@ export default function AstraProductClient({
   };
 
   const handleOptionChange = (optionName: string, value: string) => {
-    setSelectedOptions(prev => ({ ...prev, [optionName]: value }));
+    console.log('Option changed:', optionName, '=', value);
+    setSelectedOptions(prev => {
+      const updated = { ...prev, [optionName]: value };
+      console.log('Updated selectedOptions:', updated);
+      return updated;
+    });
   };
 
   const scrollAccessories = (direction: 'left' | 'right') => {
@@ -157,7 +163,11 @@ export default function AstraProductClient({
 
   const cleanPrice = (priceStr: string) => {
     const num = parseFloat(String(priceStr).replace(/[^0-9.]/g, ''));
-    return isNaN(num) ? '0.00' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return isNaN(num) ? 0 : num;
+  };
+
+  const formatPrice = (num: number) => {
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   // Get dynamic data from product features (imported from JSON)
@@ -194,8 +204,111 @@ export default function AstraProductClient({
   const configurableProperties = productOptionsData?.configurable_properties || {};
   const addons = productOptionsData?.addons || [];
 
+  // Get layouts - check multiple possible locations
+  const layouts = (product as any).layouts || (enrichedProduct as any).layouts || productOptionsData?.layouts || [];
+
   // Get specifications from specs field
   const specifications = enrichedProduct.specs || {};
+
+  // Calculate dynamic price based on selected options - useMemo for reactivity
+  const totalPrice = useMemo(() => {
+
+    let basePrice = cleanPrice(product.price);
+
+    // Helper function to extract price from label text like "(+$250.00)" or "(+$540.00)"
+    const extractPriceFromLabel = (label: string): number => {
+      const match = label.match(/\(\+\$([0-9,]+\.?\d*)\)/);
+      if (match) {
+        return parseFloat(match[1].replace(/,/g, ''));
+      }
+      return 0;
+    };
+
+    // Add refrigeration price if selected
+    if (selectedOptions.refrigeration && productOptionsData?.refrigeration_choice) {
+      const selectedRefrig = productOptionsData.refrigeration_choice.find(
+        (opt: any) => opt.value === selectedOptions.refrigeration
+      );
+      if (selectedRefrig) {
+        if (selectedRefrig.price_cents) {
+          basePrice += selectedRefrig.price_cents / 100;
+        } else {
+          // Try to extract from label
+          const priceFromLabel = extractPriceFromLabel(selectedRefrig.label || '');
+          basePrice += priceFromLabel;
+        }
+      }
+    }
+
+    // Add Indoor/Outdoor price difference
+    if (configurableProperties && configurableProperties['Indoor / Outdoor']) {
+      const selectedOption = configurableProperties['Indoor / Outdoor'].find(
+        (opt: any) => opt.value === selectedOptions.location || opt.label === selectedOptions.location
+      );
+      if (selectedOption) {
+        if (selectedOption.price_cents) {
+          basePrice += selectedOption.price_cents / 100;
+        } else {
+          const priceFromLabel = extractPriceFromLabel(selectedOption.label || '');
+          basePrice += priceFromLabel;
+          console.log('Indoor/Outdoor price added:', priceFromLabel);
+        }
+      }
+    }
+
+    // Add Door Size price difference
+    if (configurableProperties && configurableProperties['Door Size']) {
+      const selectedOption = configurableProperties['Door Size'].find(
+        (opt: any) => opt.value === selectedOptions.door || opt.label === selectedOptions.door
+      );
+      if (selectedOption) {
+        if (selectedOption.price_cents) {
+          basePrice += selectedOption.price_cents / 100;
+        } else {
+          const priceFromLabel = extractPriceFromLabel(selectedOption.label || '');
+          basePrice += priceFromLabel;
+          console.log('Door Size price added:', priceFromLabel);
+        }
+      }
+    }
+
+    // Add Floor Type price difference
+    if (configurableProperties && configurableProperties['Floor Type']) {
+      const selectedOption = configurableProperties['Floor Type'].find(
+        (opt: any) => opt.value === selectedOptions.floorType || opt.label === selectedOptions.floorType
+      );
+      if (selectedOption) {
+        if (selectedOption.price_cents) {
+          basePrice += selectedOption.price_cents / 100;
+        } else {
+          const priceFromLabel = extractPriceFromLabel(selectedOption.label || '');
+          basePrice += priceFromLabel;
+          console.log('Floor Type price added:', priceFromLabel);
+        }
+      }
+    }
+
+    // Add addons
+    if (addons && addons.length > 0) {
+      addons.forEach((addon: any) => {
+        const qty = addonQuantities[addon.name] || 0;
+        if (qty > 0 && addon.price_cents) {
+          basePrice += (addon.price_cents / 100) * qty;
+        }
+      });
+    } else {
+      // Add default addons if no scraped data
+      const ledQty = addonQuantities['LED Light'] || 0;
+      const kickPlateQty = addonQuantities['Door Kick Plate'] || 0;
+      const rampQty = addonQuantities['Exterior Ramp'] || 0;
+
+      basePrice += ledQty * 150;
+      basePrice += kickPlateQty * 160;
+      basePrice += rampQty * 911;
+    }
+
+    return basePrice;
+  }, [product.price, selectedOptions, addonQuantities, productOptionsData, configurableProperties, addons]);
 
   const getCategoryFromTitle = () => {
     const title = product.title.toLowerCase();
@@ -256,8 +369,6 @@ export default function AstraProductClient({
 
             {/* LEFT COLUMN */}
             <div className="w-full lg:w-[55%]  flex flex-col gap-5">
-
-
 
               {/* Image Gallery */}
               <div className="bg-white border border-gray-200 rounded-sm overflow-hidden p-3">
@@ -559,9 +670,15 @@ export default function AstraProductClient({
                 <div className="pb-4 border-b border-gray-200">
                   <div className="flex items-baseline gap-3">
                     <span className="text-base font-semibold text-gray-700">Price:</span>
-                    <span className="text-4xl font-bold text-[#004a99]">${cleanPrice(product.price)}</span>
+                    <span className="text-4xl font-bold text-[#004a99]">${formatPrice(totalPrice)}</span>
                   </div>
+                  {totalPrice !== cleanPrice(product.price) && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Base price: ${formatPrice(cleanPrice(product.price))}
+                    </p>
+                  )}
                 </div>
+
 
                 {/* Options - 2 Column Grid */}
                 <div className="space-y-4">
@@ -702,9 +819,13 @@ export default function AstraProductClient({
                         <div key={idx} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center px-4 py-3">
                           <span className="text-sm text-gray-800">{addon.name}</span>
                           <span className="text-sm font-semibold text-gray-700">{addon.price_text}</span>
-                          <select className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm">
+                          <select
+                            className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm"
+                            value={addonQuantities[addon.name] || 0}
+                            onChange={(e) => setAddonQuantities(prev => ({ ...prev, [addon.name]: parseInt(e.target.value) }))}
+                          >
                             {Array.from({ length: Math.min(addon.max_quantity || 10, 11) }, (_, i) => (
-                              <option key={i}>{i}</option>
+                              <option key={i} value={i}>{i}</option>
                             ))}
                           </select>
                         </div>
@@ -715,12 +836,16 @@ export default function AstraProductClient({
                         <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center px-4 py-3">
                           <span className="text-sm text-gray-800">LED Light</span>
                           <span className="text-sm font-semibold text-gray-700">$150.00 / Ea.</span>
-                          <select className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm">
-                            <option>0</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
+                          <select
+                            className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm"
+                            value={addonQuantities['LED Light'] || 0}
+                            onChange={(e) => setAddonQuantities(prev => ({ ...prev, 'LED Light': parseInt(e.target.value) }))}
+                          >
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
                           </select>
                         </div>
 
@@ -728,12 +853,16 @@ export default function AstraProductClient({
                         <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center px-4 py-3">
                           <span className="text-sm text-gray-800">Door Kick Plate</span>
                           <span className="text-sm font-semibold text-gray-700">$160.00 / Ea.</span>
-                          <select className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm">
-                            <option>0</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
+                          <select
+                            className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm"
+                            value={addonQuantities['Door Kick Plate'] || 0}
+                            onChange={(e) => setAddonQuantities(prev => ({ ...prev, 'Door Kick Plate': parseInt(e.target.value) }))}
+                          >
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
                           </select>
                         </div>
 
@@ -741,7 +870,11 @@ export default function AstraProductClient({
                         <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center px-4 py-3">
                           <span className="text-sm text-gray-800">Exterior Ramp</span>
                           <span className="text-sm font-semibold text-gray-700">$911.00 / Ea.</span>
-                          <select className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm">
+                          <select
+                            className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm"
+                            value={addonQuantities['Exterior Ramp'] || 0}
+                            onChange={(e) => setAddonQuantities(prev => ({ ...prev, 'Exterior Ramp': parseInt(e.target.value) }))}
+                          >
                             <option>0</option>
                             <option>1</option>
                             <option>2</option>
@@ -752,6 +885,48 @@ export default function AstraProductClient({
                       </>
                     )}
                   </div>
+                </div>
+
+                {/* Layout Selection - Visual Grid */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-5">Layout</h3>
+                  {/* Check layouts array from product data */}
+                  {layouts && layouts.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-4">
+                      {layouts.map((layout: any, idx: number) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleOptionChange('layout', layout.value || layout.name)}
+                          className={`relative cursor-pointer rounded-xl p-4 transition-all ${selectedOptions.layout === (layout.value || layout.name)
+                            ? 'border-[2.5px] border-[#2563eb] bg-white shadow-sm'
+                            : 'border-[2px] border-gray-200 bg-white hover:border-gray-300'
+                            }`}
+                        >
+                          <div className="aspect-square bg-gray-50 rounded-lg mb-3 flex items-center justify-center p-4">
+                            {layout.thumbnail || layout.preview_image ? (
+                              <img
+                                src={layout.thumbnail || layout.preview_image}
+                                alt={layout.name}
+                                className="object-contain w-full h-full max-w-full max-h-full"
+                                onError={(e) => {
+                                  console.error('Layout image failed to load:', layout.thumbnail || layout.preview_image);
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                No Image URL
+                              </div>
+                            )}
+                          </div>
+
+                          <p className="text-sm font-semibold text-center text-gray-900">
+                            {layout.name}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
 
 

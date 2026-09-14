@@ -5,9 +5,8 @@ import Image from 'next/image';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const productCategories = [
-  { name: 'Walk-In Cooler No Floor', image: '/Walk-in-Cooler-Freezer/walkincoolers.jpg', slug: 'walk-in-cooler-no-floor' },
-  { name: 'Walk-In Cooler with Floor', image: '/Walk-in-Cooler-Freezer/coolerswithfloor.jpg', slug: 'walk-in-cooler-with-floor' },
-  { name: 'Walk-In Freezer With Floor', image: '/Walk-in-Cooler-Freezer/freezerswithfloor.jpg', slug: 'walk-in-freezer-with-floor' },
+  { name: 'Walk-In Cooler', image: '/Walk-in-Cooler-Freezer/walkincoolers.jpg', slug: 'walk-in-cooler-no-floor' },
+  { name: 'Walk-In Freezer', image: '/Walk-in-Cooler-Freezer/freezerswithfloor.jpg', slug: 'walk-in-freezer-with-floor' },
   { name: 'Walk-In Combo (Cooler & Freezer)', image: '/Walk-in-Cooler-Freezer/combounits.jpg', slug: 'walk-in-combo-cooler-freezer' },
 ];
 
@@ -49,26 +48,26 @@ export default function WalkInCoolerFreezerPage() {
           </div>
 
           {/* Main Grid Section */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 justify-center items-center gap-4 md:gap-5 lg:gap-6 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-24">
             {productCategories.map((product, index) => (
               <Link
                 key={index}
                 href={`/walk-in-cooler-freezer/${product.slug}`}
-                className='block w-full h-full group'
+                className='block w-full group'
               >
                 {/* Image Area */}
-                <div className="w-full relative aspect-square rounded-sm overflow-hidden mb-4 border border-gray-100 shadow-sm">
+                <div className="w-full relative aspect-[4/3] rounded-sm overflow-hidden mb-4 border border-gray-200 shadow-md">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
                   />
                 </div>
 
                 {/* Content Area */}
-                <div className="px-1 pb-1 flex flex-col justify-center">
-                  <h3 className="text-[13px] uppercase sm:text-xl font-bold text-gray-800 group-hover:text-[#004a99] transition-colors leading-snug">
+                <div className="pt-2">
+                  <h3 className="text-base md:text-lg font-bold text-gray-900 group-hover:text-[#004a99] transition-colors uppercase tracking-wide">
                     {product.name}
                   </h3>
                 </div>

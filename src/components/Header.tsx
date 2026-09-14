@@ -40,9 +40,9 @@ export default function Header() {
       label: 'Walk-in Cooler & Freezer',
       href: '/walk-in-cooler-freezer',
       subItems: [
-        { label: 'Walk-In Cooler No Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-        { label: 'Walk-In Cooler with Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-with-floor' },
-        { label: 'Walk-In Freezer With Floor', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
+        { label: 'Walk-In Cooler (No Floor)', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+        { label: 'Walk-In Cooler (With Floor)', href: '/walk-in-cooler-freezer/walk-in-cooler-with-floor' },
+        { label: 'Walk-In Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
         { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' }
       ]
     },
@@ -166,9 +166,8 @@ export default function Header() {
               >
                 <div className="flex flex-col p-6 gap-1.5 transition-all duration-300">
                   {[
-                    { label: 'Walk-In Cooler No Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-                    { label: 'Walk-In Cooler with Floor', href: '/walk-in-cooler-freezer/walk-in-cooler-with-floor' },
-                    { label: 'Walk-In Freezer With Floor', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
+                    { label: 'Walk-In Cooler', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+                    { label: 'Walk-In Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
                     { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' }
                   ].map((item) => (
                     <Link

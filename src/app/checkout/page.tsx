@@ -28,13 +28,75 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
     const [billingAddress, setBillingAddress] = useState<any>(null);
     const [customerEmail, setCustomerEmail] = useState('');
     const [taxAmount, setTaxAmount] = useState(0);
-    const [shippingCharge, setShippingCharge] = useState(1000); // Fixed $1000
+    const [shippingCharge, setShippingCharge] = useState(() => {
+        // Amerikooler products always $1495 flat
+        // This will be overridden in handleAddressChange anyway
+        return 1000;
+    });
+
+    // Check if cart contains Astra products
+    const hasAstraProduct = cartItems.some(
+        item => item.brand?.toLowerCase() === 'astra' || item.category === 'walk-in-cooler-freezer'
+    );
+
+    // Check if cart contains Amerikooler products
+    const hasAmerikoolerProduct = cartItems.some(
+        item => item.brand?.toLowerCase() === 'amerikooler'
+    );
+
+    // Check if cart contains refrigeration equipment (Condensing, Evaporation, Combo units)
+    const hasRefrigerationEquipment = cartItems.some(
+        item => item.category === 'refrigeration-equipment' ||
+            item.category === 'condensing-units' ||
+            item.category === 'evaporation-units' ||
+            item.category === 'combo-units-package-units'
+    );
+
+    // Astra shipping zones by state (based on distance from NJ warehouse)
+    const getAstraShipping = (state: string): number => {
+        const astraShippingRates: Record<string, number> = {
+            // Zone 1 - Northeast (base $1000)
+            'NY': 1000, 'NJ': 1000, 'CT': 1000, 'PA': 1000,
+            'MA': 1000, 'RI': 1000, 'NH': 1000, 'VT': 1000,
+            'ME': 1000, 'DE': 1000, 'MD': 1000,
+            // Zone 2 - Mid-Atlantic / Southeast ($1500)
+            'VA': 1500, 'WV': 1500, 'NC': 1500, 'SC': 1500,
+            'DC': 1500,
+            // Zone 3 - South / Midwest ($2000)
+            'IL': 2000, 'OH': 2000, 'IN': 2000, 'MI': 2000,
+            'GA': 2000, 'TN': 2000, 'KY': 2000, 'AL': 2000,
+            // Zone 4 - Southeast coast ($2437.50)
+            'FL': 2437.50,
+            // Zone 5 - South Central ($2812.50)
+            'TX': 2812.50, 'OK': 2812.50, 'AR': 2812.50,
+            'LA': 2812.50, 'MS': 2812.50,
+            // Zone 6 - Mountain / Central ($3250)
+            'CO': 3250, 'MN': 3250, 'WI': 3250, 'IA': 3250,
+            'MO': 3250, 'KS': 3250, 'NE': 3250, 'SD': 3250,
+            'ND': 3250, 'WY': 3250, 'MT': 3250, 'UT': 3250,
+            'NV': 3250, 'ID': 3250, 'WA': 3250, 'OR': 3250,
+            // Zone 7 - West Coast ($3750)
+            'CA': 3750, 'AZ': 3750, 'NM': 3750,
+            // Zone 8 - Remote ($4500)
+            'AK': 4500, 'HI': 4500,
+        };
+        return astraShippingRates[state] ?? 2000; // Default $2000 for unknown states
+    };
 
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const discountAmount = subtotal * (discount / 100);
     const subtotalAfterDiscount = subtotal - discountAmount;
     const actualShipping = deliveryMethod === 'pickup' ? 0 : shippingCharge;
     const total = subtotalAfterDiscount + actualShipping + taxAmount;
+
+    // Set initial shipping on load based on product type
+    useEffect(() => {
+        if (hasAmerikoolerProduct) {
+            setShippingCharge(1495);
+        } else if (hasRefrigerationEquipment) {
+            setShippingCharge(500);
+        }
+    }, [hasAmerikoolerProduct, hasRefrigerationEquipment]);
 
     const handleAddressChange = (event: any) => {
         console.log('📍 Address changed:', event);
@@ -53,6 +115,21 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
             // Calculate tax based on state (manual calculation since Stripe Tax is not enabled)
             const state = address.state;
             let taxRate = 0;
+
+            // Update shipping charge based on product brand and state
+            if (hasAmerikoolerProduct) {
+                // Amerikooler: flat $1495 all states
+                setShippingCharge(1495);
+                console.log(`🚚 Amerikooler shipping (flat rate): $1495`);
+            } else if (hasRefrigerationEquipment) {
+                // Condensing / Evaporation / Combo units: flat $500 all states
+                setShippingCharge(500);
+                console.log(`🚚 Refrigeration equipment shipping (flat rate): $500`);
+            } else if (hasAstraProduct) {
+                const astraShipping = getAstraShipping(state);
+                setShippingCharge(astraShipping);
+                console.log(`🚚 Astra shipping for ${state}: $${astraShipping}`);
+            }
 
             // State tax rates
             if (state === 'CA') {
@@ -461,7 +538,20 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                 {deliveryMethod === 'pickup' ? (
                                     <span className="font-semibold text-green-600">FREE</span>
                                 ) : shippingAddress ? (
-                                    <span className="font-semibold text-gray-900">${actualShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                    <div className="text-right">
+                                        <span className="font-semibold text-gray-900">${actualShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                        {hasAmerikoolerProduct && (
+                                            <p className="text-[11px] text-gray-400 mt-0.5">Flat freight rate</p>
+                                        )}
+                                        {hasRefrigerationEquipment && !hasAmerikoolerProduct && (
+                                            <p className="text-[11px] text-gray-400 mt-0.5">Flat freight rate</p>
+                                        )}
+                                        {hasAstraProduct && !hasAmerikoolerProduct && !hasRefrigerationEquipment && shippingAddress?.address?.state && (
+                                            <p className="text-[11px] text-gray-400 mt-0.5">
+                                                {shippingAddress.address.state} freight rate
+                                            </p>
+                                        )}
+                                    </div>
                                 ) : (
                                     <span className="text-gray-500 text-xs">Enter shipping address</span>
                                 )}
@@ -533,7 +623,157 @@ export default function CheckoutPage() {
             .catch((error) => console.error('Failed to create Payment Intent:', error));
     }, [cartItems, router]);
 
-    if (!clientSecret) return <div className="p-8 text-center text-sm text-gray-500">Loading checkout...</div>;
+    if (!clientSecret) return (
+        <div className="min-h-screen bg-white font-sans">
+            {/* Header skeleton */}
+            <header className="border-b border-gray-200 bg-white py-4">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                    <div className="h-12 w-36 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-6 w-6 bg-gray-200 rounded animate-pulse" />
+                </div>
+            </header>
+
+            <style>{`
+                @keyframes shimmer {
+                    0% { background-position: -1000px 0; }
+                    100% { background-position: 1000px 0; }
+                }
+                .sk {
+                    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+                    background-size: 1000px 100%;
+                    animation: shimmer 1.4s infinite;
+                    border-radius: 6px;
+                }
+            `}</style>
+
+            <div className="max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-73px)]">
+
+                    {/* LEFT COLUMN skeleton */}
+                    <div className="lg:col-span-7 px-4 sm:px-6 lg:px-8 py-6 bg-white border-r border-gray-200 space-y-7">
+
+                        {/* Contact */}
+                        <div className="space-y-3">
+                            <div className="sk h-6 w-24" />
+                            <div className="sk h-11 w-full" />
+                            <div className="flex items-center gap-2">
+                                <div className="sk h-4 w-4" />
+                                <div className="sk h-4 w-48" />
+                            </div>
+                        </div>
+
+                        {/* Delivery toggle */}
+                        <div className="space-y-3">
+                            <div className="sk h-6 w-20" />
+                            <div className="sk h-11 w-full rounded-md" />
+                        </div>
+
+                        {/* Shipping address */}
+                        <div className="space-y-3">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="sk h-11 w-full" />
+                                <div className="sk h-11 w-full" />
+                            </div>
+                            <div className="sk h-11 w-full" />
+                            <div className="sk h-11 w-full" />
+                            <div className="grid grid-cols-3 gap-3">
+                                <div className="sk h-11 w-full" />
+                                <div className="sk h-11 w-full" />
+                                <div className="sk h-11 w-full" />
+                            </div>
+                            <div className="sk h-11 w-full" />
+                        </div>
+
+                        {/* Payment */}
+                        <div className="space-y-3">
+                            <div className="sk h-6 w-20" />
+                            <div className="sk h-4 w-56" />
+                            <div className="border border-gray-200 rounded-md p-4 space-y-4">
+                                {/* Tab selector */}
+                                <div className="flex gap-2">
+                                    <div className="sk h-9 w-28 rounded-md" />
+                                    <div className="sk h-9 w-24 rounded-md" />
+                                    <div className="sk h-9 w-20 rounded-md" />
+                                </div>
+                                {/* Card number */}
+                                <div className="space-y-1.5">
+                                    <div className="sk h-4 w-24" />
+                                    <div className="sk h-11 w-full" />
+                                </div>
+                                {/* Expiry + CVC */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <div className="sk h-4 w-20" />
+                                        <div className="sk h-11 w-full" />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <div className="sk h-4 w-12" />
+                                        <div className="sk h-11 w-full" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Billing address */}
+                        <div className="space-y-3">
+                            <div className="sk h-6 w-32" />
+                            <div className="border border-gray-200 rounded-md p-4 space-y-3">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="sk h-11 w-full" />
+                                    <div className="sk h-11 w-full" />
+                                </div>
+                                <div className="sk h-11 w-full" />
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="sk h-11 w-full" />
+                                    <div className="sk h-11 w-full" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Pay button */}
+                        <div className="sk h-12 w-full rounded-md" />
+                    </div>
+
+                    {/* RIGHT COLUMN skeleton */}
+                    <div className="lg:col-span-5 px-5 sm:px-6 lg:px-8 py-6 bg-[#fafafa] space-y-5">
+
+                        {/* Cart items */}
+                        {[1, 2].map(i => (
+                            <div key={i} className="flex items-center gap-3 p-2.5 bg-white rounded-lg border border-gray-200 shadow-sm">
+                                <div className="sk w-16 h-16 rounded-md shrink-0" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="sk h-4 w-3/4" />
+                                    <div className="sk h-3 w-1/3" />
+                                    <div className="sk h-3 w-1/4" />
+                                </div>
+                                <div className="sk h-5 w-16 shrink-0" />
+                            </div>
+                        ))}
+
+                        {/* Discount code */}
+                        <div className="flex gap-2">
+                            <div className="sk h-11 flex-1 rounded-md" />
+                            <div className="sk h-11 w-20 rounded-md" />
+                        </div>
+
+                        {/* Totals */}
+                        <div className="space-y-3 border-t border-gray-300 pt-4">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="flex justify-between">
+                                    <div className="sk h-4 w-24" />
+                                    <div className="sk h-4 w-20" />
+                                </div>
+                            ))}
+                            <div className="flex justify-between pt-3 border-t border-gray-300">
+                                <div className="sk h-6 w-16" />
+                                <div className="sk h-7 w-28" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 
     const subtotalAmount = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 

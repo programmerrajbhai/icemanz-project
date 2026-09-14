@@ -305,7 +305,7 @@ export default function RefrigerationEquipmentClient({
     'indoor-pemmvl',
     'outdoor-bueip'
   ]);
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');

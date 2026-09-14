@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import WalkInCoolerProductClient from './WalkInCoolerProductClient';
+import AstraProductClient from './AstraProductClient';
 
 export const dynamic = 'force-dynamic';
 // Mock data for fallback when not in database
@@ -10,6 +11,7 @@ const mockProductsDetails: Record<string, any> = {
     title: 'Astra 6 x 6 Walk-In Cooler No Floor',
     slug: 'astra-6-x-6-walk-in-cooler-no-floor',
     price: '2,903.00',
+    brand: 'Astra',
     images: [
       '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
       '/Walk-in-Cooler-Freezer/box-type/walk_in_cooler_1.avif',
@@ -140,6 +142,7 @@ const mockProductsDetails: Record<string, any> = {
     title: 'Astra 6 x 8 Walk-In Cooler No Floor',
     slug: 'astra-6-x-8-walk-in-cooler-no-floor',
     price: '3,156.00',
+    brand: 'Astra',
     images: [
       '/Walk-in-Cooler-Freezer/walkincoolers.jpg',
       '/Walk-in-Cooler-Freezer/box-type/walk_in_freezer_1.avif',
@@ -180,6 +183,7 @@ const mockProductsDetails: Record<string, any> = {
     title: 'Astra 6 x 6 Walk-In Cooler with Floor',
     slug: 'astra-6-x-6-walk-in-cooler-with-floor',
     price: '3,165.00',
+    brand: 'Astra',
     images: [
       '/Walk-in-Cooler-Freezer/coolerswithfloor.jpg',
       '/Walk-in-Cooler-Freezer/box-type/custom_walk_in_cooler_48458996-e588-449c-b300-188f07f6326d.avif',
@@ -216,6 +220,15 @@ const mockProductsDetails: Record<string, any> = {
     ]
   }
 };
+
+// Helper to detect Astra brand from product data
+function isAstraBrand(product: any): boolean {
+  const brand = (product.brand || '').toLowerCase();
+  if (brand === 'astra') return true;
+  // Also check if the title starts with "Astra"
+  if (product.title && product.title.toLowerCase().startsWith('astra')) return true;
+  return false;
+}
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ slug: string, id: string }> }) {
   const { slug, id } = await params;
@@ -282,10 +295,23 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
     ]
   };
 
+  const serializedProduct = JSON.parse(JSON.stringify(productWithDocs));
+  const serializedRelated = JSON.parse(JSON.stringify(relatedProducts));
+
+  // Render Astra-specific design for Astra brand products
+  if (isAstraBrand(product)) {
+    return (
+      <AstraProductClient
+        product={serializedProduct}
+        relatedProducts={serializedRelated}
+      />
+    );
+  }
+
   return (
     <WalkInCoolerProductClient
-      product={JSON.parse(JSON.stringify(productWithDocs))}
-      relatedProducts={JSON.parse(JSON.stringify(relatedProducts))}
+      product={serializedProduct}
+      relatedProducts={serializedRelated}
     />
   );
 }

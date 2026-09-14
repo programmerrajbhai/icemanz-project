@@ -1,0 +1,514 @@
+
+> my-app@0.1.0 scrape:turboair
+> tsx scripts/scrape-turboair-condensing.ts
+
+Starting Turbo Air Condensing Units scraping...
+
+Fetching all product pages...
+Fetching page 1: https://www.atlanticse.com/collections/turbo-air-condensing-units/products.json?limit=250&page=1
+Page 1: Found 35 products
+Total found: 35 product URLs
+
+Found 35 products to scrape
+
+
+Scraping product 1/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts040mr404a2-4-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts040mr404a2-4-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 2/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts020mr404a2a-2-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts020mr404a2a-2-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 3/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts008mr404a2-3-4-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts008mr404a2-3-4-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 4/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts030mr404a2-3-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts030mr404a2-3-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 5/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts010mr404a2-1-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts010mr404a2-1-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 6/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts015xr404a2-1-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts015xr404a2-1-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 7/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts050mr404a2a-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts050mr404a2a-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 8/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts015mr404a3a-1-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts015mr404a3a-1-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 9/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts030xr404a3a-3-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts030xr404a3a-3-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 10/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts020xr404a2a-2-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts020xr404a2a-2-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 11/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts015xr404a3-1-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts015xr404a3-1-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 12/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts050mr404a3a-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts050mr404a3a-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 13/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts030mr404a3-3-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts030mr404a3-3-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 14/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts015mr404a2a-1-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts015mr404a2a-1-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 15/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts006mr404a2-1-2-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts006mr404a2-1-2-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 16/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts100xr404a3-10-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts100xr404a3-10-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 17/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts075xr404a3a-7-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts075xr404a3a-7-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 18/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts030xr404a2a-3-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts030xr404a2a-3-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 19/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts025xr404a3a-2-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts025xr404a3a-2-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 20/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts060xr404a3a-6-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts060xr404a3a-6-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 21/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts055xr404a3a-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts055xr404a3a-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 22/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts020xr404a3a-2-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts020xr404a3a-2-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 23/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts055xr404a2a-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts055xr404a2a-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 24/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts045xr404a3a-4-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts045xr404a3a-4-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 25/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts010xr404a2-1-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts010xr404a2-1-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 26/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts100mr404a3-10-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts100mr404a3-10-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 27/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts075mr404a3-7-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts075mr404a3-7-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 28/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts060mr404a3-6-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts060mr404a3-6-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 29/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts045xr404a2a-4-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts045xr404a2a-4-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 30/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts040mr404a3-4-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts040mr404a3-4-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 31/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts035xr404a3a-3-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts035xr404a3a-3-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 32/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts025mr404a3a-2-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts025mr404a3a-2-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 33/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts025mr404a2a-2-5-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts025mr404a2a-2-5-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 34/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts035xr404a2a-3-5-hp-extra-low-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts035xr404a2a-3-5-hp-extra-low-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Scraping product 35/35...
+Fetching: https://www.atlanticse.com/products/turbo-air-ts020mr404a3a-2-hp-extended-medium-temp-condensing-unit (attempt 1/3)
+Error scraping https://www.atlanticse.com/products/turbo-air-ts020mr404a3a-2-hp-extended-medium-temp-condensing-unit: Error: Did not expect successive traversals.
+    at ensureNotTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:137:19)
+    at addTraversal (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:146:9)
+    at parseSelector (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:204:17)
+    at parse (/Users/user/Desktop/icemanz/node_modules/css-what/lib/commonjs/parse.js:83:20)
+    at Object.select (https://raw.githubusercontent.com/cheeriojs/cheerio-select/ef063a6ca4c3f0d02d2fc3505e750b6fb81c448d/src/index.ts:213:51)
+    at LoadedCheerio._findBySelector (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:102:28)
+    at LoadedCheerio.find (/Users/user/Desktop/icemanz/node_modules/cheerio/src/api/traversing.ts:67:15)
+    at initialize (/Users/user/Desktop/icemanz/node_modules/cheerio/src/load.ts:252:28)
+    at TurboAirCondensingUnitsScraper.scrapeProductPage (/Users/user/Desktop/icemanz/scripts/scrape-turboair-condensing.ts:193:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+✓ Successfully scraped 0 products
+
+✓ Saved 0 products to /Users/user/Desktop/icemanz/data/turboair-condensing-2026-09-13.json
+
+=== SCRAPING SUMMARY ===
+Total products: 0
+Total variants: 0
+Total images: 0
+Products with cut sheets: 0
+Products with manuals: 0

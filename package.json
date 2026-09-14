@@ -13,10 +13,24 @@
     "verify-admin-login": "tsx scripts/verify-admin-login.ts",
     "seed": "tsx prisma/seed.ts",
     "db:seed": "tsx prisma/seed.ts",
-    "verify-stripe": "tsx scripts/verify-stripe-setup.ts",
-    "test-checkout": "tsx scripts/test-checkout.ts",
-    "scrape-astra": "tsx scrape-astra-with-floor.ts",
-    "scrape-freezer-with-floor": "tsx scripts/scrape-astra-freezer-with-floor.ts"
+    "delete-all-products": "tsx scripts/delete-all-products.ts",
+    "scrape:astra": "node scripts/scrape-astra-products.js",
+    "import:astra": "tsx scripts/import-astra-products.ts",
+    "import:astra:single": "tsx scripts/import-single-astra.ts",
+    "import:astra:three": "tsx scripts/import-three-astra.ts",
+    "import:astra:all": "bash scripts/import-all-astra.sh",
+    "import:astra:complete": "tsx scripts/import-astra-complete.ts",
+    "delete:astra": "tsx scripts/delete-astra-products.ts",
+    "verify:astra": "tsx scripts/verify-astra-products.ts",
+    "scrape:amerikooler": "tsx scripts/scrape-amerikooler.ts",
+    "import:amerikooler": "tsx scripts/import-amerikooler-products.ts",
+    "verify:amerikooler": "tsx scripts/verify-amerikooler-products.ts",
+    "scrape:turboair": "tsx scripts/scrape-turboair-condensing.ts",
+    "import:turboair": "tsx scripts/import-turboair-condensing.ts",
+    "verify:turboair": "tsx scripts/verify-turboair-products.ts",
+    "scrape:turboair:topmount": "tsx scripts/scrape-turboair-topmount.ts",
+    "import:turboair:topmount": "tsx scripts/import-turboair-topmount.ts",
+    "verify:turboair:topmount": "tsx scripts/verify-turboair-topmount.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

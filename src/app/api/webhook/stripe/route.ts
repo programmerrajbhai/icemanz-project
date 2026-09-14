@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 import { buildOrderEmailAttachments, generateOrderReceiptEmailHtml, generateOrderReceiptEmailText } from '@/lib/orderEmailTemplate';
+import { buildAdminOrderEmailHtml } from '@/lib/adminEmailTemplate';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -193,7 +194,7 @@ export async function POST(req: Request) {
             } else if (typeof invoice.products === 'string') {
               try {
                 invoiceProducts = JSON.parse(invoice.products);
-              } catch (e) {}
+              } catch (e) { }
             }
           }
 
@@ -241,6 +242,31 @@ export async function POST(req: Request) {
             console.log("[WEBHOOK] Email sent successfully! Message ID:", info.messageId);
           } catch (emailError) {
             console.error("[WEBHOOK] Failed to send receipt email:", emailError);
+          }
+
+          // Send admin notification
+          if (process.env.ADMIN_EMAIL) {
+            try {
+              const adminHtml = buildAdminOrderEmailHtml({
+                orderId: newOrder.id,
+                customerName, customerEmail, customerPhone,
+                amountPaid, deliveryMethod,
+                shippingName, shippingAddress, shippingCity, shippingState, shippingZip, shippingCountry,
+                products: invoiceProducts,
+                subtotal: invoice?.totalAmount ?? amountPaid,
+                shippingCost: invoice?.deliveryCost ?? 0,
+                tax: invoice?.tax ?? 0,
+              });
+              await transporter.sendMail({
+                from: `"ICEMANZ Orders" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME}>`,
+                to: process.env.ADMIN_EMAIL,
+                subject: `🛒 New Order #${newOrder.id.slice(0, 8).toUpperCase()} - $${amountPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })} - ${customerName}`,
+                html: adminHtml,
+              });
+              console.log("[WEBHOOK] Admin notification sent to:", process.env.ADMIN_EMAIL);
+            } catch (adminEmailError) {
+              console.error("[WEBHOOK] Failed to send admin notification:", adminEmailError);
+            }
           }
         } else {
           // Payment from direct checkout (cart flow without invoice)
@@ -340,9 +366,33 @@ export async function POST(req: Request) {
           } catch (emailError) {
             console.error("[WEBHOOK] Failed to send receipt email:", emailError);
           }
-        }
-        break;
+
+          // Send admin notification for direct checkout
+          // Send admin notification for direct checkout
+          if (process.env.ADMIN_EMAIL) {
+            try {
+              const adminHtml = buildAdminOrderEmailHtml({
+                orderId: newOrder.id,
+                customerName, customerEmail, customerPhone,
+                amountPaid, deliveryMethod,
+                shippingName, shippingAddress, shippingCity, shippingState, shippingZip, shippingCountry,
+                products: cartItemsData,
+                subtotal: amountPaid,
+              });
+              await transporter.sendMail({
+                from: `"ICEMANZ Orders" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME}>`,
+                to: process.env.ADMIN_EMAIL,
+                subject: `🛒 New Order #${newOrder.id.slice(0, 8).toUpperCase()} - $${amountPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })} - ${customerName}`,
+                html: adminHtml,
+              });
+              console.log("[WEBHOOK] Admin notification sent to:", process.env.ADMIN_EMAIL);
+            } catch (adminEmailError) {
+              console.error("[WEBHOOK] Failed to send admin notification:", adminEmailError);
+            }
+          }
+        } // end else (direct checkout)
       }
+        break;
       // Handle other event types if necessary
       default:
         console.log(`Unhandled event type ${event.type}`);

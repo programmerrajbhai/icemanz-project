@@ -127,6 +127,126 @@ const CheckoutClient = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+
+            {/* Stripe Loading Skeleton Overlay */}
+            {isProcessing && (
+                <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
+                    {/* Top bar shimmer */}
+                    <div className="h-1 w-full bg-gray-100 overflow-hidden">
+                        <div className="h-full bg-blue-500 animate-[loading_1.5s_ease-in-out_infinite]" style={{ width: '60%', animation: 'slideProgress 1.5s ease-in-out infinite' }} />
+                    </div>
+                    <style>{`
+                        @keyframes slideProgress {
+                            0% { transform: translateX(-100%); }
+                            100% { transform: translateX(200%); }
+                        }
+                        @keyframes shimmer {
+                            0% { background-position: -1000px 0; }
+                            100% { background-position: 1000px 0; }
+                        }
+                        .shimmer {
+                            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                            background-size: 1000px 100%;
+                            animation: shimmer 1.5s infinite;
+                        }
+                    `}</style>
+
+                    <div className="flex-1 max-w-6xl mx-auto w-full px-4 py-10 flex flex-col lg:flex-row gap-8">
+                        {/* Left column skeleton */}
+                        <div className="flex-1 space-y-6">
+                            {/* Header skeleton */}
+                            <div className="shimmer h-8 w-48 rounded-lg" />
+
+                            {/* Stripe form skeleton */}
+                            <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                                <div className="shimmer h-5 w-32 rounded" />
+                                {/* Card number field */}
+                                <div className="space-y-2">
+                                    <div className="shimmer h-4 w-24 rounded" />
+                                    <div className="shimmer h-12 w-full rounded-lg" />
+                                </div>
+                                {/* Expiry + CVC row */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <div className="shimmer h-4 w-20 rounded" />
+                                        <div className="shimmer h-12 w-full rounded-lg" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="shimmer h-4 w-12 rounded" />
+                                        <div className="shimmer h-12 w-full rounded-lg" />
+                                    </div>
+                                </div>
+                                {/* Name field */}
+                                <div className="space-y-2">
+                                    <div className="shimmer h-4 w-28 rounded" />
+                                    <div className="shimmer h-12 w-full rounded-lg" />
+                                </div>
+                                {/* Billing address */}
+                                <div className="space-y-2">
+                                    <div className="shimmer h-4 w-32 rounded" />
+                                    <div className="shimmer h-12 w-full rounded-lg" />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="shimmer h-12 w-full rounded-lg" />
+                                        <div className="shimmer h-12 w-full rounded-lg" />
+                                    </div>
+                                </div>
+                                {/* Pay button */}
+                                <div className="shimmer h-14 w-full rounded-xl mt-4" />
+                            </div>
+
+                            {/* Security badges skeleton */}
+                            <div className="flex gap-4 items-center justify-center">
+                                <div className="shimmer h-5 w-28 rounded" />
+                                <div className="shimmer h-5 w-24 rounded" />
+                                <div className="shimmer h-5 w-20 rounded" />
+                            </div>
+                        </div>
+
+                        {/* Right column - Order Summary skeleton */}
+                        <div className="lg:w-[380px] space-y-4">
+                            <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+                                <div className="shimmer h-5 w-36 rounded" />
+                                {/* Cart items */}
+                                {[1, 2].map(i => (
+                                    <div key={i} className="flex gap-3 py-3 border-b border-gray-100">
+                                        <div className="shimmer w-16 h-16 rounded-lg shrink-0" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="shimmer h-4 w-3/4 rounded" />
+                                            <div className="shimmer h-3 w-1/2 rounded" />
+                                            <div className="shimmer h-4 w-20 rounded" />
+                                        </div>
+                                    </div>
+                                ))}
+                                {/* Totals */}
+                                <div className="space-y-2 pt-2">
+                                    <div className="flex justify-between">
+                                        <div className="shimmer h-4 w-16 rounded" />
+                                        <div className="shimmer h-4 w-20 rounded" />
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <div className="shimmer h-4 w-12 rounded" />
+                                        <div className="shimmer h-4 w-16 rounded" />
+                                    </div>
+                                    <div className="flex justify-between pt-2 border-t border-gray-100">
+                                        <div className="shimmer h-5 w-12 rounded" />
+                                        <div className="shimmer h-5 w-24 rounded" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Redirecting notice */}
+                            <div className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex items-start gap-3">
+                                <div className="w-5 h-5 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-sm font-semibold text-blue-800">Redirecting to Stripe...</p>
+                                    <p className="text-xs text-blue-600 mt-0.5">Please wait while we prepare your secure checkout.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Custom Styles */}
             <style jsx global>{`
                 .custom-scrollbar::-webkit-scrollbar {
@@ -365,7 +485,7 @@ const CheckoutClient = () => {
                             {/* Cart Items */}
                             <div className="space-y-5 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                 <h2 className="text-lg font-bold text-gray-900 pb-2 border-b border-gray-200">Order Summary</h2>
-                            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                     {cartItems.map((item) => (
                                         <div key={item.id} className="flex items-center gap-3 p-2.5 bg-gray-50 rounded-lg border border-gray-200/80 hover:bg-gray-100/80 transition-colors">
                                             <div className="relative w-16 h-16 bg-white rounded-md border border-gray-200 flex-shrink-0 p-1 shadow-sm">

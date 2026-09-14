@@ -1,0 +1,583 @@
+
+> my-app@0.1.0 scrape:amerikooler
+> tsx scripts/scrape-amerikooler.ts
+
+Starting Amerikooler product scraping...
+
+Fetching all product pages...
+Fetching page 1: https://www.atlanticse.com/collections/walk-in-coolers/products.json?limit=250&page=1&vendor=Amerikooler
+Page 1: Found 15 Amerikooler products (250 total)
+Fetching page 2: https://www.atlanticse.com/collections/walk-in-coolers/products.json?limit=250&page=2&vendor=Amerikooler
+Page 2: Found 31 Amerikooler products (250 total)
+Fetching page 3: https://www.atlanticse.com/collections/walk-in-coolers/products.json?limit=250&page=3&vendor=Amerikooler
+Page 3: Found 23 Amerikooler products (250 total)
+Fetching page 4: https://www.atlanticse.com/collections/walk-in-coolers/products.json?limit=250&page=4&vendor=Amerikooler
+Page 4: Found 23 Amerikooler products (250 total)
+Fetching page 5: https://www.atlanticse.com/collections/walk-in-coolers/products.json?limit=250&page=5&vendor=Amerikooler
+Page 5: Found 44 Amerikooler products (234 total)
+Total found: 136 product URLs
+
+Found 136 products to scrape
+
+
+Scraping product 1/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060672-n-6-x-6-x-7-2-floorless-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC060672**N 6' x 6' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 2/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060677-f-6-x-6-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC060677**F 6' x 6' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 3/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060677-f-6-x-6-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF060677**F 6' x 6' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 4/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060672-n-o-6-x-6-x-7-2-floorless-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC060672**N-O 6' x 6' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 5/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060677-f-o-6-x-6-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC060677**F-O 6' x 6' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 6/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060872-n-6-x-8-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC060872**N 6' x 8' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 7/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060677-f-o-6-x-6-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF060677**F-O 6' x 6' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 8/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061072-n-6-x-10-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC061072**N 6' x 10' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 9/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080872-n-8-x-8-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC080872**N 8' x 8' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 10/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060877-f-6-x-8-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC060877**F 6' x 8' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 11/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060877-f-6-x-8-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF060877**F 6' x 8' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 12/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060872-n-o-6-x-8-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC060872**N-O 6' x 8' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 13/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061072-n-o-6-x-10-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC061072**N-O 6' x 10' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 14/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080872-n-o-8-x-8-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC080872**N-O 8' x 8' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 15/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061272-n-6-x-12-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC061272**N 6' x 12' x 7' 2 Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 16/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060877-f-o-6-x-8-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC060877**F-O 6' x 8' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 17/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081072-n-8-x-10-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC081072**N 8' x 10' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 18/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060877-f-o-6-x-8-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF060877**F-O 6' x 8' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 19/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061077-f-6-x-10-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC061077**F 6' x 10' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 20/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061272-n-o-6-x-12-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC061272**N-O 6' x 12' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 21/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061077-f-6-x-10-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF061077**F 6' x 10' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 22/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080877-f-8-x-8-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC080877**F 8' x 8' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 23/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081072-n-o-8-x-10-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC081072**N-O 8' x 10' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 24/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf080877-f-8-x-8-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF080877**F 8' x 8' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 25/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081272-n-8-x-12-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC081272**N 8' x 12' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 26/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101072-n-10-x-10-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC101072**N 10' x 10' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 27/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061077-f-o-6-x-10-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC061077**F-O 6' x 10' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 28/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061077-f-o-6-x-10-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF061077**F-O 6' x 10' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 29/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060672-nbsc-6-x-6-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060672**NBSC 6' x 6' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 30/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080877-f-o-8-x-8-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC080877**F-O 8' x 8' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 31/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf080877-f-o-8-x-8-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF080877**F-O 8' x 8' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 32/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061277-f-6-x-12-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC061277**F 6' x 12' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 33/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081272-n-o-8-x-12-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC081272**N-O 8' x 12' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 34/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061277-f-6-x-12-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF061277**F 6' x 12' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 35/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101072-n-o-10-x-10-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC101072**N-O 10' x 10' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 36/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101272-n-10-x-12-x-7-2-quick-ship-floorless-indoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC101272**N 10' x 12' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+
+Scraping product 37/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081077-f-8-x-10-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC081077**F 8' x 10' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 38/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf081077-f-8-x-10-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF081077**F 8' x 10' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 39/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060677-fbsc-6-x-6-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060677**FBSC 6' x 6' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 40/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061277-f-o-6-x-12-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC061277**F-O 6' x 12' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 41/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061277-f-o-6-x-12-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF061277**F-O 6' x 12' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 42/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060872-nbsc-6-x-8-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060872**NBSC 6' x 8' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 43/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081077-f-o-8-x-10-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC081077**F-O 8' x 10' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 44/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101272-n-o-10-x-12-x-7-2-quick-ship-floorless-outdoor-box-only-walk-in-cooler (attempt 1/3)
+✓ Scraped: Amerikooler QC101272**N-O 10' x 12' x 7' 2" Quick Ship Floorless Outdoor Box Only Walk-In Cooler
+
+Scraping product 45/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf081077-f-o-8-x-10-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF081077**F-O 8' x 10' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 46/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060672-nbsc-o-6-x-6-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060672**NBSC-O 6' x 6' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 47/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081277-f-8-x-12-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC081277**F 8' x 12' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 48/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf081277-f-8-x-12-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF081277**F 8' x 12' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 49/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061072-nbsc-6-x-10-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC06107**NBS2C 6' x 10' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 50/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080872-nbsc-8-x-8-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC080872**NBSC 8' x 8' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 51/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101077-f-10-x-10-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC101077**F 10' x 10' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 52/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf101077-f-10-x-10-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF101077**F 10' x 10' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 53/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060872-nbsc-o-6-x-8-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060872**NBSC-O 6' x 8' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 54/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060677-fbsc-o-6-x-6-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060677**FBSC-O 6' x 6' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 55/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060877-fbsc-6-x-8-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060877**FBSC 6' x 8' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 56/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081277-f-o-8-x-12-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC081277**F-O 8' x 12' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 57/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf081277-f-o-8-x-12-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF081277**F-O 8' x 12' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 58/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061272-nbsc-6-x-12-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061272**NBSC 6' x 12' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 59/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101077-f-o-10-x-10-x-7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC101077**F-O 10' x 10' x 7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 60/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081072-nbsc-8-x-10-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081072**NBSC 8' x 10' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 61/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf101077-f-o-10-x-10-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF101077**F-O 10' x 10' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 62/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061072-nbsc-o-6-x-10-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061072**NBSC-O 6' x 10' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 63/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080872-nbsc-o-8-x-8-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC080872**NBSC-O 8' x 8' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 64/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061077-fbsc-6-x-10-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061077**FBSC 6' x 10' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 65/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc060877-fbsc-o-6-x-8-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC060877**FBSC-O 6' x 8' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 66/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101277-f-10-x-12-x-7-7-quick-ship-indoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC101277**F 10' x 12' x 7' 7" Quick Ship Indoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 67/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080877-fbsc-8-x-8-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC080877**FBSC 8' x 8' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 68/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060677-fbsm-6-x-6-x-7-7-quick-ship-indoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF060677**FBSM 6' x 6' x 7' 7" Quick Ship Indoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 69/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf101277-f-10-x-12-x-7-7-quick-ship-indoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF101277**F 10' x 12' x 7' 7" Quick Ship Indoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 70/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081072-nbsc-o-8-x-10-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081072**NBSC-O 8' x 10' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 71/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061272-nbsc-o-6-x-12-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061272**NBSC-O 6' x 12' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 72/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc101277-f-o-10-x-12-x7-7-quick-ship-outdoor-box-only-walk-in-cooler-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QC101277**F-O 10' x 12' x7' 7" Quick Ship Outdoor Box Only Walk-In Cooler with Aluminum Floor
+
+Scraping product 73/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf101277-f-o-10-x-12-x-7-7-quick-ship-outdoor-box-only-walk-in-freezer-with-aluminum-floor (attempt 1/3)
+✓ Scraped: Amerikooler QF101277**F-O 10' x 12' x 7' 7" Quick Ship Outdoor Box Only Walk-In Freezer with Aluminum Floor
+
+Scraping product 74/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061277-fbsc-6-x-12-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061277**FBSC 6' x 12' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 75/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061077-fbsc-o-6-x-10-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061077**FBSC-O 6' x 10' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 76/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc080877-fbsc-o-8-x-8-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC080877**FBSC-O 8' x 8' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 77/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081077-fbsc-8-x-10-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081077**FBSC 8' x 10' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 78/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081272-nbsc-8-x-12-x-7-2-quick-ship-floorless-indoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081272**NBSC 8' x 12' x 7' 2" Quick Ship Floorless Indoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 79/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060677-fbsm-o-6-x-6-x-7-7-quick-ship-outdoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF060677**FBSM-O 6' x 6' x 7' 7" Quick Ship Outdoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 80/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060877-fbsm-6-x-8-x-7-7-quick-ship-indoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF060877**FBSM 6' x 8' x 7' 7" Quick Ship Indoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 81/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081077-fbsc-o-8-x-10-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081077**FBSC-O 8' x 10' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 82/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc061277-fbsc-o-6-x-12-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC061277**FBSC-O 6' x 12' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 83/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081272-nbsc-o-8-x-12-x-7-2-quick-ship-floorless-outdoor-walk-in-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081272**NBSC-O 8' x 12' x 7' 2" Quick Ship Floorless Outdoor Walk-In Cooler with Top Mounted Refrigeration
+
+Scraping product 84/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061077-fbsm-6-x-10-x-7-7-quick-ship-indoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF061077**FBSM 6' x 10' x 7' 7" Quick Ship Indoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 85/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf080877-fbsm-8-x-8-x-7-7-quick-ship-indoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF080877**FBSM 8' x 8' x 7' 7" Quick Ship Indoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 86/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf060877-fbsm-o-6-x-8-x-7-7-quick-ship-outdoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF060877**FBSM-O 6' x 8' x 7' 7" Quick Ship Outdoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 87/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081277-fbsc-8-x-12-x-7-7-quick-ship-indoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081277**FBSC 8' x 12' x 7' 7" Quick Ship Indoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 88/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qc081277-fbsc-o-8-x-12-x-7-7-quick-ship-outdoor-walk-in-cooler-with-aluminum-floor-and-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QC081277**FBSC-O 8' x 12' x 7' 7" Quick Ship Outdoor Walk-In Cooler with Aluminum Floor and Top Mounted Refrigeration
+
+Scraping product 89/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061277-fbsm-6-x-12-x-7-7-quick-ship-indoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF061277**FBSM 6' x 12' x 7' 7" Quick Ship Indoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 90/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061077-fbsm-o-6-x-10-x-7-7-quick-ship-outdoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF061077**FBSM-O 6' x 10' x 7' 7" Quick Ship Outdoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 91/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf080877-fbsm-o-8-x-8-x-7-7-quick-ship-outdoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF080877**FBSM-O 8' x 8' x 7' 7" Quick Ship Outdoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 92/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf081077-fbsm-8-x-10-x-7-7-quick-ship-indoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF081077**FBSM 8' x 10' x 7' 7" Quick Ship Indoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 93/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf061277-fbsm-o-6-x-12-x-7-7-quick-ship-outdoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF061277**FBSM-O 6' x 12' x 7' 7" Quick Ship Outdoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 94/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-qf081077-fbsm-o-8-x-10-x-7-7-quick-ship-outdoor-walk-in-freezer-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler QF081077**FBSM-O 8' x 10' x 7' 7" Quick Ship Outdoor Walk-In Freezer with Top Mounted Refrigeration
+
+Scraping product 95/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw061277n-6-6-sc-6-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW061277N-6/6-SC 6' x 12' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 96/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw061277f-6-6-sc-6-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW061277F-6/6-SC 6' x 12' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 97/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw071277n-6-6-sc-7-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW071277N-6/6-SC 7' x 12' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 98/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw061477n-7-7-sc-6-x-14-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW061477N-7/7-SC 6' x 14' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 99/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081277n-6-6-sc-8-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081277N-6/6-SC 8' x 12' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 100/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw071277f-6-6-sc-7-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW071277F-6/6-SC 7' x 12' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 101/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw071477n-7-7-sc-7-x-14-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW071477N-7/7-SC 7' x 14' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 102/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw061477f-7-7-sc-6-x-14-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW061477F-7/7-SC 6' x 14' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 103/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw091277n-6-6-sc-9-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW091277N-6/6-SC 9' x 12' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 104/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081277f-6-6-sc-8-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081277F-6/6-SC 8' x 12' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 105/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081477n-7-7-sc-8-x-14-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081477N-7/7-SC 8' x 14' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 106/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw071477f-7-7-sc-7-x-14-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW071477F-7/7-SC 7' x 14' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 107/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101277n-6-6-sc-10-x-12-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101277N-6/6-SC 10' x 12' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 108/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081577n-6-9-sc-8-x-15-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081577N-6/9-SC 8' x 15' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 109/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw091277f-6-6-sc-9-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW091277F-6/6-SC 9' x 12' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 110/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081477f-7-7-sc-8-x-14-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081477F-7/7-SC 8' x 14' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 111/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081677n-8-8-sc-8-x-16-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081677N-8/8-SC 8' x 16' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 112/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw091477n-7-7-sc-9-x-14-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW091477N-7/7-SC 9' x 14' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 113/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101277f-6-6-sc-10-x-12-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101277F-6/6-SC 10' x 12' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 114/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081577f-6-9-sc-8-x-15-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081577F-6/9-SC 8' x 15' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 115/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw091577n-6-9-sc-9-x-15-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW091577N-6/9-SC 9' x 15' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 116/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw091477f-7-7-sc-9-x-14-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW091477F-7/7-SC 9' x 14' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 117/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101477n-7-7-sc-10-x-14-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101477N-7/7-SC 10' x 14' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 118/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081877n-9-9-sc-8-x-18-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081877N-9/9-SC 8' x 18' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 119/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081677f-8-8-sc-8-x-16-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081677F-8/8-SC 8' x 16' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 120/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101577n-6-9-sc-10-x-15-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101577N-6/9-SC 10' x 15' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 121/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw091577f-6-9-sc-9-x-15-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW091577F-6/9-SC 9' x 15' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 122/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101477f-7-7-sc-10-x-14-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101477F-7/7-SC 10' x 14' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 123/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101577f-6-9-sc-10-x-15-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101577F-6/9-SC 10' x 15' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 124/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw082077n-8-12-sc-8-x-20-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW082077N-8/12-SC 8' x 20' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 125/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw081877f-9-9-sc-8-x-18-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW081877F-9/9-SC 8' x 18' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 126/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw082077n-10-10-sc-8-x-20-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW082077N-10/10-SC 8' x 20' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 127/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101877n-9-9-sc-10-x-18-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101877N-9/9-SC 10' x 18' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 128/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw092077n-10-10-sc-9-x-20-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW092077N-10/10-SC 9' x 20' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 129/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw092077n-8-12-sc-9-x-20-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW092077N-8/12-SC 9' x 20' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 130/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw101877f-9-9-sc-10-x-18-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW101877F-9/9-SC 10' x 18' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 131/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw082077f-8-12-sc-8-x-20-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW082077F-8/12-SC 8' x 20' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 132/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw082077f-10-10-sc-8-x-20-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW082077F-10/10-SC 8' x 20' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 133/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw102077n-10-10-sc-10-x-20-x-7-7-floorless-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW102077N-10/10-SC 10' x 20' x 7' 7" Floorless Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 134/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw092077f-8-12-sc-9-x-20-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW092077F-8/12-SC 9' x 20' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 135/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw092077f-10-10-sc-9-x-20-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW092077F-10/10-SC 9' x 20' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+Scraping product 136/136...
+Fetching: https://www.atlanticse.com/products/amerikooler-dw102077f-10-10-sc-10-x-20-x-7-7-indoor-walk-in-combination-freezer-cooler-with-top-mounted-refrigeration (attempt 1/3)
+✓ Scraped: Amerikooler DW102077F-10/10-SC 10' x 20' x 7' 7" Indoor Walk-In Combination Freezer / Cooler with Top Mounted Refrigeration
+
+✓ Successfully scraped 136 products
+
+✓ Saved 136 products to /Users/user/Desktop/icemanz/data/amerikooler-products-2026-09-13.json
+
+=== SCRAPING SUMMARY ===
+Total products: 136
+Total variants: 674
+Total images: 216
+Products with spec sheets: 136
+
+=== SAMPLE PRODUCT ===
+Title: Amerikooler QC060672**N 6' x 6' x 7' 2" Quick Ship Floorless Indoor Box Only Walk-In Cooler
+Price: $5986.00
+Variants: 4
+Images: 1
+Features: 9
+URL: https://www.atlanticse.com/products/amerikooler-qc060672-n-6-x-6-x-7-2-floorless-walk-in-cooler
