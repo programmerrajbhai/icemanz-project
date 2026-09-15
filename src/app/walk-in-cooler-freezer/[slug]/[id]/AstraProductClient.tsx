@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   PhoneCall,
   FileText,
@@ -206,6 +206,18 @@ export default function AstraProductClient({
 
   // Get layouts - check multiple possible locations
   const layouts = (product as any).layouts || (enrichedProduct as any).layouts || productOptionsData?.layouts || [];
+
+  // Auto-select first layout on mount
+  useEffect(() => {
+    if (layouts && layouts.length > 0 && !selectedOptions.layout) {
+      const firstLayout = layouts[0];
+      setSelectedOptions(prev => ({
+        ...prev,
+        layout: firstLayout.value || firstLayout.name
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layouts.length]);
 
   // Get specifications from specs field
   const specifications = enrichedProduct.specs || {};
@@ -1004,7 +1016,11 @@ export default function AstraProductClient({
                         price: product.price,
                         image: product.images[0] || '/placeholder.png',
                         quantity: quantity,
-                        category: 'walk-in-cooler-freezer'
+                        category: 'walk-in-cooler-freezer',
+                        selectedOptions: {
+                          ...selectedOptions,
+                          layout: selectedOptions.layout || (layouts.length > 0 ? (layouts[0].value || layouts[0].name) : undefined),
+                        }
                       });
                       router.push('/cart');
                     }}

@@ -11,6 +11,7 @@ export interface CartItem {
   image: string;
   quantity: number;
   category?: string;
+  selectedOptions?: Record<string, string | undefined>;
 }
 
 interface CartContextType {
