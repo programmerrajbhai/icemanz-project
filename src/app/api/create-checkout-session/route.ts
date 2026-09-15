@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
             customerInfo,
             deliveryMethod = 'ship',
             shippingCost = 0,
-            shippingLocations = [],
+            shippingLocation = null,
         } = body;
 
         if (!items || items.length === 0) {
@@ -45,25 +45,20 @@ export async function POST(req: NextRequest) {
                     images: [item.image],
                     description: `${item.brand || ''} - ${item.category || 'Product'}`,
                 },
-                unit_amount: Math.round(item.price * 100), // Convert to cents
+                unit_amount: Math.round(item.price * 100),
             },
             quantity: item.quantity,
         }));
 
-        // Add fixed shipping as a line item when pre-selected locations are present
-        if (shippingCost > 0 && shippingLocations.length > 0) {
-            const locationNames = shippingLocations
-                .map((sl: any) => sl.location?.name || sl.location?.city || 'Delivery')
-                .join(', ');
+        // Add fixed shipping as a Stripe line item when a location is pre-selected
+        if (shippingCost > 0 && shippingLocation) {
             lineItems.push({
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: `Shipping — ${locationNames}`,
+                        name: `Freight Shipping — ${shippingLocation.name}`,
                         images: [],
-                        description: shippingLocations
-                            .map((sl: any) => `${sl.itemName}: ${sl.location?.address}`)
-                            .join(' | '),
+                        description: shippingLocation.address,
                     },
                     unit_amount: Math.round(shippingCost * 100),
                 },
@@ -87,8 +82,10 @@ export async function POST(req: NextRequest) {
                 deliveryMethod: deliveryMethod,
                 customerPhone: customerInfo?.phone || '',
                 customerEmail: customerInfo?.email || '',
+                shippingLocationId: shippingLocation?.id || '',
+                shippingLocationName: shippingLocation?.name || '',
+                shippingLocationAddress: shippingLocation?.address || '',
                 shippingCost: shippingCost > 0 ? String(shippingCost) : '',
-                shippingLocationIds: shippingLocations.map((sl: any) => sl.location?.id || '').join(','),
             },
         };
 

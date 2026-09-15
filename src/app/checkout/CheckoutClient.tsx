@@ -8,6 +8,32 @@ import { MapPin, CreditCard, Lock, Truck, CheckCircle2, Info, ShoppingBag, Arrow
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
 
+// ─── Astra shipping locations ────────────────────────────────────────────────
+interface ShippingLocation {
+    id: string;
+    state: string;
+    stateCode: string;
+    city: string;
+    name: string;
+    address: string;
+    cost: number;
+}
+
+const ASTRA_SHIPPING_LOCATIONS: ShippingLocation[] = [
+    { id: 'ct-hartford', state: 'Connecticut', stateCode: 'CT', city: 'Hartford', name: 'Hartford City Hall', address: '550 Main Street, Hartford, CT 06103', cost: 1375 },
+    { id: 'ct-new-haven', state: 'Connecticut', stateCode: 'CT', city: 'New Haven', name: 'New Haven City Hall', address: '165 Church Street, New Haven, CT 06510', cost: 1125 },
+    { id: 'pa-philadelphia', state: 'Pennsylvania', stateCode: 'PA', city: 'Philadelphia', name: 'Philadelphia City Hall', address: 'Philadelphia, PA 19107', cost: 1125 },
+    { id: 'pa-pittsburgh', state: 'Pennsylvania', stateCode: 'PA', city: 'Pittsburgh', name: 'Pittsburgh City-County Building', address: '414 Grant Street, Pittsburgh, PA 15219', cost: 1750 },
+];
+
+// Group by state for display
+const LOCATIONS_BY_STATE = ASTRA_SHIPPING_LOCATIONS.reduce<Record<string, ShippingLocation[]>>((acc, loc) => {
+    if (!acc[loc.state]) acc[loc.state] = [];
+    acc[loc.state].push(loc);
+    return acc;
+}, {});
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Main Checkout Component
 const CheckoutClient = () => {
     const { subtotal, cartItems, clearCart } = useCart();
@@ -17,15 +43,21 @@ const CheckoutClient = () => {
     const [isFixed, setIsFixed] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // Calculate total shipping from cart items that have a fixed shipping location
-    const totalShipping = cartItems.reduce((sum, item) => sum + (item.shippingCost ?? 0), 0);
-    const grandTotal = subtotal + totalShipping;
-
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [deliveryMethod, setDeliveryMethod] = useState<'ship' | 'pickup'>('ship');
     const [discountCode, setDiscountCode] = useState('');
     const [country, setCountry] = useState('US');
+
+    // Astra shipping location selection (null = no fixed location chosen)
+    const [selectedShippingLocation, setSelectedShippingLocation] = useState<ShippingLocation | null>(null);
+
+    // Does the cart have any Astra walk-in products?
+    const hasAstraItems = cartItems.some(item => item.category === 'walk-in-cooler-freezer');
+
+    // Shipping cost from selected location (0 if none selected)
+    const shippingCost = selectedShippingLocation ? selectedShippingLocation.cost : 0;
+    const grandTotal = subtotal + shippingCost;
 
     // Shipping address fields
     const [firstName, setFirstName] = useState('');
@@ -85,14 +117,8 @@ const CheckoutClient = () => {
                         country,
                     },
                     deliveryMethod,
-                    shippingCost: totalShipping,
-                    shippingLocations: cartItems
-                        .filter(item => item.shippingLocation)
-                        .map(item => ({
-                            itemName: item.name,
-                            location: item.shippingLocation,
-                            cost: item.shippingCost,
-                        })),
+                    shippingCost: shippingCost,
+                    shippingLocation: selectedShippingLocation ?? null,
                 }),
             });
 
@@ -408,6 +434,62 @@ const CheckoutClient = () => {
                                             <option value="OTHER">Other</option>
                                         </select>
                                     </div>
+
+                                    {/* Astra shipping location selector — only for walk-in products */}
+                                    {hasAstraItems && (
+                                        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                                            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
+                                                <h3 className="text-sm font-bold text-gray-900">Shipping Destination</h3>
+                                                <p className="text-xs text-gray-500 mt-0.5">Select a delivery location — fixed freight rate included</p>
+                                            </div>
+                                            <div className="p-4 space-y-4">
+                                                {/* No fixed location option */}
+                                                <label className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${!selectedShippingLocation ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name="astraShipping"
+                                                        checked={!selectedShippingLocation}
+                                                        onChange={() => setSelectedShippingLocation(null)}
+                                                        className="mt-0.5 accent-blue-600"
+                                                    />
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-semibold text-gray-900">Other / Enter address at next step</p>
+                                                        <p className="text-xs text-gray-500">Shipping cost calculated by carrier</p>
+                                                    </div>
+                                                </label>
+
+                                                {/* Locations grouped by state */}
+                                                {Object.entries(LOCATIONS_BY_STATE).map(([stateName, locs]) => (
+                                                    <div key={stateName}>
+                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">{stateName}</p>
+                                                        <div className="space-y-2">
+                                                            {locs.map(loc => (
+                                                                <label
+                                                                    key={loc.id}
+                                                                    className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedShippingLocation?.id === loc.id ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+                                                                >
+                                                                    <input
+                                                                        type="radio"
+                                                                        name="astraShipping"
+                                                                        checked={selectedShippingLocation?.id === loc.id}
+                                                                        onChange={() => setSelectedShippingLocation(loc)}
+                                                                        className="mt-0.5 accent-blue-600"
+                                                                    />
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className="text-sm font-semibold text-gray-900">{loc.name}</p>
+                                                                        <p className="text-xs text-gray-500">{loc.address}</p>
+                                                                    </div>
+                                                                    <span className="text-sm font-bold text-gray-800 shrink-0">
+                                                                        ${loc.cost.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                                    </span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -552,24 +634,20 @@ const CheckoutClient = () => {
                                         Shipping
                                         <Info size={15} className="text-gray-400" />
                                     </span>
-                                    {totalShipping > 0 ? (
-                                        <span className="font-bold text-gray-900">${totalShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                    {selectedShippingLocation ? (
+                                        <span className="font-bold text-gray-900">${shippingCost.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                                     ) : (
                                         <span className="text-gray-500 text-sm italic">Calculated at checkout</span>
                                     )}
                                 </div>
-                                {/* Show shipping destination(s) if selected */}
-                                {cartItems.some(item => item.shippingLocation) && (
-                                    <div className="space-y-1">
-                                        {cartItems.filter(item => item.shippingLocation).map(item => (
-                                            <div key={item.id} className="flex items-start gap-2 text-xs text-gray-500 bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">
-                                                <Truck size={13} className="text-blue-500 mt-0.5 shrink-0" />
-                                                <span>
-                                                    <span className="font-semibold text-blue-700">{item.shippingLocation!.name}</span>
-                                                    {' — '}{item.shippingLocation!.address}
-                                                </span>
-                                            </div>
-                                        ))}
+                                {/* Show destination badge when a location is selected */}
+                                {selectedShippingLocation && (
+                                    <div className="flex items-start gap-2 text-xs text-blue-700 bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">
+                                        <Truck size={13} className="mt-0.5 shrink-0 text-blue-500" />
+                                        <span>
+                                            <span className="font-semibold">{selectedShippingLocation.name}</span>
+                                            {' — '}{selectedShippingLocation.address}
+                                        </span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-[15px] pb-4 border-b border-gray-200">
@@ -586,8 +664,8 @@ const CheckoutClient = () => {
                                     <div className="text-right">
                                         <div className="text-xs text-gray-500 mb-1 font-medium">USD</div>
                                         <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">${grandTotal.toFixed(2)}</div>
-                                        {totalShipping > 0 && (
-                                            <div className="text-xs text-gray-500 mt-1">Incl. ${totalShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })} shipping</div>
+                                        {selectedShippingLocation && (
+                                            <p className="text-xs text-gray-400 mt-1">Incl. ${shippingCost.toLocaleString('en-US', { minimumFractionDigits: 2 })} shipping</p>
                                         )}
                                     </div>
                                 </div>
