@@ -24,7 +24,9 @@ export async function POST(req: NextRequest) {
         const {
             items,
             customerInfo,
-            deliveryMethod = 'ship'
+            deliveryMethod = 'ship',
+            shippingCost = 0,
+            shippingLocations = [],
         } = body;
 
         if (!items || items.length === 0) {
@@ -48,6 +50,27 @@ export async function POST(req: NextRequest) {
             quantity: item.quantity,
         }));
 
+        // Add fixed shipping as a line item when pre-selected locations are present
+        if (shippingCost > 0 && shippingLocations.length > 0) {
+            const locationNames = shippingLocations
+                .map((sl: any) => sl.location?.name || sl.location?.city || 'Delivery')
+                .join(', ');
+            lineItems.push({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: `Shipping — ${locationNames}`,
+                        images: [],
+                        description: shippingLocations
+                            .map((sl: any) => `${sl.itemName}: ${sl.location?.address}`)
+                            .join(' | '),
+                    },
+                    unit_amount: Math.round(shippingCost * 100),
+                },
+                quantity: 1,
+            });
+        }
+
         // Prepare session parameters
         const sessionParams: Stripe.Checkout.SessionCreateParams = {
             payment_method_types: ['card'],
@@ -64,6 +87,8 @@ export async function POST(req: NextRequest) {
                 deliveryMethod: deliveryMethod,
                 customerPhone: customerInfo?.phone || '',
                 customerEmail: customerInfo?.email || '',
+                shippingCost: shippingCost > 0 ? String(shippingCost) : '',
+                shippingLocationIds: shippingLocations.map((sl: any) => sl.location?.id || '').join(','),
             },
         };
 

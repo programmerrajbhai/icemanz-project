@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import type { AstraShippingLocation } from '@/lib/astraShippingLocations';
 
 export interface CartItem {
   id: string;
@@ -12,6 +13,8 @@ export interface CartItem {
   quantity: number;
   category?: string;
   selectedOptions?: Record<string, string | undefined>;
+  shippingLocation?: AstraShippingLocation;
+  shippingCost?: number;
 }
 
 interface CartContextType {

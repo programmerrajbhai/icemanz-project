@@ -17,6 +17,10 @@ const CheckoutClient = () => {
     const [isFixed, setIsFixed] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
+    // Calculate total shipping from cart items that have a fixed shipping location
+    const totalShipping = cartItems.reduce((sum, item) => sum + (item.shippingCost ?? 0), 0);
+    const grandTotal = subtotal + totalShipping;
+
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [deliveryMethod, setDeliveryMethod] = useState<'ship' | 'pickup'>('ship');
@@ -81,6 +85,14 @@ const CheckoutClient = () => {
                         country,
                     },
                     deliveryMethod,
+                    shippingCost: totalShipping,
+                    shippingLocations: cartItems
+                        .filter(item => item.shippingLocation)
+                        .map(item => ({
+                            itemName: item.name,
+                            location: item.shippingLocation,
+                            cost: item.shippingCost,
+                        })),
                 }),
             });
 
@@ -540,8 +552,26 @@ const CheckoutClient = () => {
                                         Shipping
                                         <Info size={15} className="text-gray-400" />
                                     </span>
-                                    <span className="text-gray-500 text-sm italic">Calculated at checkout</span>
+                                    {totalShipping > 0 ? (
+                                        <span className="font-bold text-gray-900">${totalShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                    ) : (
+                                        <span className="text-gray-500 text-sm italic">Calculated at checkout</span>
+                                    )}
                                 </div>
+                                {/* Show shipping destination(s) if selected */}
+                                {cartItems.some(item => item.shippingLocation) && (
+                                    <div className="space-y-1">
+                                        {cartItems.filter(item => item.shippingLocation).map(item => (
+                                            <div key={item.id} className="flex items-start gap-2 text-xs text-gray-500 bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">
+                                                <Truck size={13} className="text-blue-500 mt-0.5 shrink-0" />
+                                                <span>
+                                                    <span className="font-semibold text-blue-700">{item.shippingLocation!.name}</span>
+                                                    {' — '}{item.shippingLocation!.address}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                                 <div className="flex justify-between text-[15px] pb-4 border-b border-gray-200">
                                     <span className="text-gray-600 font-medium flex items-center gap-1">
                                         Tax
@@ -555,7 +585,10 @@ const CheckoutClient = () => {
                                     <span className="text-lg font-bold text-gray-900">Total</span>
                                     <div className="text-right">
                                         <div className="text-xs text-gray-500 mb-1 font-medium">USD</div>
-                                        <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">${subtotal.toFixed(2)}</div>
+                                        <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">${grandTotal.toFixed(2)}</div>
+                                        {totalShipping > 0 && (
+                                            <div className="text-xs text-gray-500 mt-1">Incl. ${totalShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })} shipping</div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
