@@ -364,14 +364,55 @@ export default function AstraProductClient({
             </div>
           </div>
 
-          {/* Main 2-Column Layout */}
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 ">
+          {/* Mobile-only: Image Gallery shown before the 2-col layout */}
+          <div className="lg:hidden mb-6 bg-white border border-gray-200 rounded-sm overflow-hidden p-3">
+            <div className="flex flex-col-reverse gap-3">
+              {/* Thumbnails — horizontal row below main image on mobile */}
+              <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImageIndex(i)}
+                    className={`cursor-pointer shrink-0 w-16 h-16 bg-white border-2 rounded-sm overflow-hidden transition-all focus:outline-none relative ${i === activeImageIndex
+                      ? 'border-[#233673] ring-1 ring-[#233673]/30'
+                      : 'border-gray-200 hover:border-gray-400'
+                      }`}
+                  >
+                    <Image src={img} alt={`View ${i + 1}`} fill className="object-contain p-1" sizes="80px" />
+                  </button>
+                ))}
+              </div>
+              {/* Main Image */}
+              <div className="flex-1">
+                <div
+                  className="relative w-full h-[300px] cursor-crosshair overflow-hidden bg-white rounded-sm"
+                  onClick={() => setLightboxOpen(true)}
+                >
+                  <Image
+                    src={product.images[activeImageIndex]}
+                    alt={product.title}
+                    fill
+                    className="object-contain p-4"
+                    sizes="100vw"
+                    priority
+                  />
+                  <div className="absolute bottom-3 right-3 bg-white/90 rounded-full p-2 shadow-sm">
+                    <ZoomIn size={18} className="text-gray-500" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            {/* LEFT COLUMN */}
-            <div className="w-full lg:w-[55%]  flex flex-col gap-5">
+          {/* Main Layout */}
+          <div className="flex flex-col lg:flex-row lg:gap-8 gap-6">
 
-              {/* Image Gallery */}
-              <div className="bg-white border border-gray-200 rounded-sm overflow-hidden p-3">
+            {/* RIGHT COLUMN — comes first in HTML so on mobile it shows before left collapsibles */}
+            {/* On desktop: order-2 pushes it to the right */}
+            <div className="w-full lg:w-[55%] order-2 lg:order-1 flex flex-col gap-5">
+
+              {/* Image Gallery — shown on desktop inside left col, hidden on mobile (mobile has its own copy above) */}
+              <div className="hidden lg:block bg-white border border-gray-200 rounded-sm overflow-hidden p-3">
                 <div className="flex flex-col-reverse sm:flex-row gap-3">
                   {/* Thumbnails - Bottom on mobile, Left on desktop */}
                   <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto pb-1 sm:pb-0 sm:w-20 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -661,8 +702,8 @@ export default function AstraProductClient({
 
             </div>
 
-            {/* RIGHT COLUMN — Sticky Sidebar */}
-            <div className="w-full lg:w-[45%]   lg:top-[140px] self-start flex flex-col gap-4">
+            {/* RIGHT COLUMN — Sticky Sidebar: order-1 on mobile (shows before collapsibles), order-2 on desktop */}
+            <div className="w-full lg:w-[45%] order-1 lg:order-2 lg:top-[140px] self-start flex flex-col gap-4 mb-6 lg:mb-0">
 
               {/* Price + Options Card */}
               <div className="bg-white border border-gray-200 rounded-sm p-5 sm:p-6 flex flex-col gap-6">
