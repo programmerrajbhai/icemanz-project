@@ -90,13 +90,17 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
     const total = subtotalAfterDiscount + actualShipping + taxAmount;
 
     // Set initial shipping on load based on product type
+    // Astra takes priority — its rate is address-based so we leave at default until address is entered
     useEffect(() => {
-        if (hasAmerikoolerProduct) {
+        if (hasAstraProduct) {
+            // Astra rate is state-dependent — will be set when address is entered
+            // Leave at default $1000 until then
+        } else if (hasAmerikoolerProduct) {
             setShippingCharge(1495);
         } else if (hasRefrigerationEquipment) {
             setShippingCharge(500);
         }
-    }, [hasAmerikoolerProduct, hasRefrigerationEquipment]);
+    }, [hasAstraProduct, hasAmerikoolerProduct, hasRefrigerationEquipment]);
 
     const handleAddressChange = (event: any) => {
         console.log('📍 Address changed:', event);
@@ -117,7 +121,13 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
             let taxRate = 0;
 
             // Update shipping charge based on product brand and state
-            if (hasAmerikoolerProduct) {
+            // Priority: if ANY Astra product in cart → use Astra state-based rate
+            // Only use other brand rates when there are NO Astra products
+            if (hasAstraProduct) {
+                const astraShipping = getAstraShipping(state);
+                setShippingCharge(astraShipping);
+                console.log(`🚚 Astra shipping for ${state}: $${astraShipping}`);
+            } else if (hasAmerikoolerProduct) {
                 // Amerikooler: flat $1495 all states
                 setShippingCharge(1495);
                 console.log(`🚚 Amerikooler shipping (flat rate): $1495`);
@@ -125,10 +135,6 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                 // Condensing / Evaporation / Combo units: flat $500 all states
                 setShippingCharge(500);
                 console.log(`🚚 Refrigeration equipment shipping (flat rate): $500`);
-            } else if (hasAstraProduct) {
-                const astraShipping = getAstraShipping(state);
-                setShippingCharge(astraShipping);
-                console.log(`🚚 Astra shipping for ${state}: $${astraShipping}`);
             }
 
             // State tax rates
@@ -622,7 +628,7 @@ export default function CheckoutPage() {
                 setClientSecret(data.clientSecret);
             })
             .catch((error) => console.error('Failed to create Payment Intent:', error));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Run once on mount — cart is already populated when user navigates here
 
     if (!clientSecret) return (
