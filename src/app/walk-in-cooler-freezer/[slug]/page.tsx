@@ -38,11 +38,23 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
             slug: { in: ['walk-in-cooler-no-floor', 'walk-in-cooler-freezer', 'walk-in-cooler-with-floor', 'walk-in-freezer-with-floor', 'walk-in-combo-cooler-freezer'] }
           }
         },
-        include: { category: true },
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          images: true,
+          slug: true,
+          brand: true,
+          features: true,
+          category: {
+            select: { id: true, slug: true, name: true }
+          }
+        },
         orderBy: [
-          { brand: 'asc' },  // Sort by brand first (Astra products grouped)
-          { title: 'asc' }   // Then alphabetically by title
-        ]
+          { brand: 'asc' },
+          { title: 'asc' }
+        ],
+        take: 200,
       });
     } catch (error) {
       console.error('Database connection error, using mock data:', error);
@@ -129,35 +141,28 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
             categoryId: product.categoryId,
             id: { not: product.id }
           },
-          take: 20,
-          include: { category: true },
-          orderBy: { title: 'asc' }  // Sort related products alphabetically
+          take: 8,
+          select: {
+            id: true,
+            title: true,
+            price: true,
+            images: true,
+            slug: true,
+            brand: true,
+            category: { select: { id: true, slug: true, name: true } }
+          },
+          orderBy: { title: 'asc' }
         });
-
-        // If we don't have enough, fetch other walk-in products
-        if (relatedProducts.length < 10) {
-          const moreProducts = await prisma.product.findMany({
-            where: {
-              id: { notIn: [product.id, ...relatedProducts.map(p => p.id)] },
-              title: { contains: 'Walk-In', mode: 'insensitive' }
-            },
-            take: 20 - relatedProducts.length,
-            include: { category: true },
-            orderBy: { title: 'asc' }  // Sort alphabetically
-          });
-          relatedProducts = [...relatedProducts, ...moreProducts];
-        }
       } else {
-        // Use mock data for related products
         relatedProducts = mockProducts.filter(
           p => p.categoryId === product?.categoryId && p.id !== product?.id
-        ).slice(0, 20);
+        ).slice(0, 8);
       }
     } catch (error) {
       console.error('Error fetching related products, using mock data:', error);
       relatedProducts = mockProducts.filter(
         p => p.categoryId === product?.categoryId && p.id !== product?.id
-      ).slice(0, 20);
+      ).slice(0, 8);
     }
   }
 
