@@ -592,8 +592,9 @@ export default function CheckoutPage() {
             return;
         }
 
-        // Calculate totals from cart
-        const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        // Calculate totals from cart — snapshot once on mount, don't re-run on cart changes
+        const snapshot = cartItems;
+        const subtotal = snapshot.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         const shipping = 1000; // Fixed shipping
         const estimatedTax = (subtotal + shipping) * 0.07; // 7% default
         const totalWithTax = subtotal + shipping + estimatedTax;
@@ -604,7 +605,7 @@ export default function CheckoutPage() {
             body: JSON.stringify({
                 amount: totalWithTax,
                 currency: 'usd',
-                cartItems: cartItems.map(item => ({
+                cartItems: snapshot.map(item => ({
                     id: item.id,
                     name: item.name,
                     brand: item.brand,
@@ -621,7 +622,8 @@ export default function CheckoutPage() {
                 setClientSecret(data.clientSecret);
             })
             .catch((error) => console.error('Failed to create Payment Intent:', error));
-    }, [cartItems, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Run once on mount — cart is already populated when user navigates here
 
     if (!clientSecret) return (
         <div className="min-h-screen bg-white font-sans">
