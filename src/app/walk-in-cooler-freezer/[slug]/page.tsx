@@ -54,7 +54,6 @@ export default async function WalkInCoolerSlugPage({ params }: { params: Promise
           { brand: 'asc' },
           { title: 'asc' }
         ],
-        take: 200,
       });
     } catch (error) {
       console.error('Database connection error, using mock data:', error);
