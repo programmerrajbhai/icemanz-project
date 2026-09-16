@@ -57,6 +57,14 @@ export async function POST(request: Request) {
       );
 
       // Create PaymentIntent with cart metadata
+      // Stripe metadata values are limited to 500 chars — store minimal item info
+      const cartSummary = cartItems.map((item: any) => ({
+        id: item.id?.substring(0, 8),
+        qty: item.quantity,
+        price: item.price,
+      }));
+      const cartMetaStr = JSON.stringify(cartSummary).substring(0, 490);
+
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Convert to cents
         currency: currency.toLowerCase(),
@@ -67,7 +75,7 @@ export async function POST(request: Request) {
         metadata: {
           orderType: 'checkout',
           category: category,
-          cartItems: JSON.stringify(cartItems),
+          cartItems: cartMetaStr,
           itemCount: cartItems.length.toString(),
           // Customer info will be added by webhook from payment_method.billing_details
         },
