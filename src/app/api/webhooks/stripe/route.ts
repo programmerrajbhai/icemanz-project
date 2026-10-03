@@ -159,30 +159,56 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
     // Check if this is a checkout order (not invoice)
     if (paymentIntent.metadata.orderType === 'checkout' && paymentIntent.metadata.cartItems) {
-      const cartItems = JSON.parse(paymentIntent.metadata.cartItems);
+      const cartItemsFromMeta = JSON.parse(paymentIntent.metadata.cartItems);
       const category = paymentIntent.metadata.category || 'refrigeration-equipment';
+      const preCreatedInvoiceId = paymentIntent.metadata.invoiceRequestId;
 
       // Get customer details from session
       const customerDetails = session.customer_details;
       const shippingDetails = (session as any).shipping_details;
 
-      // Create a temporary invoice request for the order
-      const invoiceRequest = await prisma.invoiceRequest.create({
-        data: {
-          email: customerDetails?.email || 'unknown@email.com',
-          phone: customerDetails?.phone || shippingDetails?.phone || '',
-          fullName: customerDetails?.name || shippingDetails?.name || 'Customer',
-          address: shippingDetails?.address
-            ? `${shippingDetails.address.line1}${shippingDetails.address.line2 ? ', ' + shippingDetails.address.line2 : ''}, ${shippingDetails.address.city}, ${shippingDetails.address.state} ${shippingDetails.address.postal_code}, ${shippingDetails.address.country}`
-            : '',
-          totalAmount: (session.amount_total || 0) / 100,
-          totalWithTax: (session.amount_total || 0) / 100,
-          products: cartItems,
-          projectName: `Order from ${customerDetails?.name || 'Customer'}`,
-          category: category,
-          status: 'PAID',
-        },
-      });
+      // Try to use pre-created invoice (with full product data) if available
+      let invoiceRequest: any = null;
+      if (preCreatedInvoiceId) {
+        invoiceRequest = await prisma.invoiceRequest.findUnique({ where: { id: preCreatedInvoiceId } });
+      }
+
+      // Fall back to creating a new invoice if not found
+      if (!invoiceRequest) {
+        invoiceRequest = await prisma.invoiceRequest.create({
+          data: {
+            email: customerDetails?.email || 'unknown@email.com',
+            phone: customerDetails?.phone || shippingDetails?.phone || '',
+            fullName: customerDetails?.name || shippingDetails?.name || 'Customer',
+            address: shippingDetails?.address
+              ? `${shippingDetails.address.line1}${shippingDetails.address.line2 ? ', ' + shippingDetails.address.line2 : ''}, ${shippingDetails.address.city}, ${shippingDetails.address.state} ${shippingDetails.address.postal_code}, ${shippingDetails.address.country}`
+              : '',
+            totalAmount: (session.amount_total || 0) / 100,
+            totalWithTax: (session.amount_total || 0) / 100,
+            products: cartItemsFromMeta,
+            projectName: `Order from ${customerDetails?.name || 'Customer'}`,
+            category: category,
+            status: 'PAID',
+          },
+        });
+      } else {
+        // Update pre-created invoice with customer info and mark as PAID
+        await prisma.invoiceRequest.update({
+          where: { id: preCreatedInvoiceId },
+          data: {
+            email: customerDetails?.email || invoiceRequest.email,
+            phone: customerDetails?.phone || shippingDetails?.phone || invoiceRequest.phone,
+            fullName: customerDetails?.name || shippingDetails?.name || invoiceRequest.fullName,
+            address: shippingDetails?.address
+              ? `${shippingDetails.address.line1}${shippingDetails.address.line2 ? ', ' + shippingDetails.address.line2 : ''}, ${shippingDetails.address.city}, ${shippingDetails.address.state} ${shippingDetails.address.postal_code}, ${shippingDetails.address.country}`
+              : invoiceRequest.address,
+            totalAmount: (session.amount_total || 0) / 100,
+            totalWithTax: (session.amount_total || 0) / 100,
+            projectName: `Order from ${customerDetails?.name || 'Customer'}`,
+            status: 'PAID',
+          },
+        });
+      }
 
       console.log('✅ Invoice request created:', invoiceRequest.id);
 
@@ -264,8 +290,9 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
         return;
       }
 
-      const cartItems = JSON.parse(paymentIntent.metadata.cartItems);
+      const cartItemsFromMeta = JSON.parse(paymentIntent.metadata.cartItems);
       const category = paymentIntent.metadata.category || 'refrigeration-equipment';
+      const preCreatedInvoiceId = paymentIntent.metadata.invoiceRequestId;
 
       // Get customer email from charges (if available)
       const paymentIntentWithCharges = paymentIntent as any;
@@ -275,23 +302,48 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
       const customerPhone = charges[0]?.billing_details?.phone || '';
       const billingAddress = charges[0]?.billing_details?.address;
 
-      // Create invoice request
-      const invoiceRequest = await prisma.invoiceRequest.create({
-        data: {
-          email: customerEmail,
-          phone: customerPhone,
-          fullName: customerName,
-          address: billingAddress
-            ? `${billingAddress.line1 || ''}${billingAddress.line2 ? ', ' + billingAddress.line2 : ''}, ${billingAddress.city || ''}, ${billingAddress.state || ''} ${billingAddress.postal_code || ''}, ${billingAddress.country || ''}`
-            : '',
-          totalAmount: paymentIntent.amount / 100,
-          totalWithTax: paymentIntent.amount / 100,
-          products: cartItems,
-          projectName: `Order from ${customerName}`,
-          category: category,
-          status: 'PAID',
-        },
-      });
+      // Try to use pre-created invoice (with full product data) if available
+      let invoiceRequest: any = null;
+      if (preCreatedInvoiceId) {
+        invoiceRequest = await prisma.invoiceRequest.findUnique({ where: { id: preCreatedInvoiceId } });
+      }
+
+      if (!invoiceRequest) {
+        // Create invoice request with stripped data as fallback
+        invoiceRequest = await prisma.invoiceRequest.create({
+          data: {
+            email: customerEmail,
+            phone: customerPhone,
+            fullName: customerName,
+            address: billingAddress
+              ? `${billingAddress.line1 || ''}${billingAddress.line2 ? ', ' + billingAddress.line2 : ''}, ${billingAddress.city || ''}, ${billingAddress.state || ''} ${billingAddress.postal_code || ''}, ${billingAddress.country || ''}`
+              : '',
+            totalAmount: paymentIntent.amount / 100,
+            totalWithTax: paymentIntent.amount / 100,
+            products: cartItemsFromMeta,
+            projectName: `Order from ${customerName}`,
+            category: category,
+            status: 'PAID',
+          },
+        });
+      } else {
+        // Update pre-created invoice with confirmed customer info
+        await prisma.invoiceRequest.update({
+          where: { id: preCreatedInvoiceId },
+          data: {
+            email: customerEmail || invoiceRequest.email,
+            phone: customerPhone || invoiceRequest.phone,
+            fullName: customerName || invoiceRequest.fullName,
+            address: billingAddress
+              ? `${billingAddress.line1 || ''}${billingAddress.line2 ? ', ' + billingAddress.line2 : ''}, ${billingAddress.city || ''}, ${billingAddress.state || ''} ${billingAddress.postal_code || ''}, ${billingAddress.country || ''}`
+              : invoiceRequest.address,
+            totalAmount: paymentIntent.amount / 100,
+            totalWithTax: paymentIntent.amount / 100,
+            projectName: `Order from ${customerName}`,
+            status: 'PAID',
+          },
+        });
+      }
 
       // Create order
       const order = await prisma.order.create({

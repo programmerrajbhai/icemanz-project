@@ -22,6 +22,7 @@ export default function Header() {
   const { cartItems, isCartOpen, setIsCartOpen } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [expandedMobileCategories, setExpandedMobileCategories] = useState<string[]>([]);
   const [hoveredWalkInItem, setHoveredWalkInItem] = useState<string | null>(null);
   const [hoveredGlassdoorItem, setHoveredGlassdoorItem] = useState('/products/product_2.jpg');
@@ -303,6 +304,15 @@ export default function Header() {
               Get a Quote
             </Link>
 
+            {/* Mobile search icon */}
+            <button
+              className="lg:hidden p-3 hover:bg-gray-100 rounded-sm transition-all text-gray-900 cursor-pointer active:scale-90 border border-gray-100 shadow-sm bg-white"
+              onClick={() => setIsMobileSearchOpen(true)}
+              aria-label="Search"
+            >
+              <Search size={22} />
+            </button>
+
             <button
               className="lg:hidden p-3 hover:bg-gray-100 rounded-sm transition-all text-gray-900 cursor-pointer active:scale-90 border border-gray-100 shadow-sm bg-white"
               onClick={() => setIsMobileMenuOpen(true)}
@@ -311,6 +321,50 @@ export default function Header() {
               <Menu size={26} />
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* ── Mobile Search Overlay ─────────────────────────────────────────── */}
+      <div
+        className={`fixed inset-0 z-[110] lg:hidden transition-all duration-300 ${isMobileSearchOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+          onClick={() => setIsMobileSearchOpen(false)}
+        />
+        {/* Search panel — slides down from top */}
+        <div
+          className={`absolute top-0 left-0 right-0 bg-white shadow-2xl p-4 transition-transform duration-300 ${isMobileSearchOpen ? 'translate-y-0' : '-translate-y-full'}`}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <form
+              action="/search"
+              method="GET"
+              className="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus-within:border-primary focus-within:bg-white transition-all"
+            >
+              <Search size={18} className="text-gray-400 shrink-0" />
+              <input
+                type="text"
+                name="q"
+                autoFocus={isMobileSearchOpen}
+                placeholder="Search products..."
+                className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder-gray-400 font-medium"
+                required
+              />
+              <button type="submit" className="shrink-0 text-primary font-bold text-sm cursor-pointer">
+                Search
+              </button>
+            </form>
+            <button
+              onClick={() => setIsMobileSearchOpen(false)}
+              className="p-2.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-sm transition-colors cursor-pointer"
+              aria-label="Close search"
+            >
+              <X size={22} />
+            </button>
+          </div>
+          <p className="text-xs text-gray-400 px-1">Search across all walk-in coolers, freezers and refrigeration equipment</p>
         </div>
       </div>
 

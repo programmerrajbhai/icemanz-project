@@ -277,35 +277,80 @@ export async function POST(req: Request) {
 
           // Extract cart items from metadata
           let cartItemsData = [];
-          try {
-            const cartItemsStr = paymentIntent.metadata?.cartItems;
-            if (cartItemsStr) {
-              cartItemsData = JSON.parse(cartItemsStr);
-              console.log('[WEBHOOK] Cart items:', cartItemsData.length, 'items');
+          const preCreatedInvoiceId = (event.data.object as any).metadata?.invoiceRequestId;
+
+          // ── Read shipping/tax breakdown from PaymentIntent metadata ─────────
+          // update-payment-intent stores these after the customer enters their address
+          const metaShipping = parseFloat((event.data.object as any).metadata?.shippingCharge || '0') || 0;
+          const metaTax = parseFloat((event.data.object as any).metadata?.taxAmount || '0') || 0;
+          const metaSubtotal = parseFloat((event.data.object as any).metadata?.subtotal || '0') || 0;
+          // amountPaid is the ground-truth total from Stripe (subtotal + shipping + tax)
+          const derivedSubtotal = metaSubtotal > 0 ? metaSubtotal : amountPaid - metaShipping - metaTax;
+          // ────────────────────────────────────────────────────────────────────
+
+          // Try to use pre-created invoice (with full product data incl. selectedOptions)
+          let tempInvoice: any = null;
+          if (preCreatedInvoiceId) {
+            tempInvoice = await prisma.invoiceRequest.findUnique({ where: { id: preCreatedInvoiceId } });
+            if (tempInvoice && Array.isArray(tempInvoice.products)) {
+              cartItemsData = tempInvoice.products as any[];
+              console.log('[WEBHOOK] Using pre-created invoice products:', cartItemsData.length, 'items');
             }
-          } catch (err) {
-            console.error('[WEBHOOK] Failed to parse cart items:', err);
           }
 
-          // Create invoice request for direct checkout
-          console.log('[WEBHOOK] Creating invoice request for direct checkout order');
-          const tempInvoice = await prisma.invoiceRequest.create({
-            data: {
-              email: customerEmail,
-              fullName: customerName,
-              phone: customerPhone,
-              status: 'PAID',
-              totalAmount: amountPaid,
-              totalWithTax: amountPaid,
-              stripeSessionId,
-              products: cartItemsData,
-              category,
-              address: shippingAddress ? `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}` : undefined,
-              deliveryNotes: deliveryMethod === 'pickup' ? 'Customer will pick up from: 184-60 Jamaica Ave, Hollis, NY 11423, United States' : undefined,
+          if (!tempInvoice) {
+            // Fallback: parse stripped cartItems from Stripe metadata
+            try {
+              const cartItemsStr = (event.data.object as any).metadata?.cartItems;
+              if (cartItemsStr) {
+                cartItemsData = JSON.parse(cartItemsStr);
+                console.log('[WEBHOOK] Cart items from metadata:', cartItemsData.length, 'items');
+              }
+            } catch (err) {
+              console.error('[WEBHOOK] Failed to parse cart items:', err);
             }
-          });
 
-          console.log('[WEBHOOK] Invoice request created:', tempInvoice.id);
+            // Create invoice request for direct checkout
+            console.log('[WEBHOOK] Creating invoice request for direct checkout order');
+            tempInvoice = await prisma.invoiceRequest.create({
+              data: {
+                email: customerEmail,
+                fullName: customerName,
+                phone: customerPhone,
+                status: 'PAID',
+                totalAmount: derivedSubtotal > 0 ? derivedSubtotal : amountPaid,
+                totalWithTax: amountPaid,
+                deliveryCost: metaShipping,
+                tax: metaTax,
+                stripeSessionId,
+                products: cartItemsData,
+                category,
+                address: shippingAddress ? `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}` : undefined,
+                deliveryNotes: deliveryMethod === 'pickup' ? 'Customer will pick up from: 184-60 Jamaica Ave, Hollis, NY 11423, United States' : undefined,
+              }
+            });
+          } else {
+            // Update pre-created invoice with confirmed customer/shipping info + breakdown
+            await prisma.invoiceRequest.update({
+              where: { id: preCreatedInvoiceId },
+              data: {
+                email: customerEmail || tempInvoice.email,
+                fullName: customerName || tempInvoice.fullName,
+                phone: customerPhone || tempInvoice.phone,
+                status: 'PAID',
+                totalAmount: derivedSubtotal > 0 ? derivedSubtotal : amountPaid,
+                totalWithTax: amountPaid,
+                deliveryCost: metaShipping,
+                tax: metaTax,
+                stripeSessionId,
+                category,
+                address: shippingAddress ? `${shippingAddress}, ${shippingCity}, ${shippingState} ${shippingZip}, ${shippingCountry}` : tempInvoice.address,
+                deliveryNotes: deliveryMethod === 'pickup' ? 'Customer will pick up from: 184-60 Jamaica Ave, Hollis, NY 11423, United States' : undefined,
+              }
+            });
+          }
+
+          console.log('[WEBHOOK] Invoice request ready:', tempInvoice.id);
 
           // Now create order with the invoice
           const newOrder = await prisma.order.create({
@@ -346,6 +391,9 @@ export async function POST(req: Request) {
             shippingState,
             shippingZip,
             shippingCountry,
+            subtotal: derivedSubtotal > 0 ? derivedSubtotal : amountPaid,
+            deliveryCost: metaShipping,
+            tax: metaTax,
             products: cartItemsData,
           };
 
@@ -377,7 +425,9 @@ export async function POST(req: Request) {
                 amountPaid, deliveryMethod,
                 shippingName, shippingAddress, shippingCity, shippingState, shippingZip, shippingCountry,
                 products: cartItemsData,
-                subtotal: amountPaid,
+                subtotal: derivedSubtotal > 0 ? derivedSubtotal : amountPaid,
+                shippingCost: metaShipping,
+                tax: metaTax,
               });
               await transporter.sendMail({
                 from: `"ICEMANZ Orders" <${process.env.SMTP_FROM || process.env.SMTP_USERNAME}>`,

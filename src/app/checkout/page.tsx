@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, PaymentElement, AddressElement } from '@stripe/react-stripe-js';
 import Image from 'next/image';
@@ -13,9 +13,12 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 interface CheckoutFormProps {
     initialAmount: number;
+    paymentIntentId: string;
+    invoiceRequestId: string;
+    cartItemsSnapshot: any[];
 }
 
-function CheckoutForm({ initialAmount }: CheckoutFormProps) {
+function CheckoutForm({ initialAmount, paymentIntentId, invoiceRequestId, cartItemsSnapshot }: CheckoutFormProps) {
     const stripe = useStripe();
     const elements = useElements();
     const { cartItems } = useCart();
@@ -28,11 +31,15 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
     const [billingAddress, setBillingAddress] = useState<any>(null);
     const [customerEmail, setCustomerEmail] = useState('');
     const [taxAmount, setTaxAmount] = useState(0);
-    const [shippingCharge, setShippingCharge] = useState(() => {
-        // Amerikooler products always $1495 flat
-        // This will be overridden in handleAddressChange anyway
-        return 1000;
-    });
+    // Start at 0 — correct value is set by update-payment-intent after address is entered
+    const [shippingCharge, setShippingCharge] = useState(0);
+    // Track whether we're currently updating the payment intent
+    const [isUpdatingIntent, setIsUpdatingIntent] = useState(false);
+    // Track if we've already updated the payment intent for the current address
+    const [hasUpdatedForAddress, setHasUpdatedForAddress] = useState(false);
+    // True only after a successful update-payment-intent call for the current address
+    // Pay button stays disabled until this is true (for ship delivery)
+    const [amountConfirmed, setAmountConfirmed] = useState(false);
 
     // Check if cart contains Astra products
     const hasAstraProduct = cartItems.some(
@@ -89,100 +96,131 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
     const actualShipping = deliveryMethod === 'pickup' ? 0 : shippingCharge;
     const total = subtotalAfterDiscount + actualShipping + taxAmount;
 
-    // Set initial shipping on load based on product type
-    // Astra takes priority — its rate is address-based so we leave at default until address is entered
-    useEffect(() => {
-        if (hasAstraProduct) {
-            // Astra rate is state-dependent — will be set when address is entered
-            // Leave at default $1000 until then
-        } else if (hasAmerikoolerProduct) {
-            setShippingCharge(1495);
-        } else if (hasRefrigerationEquipment) {
-            setShippingCharge(500);
+    // Shipping display is driven entirely by server response from update-payment-intent.
+    // No client-side preset needed — shippingCharge starts at 0 and is set after address entry.
+    // (useEffect removed: was setting stale/wrong initial estimates)
+
+    // Function to update payment intent with shipping/tax
+    const updatePaymentIntentWithAddress = (state: string) => {
+        console.log('🔄 [DEBUG] updatePaymentIntentWithAddress called with state:', state);
+        console.log('🔄 [DEBUG] Check conditions:', {
+            isUpdatingIntent,
+            paymentIntentId,
+            invoiceRequestId,
+        });
+
+        if (isUpdatingIntent || !paymentIntentId || !invoiceRequestId) {
+            console.log('⛔ [DEBUG] Skipping update - conditions not met');
+            return;
         }
-    }, [hasAstraProduct, hasAmerikoolerProduct, hasRefrigerationEquipment]);
+
+        console.log('🚀 [DEBUG] Starting payment intent update...');
+        setIsUpdatingIntent(true);
+        setHasUpdatedForAddress(true);
+        setAmountConfirmed(false); // reset until server confirms
+
+        fetch('/api/update-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                paymentIntentId,
+                invoiceRequestId,
+                cartItems: cartItemsSnapshot,
+                deliveryMethod: deliveryMethod,
+                state,
+            }),
+        })
+            .then(r => r.json())
+            .then(data => {
+                console.log('✅ [DEBUG] Payment intent update response:', data);
+                if (data.breakdown) {
+                    setShippingCharge(data.breakdown.shipping);
+                    setTaxAmount(data.breakdown.tax);
+                    setAmountConfirmed(true); // shipping+tax now locked in PaymentIntent
+                    console.log('💰 [DEBUG] Updated charges:', {
+                        shipping: data.breakdown.shipping,
+                        tax: data.breakdown.tax,
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('❌ [DEBUG] Failed to update payment intent:', err);
+                setAmountConfirmed(false);
+            })
+            .finally(() => {
+                console.log('🏁 [DEBUG] Payment intent update finished');
+                setIsUpdatingIntent(false);
+            });
+    };
 
     const handleAddressChange = (event: any) => {
-        console.log('📍 Address changed:', event);
+        console.log('📍 [DEBUG] Address changed event:', event);
 
         if (event.value?.address) {
-            setShippingAddress(event.value);
-
             const address = event.value.address;
+            console.log('📍 [DEBUG] Address value:', address);
+            console.log('📍 [DEBUG] Has state?', !!address.state);
+            console.log('📍 [DEBUG] Has postal_code?', !!address.postal_code);
 
-            // Check if we have state and ZIP for tax calculation
-            if (!address.state || !address.postal_code) {
-                console.log('⏳ Waiting for complete address (state and ZIP required)');
-                return;
-            }
+            setShippingAddress(event.value);
+            setHasUpdatedForAddress(false);
+            setAmountConfirmed(false); // require re-confirmation for new address
 
-            // Calculate tax based on state (manual calculation since Stripe Tax is not enabled)
-            const state = address.state;
-            let taxRate = 0;
-
-            // Update shipping charge based on product brand and state
-            // Priority: if ANY Astra product in cart → use Astra state-based rate
-            // Only use other brand rates when there are NO Astra products
-            if (hasAstraProduct) {
-                const astraShipping = getAstraShipping(state);
-                setShippingCharge(astraShipping);
-                console.log(`🚚 Astra shipping for ${state}: $${astraShipping}`);
-            } else if (hasAmerikoolerProduct) {
-                // Amerikooler: flat $1495 all states
-                setShippingCharge(1495);
-                console.log(`🚚 Amerikooler shipping (flat rate): $1495`);
-            } else if (hasRefrigerationEquipment) {
-                // Condensing / Evaporation / Combo units: flat $500 all states
-                setShippingCharge(500);
-                console.log(`🚚 Refrigeration equipment shipping (flat rate): $500`);
-            }
-
-            // State tax rates
-            if (state === 'CA') {
-                taxRate = 0.0725; // California 7.25%
-            } else if (state === 'NY') {
-                taxRate = 0.08875; // New York 8.875%
-            } else if (state === 'TX') {
-                taxRate = 0.0625; // Texas 6.25%
-            } else if (state === 'FL') {
-                taxRate = 0.06; // Florida 6%
-            } else if (state === 'NJ') {
-                taxRate = 0.06625; // New Jersey 6.625%
-            } else if (state === 'PA') {
-                taxRate = 0.06; // Pennsylvania 6%
-            } else if (state === 'IL') {
-                taxRate = 0.0625; // Illinois 6.25%
-            } else if (state === 'OH') {
-                taxRate = 0.0575; // Ohio 5.75%
-            } else if (state === 'GA') {
-                taxRate = 0.04; // Georgia 4%
-            } else if (state === 'NC') {
-                taxRate = 0.0475; // North Carolina 4.75%
-            } else if (state === 'MI') {
-                taxRate = 0.06; // Michigan 6%
-            } else if (state === 'VA') {
-                taxRate = 0.053; // Virginia 5.3%
-            } else if (state === 'WA') {
-                taxRate = 0.065; // Washington 6.5%
-            } else if (state === 'AZ') {
-                taxRate = 0.056; // Arizona 5.6%
-            } else if (state === 'MA') {
-                taxRate = 0.0625; // Massachusetts 6.25%
+            // If address is complete, update immediately
+            if (address.state && address.postal_code) {
+                console.log('✅ [DEBUG] Address is complete, calling updatePaymentIntentWithAddress');
+                console.log('✅ [DEBUG] Current state:', {
+                    paymentIntentId,
+                    invoiceRequestId,
+                    isUpdatingIntent,
+                    hasUpdatedForAddress,
+                });
+                updatePaymentIntentWithAddress(address.state);
             } else {
-                taxRate = 0.07; // Default 7% for other states
+                console.log('⏳ [DEBUG] Address incomplete - missing state or ZIP');
             }
-
-            const totalBeforeTax = subtotalAfterDiscount + actualShipping;
-            const calculatedTax = totalBeforeTax * taxRate;
-            setTaxAmount(calculatedTax);
-            console.log(`✅ Tax calculated for ${state}: $${calculatedTax.toFixed(2)} (${(taxRate * 100).toFixed(2)}%)`);
+        } else {
+            console.log('❌ [DEBUG] No address in event.value');
         }
     };
+
+    // ── Retry update when payment intent becomes available ──
+    useEffect(() => {
+        // If we have a complete address but haven't updated yet (e.g., payment intent wasn't ready)
+        if (
+            deliveryMethod === 'ship' &&
+            shippingAddress?.address?.state &&
+            shippingAddress?.address?.postal_code &&
+            paymentIntentId &&
+            invoiceRequestId &&
+            !hasUpdatedForAddress &&
+            !isUpdatingIntent
+        ) {
+            updatePaymentIntentWithAddress(shippingAddress.address.state);
+        } else if (
+            deliveryMethod === 'pickup' &&
+            billingAddress?.address?.state &&
+            paymentIntentId &&
+            invoiceRequestId &&
+            !hasUpdatedForAddress &&
+            !isUpdatingIntent
+        ) {
+            updatePaymentIntentWithAddress(billingAddress.address.state);
+        }
+    }, [paymentIntentId, invoiceRequestId, deliveryMethod, shippingAddress, billingAddress, hasUpdatedForAddress, isUpdatingIntent]);
 
     const handleBillingAddressChange = (event: any) => {
         console.log('💳 Billing address changed:', event);
         if (event.value?.address) {
             setBillingAddress(event.value);
+            
+            // If pickup is selected, we should calculate tax based on billing address state
+            if (deliveryMethod === 'pickup') {
+                setHasUpdatedForAddress(false);
+                if (event.value.address.state) {
+                    updatePaymentIntentWithAddress(event.value.address.state);
+                }
+            }
         }
     };
 
@@ -340,7 +378,12 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                 <div className="grid grid-cols-2 p-1 bg-gray-100 rounded-md text-sm font-medium border border-gray-200">
                                     <button
                                         type="button"
-                                        onClick={() => setDeliveryMethod('ship')}
+                                        onClick={() => {
+                                            setDeliveryMethod('ship');
+                                            // Reset the flag so useEffect can trigger update
+                                            setHasUpdatedForAddress(false);
+                                            setAmountConfirmed(false); // require address re-entry
+                                        }}
                                         className={`py-2.5 rounded-sm flex items-center justify-center gap-2 transition-all text-sm ${deliveryMethod === 'ship' ? 'bg-white shadow-sm text-black font-semibold' : 'text-gray-600'}`}
                                     >
                                         <Truck size={18} />
@@ -348,7 +391,34 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setDeliveryMethod('pickup')}
+                                        onClick={() => {
+                                            setDeliveryMethod('pickup');
+                                            setAmountConfirmed(true);
+                                            setIsUpdatingIntent(true);
+
+                                            const stateToUse = billingAddress?.address?.state || null;
+
+                                            fetch('/api/update-payment-intent', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    paymentIntentId,
+                                                    invoiceRequestId,
+                                                    cartItems: cartItemsSnapshot,
+                                                    deliveryMethod: 'pickup',
+                                                    state: stateToUse,
+                                                }),
+                                            })
+                                                .then(r => r.json())
+                                                .then(data => {
+                                                    if (data.breakdown) {
+                                                        setShippingCharge(0);
+                                                        setTaxAmount(data.breakdown.tax || 0);
+                                                    }
+                                                })
+                                                .catch(err => console.error('Failed to update payment intent:', err))
+                                                .finally(() => setIsUpdatingIntent(false));
+                                        }}
                                         className={`py-2.5 rounded-sm flex items-center justify-center gap-2 transition-all text-sm ${deliveryMethod === 'pickup' ? 'bg-white shadow-sm text-black font-semibold' : 'text-gray-600'}`}
                                     >
                                         <MapPin size={18} />
@@ -453,11 +523,69 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                disabled={!stripe || isProcessing}
-                                className="w-full py-3 cursor-pointer bg-[#0066cc] hover:bg-[#0052a3] text-white font-semibold text-base rounded-md disabled:opacity-50 transition shadow-sm mt-4"
+                                disabled={!stripe || isProcessing || isUpdatingIntent || (deliveryMethod === 'ship' && !amountConfirmed)}
+                                className="w-full py-3 cursor-pointer bg-[#0066cc] hover:bg-[#0052a3] text-white font-semibold text-base rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm mt-4"
                             >
-                                {isProcessing ? 'Processing...' : `Pay now`}
+                                {isProcessing
+                                    ? 'Processing...'
+                                    : isUpdatingIntent
+                                        ? 'Calculating shipping & tax...'
+                                        : (deliveryMethod === 'ship' && !amountConfirmed)
+                                            ? 'Enter shipping address to continue'
+                                            : 'Pay now'}
                             </button>
+
+                            {/* DEBUG: Manual trigger button */}
+                            {process.env.NODE_ENV === 'development' && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        console.log('🔧 Manual trigger - Current state:', {
+                                            deliveryMethod,
+                                            shippingAddress,
+                                            paymentIntentId,
+                                            invoiceRequestId,
+                                            hasUpdatedForAddress,
+                                            isUpdatingIntent,
+                                        });
+
+                                        if (!shippingAddress?.address?.state) {
+                                            alert('Please enter a complete shipping address first');
+                                            return;
+                                        }
+
+                                        setIsUpdatingIntent(true);
+                                        fetch('/api/update-payment-intent', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                paymentIntentId,
+                                                invoiceRequestId,
+                                                cartItems: cartItemsSnapshot,
+                                                deliveryMethod: 'ship',
+                                                state: shippingAddress.address.state,
+                                            }),
+                                        })
+                                            .then(r => r.json())
+                                            .then(data => {
+                                                console.log('✅ Manual update result:', data);
+                                                alert(`Success! Shipping: $${data.breakdown?.shipping}, Tax: $${data.breakdown?.tax}`);
+                                                if (data.breakdown) {
+                                                    setShippingCharge(data.breakdown.shipping);
+                                                    setTaxAmount(data.breakdown.tax);
+                                                }
+                                            })
+                                            .catch(err => {
+                                                console.error('❌ Manual update failed:', err);
+                                                alert('Failed: ' + err.message);
+                                            })
+                                            .finally(() => setIsUpdatingIntent(false));
+                                    }}
+                                    className="w-full py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold text-sm rounded-md transition"
+                                >
+                                    🔧 DEBUG: Manually Update Shipping + Tax
+                                </button>
+                            )}
 
                             {/* Error Message */}
                             {errorMessage && (
@@ -543,16 +671,12 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                 <span>Shipping</span>
                                 {deliveryMethod === 'pickup' ? (
                                     <span className="font-semibold text-green-600">FREE</span>
-                                ) : shippingAddress ? (
+                                ) : isUpdatingIntent ? (
+                                    <span className="text-gray-400 text-xs italic">Calculating...</span>
+                                ) : amountConfirmed ? (
                                     <div className="text-right">
                                         <span className="font-semibold text-gray-900">${actualShipping.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-                                        {hasAmerikoolerProduct && (
-                                            <p className="text-[11px] text-gray-400 mt-0.5">Flat freight rate</p>
-                                        )}
-                                        {hasRefrigerationEquipment && !hasAmerikoolerProduct && (
-                                            <p className="text-[11px] text-gray-400 mt-0.5">Flat freight rate</p>
-                                        )}
-                                        {hasAstraProduct && !hasAmerikoolerProduct && !hasRefrigerationEquipment && shippingAddress?.address?.state && (
+                                        {shippingAddress?.address?.state && (
                                             <p className="text-[11px] text-gray-400 mt-0.5">
                                                 {shippingAddress.address.state} freight rate
                                             </p>
@@ -563,33 +687,53 @@ function CheckoutForm({ initialAmount }: CheckoutFormProps) {
                                 )}
                             </div>
 
-                            {taxAmount > 0 && (
-                                <div className="flex justify-between text-gray-700 text-sm">
-                                    <span>Tax</span>
+                            {/* Tax row — shown once amount is confirmed */}
+                            <div className="flex justify-between text-gray-700 text-sm">
+                                <span>Tax</span>
+                                {isUpdatingIntent ? (
+                                    <span className="text-gray-400 text-xs italic">Calculating...</span>
+                                ) : amountConfirmed ? (
                                     <span className="font-semibold text-gray-900">${taxAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-                                </div>
-                            )}
+                                ) : (
+                                    <span className="text-gray-500 text-xs">Enter address</span>
+                                )}
+                            </div>
 
                             <div className="flex justify-between items-baseline text-gray-900 border-t border-gray-300 pt-3 mt-3">
                                 <span className="text-base font-bold">Total</span>
                                 <div className="text-right flex items-baseline gap-1.5">
                                     <span className="text-xs text-gray-500 font-normal">USD</span>
-                                    <span className="text-2xl font-bold">${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                    <span className="text-2xl font-bold">
+                                        {(deliveryMethod === 'ship' && !amountConfirmed)
+                                            ? `$${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                                            : `$${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                                    </span>
                                 </div>
                             </div>
+                            {deliveryMethod === 'ship' && !amountConfirmed && (
+                                <p className="text-[11px] text-gray-400 text-right mt-1">
+                                    + shipping & tax (enter address above)
+                                </p>
+                            )}
                         </div>
 
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
 
 export default function CheckoutPage() {
     const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [paymentIntentId, setPaymentIntentId] = useState<string>('');
+    const [invoiceRequestId, setInvoiceRequestId] = useState<string>('');
+    const [cartItemsSnapshot, setCartItemsSnapshot] = useState<any[]>([]);
     const { cartItems } = useCart();
     const router = useRouter();
+    // Guard against React StrictMode double-invoking the effect in development,
+    // which would create two separate PaymentIntents and break the update flow.
+    const hasFetchedIntent = useRef(false);
 
     useEffect(() => {
         // Redirect to cart if empty
@@ -598,12 +742,28 @@ export default function CheckoutPage() {
             return;
         }
 
-        // Calculate totals from cart — snapshot once on mount, don't re-run on cart changes
-        const snapshot = cartItems;
+        // Only create one PaymentIntent per mount — StrictMode fires this twice in dev
+        if (hasFetchedIntent.current) return;
+        hasFetchedIntent.current = true;
+
+        // Snapshot cart items once — we pass these to the server for price validation
+        const snapshot = cartItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            brand: item.brand,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.image,
+            category: item.category,
+            selectedOptions: item.selectedOptions,
+        }));
+        setCartItemsSnapshot(snapshot);
+
+        // Calculate initial amount using validated subtotal only.
+        // Shipping + tax will be added later via update-payment-intent once the
+        // customer enters their shipping address.
         const subtotal = snapshot.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        const shipping = 1000; // Fixed shipping
-        const estimatedTax = (subtotal + shipping) * 0.07; // 7% default
-        const totalWithTax = subtotal + shipping + estimatedTax;
+        const totalWithTax = subtotal;
 
         fetch('/api/create-payment-intent', {
             method: 'POST',
@@ -611,25 +771,18 @@ export default function CheckoutPage() {
             body: JSON.stringify({
                 amount: totalWithTax,
                 currency: 'usd',
-                cartItems: snapshot.map(item => ({
-                    id: item.id,
-                    name: item.name,
-                    brand: item.brand,
-                    price: item.price,
-                    quantity: item.quantity,
-                    image: item.image,
-                    category: item.category
-                }))
+                cartItems: snapshot,
             }),
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log('Payment Intent created with amount:', totalWithTax);
                 setClientSecret(data.clientSecret);
+                if (data.paymentIntentId) setPaymentIntentId(data.paymentIntentId);
+                if (data.invoiceRequestId) setInvoiceRequestId(data.invoiceRequestId);
             })
             .catch((error) => console.error('Failed to create Payment Intent:', error));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Run once on mount — cart is already populated when user navigates here
+    }, []); // Run once on mount
 
     if (!clientSecret) return (
         <div className="min-h-screen bg-white font-sans">
@@ -833,7 +986,12 @@ export default function CheckoutPage() {
 
     return (
         <Elements stripe={stripePromise} options={stripeOptions}>
-            <CheckoutForm initialAmount={subtotalAmount} />
+            <CheckoutForm
+                initialAmount={subtotalAmount}
+                paymentIntentId={paymentIntentId}
+                invoiceRequestId={invoiceRequestId}
+                cartItemsSnapshot={cartItemsSnapshot}
+            />
         </Elements>
     );
 }

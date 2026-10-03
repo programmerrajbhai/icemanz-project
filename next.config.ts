@@ -40,6 +40,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn11.bigcommerce.com',
       },
+      {
+        protocol: 'http',
+        hostname: '2.25.175.36',
+        port: '8000',
+      },
     ],
   },
 };

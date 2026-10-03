@@ -51,6 +51,7 @@ export async function createProduct(formData: FormData) {
   const title = formData.get('title') as string;
   let slug = formData.get('slug') as string;
   const categoryId = formData.get('categoryId') as string;
+  const brandId = formData.get('brandId') as string;
   const price = formData.get('price') as string;
   const description = formData.get('description') as string;
   const condition = formData.get('condition') as string;
@@ -117,6 +118,17 @@ export async function createProduct(formData: FormData) {
     }
   }
 
+  // Parse layouts (Astra)
+  const layoutsRaw = formData.get('layouts') as string;
+  let layouts: any = null;
+  if (layoutsRaw) {
+    try {
+      layouts = JSON.parse(layoutsRaw);
+    } catch {
+      layouts = null;
+    }
+  }
+
   if (!title) {
     return { error: 'Title is required' };
   }
@@ -158,6 +170,7 @@ export async function createProduct(formData: FormData) {
         title,
         slug,
         categoryId: categoryId || null,
+        brandId: brandId || null,
         price,
         description,
         condition,
@@ -174,6 +187,7 @@ export async function createProduct(formData: FormData) {
         productOptions: productOptions.length > 0 ? productOptions : undefined,
         faqs: faqs.length > 0 ? faqs : undefined,
         features: features && Object.keys(features).length > 0 ? features : undefined,
+        layouts: layouts && Array.isArray(layouts) && layouts.length > 0 ? layouts : undefined,
       }
     });
   } catch (error: any) {
@@ -184,5 +198,8 @@ export async function createProduct(formData: FormData) {
   revalidatePath('/admin/products');
   revalidatePath('/products');
   revalidatePath('/refrigeration-equipment');
-  redirect('/admin/products');
+  revalidatePath('/admin/products/walk-in-cooler-freezer/brand/astra');
+  revalidatePath('/admin/products/walk-in-cooler-freezer/brand/amerikooler');
+  revalidatePath('/admin/products/walk-in-cooler-freezer/brand/icemanz');
+  return { success: true };
 }

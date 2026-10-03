@@ -240,6 +240,36 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                     ${selectedOrder.amountPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     <span className="text-xs font-bold text-gray-400 uppercase ml-1.5">{selectedOrder.currency}</span>
                   </p>
+                  {/* Breakdown — shown when invoice has shipping/tax data */}
+                  {(selectedOrder.invoice?.deliveryCost != null || selectedOrder.invoice?.tax != null) && (() => {
+                    const subtotal = selectedOrder.invoice?.totalAmount ?? (selectedOrder.amountPaid - (selectedOrder.invoice?.deliveryCost ?? 0) - (selectedOrder.invoice?.tax ?? 0));
+                    const shipping = selectedOrder.invoice?.deliveryCost ?? 0;
+                    const tax = selectedOrder.invoice?.tax ?? 0;
+                    const fmt = (n: number) => `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    return (
+                      <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-right">
+                        <div className="flex justify-between items-center gap-8 text-xs text-gray-500">
+                          <span className="font-medium">Product Subtotal</span>
+                          <span className="font-semibold text-gray-800">{fmt(subtotal)}</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-8 text-xs text-gray-500">
+                          <span className="font-medium flex items-center gap-1">
+                            <Truck size={11} className="text-gray-400" /> Shipping
+                            {selectedOrder.shippingState && <span className="text-gray-400">({selectedOrder.shippingState} freight)</span>}
+                          </span>
+                          <span className="font-semibold text-gray-800">{shipping > 0 ? fmt(shipping) : <span className="text-emerald-600">FREE</span>}</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-8 text-xs text-gray-500">
+                          <span className="font-medium">Tax</span>
+                          <span className="font-semibold text-gray-800">{fmt(tax)}</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-8 text-xs font-bold text-gray-700 border-t border-gray-100 pt-1 mt-1">
+                          <span>Total</span>
+                          <span className="text-emerald-700">{fmt(selectedOrder.amountPaid)}</span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -298,7 +328,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                     {getOrderProducts(selectedOrder).map((product: any, index: number) => {
                       const title = product.title || product.name || product.model || 'Featured Product';
                       const brand = product.brand || 'ICEMANZ';
-                      const qty = product.quantity || 1;
+                      const qty = product.quantity || product.qty || 1;
                       const priceNum = parseFloat(String(product.price || '0').replace(/[^0-9.]/g, '')) || 0;
                       const formattedPrice = priceNum > 0 ? `$${priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : (product.price ? `$${product.price}` : '$0.00');
 
@@ -343,6 +373,55 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                                 </span>
                               )}
                             </div>
+
+                            {/* Selected Options */}
+                            {product.selectedOptions && Object.keys(product.selectedOptions).filter(k => {
+                              const v = product.selectedOptions[k];
+                              return v && v !== 'undefined';
+                            }).length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Selected Options</p>
+                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                    {Object.entries(product.selectedOptions as Record<string, string>)
+                                      .filter(([, v]) => v && v !== 'undefined')
+                                      .map(([key, value]) => {
+                                        const labelMap: Record<string, string> = {
+                                          doorHinge: 'Door Hinge', hinge: 'Door Hinge',
+                                          location: 'Indoor / Outdoor', indoorOutdoor: 'Indoor / Outdoor',
+                                          door: 'Door Size', doorSize: 'Door Size',
+                                          refrigeration: 'Refrigeration',
+                                          floorType: 'Floor Type', floor: 'Floor Type',
+                                          layout: 'Layout', size: 'Size',
+                                          warranty: 'Warranty',
+                                        };
+                                        const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
+                                        return (
+                                          <div key={key} className="flex flex-col bg-blue-50/60 border border-blue-100 rounded-lg px-3 py-2">
+                                            <span className="text-[9px] font-bold text-blue-400 uppercase tracking-wider">{label}</span>
+                                            <span className="text-[11px] font-semibold text-gray-900 mt-0.5">{value}</span>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                </div>
+                              )}
+
+                            {/* Add-Ons */}
+                            {product.addonQuantities && Object.entries(product.addonQuantities as Record<string, number>).filter(([, v]) => v > 0).length > 0 && (
+                              <div className="mt-2 pt-2 border-t border-gray-100">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Add-Ons</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {Object.entries(product.addonQuantities as Record<string, number>)
+                                    .filter(([, qty]) => qty > 0)
+                                    .map(([name, qty]) => (
+                                      <div key={name} className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1">
+                                        <span className="text-[10px] font-bold text-amber-700">{name}</span>
+                                        <span className="text-[10px] font-semibold text-amber-900 bg-amber-200 rounded px-1">×{qty}</span>
+                                      </div>
+                                    ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
@@ -355,23 +434,105 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
               {selectedOrder.invoice && (
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
-                    <FileText size={16} className="text-[#004a99]" /> Project Details
+                    <FileText size={16} className="text-[#004a99]" /> Product Details
                   </h3>
-                  <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-3">
-                    <p className="text-base font-bold text-[#004a99]">
-                      {selectedOrder.invoice.projectName || 'Custom Project'}
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600">
-                      {(selectedOrder.invoice.width && selectedOrder.invoice.length && selectedOrder.invoice.height) && (
-                        <p><span className="font-bold text-gray-700">Dimensions:</span> {selectedOrder.invoice.width} x {selectedOrder.invoice.length} x {selectedOrder.invoice.height}</p>
-                      )}
-                      <p><span className="font-bold text-gray-700">Temp Range:</span> {selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp || 'N/A'}</p>
-                    </div>
-                    {selectedOrder.invoice.description && (
-                      <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-700 leading-relaxed border border-gray-100">
-                        {selectedOrder.invoice.description}
+                  <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-4">
+                    {/* Walk-in / custom project info */}
+                    {(selectedOrder.invoice.projectName || selectedOrder.invoice.tempRange || selectedOrder.invoice.width) && (
+                      <div className="space-y-2">
+                        {selectedOrder.invoice.projectName && (
+                          <p className="text-base font-bold text-[#004a99]">{selectedOrder.invoice.projectName}</p>
+                        )}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                          {(selectedOrder.invoice.width && selectedOrder.invoice.length && selectedOrder.invoice.height) && (
+                            <p><span className="font-bold text-gray-700">Dimensions:</span> {selectedOrder.invoice.width} x {selectedOrder.invoice.length} x {selectedOrder.invoice.height}</p>
+                          )}
+                          {(selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp) && (
+                            <p><span className="font-bold text-gray-700">Temp Range:</span> {selectedOrder.invoice.tempRange || selectedOrder.invoice.customTemp}</p>
+                          )}
+                        </div>
+                        {selectedOrder.invoice.description && (
+                          <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-700 leading-relaxed border border-gray-100">
+                            {selectedOrder.invoice.description}
+                          </div>
+                        )}
                       </div>
                     )}
+
+                    {/* Per-product selected options */}
+                    {getOrderProducts(selectedOrder).some((p: any) =>
+                      (p.selectedOptions && Object.keys(p.selectedOptions).filter((k: string) => p.selectedOptions[k] && p.selectedOptions[k] !== 'undefined').length > 0) ||
+                      (p.addonQuantities && Object.values(p.addonQuantities as Record<string, number>).some((v: number) => v > 0))
+                    ) && (
+                        <div className="space-y-5">
+                          {getOrderProducts(selectedOrder)
+                            .filter((p: any) =>
+                              (p.selectedOptions && Object.keys(p.selectedOptions).filter((k: string) => p.selectedOptions[k] && p.selectedOptions[k] !== 'undefined').length > 0) ||
+                              (p.addonQuantities && Object.values(p.addonQuantities as Record<string, number>).some((v: number) => v > 0))
+                            )
+                            .map((product: any, idx: number) => {
+                              const optionLabelMap: Record<string, string> = {
+                                doorHinge: 'Door Hinge', hinge: 'Door Hinge',
+                                location: 'Indoor / Outdoor', indoorOutdoor: 'Indoor / Outdoor',
+                                door: 'Door Size', doorSize: 'Door Size',
+                                refrigeration: 'Refrigeration',
+                                floorType: 'Floor Type', floor: 'Floor Type',
+                                layout: 'Layout', size: 'Size',
+                                warranty: 'Warranty',
+                              };
+                              const options = product.selectedOptions
+                                ? Object.entries(product.selectedOptions as Record<string, string>).filter(([, v]) => v && v !== 'undefined')
+                                : [];
+                              const addons = product.addonQuantities
+                                ? Object.entries(product.addonQuantities as Record<string, number>).filter(([, qty]) => qty > 0)
+                                : [];
+                              if (options.length === 0 && addons.length === 0) return null;
+                              return (
+                                <div key={idx} className="space-y-3">
+                                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-1">{product.title || product.name}</p>
+                                  {options.length > 0 && (
+                                    <>
+                                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Configuration</p>
+                                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        {options.map(([key, value]) => {
+                                          const label = optionLabelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
+                                          return (
+                                            <div key={key} className="flex flex-col bg-blue-50/60 border border-blue-100 rounded-lg px-3 py-2">
+                                              <span className="text-[9px] font-bold text-blue-400 uppercase tracking-wider">{label}</span>
+                                              <span className="text-[11px] font-semibold text-gray-900 mt-0.5">{value}</span>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </>
+                                  )}
+                                  {addons.length > 0 && (
+                                    <>
+                                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-2">Add-Ons</p>
+                                      <div className="flex flex-wrap gap-2">
+                                        {addons.map(([name, qty]) => (
+                                          <div key={name} className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1">
+                                            <span className="text-[10px] font-bold text-amber-700">{name}</span>
+                                            <span className="text-[10px] font-semibold text-amber-900 bg-amber-200 rounded px-1">×{qty}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              );
+                            })}
+                        </div>
+                      )}
+
+                    {/* Fallback if no details at all */}
+                    {!selectedOrder.invoice.projectName && !selectedOrder.invoice.tempRange && !selectedOrder.invoice.width &&
+                      !getOrderProducts(selectedOrder).some((p: any) =>
+                        (p.selectedOptions && Object.keys(p.selectedOptions).filter((k: string) => p.selectedOptions[k] && p.selectedOptions[k] !== 'undefined').length > 0) ||
+                        (p.addonQuantities && Object.values(p.addonQuantities as Record<string, number>).some((v: number) => v > 0))
+                      ) && (
+                        <p className="text-xs text-gray-400 italic">No additional product details recorded for this order.</p>
+                      )}
                   </div>
                 </div>
               )}

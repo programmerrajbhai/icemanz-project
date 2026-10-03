@@ -16,7 +16,7 @@ export default async function OrdersPage() {
     },
     orderBy: { createdAt: 'desc' },
   });
-  
+
   return (
     <div className="w-full">
       <OrdersClient initialOrders={orders} />

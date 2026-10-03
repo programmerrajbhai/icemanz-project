@@ -27,6 +27,40 @@ export async function POST(request: Request) {
 
     // Handle checkout flow with cart items
     if (amount && cartItems && cartItems.length > 0) {
+      // ── Server-side price validation ──────────────────────────────────────
+      // Never trust the client-sent price. Fetch fresh prices from DB.
+      const productIds: string[] = cartItems.map((item: any) => item.id).filter(Boolean);
+      let dbPriceMap = new Map<string, number>();
+
+      if (productIds.length > 0) {
+        const dbProducts = await prisma.product.findMany({
+          where: { id: { in: productIds } },
+          select: { id: true, price: true },
+        });
+        dbProducts.forEach(p => {
+          if (p.price) {
+            const parsed = parseFloat(String(p.price).replace(/[^0-9.]/g, ''));
+            if (!isNaN(parsed)) dbPriceMap.set(p.id, parsed);
+          }
+        });
+      }
+
+      // Rebuild cart with validated prices
+      const validatedCartItems = cartItems.map((item: any) => {
+        const dbPrice = dbPriceMap.get(item.id);
+        return {
+          ...item,
+          price: dbPrice !== undefined ? dbPrice : (parseFloat(String(item.price).replace(/[^0-9.]/g, '')) || 0),
+        };
+      });
+
+      // Recalculate total using validated prices — ignore client-sent amount
+      const validatedSubtotal = validatedCartItems.reduce(
+        (acc: number, item: any) => acc + item.price * (item.quantity || 1), 0
+      );
+      const validatedAmount = validatedSubtotal;
+
+      console.log('[CREATE-PAYMENT-INTENT] Price validation — client amount:', amount, '→ validated amount:', validatedAmount);
       // Determine category based on majority of items in cart
       const categoryCounts: { [key: string]: number } = {};
 
@@ -65,8 +99,32 @@ export async function POST(request: Request) {
       }));
       const cartMetaStr = JSON.stringify(cartSummary).substring(0, 490);
 
+      // Save full cart data to InvoiceRequest BEFORE payment so webhook can retrieve it
+      const invoiceRequest = await prisma.invoiceRequest.create({
+        data: {
+          email: email || 'pending@checkout.com',
+          phone: phone || '',
+          fullName: fullName || 'Customer',
+          address: address || '',
+          totalAmount: validatedAmount,
+          totalWithTax: validatedAmount,
+          products: validatedCartItems.map((item: any) => ({
+            id: item.id,
+            name: item.name || item.title,
+            brand: item.brand,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.image,
+            category: item.category,
+            selectedOptions: item.selectedOptions || null,
+          })),
+          category: category,
+          status: 'PENDING',
+        }
+      });
+
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convert to cents
+        amount: Math.round(validatedAmount * 100), // DB-validated price in cents
         currency: currency.toLowerCase(),
         automatic_payment_methods: {
           enabled: false,
@@ -77,15 +135,18 @@ export async function POST(request: Request) {
           category: category,
           cartItems: cartMetaStr,
           itemCount: cartItems.length.toString(),
+          invoiceRequestId: invoiceRequest.id,
           // Customer info will be added by webhook from payment_method.billing_details
         },
       });
 
-      console.log("[CREATE-PAYMENT-INTENT] Payment Intent created for checkout:", paymentIntent.id, "Category:", category);
+      console.log("[CREATE-PAYMENT-INTENT] Payment Intent created for checkout:", paymentIntent.id, "Category:", category, "InvoiceRequest:", invoiceRequest.id);
 
+      // Return all three IDs — checkout page needs invoiceRequestId to update amount after address entry
       return NextResponse.json({
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
+        invoiceRequestId: invoiceRequest.id,
       });
     }
 

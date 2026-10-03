@@ -51,6 +51,7 @@ export async function updateProduct(productId: string, formData: FormData) {
   const title = formData.get('title') as string;
   let slug = formData.get('slug') as string;
   const categoryId = formData.get('categoryId') as string;
+  const brandId = formData.get('brandId') as string;
   const price = formData.get('price') as string;
   const description = formData.get('description') as string;
   const condition = formData.get('condition') as string;
@@ -133,6 +134,17 @@ export async function updateProduct(productId: string, formData: FormData) {
     }
   }
 
+  // Parse layouts (Astra)
+  const layoutsRaw = formData.get('layouts') as string;
+  let layouts: any = null;
+  if (layoutsRaw) {
+    try {
+      layouts = JSON.parse(layoutsRaw);
+    } catch {
+      console.error("Failed to parse layouts JSON");
+    }
+  }
+
   if (!title) {
     return { error: 'Title is required' };
   }
@@ -199,6 +211,7 @@ export async function updateProduct(productId: string, formData: FormData) {
         title,
         slug,
         categoryId: categoryId || null,
+        brandId: brandId || null,
         price,
         description,
         condition,
@@ -214,6 +227,7 @@ export async function updateProduct(productId: string, formData: FormData) {
         productOptions: productOptions.length > 0 ? productOptions : undefined,
         faqs: faqs.length > 0 ? faqs : undefined,
         features: features && Object.keys(features).length > 0 ? features : undefined,
+        layouts: layouts !== null ? (Array.isArray(layouts) ? (layouts.length > 0 ? layouts : undefined) : layouts) : undefined,
         images: finalImages,
       }
     });
@@ -225,5 +239,22 @@ export async function updateProduct(productId: string, formData: FormData) {
   revalidatePath('/admin/products');
   revalidatePath('/products');
   revalidatePath('/refrigeration-equipment');
-  redirect('/admin/products');
+  revalidatePath('/admin/products/walk-in-cooler-freezer/brand/astra');
+  revalidatePath('/admin/products/walk-in-cooler-freezer/brand/amerikooler');
+  revalidatePath('/admin/products/walk-in-cooler-freezer/brand/icemanz');
+  revalidatePath('/admin/products/walk-in-cooler-freezer');
+
+  // Revalidate the specific product page on the frontend so
+  // price / image / title changes are immediately visible to visitors
+  revalidatePath(`/walk-in-cooler-freezer/${slug}`);
+  revalidatePath(`/refrigeration-equipment/${slug}`);
+
+  // Revalidate the listing pages that show this product
+  revalidatePath('/walk-in-cooler-freezer');
+  revalidatePath('/walk-in-cooler-freezer/walk-in-cooler-no-floor');
+  revalidatePath('/walk-in-cooler-freezer/walk-in-freezer-with-floor');
+  revalidatePath('/walk-in-cooler-freezer/walk-in-combo-cooler-freezer');
+  revalidatePath('/refrigeration-equipment');
+
+  return { success: true };
 }

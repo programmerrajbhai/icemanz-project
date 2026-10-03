@@ -30,7 +30,6 @@ import {
   X
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { ASTRA_SHIPPING_LOCATIONS, ASTRA_SHIPPING_BY_STATE, type AstraShippingLocation } from '@/lib/astraShippingLocations';
 
 type Product = {
   id: string;
@@ -56,7 +55,8 @@ type Product = {
     remote?: string[];
   };
   faqs?: { question: string; answer: string }[];
-  productOptions?: { label: string; name: string; options: { label: string; price?: string }[] }[];
+  productOptions?: { label: string; name: string; options: { label: string; price?: string }[] }[] | Record<string, any>;
+  layouts?: { name: string; value: string; selected?: boolean; thumbnail?: string; preview_image?: string }[] | null;
 };
 
 type RelatedProduct = {
@@ -124,7 +124,6 @@ export default function AstraProductClient({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
-  const [selectedShippingLocation, setSelectedShippingLocation] = useState<AstraShippingLocation | null>(null);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 600, height: 600 });
@@ -206,8 +205,8 @@ export default function AstraProductClient({
   const configurableProperties = productOptionsData?.configurable_properties || {};
   const addons = productOptionsData?.addons || [];
 
-  // Get layouts - check multiple possible locations
-  const layouts = (product as any).layouts || (enrichedProduct as any).layouts || productOptionsData?.layouts || [];
+  // Get layouts - from product.layouts field (typed now)
+  const layouts = product.layouts || (enrichedProduct as any).layouts || productOptionsData?.layouts || [];
 
   // Auto-select first layout on mount
   useEffect(() => {
@@ -221,8 +220,21 @@ export default function AstraProductClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layouts.length]);
 
-  // Get specifications from specs field
-  const specifications = enrichedProduct.specs || {};
+  // Get specifications from specs field — normalize to plain object for rendering
+  // DB may store as [{label, value}] array (admin form) or plain {Key: Value} object (imported)
+  const rawSpecs = enrichedProduct.specs;
+  const specifications: Record<string, string> = (() => {
+    if (!rawSpecs) return {};
+    if (Array.isArray(rawSpecs)) {
+      const obj: Record<string, string> = {};
+      (rawSpecs as { label: string; value: string }[]).forEach(s => {
+        if (s.label) obj[s.label] = s.value || '';
+      });
+      return obj;
+    }
+    if (typeof rawSpecs === 'object') return rawSpecs as Record<string, string>;
+    return {};
+  })();
 
   // Calculate dynamic price based on selected options - useMemo for reactivity
   const totalPrice = useMemo(() => {
@@ -863,59 +875,6 @@ export default function AstraProductClient({
 
                 </div>
 
-                {/* Shipping Location Selector */}
-                <div className="border border-gray-200 rounded-sm overflow-hidden">
-                  <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-sm font-bold text-gray-900">Shipping Location</h3>
-                    <p className="text-xs text-gray-500 mt-0.5">Select a delivery destination — shipping cost included</p>
-                  </div>
-                  <div className="p-4 space-y-3">
-                    {/* No shipping / pickup option */}
-                    <label className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedShippingLocation === null ? 'border-[#004a99] bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <input
-                        type="radio"
-                        name="shippingLocation"
-                        checked={selectedShippingLocation === null}
-                        onChange={() => setSelectedShippingLocation(null)}
-                        className="mt-0.5 accent-[#004a99]"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-900">Store Pickup / Other</p>
-                        <p className="text-xs text-gray-500">184-60 Jamaica Ave, Hollis, NY 11423</p>
-                      </div>
-                      <span className="text-sm font-bold text-green-600 shrink-0">FREE</span>
-                    </label>
-
-                    {/* State groups */}
-                    {Object.entries(ASTRA_SHIPPING_BY_STATE).map(([state, locations]) => (
-                      <div key={state}>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">{state}</p>
-                        <div className="space-y-2">
-                          {locations.map((loc) => (
-                            <label
-                              key={loc.id}
-                              className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedShippingLocation?.id === loc.id ? 'border-[#004a99] bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
-                            >
-                              <input
-                                type="radio"
-                                name="shippingLocation"
-                                checked={selectedShippingLocation?.id === loc.id}
-                                onChange={() => setSelectedShippingLocation(loc)}
-                                className="mt-0.5 accent-[#004a99]"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-gray-900">{loc.name}</p>
-                                <p className="text-xs text-gray-500">{loc.address}</p>
-                              </div>
-                              <span className="text-sm font-bold text-gray-800 shrink-0">${loc.shippingCost.toLocaleString()}.00</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Add-Ons Table */}
                 <div className="border border-gray-200 rounded-sm overflow-hidden">
                   <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
@@ -996,10 +955,9 @@ export default function AstraProductClient({
                 </div>
 
                 {/* Layout Selection - Visual Grid */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-5">Layout</h3>
-                  {/* Check layouts array from product data */}
-                  {layouts && layouts.length > 0 ? (
+                {layouts && layouts.length > 0 && (
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-5">Layout</h3>
                     <div className="grid grid-cols-3 gap-4">
                       {layouts.map((layout: any, idx: number) => (
                         <button
@@ -1034,8 +992,8 @@ export default function AstraProductClient({
                         </button>
                       ))}
                     </div>
-                  ) : null}
-                </div>
+                  </div>
+                )}
 
 
 
@@ -1068,7 +1026,7 @@ export default function AstraProductClient({
                         id: product.id,
                         name: product.title,
                         brand: product.brand || 'Astra',
-                        price: product.price,
+                        price: totalPrice,
                         image: product.images[0] || '/placeholder.png',
                         quantity: quantity,
                         category: 'walk-in-cooler-freezer',
@@ -1076,8 +1034,7 @@ export default function AstraProductClient({
                           ...selectedOptions,
                           layout: selectedOptions.layout || (layouts.length > 0 ? (layouts[0].value || layouts[0].name) : undefined),
                         },
-                        shippingLocation: selectedShippingLocation ?? undefined,
-                        shippingCost: selectedShippingLocation ? selectedShippingLocation.shippingCost : 0,
+                        addonQuantities: addonQuantities,
                       });
                       router.push('/cart');
                     }}

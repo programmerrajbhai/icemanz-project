@@ -401,7 +401,8 @@ export default function WalkInCoolerProductClient({
                       price: product.price,
                       image: product.images[0] || '/placeholder.png',
                       quantity: quantity,
-                      category: 'walk-in-cooler-freezer'
+                      category: 'walk-in-cooler-freezer',
+                      selectedOptions: Object.keys(selectedOptions).length > 0 ? selectedOptions : undefined,
                     });
                     router.push('/cart');
                   }}
@@ -468,24 +469,7 @@ export default function WalkInCoolerProductClient({
                       </div>
                     )}
 
-                    {product.documents && product.documents.length > 0 && (
-                      (() => {
-                        const specSheet = product.documents.find(doc => doc.name === 'Spec Sheet');
-                        if (!specSheet) return null;
-                        return (
-                          <div className="mt-6">
-                            <h3 className="text-sm font-bold text-gray-900 mb-4">Spec Sheet</h3>
-                            <a href={specSheet.url} target="_blank" rel="noopener noreferrer" className="inline-block">
-                              <img
-                                src="/Walk-in-Cooler-Freezer/details/pdf_0eefef7d-35a5-4bb1-a400-2ec5f4f2f437_480x480.avif"
-                                alt="Download PDF"
-                                className="h-12 object-contain"
-                              />
-                            </a>
-                          </div>
-                        );
-                      })()
-                    )}
+
                   </div>
                 </div>
               </section>

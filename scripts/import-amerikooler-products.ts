@@ -99,12 +99,12 @@ async function importAmeriKoolerProducts() {
 
   try {
     // Read the JSON file - use the latest scraped file
-    const jsonPath = path.join(process.cwd(), 'data', 'amerikooler-products-2026-09-13.json');
+    const jsonPath = path.join(process.cwd(), 'data', 'amerikooler-products-2026-10-03.json');
     console.log(`📖 Reading products from: ${jsonPath}`);
 
     if (!fs.existsSync(jsonPath)) {
       console.error('❌ File not found:', jsonPath);
-      console.log('\n💡 Please make sure the file exists at: data/amerikooler-products-2026-09-13.json\n');
+      console.log('\n💡 Please make sure the file exists at: data/amerikooler-products-2026-10-03.json\n');
       return;
     }
 

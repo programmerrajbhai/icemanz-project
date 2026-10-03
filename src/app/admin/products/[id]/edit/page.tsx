@@ -11,7 +11,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   const product = await prisma.product.findUnique({
     where: { id },
-    include: { category: true },
+    include: { category: true, brandRef: true },
   });
 
   if (!product) {
@@ -32,11 +32,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
     }
   });
 
+  // Fetch all brands
+  const allBrands = await prisma.brand.findMany({ orderBy: { name: 'asc' } });
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center gap-4">
-        <Link 
-          href="/admin/products" 
+        <Link
+          href="/admin/products"
           className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
         >
           <ArrowLeft size={20} />
@@ -48,7 +51,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
-        <EditProductForm product={product} allCategories={allCategories} />
+        <EditProductForm product={product} allCategories={allCategories} allBrands={allBrands} />
       </div>
     </div>
   );

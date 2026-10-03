@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "mysql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
@@ -20,63 +20,76 @@ model Category {
   products      Product[]
 }
 
+model Brand {
+  id        String    @id @default(uuid())
+  name      String
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
 model Product {
   id               String    @id @default(uuid())
   title            String
   slug             String    @unique
   brand            String?
+  brandId          String?
   sku              String?
   badge            String?
-  description      String?
-  keyFeatures      String?
+  description      String?   @db.LongText   // <-- Updated for long text
+  keyFeatures      String?   @db.LongText   // <-- Updated for long text
   condition        String?
   type             String?
   price            String?
-  images           String[]
-  warranty         String[]
-  detailedFeatures String[]
+  images           Json?
+  warranty         Json?
+  detailedFeatures Json?
   specs            Json?
   documents        Json?
   faqs             Json?
   productOptions   Json?
   features         Json?
-  layouts          Json?     // Layout diagrams with door positions
+  layouts          Json?     
   categoryId       String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   category         Category? @relation(fields: [categoryId], references: [id])
+  brandRef         Brand?    @relation(fields: [brandId], references: [id])
 }
 
+
+
 model InvoiceRequest {
-  id                String   @id @default(uuid())
-  email             String
-  phone             String?
-  status            String   @default("PENDING")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  address           String?
-  customTemp        String?
-  description       String?
-  fullName          String
-  height            String?
-  length            String?
-  products          Json?
-  projectName       String?
-  quantity          String?
-  tempRange         String?
-  width             String?
-  stripeCheckoutUrl String?  // Stripe Checkout URL for payment
-  stripeSessionId   String?  // Stripe Session ID
-  totalAmount       Float?
-  order             Order?
-  additionalWarranty Boolean? @default(false)
-  deliveryTime      String?
-  offerDiscount     Float?
-  tax               Float?
-  deliveryCost      Float?
-  totalWithTax      Float?
-  deliveryNotes     String?
-  category          String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
+  id                 String    @id @default(uuid())
+  email              String
+  phone              String?
+  status             String    @default("PENDING")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  address            String?
+  customTemp         String?
+  description        String?
+  fullName           String
+  height             String?
+  length             String?
+  products           Json?
+  projectName        String?
+  quantity           String?
+  tempRange          String?
+  width              String?
+  stripeCheckoutUrl  String?  
+  stripeSessionId    String?  
+  totalAmount        Float?
+  order              Order?
+  additionalWarranty Boolean?  @default(false)
+  deliveryTime       String?
+  offerDiscount      Float?
+  tax                Float?
+  deliveryCost       Float?
+  totalWithTax       Float?
+  deliveryNotes      String?
+  category           String? 
 }
 
 model Order {
@@ -84,24 +97,23 @@ model Order {
   invoiceId       String         @unique
   customerName    String
   customerEmail   String
-  customerPhone   String?        // Customer phone number
+  customerPhone   String?        
   amountPaid      Float
   currency        String         @default("usd")
   stripeSessionId String         @unique
   stripePaymentId String?
   status          String         @default("PAID")
-  // Shipping Address fields
   shippingName    String?
   shippingAddress String?
   shippingCity    String?
   shippingState   String?
   shippingZip     String?
   shippingCountry String?
-  deliveryMethod  String?        // "ship" or "pickup"
+  deliveryMethod  String?        
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   invoice         InvoiceRequest @relation(fields: [invoiceId], references: [id])
-  category        String? // "refrigeration-equipment" or "walk-in-cooler-freezer"
+  category        String? 
 }
 
 model CustomQuoteRequest {

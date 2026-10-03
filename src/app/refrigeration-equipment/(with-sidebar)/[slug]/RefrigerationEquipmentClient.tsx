@@ -334,6 +334,7 @@ export default function RefrigerationEquipmentClient({
   const [selectedDepths, setSelectedDepths] = useState<string[]>([]);
   const [selectedCondenserTypes, setSelectedCondenserTypes] = useState<string[]>([]);
   const [selectedHeights, setSelectedHeights] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Calculate filter counts from products
   const filterCounts = useMemo(() => {
@@ -670,6 +671,7 @@ export default function RefrigerationEquipmentClient({
     setSelectedDepths([]);
     setSelectedCondenserTypes([]);
     setSelectedHeights([]);
+    setSearchQuery('');
   };
 
   const hasActiveFilters = useMemo(() => {
@@ -701,6 +703,13 @@ export default function RefrigerationEquipmentClient({
   // Filter products based on selected filters
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
+      // Text search — title + keyFeatures + brand
+      const q = searchQuery.trim().toLowerCase();
+      if (q) {
+        const searchText = `${product.title || ''} ${product.keyFeatures || ''} ${product.brand || ''}`.toLowerCase();
+        if (!searchText.includes(q)) return false;
+      }
+
       // Brand filter
       const brand = product.brand || product.title.split(' ')[0];
       const brandMatch = selectedBrands.length === 0 || selectedBrands.some(b => {
@@ -905,7 +914,8 @@ export default function RefrigerationEquipmentClient({
     selectedWidths,
     selectedVoltages,
     selectedCondenserTypes,
-    selectedHeights
+    selectedHeights,
+    searchQuery
   ]);
 
   // Sort products based on selected sort option
@@ -975,17 +985,31 @@ export default function RefrigerationEquipmentClient({
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar */}
             <aside className="lg:w-72 xl:w-[320px] shrink-0">
-              {/* Mobile Toggle Button */}
-              <button
-                onClick={() => setIsMobileSidebarOpen(true)}
-                className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4 cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <Filter size={18} className="text-gray-900" />
-                  <span className="font-semibold text-gray-900 text-lg">Filters</span>
+              {/* Mobile: search input + filter button side by side */}
+              <div className="lg:hidden flex items-center gap-2 mb-4">
+                <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 rounded-sm px-3 py-3 focus-within:border-primary transition-colors">
+                  <Search size={16} className="text-gray-400 shrink-0" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                    placeholder="Search products..."
+                    className="flex-1 outline-none text-sm text-gray-800 placeholder-gray-400 bg-transparent"
+                  />
+                  {searchQuery && (
+                    <button type="button" onClick={() => { setSearchQuery(''); setCurrentPage(1); }} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
-                <Plus size={20} className="text-gray-900" />
-              </button>
+                <button
+                  onClick={() => setIsMobileSidebarOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-3 bg-white border border-gray-200 rounded-sm cursor-pointer shrink-0"
+                >
+                  <Filter size={17} className="text-gray-900" />
+                  <span className="font-semibold text-gray-900 text-sm">Filters</span>
+                </button>
+              </div>
 
               {/* Overlay for mobile */}
               {isMobileSidebarOpen && (
@@ -1013,7 +1037,23 @@ export default function RefrigerationEquipmentClient({
 
                   {/* Active Filters / Selected Filters */}
                   <div className="bg-white py-2 px-4 lg:pt-4">
-                    <h2 className="hidden lg:block text-xl font-semibold text-gray-900 mb-6">Filters</h2>
+                    <h2 className="hidden lg:block text-xl font-semibold text-gray-900 mb-4">Filters</h2>
+                    {/* Desktop search inside sidebar */}
+                    <div className="hidden lg:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-sm px-3 py-2.5 mb-5 focus-within:border-primary focus-within:bg-white transition-colors">
+                      <Search size={15} className="text-gray-400 shrink-0" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                        placeholder="Search products..."
+                        className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+                      />
+                      {searchQuery && (
+                        <button type="button" onClick={() => { setSearchQuery(''); setCurrentPage(1); }} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+                          <X size={13} />
+                        </button>
+                      )}
+                    </div>
                     <div className="flex flex-wrap gap-2 mb-3">
                       {selectedBrands.map(brand => (
                         <div key={brand} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">

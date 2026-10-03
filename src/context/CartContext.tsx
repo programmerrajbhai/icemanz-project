@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import type { AstraShippingLocation } from '@/lib/astraShippingLocations';
+
+const CART_STORAGE_KEY = 'icemanz_cart';
 
 export interface CartItem {
   id: string;
@@ -13,8 +14,7 @@ export interface CartItem {
   quantity: number;
   category?: string;
   selectedOptions?: Record<string, string | undefined>;
-  shippingLocation?: AstraShippingLocation;
-  shippingCost?: number;
+  addonQuantities?: Record<string, number>;
 }
 
 interface CartContextType {
@@ -30,10 +30,43 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Load cart from localStorage safely (SSR-safe)
+function loadCartFromStorage(): CartItem[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [subtotal, setSubtotal] = useState(0);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Load cart from localStorage on mount (client-only)
+  useEffect(() => {
+    const stored = loadCartFromStorage();
+    if (stored.length > 0) {
+      setCartItems(stored);
+    }
+    setHydrated(true);
+  }, []);
+
+  // Persist cart to localStorage whenever it changes (after hydration)
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch {
+      // localStorage full or unavailable — fail silently
+    }
+  }, [cartItems, hydrated]);
 
   // Calculate subtotal whenever cartItems change
   useEffect(() => {
@@ -64,7 +97,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         price: price,
         image: product.image,
         quantity: quantityToAdd,
-        category: product.category
+        category: product.category,
+        selectedOptions: product.selectedOptions || undefined,
+        addonQuantities: product.addonQuantities || undefined,
       }];
     });
 
@@ -89,6 +124,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setCartItems([]);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch {
+      // fail silently
+    }
   };
 
   return (

@@ -12,7 +12,8 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Filter
+  Filter,
+  Search
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
@@ -218,6 +219,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedRefrigerationTypes, setSelectedRefrigerationTypes] = useState<string[]>([]);
   const [selectedWalkInTypes, setSelectedWalkInTypes] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Derive brands and counts from products, sorting "Icemanz" to the top
   const brands = useMemo(() => {
@@ -265,15 +267,21 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
       const floorType = getFloorType(product);
       const refrigType = product.type || (product.features?.refrigerationType) || '';
 
+      // Text search — title + brand
+      const q = searchQuery.trim().toLowerCase();
+      const searchMatch = !q ||
+        product.title.toLowerCase().includes(q) ||
+        (product.brand || '').toLowerCase().includes(q);
+
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand) || (product.brand && selectedBrands.includes(product.brand));
       const floorMatch = selectedFloorTypes.length === 0 || selectedFloorTypes.includes(floorType);
       const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(size);
       const refrigerationMatch = selectedRefrigerationTypes.length === 0 || selectedRefrigerationTypes.includes(refrigType);
       const walkInTypeMatch = selectedWalkInTypes.length === 0 || selectedWalkInTypes.includes(getWalkInType(product));
 
-      return brandMatch && floorMatch && sizeMatch && refrigerationMatch && walkInTypeMatch;
+      return searchMatch && brandMatch && floorMatch && sizeMatch && refrigerationMatch && walkInTypeMatch;
     });
-  }, [initialProducts, selectedBrands, selectedFloorTypes, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes]);
+  }, [initialProducts, searchQuery, selectedBrands, selectedFloorTypes, selectedSizes, selectedRefrigerationTypes, selectedWalkInTypes]);
 
   // Sort products based on selected sort option
   const sortedProducts = useMemo(() => {
@@ -347,6 +355,7 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
     setSelectedSizes([]);
     setSelectedRefrigerationTypes([]);
     setSelectedWalkInTypes([]);
+    setSearchQuery('');
     setCurrentPage(1);
   };
 
@@ -411,17 +420,33 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
           {/* Sidebar Filters */}
           <aside className="lg:w-60 xl:w-64 shrink-0">
-            {/* Mobile Toggle Button */}
-            <button
-              onClick={() => setIsMobileSidebarOpen(true)}
-              className="lg:hidden flex items-center justify-between w-full px-5 py-4 bg-white border border-gray-200 rounded-sm mb-4 cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <Filter size={18} className="text-gray-900" />
-                <span className="font-semibold text-gray-900 text-lg">Filter Products</span>
+            {/* Mobile search + filter row */}
+            <div className="lg:hidden flex items-center gap-2 mb-4">
+              {/* Search input — always visible on mobile */}
+              <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 rounded-sm px-3 py-3 focus-within:border-primary transition-colors">
+                <Search size={16} className="text-gray-400 shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                  placeholder="Search products..."
+                  className="flex-1 outline-none text-sm text-gray-800 placeholder-gray-400 bg-transparent"
+                />
+                {searchQuery && (
+                  <button type="button" onClick={() => { setSearchQuery(''); setCurrentPage(1); }} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+                    <X size={14} />
+                  </button>
+                )}
               </div>
-              <Plus size={20} className="text-gray-900" />
-            </button>
+              {/* Filter button */}
+              <button
+                onClick={() => setIsMobileSidebarOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-3 bg-white border border-gray-200 rounded-sm cursor-pointer shrink-0"
+              >
+                <Filter size={17} className="text-gray-900" />
+                <span className="font-semibold text-gray-900 text-sm">Filters</span>
+              </button>
+            </div>
 
             {/* Overlay for mobile */}
             {isMobileSidebarOpen && (
@@ -449,7 +474,23 @@ export default function WalkInCoolerFreezerClient({ initialProducts, title = "Wa
 
                 {/* Active Filters / Selected Filters */}
                 <div className=" bg-white  py-2 px-4 lg:pt-4">
-                  <h2 className="hidden lg:block text-xl font-semibold text-gray-900 mb-6">Filters</h2>
+                  <h2 className="hidden lg:block text-xl font-semibold text-gray-900 mb-4">Filters</h2>
+                  {/* Desktop search inside sidebar */}
+                  <div className="hidden lg:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-sm px-3 py-2.5 mb-5 focus-within:border-primary focus-within:bg-white transition-colors">
+                    <Search size={15} className="text-gray-400 shrink-0" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                      placeholder="Search products..."
+                      className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
+                    />
+                    {searchQuery && (
+                      <button type="button" onClick={() => { setSearchQuery(''); setCurrentPage(1); }} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <X size={13} />
+                      </button>
+                    )}
+                  </div>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {selectedBrands.map(brand => (
                       <div key={brand} className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700">

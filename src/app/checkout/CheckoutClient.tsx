@@ -57,6 +57,10 @@ const CheckoutClient = () => {
 
     // Shipping cost from selected location (0 if none selected)
     const shippingCost = selectedShippingLocation ? selectedShippingLocation.cost : 0;
+    // Tax is calculated by Stripe at checkout:
+    //   • Ship mode  → tax based on Shipping address (collected by Stripe)
+    //   • Pickup mode → tax based on Billing address  (collected by Stripe)
+    // So we do NOT include tax in the displayed grandTotal — it is added on Stripe's page.
     const grandTotal = subtotal + shippingCost;
 
     // Shipping address fields
@@ -634,7 +638,9 @@ const CheckoutClient = () => {
                                         Shipping
                                         <Info size={15} className="text-gray-400" />
                                     </span>
-                                    {selectedShippingLocation ? (
+                                    {deliveryMethod === 'pickup' ? (
+                                        <span className="font-bold text-green-600">FREE</span>
+                                    ) : selectedShippingLocation ? (
                                         <span className="font-bold text-gray-900">${shippingCost.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                                     ) : (
                                         <span className="text-gray-500 text-sm italic">Calculated at checkout</span>

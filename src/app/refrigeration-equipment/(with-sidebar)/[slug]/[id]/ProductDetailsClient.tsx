@@ -94,6 +94,10 @@ export default function ProductDetailsClient({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [warrantyOption, setWarrantyOption] = useState<'standard' | 'extended'>('standard');
+
+  const EXTENDED_WARRANTY_PRICE = 350;
+  const isCondensingUnit = slug === 'condensing-units';
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 600, height: 600 });
   const [isHovering, setIsHovering] = useState(false);
@@ -519,10 +523,74 @@ export default function ProductDetailsClient({
               {/* Price Section */}
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-2xl font-bold text-[#003366]">${cleanPrice(product.price)}</span>
+                  <span className="text-2xl font-bold text-[#003366]">
+                    ${cleanPrice(
+                      String(
+                        (parseFloat(String(product.price || '0').replace(/[^0-9.]/g, '')) || 0) +
+                        (isCondensingUnit && warrantyOption === 'extended' ? EXTENDED_WARRANTY_PRICE : 0)
+                      )
+                    )}
+                  </span>
                   <span className="text-lg font-normal text-gray-500">/ Ea.</span>
                 </div>
+                {isCondensingUnit && warrantyOption === 'extended' && (
+                  <p className="text-xs text-gray-500 mt-0.5">Includes +${EXTENDED_WARRANTY_PRICE.toFixed(2)} extended warranty</p>
+                )}
               </div>
+
+              {/* Extended Warranty — Condensing Units Only */}
+              {isCondensingUnit && (
+                <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={20} className="text-[#003366]" />
+                    <span className="text-sm font-bold text-gray-900">1. Extend Your Compressor Warranty</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">Add 4 Years of Extended Compressor Warranty</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Protect your investment and get peace of mind with extended coverage.</p>
+                  </div>
+                  {/* Standard Option */}
+                  <button
+                    type="button"
+                    onClick={() => setWarrantyOption('standard')}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border transition-colors cursor-pointer ${warrantyOption === 'standard'
+                      ? 'border-[#003366] bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${warrantyOption === 'standard' ? 'border-[#003366]' : 'border-gray-400'
+                        }`}>
+                        {warrantyOption === 'standard' && (
+                          <span className="w-2 h-2 rounded-full bg-[#003366]" />
+                        )}
+                      </span>
+                      <span className="text-sm text-gray-800">Standard Warranty <span className="text-gray-500">(1 Year Compressor Warranty)</span></span>
+                    </div>
+                    <span className="text-sm font-semibold text-green-600">Included</span>
+                  </button>
+                  {/* Extended Option */}
+                  <button
+                    type="button"
+                    onClick={() => setWarrantyOption('extended')}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border transition-colors cursor-pointer ${warrantyOption === 'extended'
+                      ? 'border-[#003366] bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${warrantyOption === 'extended' ? 'border-[#003366]' : 'border-gray-400'
+                        }`}>
+                        {warrantyOption === 'extended' && (
+                          <span className="w-2 h-2 rounded-full bg-[#003366]" />
+                        )}
+                      </span>
+                      <span className="text-sm text-gray-800">Add 4-Year Extended Compressor Warranty</span>
+                    </div>
+                    <span className="text-sm font-semibold text-blue-700">+${EXTENDED_WARRANTY_PRICE.toFixed(2)}</span>
+                  </button>
+                </div>
+              )}
 
               {/* Quantity Selector */}
               <div className="flex items-center gap-4">
@@ -550,14 +618,19 @@ export default function ProductDetailsClient({
               <div>
                 <button
                   onClick={() => {
+                    const basePrice = parseFloat(String(product.price || '0').replace(/[^0-9.]/g, '')) || 0;
+                    const warrantyAddon = isCondensingUnit && warrantyOption === 'extended' ? EXTENDED_WARRANTY_PRICE : 0;
                     addToCart({
                       id: product.id,
                       name: product.title,
                       title: product.title,
-                      price: cleanPrice(product.price),
+                      price: String(basePrice + warrantyAddon),
                       image: productImages[0] || '/placeholder.png',
                       quantity: quantity,
-                      category: 'refrigeration-equipment'
+                      category: 'refrigeration-equipment',
+                      selectedOptions: isCondensingUnit
+                        ? { warranty: warrantyOption === 'extended' ? '4-Year Extended Compressor Warranty (+$350)' : 'Standard (1 Year)' }
+                        : undefined
                     });
                     router.push('/cart');
                   }}
