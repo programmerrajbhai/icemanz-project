@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import PrelineScript from "@/components/PrelineScript";
 import { Toaster } from 'react-hot-toast';
 import TopLoader from "@/components/TopLoader";
 import { CartProvider } from "@/context/CartContext";
 import Footer from "@/components/Footer";
+import ChatWidget from "@/components/ChatWidget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({
           <Footer />
           <Toaster position="bottom-right" />
           <PrelineScript />
+          <ChatWidget />
         </CartProvider>
       </body>
     </html>

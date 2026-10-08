@@ -1,12 +1,15 @@
 import { login } from './actions'
 import { Mail, Lock } from 'lucide-react'
 
-export default function LoginPage({
+// ১. ফাংশনটিকে async করা হয়েছে এবং searchParams-এর টাইপ Promise করা হয়েছে
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string }
+  searchParams: Promise<{ error?: string }>
 }) {
-  const error = searchParams?.error;
+  // ২. Promise টিকে await করে error ভ্যালু বের করা হয়েছে
+  const resolvedParams = await searchParams;
+  const error = resolvedParams?.error;
 
   const inputClasses = "py-3 px-4 ps-11 block w-full border border-gray-200 rounded-sm text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-white font-medium text-slate-900";
   const iconWrapperClasses = "absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4";

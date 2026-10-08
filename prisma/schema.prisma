@@ -3,10 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+
+
+
 
 model Category {
   id            String     @id @default(uuid())
@@ -19,6 +23,9 @@ model Category {
   subcategories Category[] @relation("CategoryToCategory")
   products      Product[]
 }
+
+
+
 
 model Brand {
   id        String    @id @default(uuid())
@@ -37,8 +44,8 @@ model Product {
   brandId          String?
   sku              String?
   badge            String?
-  description      String?   @db.LongText   // <-- Updated for long text
-  keyFeatures      String?   @db.LongText   // <-- Updated for long text
+  description      String?     // <-- Updated for long text
+  keyFeatures      String?   // <-- Updated for long text
   condition        String?
   type             String?
   price            String?
@@ -58,7 +65,7 @@ model Product {
   brandRef         Brand?    @relation(fields: [brandId], references: [id])
 }
 
-
+yu-
 
 model InvoiceRequest {
   id                 String    @id @default(uuid())
