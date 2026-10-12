@@ -1,131 +1,80 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-const sliderImages = [
-  {
-    url: '/slider/s_1.jpeg',
-    title: 'ICEMANZ Walk-In Cooler & Freezer',
-    subtitle: 'Fast. Reliable. Built for Performance.',
-  },
-  {
-    url: '/slider/s_2.jpeg',
-    title: 'Custom Modular Solutions',
-    subtitle: 'Tailored to fit your business perfectly.',
-  },
-  {
-    url: '/slider/s_3.jpeg',
-    title: '36-48 Hour Quick Ship',
-    subtitle: 'Get your cooling solutions delivered fast.',
-  }
-];
+import { ArrowRight, FileText, Target } from 'lucide-react';
 
 export default function Hero() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === sliderImages.length - 1 ? 0 : prev + 1));
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === 0 ? sliderImages.length - 1 : prev - 1));
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
-
   return (
-    <section className="relative h-[480px] sm:h-[540px] md:h-[650px] w-full overflow-hidden bg-gray-950 mt-[70px] md:mt-[100px] group">
-      {/* Background Slides */}
+    <section className="relative w-full overflow-hidden bg-[#001a33] mt-[70px] md:mt-[100px] min-h-[550px] sm:min-h-[600px] md:min-h-[650px] flex items-center">
+      
+      {/* Background Image with Premium Overlay */}
       <div className="absolute inset-0 z-0">
-        {sliderImages.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <Image
-              src={slide.url}
-              alt={slide.title}
-              fill
-              priority={index === 0}
-              className={`object-cover object-center transition-transform duration-[10000ms] ease-linear ${
-                index === currentSlide ? 'scale-110' : 'scale-100'
-              }`}
-              sizes="100vw"
-            />
-            {/* Premium Gradient Overlay for better text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
-          </div>
-        ))}
+        <Image
+          src="/slider/s_1.jpeg" // Using your best product image
+          alt="Commercial Walk-In Coolers and Freezers"
+          fill
+          priority
+          className="object-cover object-center opacity-40 scale-105"
+          sizes="100vw"
+        />
+        {/* Deep Blue Gradient Overlay for a clean B2B look */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#001a33] via-[#001a33]/90 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001a33] via-transparent to-transparent"></div>
       </div>
 
-      {/* Centered Text Overlay */}
-      <div className="container relative z-10 h-full flex items-center justify-center">
-        <div className="max-w-5xl pt-4 md:pt-10 text-center">
-          <div className="space-y-8 md:space-y-12">
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white uppercase tracking-tight leading-[1.1] md:leading-[1.05] px-2 mx-auto drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
-              YOUR TOTAL <br className="hidden sm:block" />
-              <span className="text-blue-400 block mt-2 sm:inline sm:mt-0">REFRIGERATION</span> SOLUTIONS
-            </h1>
+      {/* Hero Content */}
+      <div className="container relative z-10 mx-auto px-4 md:px-6">
+        <div className="max-w-3xl pt-8 pb-12">
+          
+          {/* Eyebrow Text */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-900/50 border border-blue-500/30 backdrop-blur-sm mb-6">
+            <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
+            <span className="text-xs font-bold text-blue-200 uppercase tracking-widest">Your Total Refrigeration Solutions</span>
+          </div>
 
-            {/* Action Buttons with Modern Hover Effects */}
-            <div className="flex flex-col sm:flex-row gap-5 px-6 sm:px-0 justify-center items-center">
-              <Link
-                href="/walk-in-cooler-freezer/walk-in-cooler-no-floor"
-                className="w-full sm:w-auto py-4 px-10 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 uppercase tracking-[0.2em] shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] active:scale-[0.98]"
-              >
-                Explore Products
-              </Link>
-              
-              <Link
-                href="/quote"
-                className="w-full sm:w-auto py-4 px-10 inline-flex justify-center items-center gap-x-3 text-sm font-bold rounded border-2 border-white/40 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-gray-950 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 uppercase tracking-[0.2em] shadow-lg hover:shadow-xl active:scale-[0.98] group/btn"
-              >
-                <Search size={18} className="group-hover/btn:scale-110 group-hover/btn:text-blue-600 transition-transform duration-300" /> 
-                Request a Quote
-              </Link>
-            </div>
+          {/* Main Headline */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1] mb-6 drop-shadow-md">
+            Commercial Walk-In <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Coolers & Freezers</span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 max-w-2xl font-medium leading-relaxed drop-shadow-sm">
+            Factory-direct refrigeration solutions for restaurants, supermarkets, and warehouses. From standard quick-ship units to custom-engineered facilities.
+          </p>
+
+          {/* The 3 Customer Journey Actions (Clean & Clear) */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+            
+            {/* Journey A: Shop Now */}
+            <Link
+              href="/walk-in-cooler-freezer"
+              className="inline-flex justify-center items-center gap-x-2 text-sm font-black rounded-lg border border-transparent bg-blue-600 text-white px-8 py-4 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 shadow-[0_4px_20px_rgba(37,99,235,0.4)] uppercase tracking-wider"
+            >
+              Shop Catalog <ArrowRight size={18} />
+            </Link>
+
+            {/* Journey B: Recommendation */}
+            <Link
+              href="/recommendation"
+              className="inline-flex justify-center items-center gap-x-2 text-sm font-black rounded-lg border border-gray-500/30 bg-white/10 text-white backdrop-blur-md px-8 py-4 hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300 uppercase tracking-wider"
+            >
+              <Target size={18} className="text-blue-400" /> Help Me Choose
+            </Link>
+
+            {/* Journey C: Custom Project */}
+            <Link
+              href="/quote"
+              className="inline-flex justify-center items-center gap-x-2 text-sm font-black rounded-lg border border-transparent bg-transparent text-gray-300 px-6 py-4 hover:text-white hover:bg-white/5 transition-all duration-300 uppercase tracking-wider"
+            >
+              <FileText size={18} /> Request Custom Quote
+            </Link>
+
           </div>
         </div>
       </div>
 
-      {/* Slider Controls (Arrows) */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/20 text-white/70 backdrop-blur-sm border border-white/10 hover:bg-black/50 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hidden md:block"
-        aria-label="Previous Slide"
-      >
-        <ChevronLeft size={32} />
-      </button>
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/20 text-white/70 backdrop-blur-sm border border-white/10 hover:bg-black/50 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 hidden md:block"
-        aria-label="Next Slide"
-      >
-        <ChevronRight size={32} />
-      </button>
-
-      {/* Slider Indicators (Dots) */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-3">
-        {sliderImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-blue-500 w-8' : 'bg-white/50 hover:bg-white'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
     </section>
   );
 }

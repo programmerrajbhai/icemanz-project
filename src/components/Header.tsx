@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Phone,
   Mail,
@@ -14,10 +14,13 @@ import {
   X,
   FileText,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Target,
+  Wrench
 } from 'lucide-react';
 import FloatingCart from './FloatingCart';
 import { useCart } from '@/context/CartContext';
+import { siteConfig } from '@/config/site';
 
 export default function Header() {
   const { cartItems, isCartOpen, setIsCartOpen } = useCart();
@@ -34,31 +37,32 @@ export default function Header() {
 
   const mobileMenuData = [
     {
-      label: 'Walk-in Cooler & Freezer',
-      href: '/walk-in-cooler-freezer',
+      label: 'Products (Shop Direct)',
+      icon: <ShoppingCart size={16} />,
       subItems: [
         { label: 'Walk-In Cooler (No Floor)', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
         { label: 'Walk-In Cooler (With Floor)', href: '/walk-in-cooler-freezer/walk-in-cooler-with-floor' },
         { label: 'Walk-In Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-        { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' }
+        { label: 'Combo Units / Package Units', href: '/refrigeration-equipment/combo-units-package-units' },
+        { label: 'Glassdoor Coolers & Freezers', href: '/glassdoor-walk-in-cooler' },
+        { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' }
       ]
     },
     {
-      label: 'Glassdoor Walk-in Cooler',
-      href: '/glassdoor-walk-in-cooler',
+      label: 'Find Your Solution',
+      icon: <Target size={16} />,
       subItems: [
-        { label: 'Glassdoor Walk-in Cooler', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-cooler' },
-        { label: 'Glassdoor Walk-in Freezer', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-freezer' },
-        { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' }
+        { label: 'Get a Recommendation', href: '/recommendation' }, // Updated Link
+        { label: 'Request a Custom Quote', href: '/quote' }
       ]
     },
     {
-      label: 'Refrigeration Equipment',
-      href: '/refrigeration-equipment',
+      label: 'Services & Projects',
+      icon: <Wrench size={16} />,
       subItems: [
-        { label: 'Condensing Units', href: '/refrigeration-equipment/condensing-units' },
-        { label: 'Evaporation Units', href: '/refrigeration-equipment/evaporation-units' },
-        { label: 'Combo Units / Package Units', href: '/refrigeration-equipment/combo-units-package-units' }
+        { label: 'Engineering & Design', href: '/services' },
+        { label: 'Installation Services', href: '/services' },
+        { label: 'Completed Projects', href: '/completed-projects' }
       ]
     }
   ];
@@ -70,21 +74,9 @@ export default function Header() {
   };
 
   const walkInImages: { [key: string]: string } = {
-    'Walk-In Cooler': '/slider/s_1.jpeg',
-    'Walk-In Freezer': '/slider/s_2.jpeg',
-    'Walk-In Combo (Cooler & Freezer)': '/slider/s_3.jpeg'
-  };
-
-  const glassdoorImages: { [key: string]: string } = {
-    'Glassdoor Walk-in Cooler': '/products/product_2.jpg',
-    'Glassdoor Walk-in Freezer': '/slider/s_2.jpeg',
-    'Glassdoor': '/slider/s_3.jpeg'
-  };
-
-  const refrigerationImages: { [key: string]: string } = {
-    'Condensing Units': '/slider/s_1.jpeg',
-    'Evaporation Units': '/slider/s_2.jpeg',
-    'Combo Units / Package Units': '/slider/s_3.jpeg'
+    'Walk-In Coolers': '/slider/s_1.jpeg',
+    'Walk-In Freezers': '/slider/s_2.jpeg',
+    'Walk-In Combo Systems': '/slider/s_3.jpeg'
   };
 
   useEffect(() => {
@@ -121,17 +113,17 @@ export default function Header() {
       <div className="hidden lg:flex bg-gradient-to-r from-blue-950 via-[#003d80] to-blue-900 text-white py-2 h-[40px] items-center border-b border-blue-800/40 shadow-inner">
         <div className="container flex justify-between items-center text-[12px] font-semibold tracking-wide">
           <div className="flex gap-8 items-center" suppressHydrationWarning>
-            <a href="tel:+17186786005" className="flex items-center gap-2 hover:text-blue-300 transition-colors group">
+            <a href={`tel:${siteConfig.company.phone.replace(/[^0-9]/g, '')}`} className="flex items-center gap-2 hover:text-blue-300 transition-colors group">
               <span className="p-1 rounded bg-blue-900/50 group-hover:bg-blue-800 transition-colors">
                 <Phone size={12} className="text-blue-400" />
               </span> 
-              +1 (718) 678-6005
+              {siteConfig.company.phone}
             </a>
-            <a href="mailto:sales@icemanz.com" className="flex items-center gap-2 hover:text-blue-300 transition-colors group">
+            <a href={`mailto:${siteConfig.company.email}`} className="flex items-center gap-2 hover:text-blue-300 transition-colors group">
               <span className="p-1 rounded bg-blue-900/50 group-hover:bg-blue-800 transition-colors">
                 <Mail size={12} className="text-blue-400" />
               </span> 
-              sales@icemanz.com
+              {siteConfig.company.email}
             </a>
           </div>
           <div className="flex items-center gap-6">
@@ -158,25 +150,27 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation with Advanced Mega Menus */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             
-            {/* Walk-in Cooler & Freezer Dropdown */}
+            {/* Journey A: Shop Products */}
             <div className="relative group py-2">
-              <Link href="/walk-in-cooler-freezer" className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all flex items-center gap-1.5 cursor-pointer">
-                Walk-in Cooler & Freezer 
+              <span className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all flex items-center gap-1.5 cursor-pointer">
+                Shop Products
                 <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300 text-blue-600" />
-              </Link>
+              </span>
               
               <div className="absolute top-full left-0 w-[540px] bg-white/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-6 z-50 transform translate-y-2 group-hover:translate-y-0">
                 <div className="flex gap-6 items-center">
                   <div className="flex flex-col gap-2 flex-1">
                     <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-1 flex items-center gap-1">
-                      <Sparkles size={12} /> Featured Categories
+                      <ShoppingCart size={12} /> Direct Purchase
                     </p>
                     {[
-                      { label: 'Walk-In Cooler', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-                      { label: 'Walk-In Freezer', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-                      { label: 'Walk-In Combo (Cooler & Freezer)', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' }
+                      { label: 'Walk-In Coolers', href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
+                      { label: 'Walk-In Freezers', href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
+                      { label: 'Walk-In Combo Systems', href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' },
+                      { label: 'Glass-Door Products', href: '/glassdoor-walk-in-cooler' },
+                      { label: 'Refrigeration Equipment', href: '/refrigeration-equipment' }
                     ].map((item) => (
                       <Link
                         key={item.label}
@@ -193,7 +187,7 @@ export default function Header() {
                     <Image
                       key={hoveredWalkInItem}
                       src={hoveredWalkInItem}
-                      alt="Walk-in Preview"
+                      alt="Product Preview"
                       fill
                       className="object-cover transition-all duration-500"
                     />
@@ -202,92 +196,55 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Glassdoor Walk-in Cooler Dropdown */}
+            {/* Journey B: Find Your Solution */}
             <div className="relative group py-2">
-              <Link href="/glassdoor-walk-in-cooler" className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all flex items-center gap-1.5 cursor-pointer">
-                Glassdoor Walk-in
+              <span className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all flex items-center gap-1.5 cursor-pointer">
+                Find Solution
                 <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300 text-blue-600" />
-              </Link>
+              </span>
               
-              <div className="absolute top-full left-0 w-[540px] bg-white/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-6 z-50 transform translate-y-2 group-hover:translate-y-0">
-                <div className="flex gap-6 items-center">
-                  <div className="flex flex-col gap-2 flex-1">
-                    <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-1 flex items-center gap-1">
-                      <Sparkles size={12} /> Retail Displays
-                    </p>
-                    {[
-                      { label: 'Glassdoor Walk-in Cooler', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-cooler' },
-                      { label: 'Glassdoor Walk-in Freezer', href: '/glassdoor-walk-in-cooler/glassdoor-walk-in-freezer' },
-                      { label: 'Glassdoor', href: '/glassdoor-walk-in-cooler/glassdoor' }
-                    ].map((item) => (
-                      <Link
-                        key={item.label}
-                        href={item.href}
-                        onMouseEnter={() => setHoveredGlassdoorItem(glassdoorImages[item.label] || '/products/product_2.jpg')}
-                        className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all flex items-center justify-between group/item"
-                      >
-                        <span>{item.label}</span>
-                        <ArrowRight size={14} className="opacity-0 group-hover/item:opacity-100 transform -translate-x-2 group-hover/item:translate-x-0 transition-all text-blue-600" />
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="w-[200px] h-[160px] relative rounded-lg overflow-hidden shadow-md bg-gray-100 hidden sm:block">
-                    <Image
-                      key={hoveredGlassdoorItem}
-                      src={hoveredGlassdoorItem}
-                      alt="Glassdoor Preview"
-                      fill
-                      className="object-cover transition-all duration-500"
-                    />
-                  </div>
+              <div className="absolute top-full left-0 w-[250px] bg-white/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-4 z-50 transform translate-y-2 group-hover:translate-y-0">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-1 flex items-center gap-1">
+                    <Target size={12} /> Not Sure What You Need?
+                  </p>
+                  <Link href="/recommendation" className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all">
+                    Get a Recommendation
+                  </Link>
+                  <Link href="/quote" className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all">
+                    Request Custom Quote
+                  </Link>
                 </div>
               </div>
             </div>
 
-            {/* Refrigeration Equipment Dropdown */}
+            {/* Journey C: Services & Projects */}
             <div className="relative group py-2">
-              <Link href="/refrigeration-equipment" className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all flex items-center gap-1.5 cursor-pointer">
-                Refrigeration Equipment
+              <span className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all flex items-center gap-1.5 cursor-pointer">
+                Services & Projects
                 <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300 text-blue-600" />
-              </Link>
+              </span>
               
-              <div className="absolute top-full left-0 w-[560px] bg-white/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-6 z-50 transform translate-y-2 group-hover:translate-y-0">
-                <div className="flex gap-6 items-center">
-                  <div className="flex flex-col gap-2 flex-1">
-                    <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-1 flex items-center gap-1">
-                      <Sparkles size={12} /> Systems & Units
-                    </p>
-                    {[
-                      { label: 'Condensing Units', href: '/refrigeration-equipment/condensing-units' },
-                      { label: 'Evaporation Units', href: '/refrigeration-equipment/evaporation-units' },
-                      { label: 'Combo Units / Package Units', href: '/refrigeration-equipment/combo-units-package-units' }
-                    ].map((item) => (
-                      <Link
-                        key={item.label}
-                        href={item.href}
-                        onMouseEnter={() => setHoveredRefrigerationItem(refrigerationImages[item.label] || '/slider/s_1.jpeg')}
-                        className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all flex items-center justify-between group/item"
-                      >
-                        <span>{item.label}</span>
-                        <ArrowRight size={14} className="opacity-0 group-hover/item:opacity-100 transform -translate-x-2 group-hover/item:translate-x-0 transition-all text-blue-600" />
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="w-[200px] h-[160px] relative rounded-lg overflow-hidden shadow-md bg-gray-100 hidden sm:block">
-                    <Image
-                      key={hoveredRefrigerationItem}
-                      src={hoveredRefrigerationItem}
-                      alt="Refrigeration Preview"
-                      fill
-                      className="object-cover transition-all duration-500"
-                    />
-                  </div>
+              <div className="absolute top-full left-0 w-[250px] bg-white/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-4 z-50 transform translate-y-2 group-hover:translate-y-0">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-1 flex items-center gap-1">
+                    <Wrench size={12} /> Complete Facilities
+                  </p>
+                  <Link href="/services" className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all">
+                    Engineering & Design
+                  </Link>
+                  <Link href="/services" className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all">
+                    Installation & Maintenance
+                  </Link>
+                  <Link href="/completed-projects" className="text-[13px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50/60 px-3 py-2.5 rounded-lg transition-all">
+                    Completed Projects
+                  </Link>
                 </div>
               </div>
             </div>
 
-            <Link href="/completed-projects" className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all py-2 cursor-pointer">
-              Completed Projects
+            <Link href="/support" className="text-[14px] font-extrabold uppercase tracking-wider text-gray-800 hover:text-blue-600 transition-all py-2 cursor-pointer">
+              Support Center
             </Link>
           </nav>
 
@@ -340,7 +297,7 @@ export default function Header() {
               <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
             </div>
 
-            {/* Get a Quote Button */}
+            {/* Get a Quote Button (Primary CTA) */}
             <Link
               href="/quote"
               className="hidden md:inline-flex items-center gap-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-7 py-3 rounded-lg font-bold text-[14px] uppercase tracking-wider transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-lg shadow-blue-600/25 cursor-pointer"
@@ -417,7 +374,7 @@ export default function Header() {
                     onClick={() => toggleMobileCategory(category.label)}
                     className="w-full flex items-center justify-between py-3 text-base font-extrabold uppercase text-gray-800 hover:text-blue-600 transition-colors cursor-pointer"
                   >
-                    <span>{category.label}</span>
+                    <span className="flex items-center gap-2">{category.icon} {category.label}</span>
                     <ChevronDown size={18} className={`transition-transform duration-300 ${expandedMobileCategories.includes(category.label) ? 'rotate-180 text-blue-600' : 'text-gray-400'}`} />
                   </button>
 
@@ -437,10 +394,6 @@ export default function Header() {
                   )}
                 </div>
               ))}
-
-              <Link href="/completed-projects" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-extrabold uppercase text-gray-800 hover:text-blue-600 py-3 border-b border-gray-50">
-                Completed Projects
-              </Link>
             </nav>
 
             <div className="pt-6">
@@ -453,11 +406,11 @@ export default function Header() {
               </Link>
 
               <div className="mt-8 bg-gray-50 p-5 rounded-2xl space-y-4">
-                <a href="tel:+17186786005" className="flex items-center gap-3 text-gray-700 font-bold text-sm">
-                  <Phone size={16} className="text-blue-600" /> +1 (718) 678-6005
+                <a href={`tel:${siteConfig.company.phone.replace(/[^0-9]/g, '')}`} className="flex items-center gap-3 text-gray-700 font-bold text-sm">
+                  <Phone size={16} className="text-blue-600" /> {siteConfig.company.phone}
                 </a>
-                <a href="mailto:sales@icemanz.com" className="flex items-center gap-3 text-gray-700 font-bold text-sm">
-                  <Mail size={16} className="text-blue-600" /> sales@icemanz.com
+                <a href={`mailto:${siteConfig.company.email}`} className="flex items-center gap-3 text-gray-700 font-bold text-sm">
+                  <Mail size={16} className="text-blue-600" /> {siteConfig.company.email}
                 </a>
               </div>
             </div>

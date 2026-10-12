@@ -1,15 +1,7 @@
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import PromoBanners from "@/components/PromoBanners";
-import ScrollingTicker from "@/components/ScrollingTicker";
-import FeaturedCategories from "@/components/FeaturedCategories";
-import Products from "@/components/Products";
+import Footer from "@/components/Footer";
+import ClientHomeDesign from "@/components/ClientHomeDesign";
 import WalkInOptionsSlider from "@/components/WalkInOptionsSlider";
-import Services from "@/components/Services";
-import Industries from "@/components/Industries";
-import Testimonials from "@/components/Testimonials";
-import ImageGallery from "@/components/ImageGallery";
-import CTA from "@/components/CTA";
 import prisma from "@/lib/prisma";
 import { getMockProductsByCategory } from "@/lib/mock-products";
 
@@ -20,37 +12,37 @@ export default async function Home() {
 
     try {
         walkInProducts = await prisma.product.findMany({
-            where: {
-                category: {
-                    slug: 'walk-in-cooler-no-floor'
-                }
-            },
+            where: { category: { slug: 'walk-in-cooler-no-floor' } },
             take: 12,
             include: { category: true }
         });
     } catch (error) {
         console.error('Database connection error, using mock data:', error);
-        // Use mock data if database is not available
         walkInProducts = getMockProductsByCategory('walk-in-cooler-no-floor');
     }
 
     return (
         <div className="flex flex-col min-h-screen">
+            {/* হেডার ফিরিয়ে আনা হলো */}
             <Header />
+            
             <main className="grow">
-                <Hero />
-                <ScrollingTicker />
-                <Products />
-                <WalkInOptionsSlider products={JSON.parse(JSON.stringify(walkInProducts))} />
-                <Services />
-                <PromoBanners />
-                <Industries />
-                <Testimonials />
-                {/* <FeaturedCategories /> */}
-                <ImageGallery />
-                {/* <CTA /> */}
+                {/* আপনার সুপার অ্যামেজিং গ্লোয়িং ব্লু ডিজাইন */}
+                <ClientHomeDesign />
+
+                {/* ডাটাবেস থেকে আসা স্লাইডার */}
+                <div className="bg-[#F8FAFC] pb-24 relative z-10 border-t border-gray-200">
+                    <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 mb-8">
+                        <h2 className="font-['Bricolage_Grotesque',_sans-serif] text-3xl md:text-4xl font-black text-[#0F172A] tracking-tight">
+                            More dynamic options from catalog
+                        </h2>
+                    </div>
+                    <WalkInOptionsSlider products={JSON.parse(JSON.stringify(walkInProducts))} />
+                </div>
             </main>
 
+            {/* সিঙ্গেল ফুটার */}
+            <Footer />
         </div>
     );
 }
