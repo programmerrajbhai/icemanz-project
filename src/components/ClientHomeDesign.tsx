@@ -1,319 +1,722 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Check, ChevronRight, Settings2, ShieldCheck, Truck, Clock, Utensils, ShoppingCart, Box, Building2, Stethoscope, Star, Maximize2 } from 'lucide-react';
+import Image from 'next/image';
+import {
+  ArrowRight,
+  Box,
+  Building2,
+  Check,
+  Clock,
+  PackageSearch,
+  Settings2,
+  ShieldCheck,
+  ShoppingCart,
+  Snowflake,
+  Star,
+  Stethoscope,
+  Truck,
+  Utensils,
+} from 'lucide-react';
 
-const IND = [
-  ['Restaurants', 'NSF / UL approved', 'Walk-ins sized for every kitchen', 'Cafes to multi-unit groups. Most owners start with an 8×10 or 8×12.', ['Fits tight back-of-house layouts', 'Easy-clean, food-safe interiors', 'Combo units save floor space'], 'Walk-in cooler or combo unit'],
-  ['Supermarkets', 'Maximized merchandising', 'Glass doors that stay clear', 'Anti-condensation display doors and multi-deck systems.', ['Customers see and reach products', 'Stock from behind the wall', 'Energy-saving glass panels'], 'Glass-door walk-in cooler'],
-  ['Warehouses', 'ASTM E84 compliant', 'Drive-in cold storage at scale', 'Large coolers and freezers for high-volume pallets.', ['Wide drive-in doors for forklifts', 'Heavy-duty insulated floors', 'Engineering and permit support'], 'Large walk-in freezer'],
-  ['Hospitality', 'Integrated catering systems', 'Resort kitchens and banquets', 'Reliable cold space for large food and beverage operations.', ['Separate cooler and freezer zones', 'Quick-ship for opening dates', 'Service plans for peak seasons'], 'Combo unit or multiple coolers'],
-  ['Healthcare', 'NIST traceable monitoring', 'Precise temperatures for pharma', 'Medical-grade temperature control with traceable monitoring.', ['Tight, logged temperature range', 'Alarm and backup options', 'Calibration records on request'], 'Custom walk-in with monitoring'],
-  ['Custom', 'Full CAD/BIM support', 'Odd shapes, tough sites', 'Engineered to your plans, from heat-load math to drawings.', ['CAD and BIM files included', 'Heat-load calculation', 'Design review with an engineer'], 'Custom build']
+import type { WalkInCatalogProduct } from '@/lib/walk-in-catalog';
+
+type Props = {
+  products: WalkInCatalogProduct[];
+  catalogError?: string | null;
+};
+
+type BoxType = 'cooler' | 'freezer' | 'combo';
+type RefrigerationType = 'remote' | 'top';
+type PriceFilter = 'all' | 'small' | 'medium' | 'large';
+
+const FALLBACK_IMAGE =
+  '/Walk-in-Cooler-Freezer/category/Box_Only.webp';
+
+const MONEY = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 2,
+});
+
+const INDUSTRIES = [
+  {
+    name: 'Restaurants',
+    icon: Utensils,
+    title: 'Walk-ins sized for your kitchen',
+    description:
+      'Find cold-storage space for ingredients, prepared food and everyday kitchen operations.',
+    points: [
+      'Explore different footprints',
+      'Compare cooler and freezer models',
+      'Discuss your installation requirements',
+    ],
+    recommendation: 'Walk-in cooler or combo unit',
+  },
+  {
+    name: 'Supermarkets',
+    icon: ShoppingCart,
+    title: 'Cold storage for busy retail spaces',
+    description:
+      'Plan storage and merchandising around the way your team stocks and serves customers.',
+    points: [
+      'Back-of-house storage options',
+      'Glass-door display solutions',
+      'Configurations for your available space',
+    ],
+    recommendation: 'Glass-door cooler or walk-in storage',
+  },
+  {
+    name: 'Warehouses',
+    icon: Box,
+    title: 'More room for your inventory',
+    description:
+      'Discuss larger cold-storage layouts, loading requirements and operating temperatures.',
+    points: [
+      'Review storage capacity',
+      'Plan access and loading',
+      'Discuss project specifications',
+    ],
+    recommendation: 'Large walk-in cooler or freezer',
+  },
+  {
+    name: 'Hospitality',
+    icon: Building2,
+    title: 'Cold storage for hospitality teams',
+    description:
+      'Explore practical storage options for kitchens, catering operations and food service.',
+    points: [
+      'Separate temperature zones',
+      'Different capacity options',
+      'Installation planning support',
+    ],
+    recommendation: 'Combo unit or multiple walk-ins',
+  },
+  {
+    name: 'Healthcare',
+    icon: Stethoscope,
+    title: 'Discuss temperature-sensitive storage',
+    description:
+      'Share your temperature, monitoring and compliance requirements with our team.',
+    points: [
+      'Define the required temperature range',
+      'Discuss monitoring needs',
+      'Review suitability before ordering',
+    ],
+    recommendation: 'Project-specific consultation',
+  },
+  {
+    name: 'Custom',
+    icon: Star,
+    title: 'A configuration for your project',
+    description:
+      'Have an unusual layout or a specific installation requirement? Start with a custom quote.',
+    points: [
+      'Share dimensions and floor plans',
+      'Explain your operating requirements',
+      'Review suitable configurations',
+    ],
+    recommendation: 'Custom cold-storage solution',
+  },
 ];
 
-// Added original image paths to the products array
-const PRODS = [
-  ['Astra 12 × 13 Cooler, No Floor', 'CNF12X13', 'Box only', 6156, '/home/hf.jpeg'],
-  ['Amerikooler 8 × 10 Quick Ship Cooler', 'QC081072N', 'Box only · Quick ship', 7999, '/home/hf2.jpeg'],
-  ['Astra 8 × 12 Cooler, Remote', 'CNF8X12-RM', 'With refrigeration', 8976, '/home/hf3.jpeg'],
-  ['Astra 8 × 15 Cooler, Remote', 'CNF8X15-RM', 'With refrigeration', 10202, '/home/hf4.jpeg'],
-  ['Astra 8 × 13 Cooler, Top Mount', 'CNF8X13-TM', 'With refrigeration', 10904, '/home/hf5.jpeg'],
-  ['Astra 12 × 12 Cooler, Top Mount', 'CNF12X12-TM', 'With refrigeration', 11366, '/home/hf.jpeg'],
-  ['Astra 10 × 20 Cooler, Remote', 'CNF10X20-RM', 'With refrigeration', 12258, '/home/hf2.jpeg'],
-  ['Astra 8 × 26 Cooler, Remote', 'CNF8X26-RM', 'With refrigeration', 13493, '/home/hf3.jpeg']
+const CATEGORIES = [
+  {
+    title: 'Walk-in Coolers',
+    description: 'Explore cooler models and available sizes.',
+    icon: Utensils,
+    href: '/walk-in-cooler-freezer/walk-in-cooler-no-floor',
+  },
+  {
+    title: 'Walk-in Freezers',
+    description: 'Discover low-temperature storage options.',
+    icon: Snowflake,
+    href: '/walk-in-cooler-freezer/walk-in-freezer-with-floor',
+  },
+  {
+    title: 'Combo Units',
+    description: 'Cooler and freezer space in one solution.',
+    icon: Box,
+    href: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer',
+  },
+  {
+    title: 'Glass-Door',
+    description: 'Display and merchandising solutions.',
+    icon: ShoppingCart,
+    href: '/glassdoor-walk-in-cooler',
+  },
+  {
+    title: 'Refrigeration',
+    description: 'Explore refrigeration equipment.',
+    icon: Settings2,
+    href: '/refrigeration-equipment',
+  },
 ];
 
-const TESTIMONIALS = [
-  ['ICEMANZ delivered our walk-in cooler two days ahead of schedule. It has run flawlessly for eight months.', 'Marcus Rivera, Owner, Riverside Bistro, NY'],
-  ['Their engineers supported the design of three glass-door units for our supermarket expansion.', "Sandra Park, Operations Director, Park's Market Chain"],
-  ['Engineering, permitting help and installation for our drive-in freezer, on time and on budget.', 'James Torres, Facility Manager, Cold Link Distribution'],
-  ['Energy costs dropped noticeably after we upgraded to ICEMANZ panels.', 'Elena Rodriguez, Procurement Lead, Metro Food Hall'],
-  ['The combo unit gives my kitchen the right balance of freezer and cooler space.', 'David Chen, Head Chef, Golden Dragon Seafood']
+const GALLERY = [
+  {
+    src: '/home/hf.jpeg',
+    alt: 'Commercial refrigeration equipment',
+  },
+  {
+    src: '/home/hf2.jpeg',
+    alt: 'Commercial walk-in cooler',
+  },
+  {
+    src: '/home/hf3.jpeg',
+    alt: 'Refrigeration system',
+  },
+  {
+    src: '/home/hf4.jpeg',
+    alt: 'Walk-in cold-storage unit',
+  },
+  {
+    src: '/home/hf5.jpeg',
+    alt: 'Commercial cooling equipment',
+  },
 ];
 
-const GALLERY_IMAGES = [
-  { id: 1, src: '/home/hf.jpeg', alt: 'Walk-In Coolers' },
-  { id: 2, src: '/home/hf2.jpeg', alt: 'Walk-In Freezers' },
-  { id: 3, src: '/home/hf3.jpeg', alt: 'Combo Units' },
-  { id: 4, src: '/home/hf4.jpeg', alt: 'Refrigeration Equipment' },
-  { id: 5, src: '/home/hf5.jpeg', alt: 'Industrial Walk-In' }
-];
+function CatalogImage({
+  src,
+  alt,
+}: {
+  src: string;
+  alt: string;
+}) {
+  const [source, setSource] = useState(src || FALLBACK_IMAGE);
 
-export default function ClientHomeDesign() {
-  const [boxType, setBoxType] = useState<'cooler' | 'freezer' | 'combo'>('cooler');
-  const [refrigType, setRefrigType] = useState<'remote' | 'top'>('remote');
-  const [width, setWidth] = useState(10);
-  const [length, setLength] = useState(12);
-  const [activeInd, setActiveInd] = useState(0);
-  const [prodFilter, setProdFilter] = useState('all');
-  const [ti, setTi] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => setTi((prev) => (prev + 1) % TESTIMONIALS.length), 6000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const { priceStr, capacity, temp, right, left, top, door, unit } = useMemo(() => {
-    const w = width; const l = length; const t = boxType;
-    const h = 8, s = 6.2, c = 0.866, k = 0.5;
-
-    const P = (x: number, y: number, z: number) => [
-      200 + (x - y) * c * s * 0.95,
-      150 + (x + y) * k * s * 0.95 - z * s * 0.95
-    ];
-    const p = (x: number, y: number, z: number) => {
-      const a = P(x, y, z);
-      return `${(a[0]).toFixed(1)},${(a[1] - ((w + l) * k * s * 0.95) / 2 + 20).toFixed(1)}`;
-    };
-
-    const polyPoints = (pts: number[][]) => pts.map(a => p(a[0], a[1], a[2])).join(' ');
-
-    const topPts = polyPoints([[0, 0, h], [w, 0, h], [w, l, h], [0, l, h]]);
-    const leftPts = polyPoints([[0, l, 0], [w, l, 0], [w, l, h], [0, l, h]]);
-    const rightPts = polyPoints([[w, 0, 0], [w, l, 0], [w, l, h], [w, 0, h]]);
-    const doorPts = polyPoints([[w * 0.3, l, 0], [w * 0.3 + 3.2, l, 0], [w * 0.3 + 3.2, l, 7], [w * 0.3, l, 7]]);
-    const unitPts = refrigType === 'top' ? polyPoints([[w * 0.3, l * 0.3, h], [w * 0.3 + 3, l * 0.3, h], [w * 0.3 + 3, l * 0.3 + 3, h + 1.6], [w * 0.3, l * 0.3 + 3, h + 1.6]]) : '';
-
-    const area = w * l;
-    let pr = area * 42 + (2400 + area * 30);
-    if (t === 'freezer') pr *= 1.35;
-    if (t === 'combo') pr *= 1.25;
-    if (refrigType === 'top') pr *= 1.06;
-
-    const fmt = (n: number) => '$' + (Math.round(n / 50) * 50).toLocaleString();
-
-    return {
-      top: topPts, left: leftPts, right: rightPts, door: doorPts, unit: unitPts,
-      priceStr: `${fmt(pr * 0.92)}–${fmt(pr * 1.08)}`,
-      capacity: '~' + Math.max(1, Math.floor(area * 0.55 / 13.3)),
-      temp: t === 'cooler' ? '35°F' : t === 'freezer' ? '−10°F' : '35°F / −10°F'
-    };
-  }, [width, length, boxType, refrigType]);
-
-  const filteredProds = PRODS.filter(p => {
-    const price = p[3] as number;
-    if (prodFilter === 'all') return true;
-    if (prodFilter === 's' && price < 10000) return true;
-    if (prodFilter === 'm' && price >= 10000 && price <= 12500) return true;
-    if (prodFilter === 'l' && price > 12500) return true;
-    return false;
-  });
+  if (!source) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+        <Box size={48} strokeWidth={1.2} />
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-[#F4F7FB] text-[#0F172A] font-sans selection:bg-[#2563EB] selection:text-white">
-      <style dangerouslySetInnerHTML={{__html: `
-        @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-        .font-heading { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; }
-        .font-body { font-family: 'Inter', sans-serif; }
-        
-        .compact-slider { -webkit-appearance: none; appearance: none; height: 6px; background: #E2E8F0; border-radius: 4px; outline: none; }
-        .compact-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #2563EB; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(37,99,235,0.4); }
-        
-        .btn-company {
-          background-color: #2563EB;
-          color: white;
-          box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.6);
-          transition: all 0.3s ease;
-        }
-        .btn-company:hover {
-          background-color: #1D4ED8;
-          transform: translateY(-2px);
-          box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.8);
-        }
-      `}} />
+    <Image
+      src={source}
+      alt={alt}
+      fill
+      unoptimized
+      sizes="(max-width: 639px) 90vw, (max-width: 1023px) 45vw, 300px"
+      className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+      onError={() => {
+        setSource((previous) =>
+          previous === FALLBACK_IMAGE ? '' : FALLBACK_IMAGE,
+        );
+      }}
+    />
+  );
+}
 
-      {/* --- 1. SUPER AMAZING BLUE HERO & CALCULATOR --- */}
-      <section className="pt-28 md:pt-36 pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-[#0A1C27]">
-        <div className="absolute top-[0%] right-[-5%] w-[600px] h-[600px] bg-[#2563EB] rounded-full blur-[140px] opacity-40 pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#004a99] rounded-full blur-[100px] opacity-50 pointer-events-none"></div>
-        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+export default function ClientHomeDesign({
+  products = [],
+  catalogError = null,
+}: Props) {
+  const [boxType, setBoxType] = useState<BoxType>('cooler');
+  const [refrigeration, setRefrigeration] =
+    useState<RefrigerationType>('remote');
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
-          
-          <div className="lg:col-span-5 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 border border-white/20 text-[#BFE3F2] font-bold text-xs uppercase tracking-widest mb-6 w-max backdrop-blur-sm shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#60A5FA] animate-pulse"></span> Factory Direct
-            </div>
-            
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.1] font-extrabold text-white mb-6">
-              Build your walk-in.<br/>
-              <span className="text-[#60A5FA]">See the price.</span>
+  const [width, setWidth] = useState(10);
+  const [length, setLength] = useState(12);
+  const [activeIndustry, setActiveIndustry] = useState(0);
+  const [priceFilter, setPriceFilter] =
+    useState<PriceFilter>('all');
+
+  const [galleryIndex, setGalleryIndex] =
+    useState<number | null>(null);
+
+  useEffect(() => {
+    if (galleryIndex === null) return;
+
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setGalleryIndex(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKey);
+
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [galleryIndex]);
+
+  const calculator = useMemo(() => {
+    const height = 8;
+    const scale = 5.2;
+
+    const point = (x: number, y: number, z: number) =>
+      [
+        200 + (x - y) * 0.866 * scale,
+        140 +
+          (x + y) * 0.5 * scale -
+          z * scale -
+          ((width + length) * 0.5 * scale) / 2,
+      ].join(',');
+
+    const polygon = (points: number[][]) =>
+      points
+        .map(([x, y, z]) => point(x, y, z))
+        .join(' ');
+
+    const area = width * length;
+
+    let estimate = area * 42 + 2400 + area * 30;
+
+    if (boxType === 'freezer') estimate *= 1.35;
+    if (boxType === 'combo') estimate *= 1.25;
+    if (refrigeration === 'top') estimate *= 1.06;
+
+    const formatEstimate = (value: number) =>
+      MONEY.format(Math.round(value / 50) * 50);
+
+    return {
+      top: polygon([
+        [0, 0, height],
+        [width, 0, height],
+        [width, length, height],
+        [0, length, height],
+      ]),
+      left: polygon([
+        [0, length, 0],
+        [width, length, 0],
+        [width, length, height],
+        [0, length, height],
+      ]),
+      right: polygon([
+        [width, 0, 0],
+        [width, length, 0],
+        [width, length, height],
+        [width, 0, height],
+      ]),
+      door: polygon([
+        [width * 0.3, length, 0],
+        [width * 0.3 + 3, length, 0],
+        [width * 0.3 + 3, length, 7],
+        [width * 0.3, length, 7],
+      ]),
+      unit: polygon([
+        [width * 0.3, length * 0.3, height],
+        [width * 0.3 + 3, length * 0.3, height],
+        [width * 0.3 + 3, length * 0.3 + 3, height + 1.5],
+        [width * 0.3, length * 0.3 + 3, height + 1.5],
+      ]),
+      price:
+        `${formatEstimate(estimate * 0.92)}–` +
+        formatEstimate(estimate * 1.08),
+      area,
+    };
+  }, [width, length, boxType, refrigeration]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      if (priceFilter === 'all') return true;
+      if (product.priceValue === null) return false;
+
+      if (priceFilter === 'small') {
+        return product.priceValue < 10000;
+      }
+
+      if (priceFilter === 'medium') {
+        return (
+          product.priceValue >= 10000 &&
+          product.priceValue <= 12500
+        );
+      }
+
+      return product.priceValue > 12500;
+    });
+  }, [products, priceFilter]);
+
+  const industry = INDUSTRIES[activeIndustry];
+
+  const quoteUrl =
+    `/quote?type=${boxType}` +
+    `&size=${width}x${length}` +
+    `&refrig=${refrigeration}`;
+
+  return (
+    <div className="bg-[#f4f7fb] text-[#0f172a]">
+      {/* Hero and estimate calculator */}
+      <section className="relative overflow-hidden bg-[#0a1c27] px-4 pb-28 pt-32 sm:px-6 lg:px-8 lg:pt-44">
+        <div className="pointer-events-none absolute -right-32 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/25 blur-[130px]" />
+        <div className="pointer-events-none absolute -bottom-40 -left-24 h-[450px] w-[450px] rounded-full bg-blue-800/30 blur-[100px]" />
+
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/10 px-3 py-2 text-xs font-bold uppercase tracking-widest text-blue-200">
+              <Snowflake size={15} />
+              Commercial Cold Storage
+            </span>
+
+            <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Build your walk-in.
+              <br />
+              <span className="text-blue-400">
+                Explore the options.
+              </span>
             </h1>
-            
-            <p className="font-body text-[#9DB6C4] text-lg leading-relaxed mb-8 max-w-lg">
-              Pick a type, drag the size, and get a ballpark cost, storage capacity and delivery time instantly.
+
+            <p className="mt-6 max-w-lg text-lg leading-8 text-slate-300">
+              Compare cooler and freezer models, explore sizes
+              and start planning your cold-storage project.
             </p>
-            
-            <div className="flex flex-wrap gap-2.5 mb-10">
-              {['Ships in 36–48 hrs', '10-Year Warranty', 'NSF / UL Approved'].map((chip, idx) => (
-                <span key={idx} className="flex items-center gap-1.5 bg-[#0E2B3B]/60 border border-white/10 backdrop-blur-md rounded-md px-3 py-1.5 text-sm font-medium text-white shadow-sm">
-                  <Check size={14} className="text-[#60A5FA]" /> {chip}
+
+            <div className="mt-7 flex flex-wrap gap-2">
+              {[
+                'Coolers & Freezers',
+                'Multiple Configurations',
+                'Custom Quotes',
+              ].map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-white"
+                >
+                  <Check size={14} className="text-blue-400" />
+                  {label}
                 </span>
               ))}
             </div>
 
-            <Link href="#need" className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-xl font-bold w-max text-sm tracking-wide bg-white text-[#2563EB] hover:bg-blue-50 hover:-translate-y-1 transition-all shadow-[0_10px_30px_rgba(255,255,255,0.2)]">
-              Explore Categories <ArrowRight className="ml-2" size={18} />
+            <Link
+              href="#shop"
+              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-4 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+            >
+              Explore Available Models
+              <ArrowRight size={17} />
             </Link>
           </div>
 
-          <div className="lg:col-span-7 bg-white rounded-2xl shadow-[0_25px_60px_-10px_rgba(0,0,0,0.5)] border border-gray-100 overflow-hidden flex flex-col md:flex-row relative">
-            
-            <div className="w-full md:w-5/12 bg-[#F8FAFC] p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
-              <div className="w-full aspect-square flex items-center justify-center">
-                <svg viewBox="0 0 400 230" className="w-[120%] h-[120%] drop-shadow-xl">
-                  <polygon points={right} fill={boxType === 'freezer' ? '#93C5FD' : '#BFDBFE'} stroke="#1E3A8A" strokeWidth="2" strokeLinejoin="round" />
-                  <polygon points={left} fill="#DBEAFE" stroke="#1E3A8A" strokeWidth="2" strokeLinejoin="round" />
-                  <polygon points={top} fill="#ffffff" stroke="#1E3A8A" strokeWidth="2" strokeLinejoin="round" />
-                  <polygon points={door} fill="#2563EB" stroke="#1E3A8A" strokeWidth="2" strokeLinejoin="round" />
-                  {refrigType === 'top' && <polygon points={unit} fill="#1E3A8A" stroke="#1E3A8A" strokeWidth="2" strokeLinejoin="round" />}
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl lg:col-span-7">
+            <div className="grid md:grid-cols-[0.9fr_1.1fr]">
+              <div className="flex flex-col justify-center border-b border-slate-200 bg-slate-50 p-5 md:border-b-0 md:border-r">
+                <svg
+                  viewBox="0 0 400 240"
+                  role="img"
+                  aria-label={`${width} by ${length} foot ${boxType} concept`}
+                  className="h-auto w-full"
+                >
+                  <polygon
+                    points={calculator.right}
+                    fill="#bfdbfe"
+                    stroke="#1e3a8a"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                  />
+                  <polygon
+                    points={calculator.left}
+                    fill="#dbeafe"
+                    stroke="#1e3a8a"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                  />
+                  <polygon
+                    points={calculator.top}
+                    fill="#ffffff"
+                    stroke="#1e3a8a"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                  />
+                  <polygon
+                    points={calculator.door}
+                    fill="#2563eb"
+                    stroke="#1e3a8a"
+                    strokeWidth="2"
+                  />
+                  {refrigeration === 'top' && (
+                    <polygon
+                      points={calculator.unit}
+                      fill="#1e3a8a"
+                      stroke="#1e3a8a"
+                      strokeWidth="2"
+                    />
+                  )}
                 </svg>
-              </div>
-              <div className="grid grid-cols-2 gap-2 w-full mt-4">
-                 <div className="bg-white rounded-lg p-2.5 text-center border border-gray-100 shadow-sm">
-                   <small className="block text-[10px] uppercase font-bold text-[#64748B] tracking-wider mb-0.5">Pallets</small>
-                   <b className="font-heading text-xl text-[#0F172A]">{capacity}</b>
-                 </div>
-                 <div className="bg-white rounded-lg p-2.5 text-center border border-gray-100 shadow-sm">
-                   <small className="block text-[10px] uppercase font-bold text-[#64748B] tracking-wider mb-0.5">Temp</small>
-                   <b className="font-heading text-xl text-[#0F172A]">{temp}</b>
-                 </div>
-              </div>
-            </div>
 
-            <div className="w-full md:w-7/12 p-6 md:p-8 flex flex-col bg-white">
-              <div className="grid grid-cols-3 gap-1 bg-[#F1F5F9] p-1.5 rounded-xl mb-8">
-                {['cooler', 'freezer', 'combo'].map((type) => (
-                  <button key={type} onClick={() => setBoxType(type as any)} className={`py-2.5 rounded-lg font-bold text-sm capitalize transition-all ${boxType === type ? 'bg-white text-[#2563EB] shadow-sm border border-gray-200' : 'text-[#64748B] hover:text-[#0F172A]'}`}>
-                    {type}
-                  </button>
-                ))}
-              </div>
-
-              <div className="space-y-6 mb-8">
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <label className="font-bold text-sm text-[#0F172A] uppercase tracking-wide">Width</label>
-                    <span className="font-heading font-black text-[#2563EB] text-lg">{width} ft</span>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="rounded-lg border border-slate-200 bg-white p-3 text-center">
+                    <p className="text-[10px] font-bold uppercase text-slate-400">
+                      Dimensions
+                    </p>
+                    <p className="mt-1 text-lg font-extrabold">
+                      {width} × {length} ft
+                    </p>
                   </div>
-                  <input type="range" min="6" max="30" value={width} onChange={e => setWidth(+e.target.value)} className="w-full compact-slider" />
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <label className="font-bold text-sm text-[#0F172A] uppercase tracking-wide">Length</label>
-                    <span className="font-heading font-black text-[#2563EB] text-lg">{length} ft</span>
+
+                  <div className="rounded-lg border border-slate-200 bg-white p-3 text-center">
+                    <p className="text-[10px] font-bold uppercase text-slate-400">
+                      Footprint
+                    </p>
+                    <p className="mt-1 text-lg font-extrabold">
+                      {calculator.area} ft²
+                    </p>
                   </div>
-                  <input type="range" min="6" max="30" value={length} onChange={e => setLength(+e.target.value)} className="w-full compact-slider" />
                 </div>
+
+                <p className="mt-3 text-center text-[10px] text-slate-400">
+                  Illustrative concept, not an engineering drawing.
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-1.5 bg-[#F1F5F9] p-1.5 rounded-xl mb-8 mt-auto">
-                <button onClick={() => setRefrigType('remote')} className={`py-2.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${refrigType === 'remote' ? 'bg-white text-[#2563EB] shadow-sm border border-gray-200' : 'text-[#64748B] hover:text-[#0F172A]'}`}>Remote System</button>
-                <button onClick={() => setRefrigType('top')} className={`py-2.5 rounded-lg font-bold text-xs sm:text-sm transition-all ${refrigType === 'top' ? 'bg-white text-[#2563EB] shadow-sm border border-gray-200' : 'text-[#64748B] hover:text-[#0F172A]'}`}>Top-Mount</button>
-              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-3 gap-1 rounded-xl bg-slate-100 p-1">
+                  {(['cooler', 'freezer', 'combo'] as const).map(
+                    (value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        aria-pressed={boxType === value}
+                        onClick={() => setBoxType(value)}
+                        className={`rounded-lg px-2 py-3 text-xs font-bold capitalize transition ${
+                          boxType === value
+                            ? 'bg-white text-blue-700 shadow-sm'
+                            : 'text-slate-500'
+                        }`}
+                      >
+                        {value}
+                      </button>
+                    ),
+                  )}
+                </div>
 
-              <div className="bg-[#0F172A] rounded-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-lg">
-                 <div className="text-center sm:text-left">
-                   <small className="text-blue-300 text-[10px] font-bold uppercase tracking-widest block mb-0.5">Estimated Cost</small>
-                   <b className="font-heading text-2xl text-white block leading-none">{priceStr}</b>
-                 </div>
-                 <Link href={`/quote?type=${boxType}&size=${width}x${length}&refrig=${refrigType}`} className="btn-company w-full sm:w-auto px-5 py-3 text-sm font-bold rounded-lg flex items-center justify-center gap-2">
-                   Get Quote <ChevronRight size={16} />
-                 </Link>
+                <div className="mt-6 space-y-6">
+                  <div>
+                    <label
+                      htmlFor="home-width"
+                      className="mb-3 flex items-center justify-between text-sm font-bold"
+                    >
+                      Width
+                      <span className="text-blue-700">
+                        {width} ft
+                      </span>
+                    </label>
+
+                    <input
+                      id="home-width"
+                      type="range"
+                      min={6}
+                      max={30}
+                      value={width}
+                      onChange={(event) =>
+                        setWidth(Number(event.target.value))
+                      }
+                      className="w-full accent-blue-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="home-length"
+                      className="mb-3 flex items-center justify-between text-sm font-bold"
+                    >
+                      Length
+                      <span className="text-blue-700">
+                        {length} ft
+                      </span>
+                    </label>
+
+                    <input
+                      id="home-length"
+                      type="range"
+                      min={6}
+                      max={30}
+                      value={length}
+                      onChange={(event) =>
+                        setLength(Number(event.target.value))
+                      }
+                      className="w-full accent-blue-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
+                  {[
+                    { value: 'remote' as const, label: 'Remote System' },
+                    { value: 'top' as const, label: 'Top-Mount' },
+                  ].map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      aria-pressed={refrigeration === item.value}
+                      onClick={() => setRefrigeration(item.value)}
+                      className={`rounded-lg px-2 py-3 text-xs font-bold ${
+                        refrigeration === item.value
+                          ? 'bg-white text-blue-700 shadow-sm'
+                          : 'text-slate-500'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-6 border-t border-slate-100 pt-5">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Illustrative Budget Estimate
+                  </p>
+
+                  <p className="mt-1 text-xl font-extrabold text-blue-900">
+                    {calculator.price}
+                  </p>
+
+                  <p className="mt-2 text-[11px] leading-5 text-slate-500">
+                    Planning estimate only. Final equipment,
+                    delivery and installation pricing requires a quote.
+                  </p>
+
+                  <Link
+                    href={quoteUrl}
+                    className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-blue-700 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800"
+                  >
+                    Request a Quote
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- 2. BLUE TRUST METRICS --- */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-12 relative z-20">
-        <div className="bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] rounded-2xl p-6 shadow-xl grid grid-cols-2 md:grid-cols-4 gap-6 divide-x-0 md:divide-x divide-white/20">
+      {/* Service highlights */}
+      <section className="relative z-10 mx-auto -mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-5 rounded-2xl bg-gradient-to-r from-blue-900 to-blue-600 p-6 text-white shadow-xl md:grid-cols-4">
           {[
-            { t: '36–48 hrs', d: 'Quick-ship turnaround', ic: <Clock size={24} className="text-white" /> },
-            { t: '10 Years', d: 'Panel warranty', ic: <ShieldCheck size={24} className="text-white" /> },
-            { t: '50 States', d: 'Nationwide delivery', ic: <Truck size={24} className="text-white" /> },
-            { t: '24/7', d: 'Engineering support', ic: <Settings2 size={24} className="text-white" /> }
-          ].map((item, i) => (
-            <div key={i} className="flex flex-col items-center justify-center text-center px-2">
-              <div className="mb-3">{item.ic}</div>
-              <h4 className="font-heading text-xl font-black text-white mb-1">{item.t}</h4>
-              <p className="text-blue-100 text-xs font-medium">{item.d}</p>
+            { icon: Box, title: 'Product Options', text: 'Explore available models' },
+            { icon: Settings2, title: 'Configurations', text: 'Compare your requirements' },
+            { icon: Truck, title: 'Delivery Planning', text: 'Discuss your location' },
+            { icon: ShieldCheck, title: 'Product Details', text: 'Review specifications' },
+          ].map((item) => (
+            <div key={item.title} className="text-center">
+              <item.icon size={25} className="mx-auto mb-3" />
+              <h2 className="text-sm font-bold">{item.title}</h2>
+              <p className="mt-1 text-xs text-blue-100">{item.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* --- 3. THE 3 JOURNEYS --- */}
-      <section id="need" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="mb-12 text-center md:text-left">
-          <h2 className="font-heading text-3xl md:text-4xl font-black text-[#0F172A] mb-3">What do you need to keep cold?</h2>
-          <p className="text-[#475569] text-lg">Select a category to view models, sizes, and pricing.</p>
-        </div>
+      {/* Categories */}
+      <section
+        id="need"
+        className="mx-auto max-w-7xl scroll-mt-36 px-4 py-16 sm:px-6 lg:px-8"
+      >
+        <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+          What do you need to keep cold?
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-          {[
-            { ic: '🥬', title: 'Walk-in cooler', desc: 'Holds food at about 35°F.', link: '/walk-in-cooler-freezer/walk-in-cooler-no-floor' },
-            { ic: '🥩', title: 'Walk-in freezer', desc: 'Insulated floor. Holds at −10°F.', link: '/walk-in-cooler-freezer/walk-in-freezer-with-floor' },
-            { ic: '❄️', title: 'Combo unit', desc: 'Cooler and freezer in one footprint.', link: '/walk-in-cooler-freezer/walk-in-combo-cooler-freezer' },
-            { ic: '🛒', title: 'Glass-door', desc: 'Display for convenience stores.', link: '/glassdoor-walk-in-cooler' },
-            { ic: '⚙️', title: 'Refrigeration', desc: 'Condensers and evaporators.', link: '/refrigeration-equipment' }
-          ].map((card, idx) => (
-            <Link key={idx} href={card.link} className="bg-white border border-gray-200 rounded-2xl p-6 hover:border-[#2563EB] hover:shadow-lg transition-all duration-300 flex flex-col group">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center text-2xl mb-5 border border-blue-100">{card.ic}</div>
-              <h3 className="font-heading text-lg font-bold text-[#0F172A] mb-2">{card.title}</h3>
-              <p className="text-[#64748B] text-sm mb-8 flex-grow">{card.desc}</p>
-              <span className="text-[#2563EB] text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                Browse <ArrowRight size={14}/>
+        <p className="mt-3 text-slate-500">
+          Select a category to explore suitable products.
+        </p>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {CATEGORIES.map((category) => (
+            <Link
+              key={category.title}
+              href={category.href}
+              className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-500 hover:shadow-lg"
+            >
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                <category.icon size={23} />
+              </div>
+
+              <h3 className="text-base font-bold">
+                {category.title}
+              </h3>
+
+              <p className="mt-2 flex-1 text-xs leading-6 text-slate-500">
+                {category.description}
+              </p>
+
+              <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-blue-700">
+                Explore
+                <ArrowRight size={14} />
               </span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* --- 4. B2B VERTICAL TABS FOR INDUSTRIES --- */}
-      <section id="industry" className="py-20 bg-white border-y border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center md:text-left">
-            <h2 className="font-heading text-3xl md:text-4xl font-black text-[#0F172A] mb-3">Built for how you work</h2>
-            <p className="text-[#475569] text-lg">Select your business to see optimized configurations.</p>
-          </div>
+      {/* Industry selector */}
+      <section
+        id="industry"
+        className="border-y border-slate-200 bg-white py-16"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+            Built for how you work
+          </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <div className="lg:col-span-4 flex flex-col gap-2.5">
-              {IND.map((d, i) => (
-                <button key={i} onClick={() => setActiveInd(i)} className={`text-left px-6 py-4 rounded-xl font-bold text-[15px] transition-all flex justify-between items-center outline-none border ${activeInd === i ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-md shadow-blue-500/30' : 'bg-white text-[#475569] hover:bg-gray-50 border-gray-200'}`}>
-                  {d[0]}
-                  {activeInd === i && <ArrowRight size={18} className="text-white" />}
+          <p className="mt-3 text-slate-500">
+            Explore cold-storage requirements for your business.
+          </p>
+
+          <div className="mt-9 grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+              {INDUSTRIES.map((item, index) => (
+                <button
+                  key={item.name}
+                  type="button"
+                  aria-pressed={activeIndustry === index}
+                  onClick={() => setActiveIndustry(index)}
+                  className={`flex items-center justify-between rounded-xl border px-5 py-4 text-left text-sm font-bold transition ${
+                    activeIndustry === index
+                      ? 'border-blue-700 bg-blue-700 text-white'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <item.icon size={18} />
+                    {item.name}
+                  </span>
+
+                  <ArrowRight size={16} />
                 </button>
               ))}
             </div>
 
-            <div className="lg:col-span-8 bg-[#F8FAFC] rounded-2xl p-8 lg:p-10 border border-gray-200 flex flex-col md:flex-row gap-10 shadow-sm">
-              <div className="flex-1">
-                <span className="inline-block bg-blue-100 text-[#1D4ED8] px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-widest mb-5">
-                  {IND[activeInd][1]}
-                </span>
-                <h3 className="font-heading text-3xl font-black text-[#0F172A] mb-4 leading-tight">{IND[activeInd][2]}</h3>
-                <p className="text-[#475569] text-lg mb-8 leading-relaxed">{IND[activeInd][3] as string}</p>
-                <ul className="space-y-4 mb-8">
-                  {(IND[activeInd][4] as string[]).map((x, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-[#0F172A] font-bold text-sm sm:text-base">
-                      <Check size={20} className="text-[#2563EB] shrink-0" /> {x}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 md:p-9">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-700">
+                {industry.name}
+              </span>
 
-              <div className="md:w-64 shrink-0 flex flex-col">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-4 h-full flex flex-col justify-center text-center">
-                  <small className="text-[#64748B] font-bold text-[10px] uppercase tracking-widest block mb-3">Recommended Setup</small>
-                  <b className="font-heading text-xl text-[#1E3A8A] leading-tight">{IND[activeInd][5]}</b>
+              <h3 className="mt-3 text-2xl font-extrabold md:text-3xl">
+                {industry.title}
+              </h3>
+
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
+                {industry.description}
+              </p>
+
+              <ul className="mt-6 space-y-3">
+                {industry.points.map((point) => (
+                  <li
+                    key={point}
+                    className="flex items-start gap-3 text-sm font-medium"
+                  >
+                    <Check size={18} className="shrink-0 text-blue-700" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-7 flex flex-col justify-between gap-5 border-t border-slate-200 pt-6 sm:flex-row sm:items-center">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Explore
+                  </p>
+                  <p className="mt-1 text-sm font-bold">
+                    {industry.recommendation}
+                  </p>
                 </div>
-                <Link href="/quote" className="btn-company w-full px-4 py-4 text-center text-[15px] font-bold rounded-xl">
+
+                <Link
+                  href="/quote"
+                  className="inline-flex w-fit items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-bold text-white hover:bg-blue-800"
+                >
                   Get a Quote
+                  <ArrowRight size={15} />
                 </Link>
               </div>
             </div>
@@ -321,171 +724,334 @@ export default function ClientHomeDesign() {
         </div>
       </section>
 
-      {/* --- 5. COMPACT PRODUCTS GRID (WITH REAL IMAGES INSTEAD OF SVG) --- */}
-      <section id="shop" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 mb-12">
-          <div className="text-center md:text-left">
-            <h2 className="font-heading text-3xl md:text-4xl font-black text-[#0F172A] mb-3">Popular Models</h2>
-            <p className="text-[#475569] text-lg">Select any model to customize dimensions.</p>
+      {/* Real database products */}
+      <section
+        id="shop"
+        className="mx-auto max-w-7xl scroll-mt-36 px-4 py-16 sm:px-6 lg:px-8"
+      >
+        <div className="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+              Explore Our Models
+            </h2>
+
+            <p className="mt-3 text-sm text-slate-500">
+              Select a product to view its details and configuration options.
+            </p>
           </div>
-          
-          <div className="flex gap-1.5 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm">
-            {[ { label: 'All', val: 'all' }, { label: '< $10k', val: 's' }, { label: '$10k–$12.5k', val: 'm' }, { label: '> $12.5k', val: 'l' } ].map((f, i) => (
-              <button key={i} onClick={() => setProdFilter(f.val)} className={`px-5 py-2.5 rounded-lg font-bold text-sm transition-colors ${prodFilter === f.val ? 'bg-[#2563EB] text-white shadow-sm' : 'text-[#64748B] hover:bg-gray-50'}`}>
-                {f.label}
+
+          <div className="flex max-w-full flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-1.5">
+            {[
+              { value: 'all' as const, label: 'All' },
+              { value: 'small' as const, label: '< $10k' },
+              { value: 'medium' as const, label: '$10k–$12.5k' },
+              { value: 'large' as const, label: '> $12.5k' },
+            ].map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                aria-pressed={priceFilter === filter.value}
+                onClick={() => setPriceFilter(filter.value)}
+                className={`rounded-lg px-4 py-2.5 text-xs font-bold transition ${
+                  priceFilter === filter.value
+                    ? 'bg-blue-700 text-white'
+                    : 'text-slate-500 hover:bg-slate-50'
+                }`}
+              >
+                {filter.label}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {filteredProds.slice(0, 8).map((p, i) => (
-            <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col hover:border-[#2563EB] hover:shadow-xl transition-all duration-300 group">
-              
-              {/* --- Replaced SVG with Original Image --- */}
-              <div className="bg-[#F8FAFC] rounded-xl h-[180px] w-full flex items-center justify-center mb-6 overflow-hidden border border-gray-100 relative">
-                <img 
-                  src={p[4] as string} 
-                  alt={p[0] as string} 
-                  className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 ease-in-out"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?q=80&w=600&auto=format&fit=crop';
-                  }}
-                />
-                <div className="absolute inset-0 bg-[#2563EB]/0 group-hover:bg-[#2563EB]/10 transition-colors duration-300 pointer-events-none"></div>
-              </div>
-              
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#1D4ED8] bg-blue-100 px-2 py-1 rounded w-max mb-3">{p[2]}</span>
-              <h3 className="font-heading text-lg font-extrabold text-[#0F172A] leading-tight mb-2 line-clamp-2">{p[0]}</h3>
-              <small className="text-[#64748B] font-bold text-xs block mb-6 uppercase tracking-wider">SKU: {p[1]}</small>
-              <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-5">
-                <div className="font-heading font-black text-2xl text-[#1E3A8A]">${(p[3] as number).toLocaleString()}</div>
-                <Link href="/walk-in-cooler-freezer" className="w-10 h-10 rounded-lg bg-gray-100 text-[#0F172A] flex items-center justify-center group-hover:bg-[#2563EB] group-hover:text-white transition-colors">
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
+        {catalogError ? (
+          <div
+            role="alert"
+            className="rounded-xl border border-amber-200 bg-amber-50 p-8 text-center"
+          >
+            <PackageSearch
+              size={34}
+              className="mx-auto mb-3 text-amber-600"
+            />
+            <h3 className="font-bold">Catalog temporarily unavailable</h3>
+            <p className="mt-3 text-sm text-slate-600">{catalogError}</p>
+            <a
+              href="/"
+              className="mt-5 inline-flex rounded-lg bg-blue-700 px-5 py-3 text-sm font-bold text-white"
+            >
+              Refresh
+            </a>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+            <PackageSearch
+              size={36}
+              className="mx-auto mb-4 text-slate-400"
+            />
+
+            <h3 className="text-lg font-bold">
+              {products.length === 0
+                ? 'No walk-in products are listed yet'
+                : 'No products in this price range'}
+            </h3>
+
+            {products.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setPriceFilter('all')}
+                className="mt-4 text-sm font-bold text-blue-700"
+              >
+                Show All Models
+              </button>
+            ) : (
+              <Link
+                href="/quote"
+                className="mt-4 inline-flex text-sm font-bold text-blue-700"
+              >
+                Contact Us for Available Options
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {filteredProducts.slice(0, 8).map((product) => {
+              const href =
+                `/walk-in-cooler-freezer/` +
+                `${encodeURIComponent(product.slug)}/` +
+                encodeURIComponent(product.id);
+
+              return (
+                <article
+                  key={product.id}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-600 hover:shadow-xl hover:shadow-blue-900/5"
+                >
+                  <Link
+                    href={href}
+                    aria-label={`View ${product.title}`}
+                    className="relative mb-5 block aspect-[4/3] overflow-hidden rounded-xl border border-slate-100 bg-slate-50"
+                  >
+                    <CatalogImage
+                      src={product.images[0] || ''}
+                      alt={product.title}
+                    />
+                  </Link>
+
+                  {(product.brand || product.badge) && (
+                    <span className="mb-3 w-fit rounded bg-blue-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                      {product.brand || product.badge}
+                    </span>
+                  )}
+
+                  <Link
+                    href={href}
+                    className="rounded hover:text-blue-700"
+                  >
+                    <h3 className="line-clamp-2 text-base font-extrabold leading-6">
+                      {product.title}
+                    </h3>
+                  </Link>
+
+                  {product.sku && (
+                    <p className="mb-5 mt-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                      SKU: {product.sku}
+                    </p>
+                  )}
+
+                  <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                    <p className="text-xl font-extrabold text-blue-900">
+                      {product.priceValue !== null
+                        ? MONEY.format(product.priceValue)
+                        : 'Request Price'}
+                    </p>
+
+                    <Link
+                      href={href}
+                      aria-label={`View details for ${product.title}`}
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-700 text-white transition hover:bg-blue-800"
+                    >
+                      <ArrowRight size={17} />
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+
+        {products.length > 0 && !catalogError && (
+          <div className="mt-9 text-center">
+            <Link
+              href="/walk-in-cooler-freezer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-700 bg-white px-6 py-3.5 text-sm font-bold text-blue-700 transition hover:bg-blue-50"
+            >
+              View All {products.length} Models
+              <ArrowRight size={17} />
+            </Link>
+          </div>
+        )}
+      </section>
+
+      {/* Product category banners */}
+      <section className="grid lg:grid-cols-2">
+        {[
+          {
+            title: 'Walk-In Coolers & Freezers',
+            text: 'Explore sizes, brands and available configurations.',
+            href: '/walk-in-cooler-freezer',
+            image: '/home/hf4.jpeg',
+          },
+          {
+            title: 'Refrigeration Equipment',
+            text: 'Find equipment for your commercial cooling project.',
+            href: '/refrigeration-equipment',
+            image: '/home/hf3.jpeg',
+          },
+        ].map((banner) => (
+          <div
+            key={banner.title}
+            className="relative flex min-h-80 items-center overflow-hidden bg-slate-950 px-7 py-12 sm:px-12"
+          >
+            <Image
+              src={banner.image}
+              alt=""
+              fill
+              sizes="(max-width: 1023px) 100vw, 50vw"
+              className="object-cover opacity-30"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
+
+            <div className="relative max-w-md">
+              <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+                {banner.title}
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-slate-300">
+                {banner.text}
+              </p>
+              <Link
+                href={banner.href}
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
+              >
+                Explore Products
+                <ArrowRight size={16} />
+              </Link>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </section>
 
-      {/* --- 6. DUAL BANNERS (Walk-in Coolers vs Refrigeration Equipment) --- */}
-      <section className="w-full max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-2 mt-8">
-        <div className="relative h-[350px] md:h-[400px] overflow-hidden group bg-[#1E3A8A]">
-          <div className="absolute inset-0 bg-cover bg-right md:bg-center group-hover:scale-105 transition-transform duration-700 ease-out" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1587293852726-70cdb56c2866?q=80&w=1200&auto=format&fit=crop')" }}></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1E3A8A] via-[#1E3A8A]/80 to-transparent"></div>
-          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 lg:px-20">
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3 leading-tight tracking-tight">
-              Walk-in Coolers<br />& Freezers
-            </h2>
-            <p className="text-blue-200 text-sm md:text-base font-medium mb-8">
-              Custom Sizes <span className="mx-2 text-white">•</span> Now 15% Savings
-            </p>
-            <Link href="/walk-in-cooler-freezer" className="btn-company px-8 py-3.5 text-xs font-black uppercase tracking-widest w-max rounded-md">
-              Shop Now
-            </Link>
-          </div>
-        </div>
-        <div className="relative h-[350px] md:h-[400px] overflow-hidden group bg-[#0F172A]">
-          <div className="absolute inset-0 bg-cover bg-right md:bg-center group-hover:scale-105 transition-transform duration-700 ease-out" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1635405038299-6e3eb33bc073?q=80&w=1200&auto=format&fit=crop')" }}></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0F172A] via-[#0F172A]/90 to-transparent"></div>
-          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 lg:px-20">
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3 leading-tight tracking-tight">
-              Refrigeration<br />Equipment
-            </h2>
-            <p className="text-gray-300 text-sm md:text-base font-medium mb-8">
-              Take an Extra $50 Off Every Monday
-            </p>
-            <Link href="/refrigeration-equipment" className="btn-company px-8 py-3.5 text-xs font-black uppercase tracking-widest w-max rounded-md">
-              Shop Now
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* --- 7. TARGET INDUSTRIES GRID --- */}
-      <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#F4F7FB] border-b border-gray-200">
-        <div className="text-center mb-16 md:mb-20">
-          <h4 className="text-[#2563EB] text-xs font-extrabold uppercase tracking-[0.2em] mb-4">Target Industries</h4>
-          <h2 className="font-heading text-3xl md:text-5xl font-black text-[#0F172A] tracking-tight uppercase">
-            ONE SYSTEM. <span className="text-[#2563EB]">EVERY SECTOR.</span>
+      {/* Industry overview */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-700">
+            Target Industries
+          </p>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+            Cold storage for your sector.
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {[
-            { t: 'RESTAURANTS', d: 'Walk-ins sized for every kitchen, from cafes to large multi-unit groups.', f: 'NSF / UL Approved', ic: <Utensils size={32} strokeWidth={1.5} className="text-[#2563EB]" /> },
-            { t: 'SUPERMARKETS', d: 'Anti-condensation display glass doors and multi-deck systems.', f: 'Maximized Merchandising', ic: <ShoppingCart size={32} strokeWidth={1.5} className="text-[#2563EB]" /> },
-            { t: 'WAREHOUSES', d: 'Large-scale drive-in coolers for massive high-volume cold storage.', f: 'ASTM E84 Compliant', ic: <Box size={32} strokeWidth={1.5} className="text-[#2563EB]" /> },
-            { t: 'HOSPITALITY', d: 'Solutions for resort kitchens, banquet facilities, and large-scale F&B.', f: 'Integrated Catering Systems', ic: <Building2 size={32} strokeWidth={1.5} className="text-[#2563EB]" /> },
-            { t: 'HEALTHCARE', d: 'Precise, medical-grade temperature arrays for sensitive pharma storage.', f: 'NIST Traceable Monitoring', ic: <Stethoscope size={32} strokeWidth={1.5} className="text-[#2563EB]" /> },
-            { t: 'CUSTOM', d: 'Fully tailored, spatially complex engineering solutions for unique project requirements.', f: 'Full CAD/BIM Support', ic: <Star size={32} strokeWidth={1.5} className="text-[#2563EB]" /> }
-          ].map((ind, idx) => (
-            <div key={idx} className="bg-white rounded-2xl p-8 flex items-start gap-6 border border-gray-200 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:border-[#2563EB] hover:shadow-[0_10px_30px_rgba(37,99,235,0.1)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer">
-              <div className="shrink-0 mt-1 bg-blue-50 p-2 rounded-lg">{ind.ic}</div>
-              <div className="flex flex-col h-full">
-                <h3 className="text-sm md:text-[15px] font-extrabold text-[#0F172A] uppercase tracking-wide mb-3">{ind.t}</h3>
-                <p className="text-[#475569] text-sm leading-relaxed mb-6 flex-grow font-medium">{ind.d}</p>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="text-[11px] font-black text-[#1E3A8A] uppercase tracking-wider">{ind.f}</span>
-                  <span className="text-gray-300 group-hover:text-[#2563EB] transition-colors transform group-hover:translate-x-1">→</span>
-                </div>
+
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((item, index) => (
+            <a
+              key={item.name}
+              href="#industry"
+              onClick={() => setActiveIndustry(index)}
+              className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-blue-500 hover:shadow-lg"
+            >
+              <div className="h-fit rounded-xl bg-blue-50 p-3 text-blue-700">
+                <item.icon size={25} />
               </div>
-            </div>
+              <div>
+                <h3 className="text-sm font-extrabold uppercase">
+                  {item.name}
+                </h3>
+                <p className="mt-3 text-xs leading-6 text-slate-500">
+                  {item.description}
+                </p>
+              </div>
+            </a>
           ))}
         </div>
       </section>
 
-      {/* --- 8. TESTIMONIAL BLOCK --- */}
-      <section className="py-20 bg-[#0F172A] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div>
-            <h2 className="font-heading text-3xl md:text-5xl font-black mb-8 leading-tight">Trusted by commercial kitchens & warehouses.</h2>
-            <div className="flex gap-3">
-              {TESTIMONIALS.map((_, i) => (
-                <button key={i} onClick={() => setTi(i)} className={`w-12 h-12 rounded-xl font-bold text-[15px] transition-colors ${ti === i ? 'bg-[#2563EB] text-white shadow-[0_0_15px_rgba(37,99,235,0.5)]' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
-                  {i + 1}
-                </button>
-              ))}
-            </div>
+      {/* Project assistance */}
+      <section className="bg-[#0f172a] px-4 py-14 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-7 md:flex-row md:items-center">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-blue-300">
+              <Clock size={15} />
+              Plan Your Next Project
+            </span>
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
+              Need help choosing the right system?
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-300">
+              Share your dimensions, temperature requirements
+              and installation location with our team.
+            </p>
           </div>
-          <div className="bg-[#1E293B] p-8 lg:p-10 rounded-3xl border border-white/10 shadow-xl">
-            <blockquote className="font-heading font-medium text-2xl leading-snug mb-8 min-h-[4em]">
-              "{TESTIMONIALS[ti][0]}"
-            </blockquote>
-            <figcaption className="text-blue-300 font-bold text-sm tracking-widest uppercase flex items-center gap-3">
-              <span className="w-6 h-0.5 bg-[#2563EB]"></span>
-              {TESTIMONIALS[ti][1]}
-            </figcaption>
-          </div>
+
+          <Link
+            href="/recommendation"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-sm font-bold text-white hover:bg-blue-700"
+          >
+            Get a Recommendation
+            <ArrowRight size={17} />
+          </Link>
         </div>
       </section>
 
-      {/* --- 9. EXACT SCREENSHOT MATCH: 5-COLUMN IMAGE GALLERY --- */}
-      <section className="pt-16 pb-12 bg-white w-full border-b-[4px] border-[#2563EB]">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
-            {GALLERY_IMAGES.map((img) => (
-              <div
-                key={img.id}
-                className="relative group overflow-hidden rounded-[16px] md:rounded-[20px] aspect-[4/3] bg-gray-100 shadow-sm cursor-pointer"
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-in-out"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-[#002f6c]/20 transition-colors duration-300 pointer-events-none"></div>
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
-                    <Maximize2 size={20} className="text-[#0F172A]" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* Gallery */}
+      <section className="border-b-4 border-blue-600 bg-white px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+          {GALLERY.map((image, index) => (
+            <button
+              key={image.src}
+              type="button"
+              aria-label={`Enlarge ${image.alt}`}
+              onClick={() => setGalleryIndex(index)}
+              className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(max-width: 767px) 45vw, 300px"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </button>
+          ))}
         </div>
       </section>
 
+      {galleryIndex !== null && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={GALLERY[galleryIndex].alt}
+          onClick={() => setGalleryIndex(null)}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-5"
+        >
+          <button
+            type="button"
+            autoFocus
+            onClick={() => setGalleryIndex(null)}
+            className="absolute right-5 top-5 z-10 rounded-lg bg-white px-4 py-2 text-sm font-bold text-slate-900"
+          >
+            Close
+          </button>
+
+          <div className="relative h-[75vh] w-full max-w-5xl">
+            <Image
+              src={GALLERY[galleryIndex].src}
+              alt={GALLERY[galleryIndex].alt}
+              fill
+              sizes="90vw"
+              className="object-contain"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
