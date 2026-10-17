@@ -1,245 +1,612 @@
-import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Plus, Image as ImageIcon, ChevronLeft, ChevronRight, Tag } from "lucide-react";
-import ProductActions from "@/app/admin/products/ProductActions";
-import { Suspense } from "react";
-import BrandSearchBox from "./SearchBox";
+import type { Prisma } from "@prisma/client";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+  Plus,
+  Search,
+  Tag,
+} from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+import prisma from "@/lib/prisma";
+import ProductActions from "@/app/admin/products/ProductActions";
+
+export const dynamic = "force-dynamic";
+
+const BRAND_NAMES = new Map<string, string>([
+  ["astra", "Astra"],
+  ["amerikooler", "Amerikooler"],
+  ["icemanz", "Icemanz"],
+]);
+
+const BRAND_BASE_PATH =
+  "/admin/products/walk-in-cooler-freezer/brand";
+
+const WALK_IN_PATH =
+  "/admin/products/walk-in-cooler-freezer";
+
+const PAGE_SIZE = 10;
+
+type SearchValues = {
+  page?: string | string[];
+  q?: string | string[];
+};
+
+type PageProps = {
+  params: Promise<{
+    brandSlug: string;
+  }>;
+  searchParams?: Promise<SearchValues>;
+};
+
+function firstValue(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function getRequestedPage(value: string): number {
+  const parsed = Number(value);
+
+  if (!Number.isSafeInteger(parsed) || parsed < 1) {
+    return 1;
+  }
+
+  return parsed;
+}
+
+function getProductImage(images: Prisma.JsonValue | null): string | null {
+  if (!Array.isArray(images)) {
+    return null;
+  }
+
+  for (const image of images) {
+    if (typeof image === "string" && image.trim()) {
+      return image;
+    }
+  }
+
+  return null;
+}
+
+function displayPrice(value: string | null): string {
+  const original = value?.trim();
+
+  if (!original) {
+    return "—";
+  }
+
+  // Supports both "12132.00" and "$12,132.00".
+  const cleaned = original.replace(/[$,\s]/g, "");
+
+  if (!/^\d+(\.\d+)?$/.test(cleaned)) {
+    return original;
+  }
+
+  const amount = Number(cleaned);
+
+  if (!Number.isFinite(amount)) {
+    return original;
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
 
 export default async function BrandProductsPage({
   params,
   searchParams,
-}: {
-  params: Promise<{ brandSlug: string }>;
-  searchParams?: Promise<{ page?: string; q?: string }>;
-}) {
-  const { brandSlug } = await params;
-  const resolvedSearch = await searchParams;
-  const page = Number(resolvedSearch?.page) || 1;
-  const q = resolvedSearch?.q?.trim() || '';
-  const limit = 10;
-  const skip = (page - 1) * limit;
+}: PageProps) {
+  const { brandSlug: rawBrandSlug } = await params;
+  const search = await searchParams;
 
-  // Find the brand
-  const brand = await prisma.brand.findUnique({
-    where: { slug: brandSlug },
+  const brandSlug = rawBrandSlug.trim().toLowerCase();
+  const knownBrandName = BRAND_NAMES.get(brandSlug);
+
+  const q = firstValue(search?.q).trim();
+  const requestedPage = getRequestedPage(firstValue(search?.page));
+
+  // Prefer the exact stored slug.
+  let brand = await prisma.brand.findUnique({
+    where: {
+      slug: rawBrandSlug,
+    },
   });
 
-  if (!brand) notFound();
-
-  // Match by brandId (relation) OR brand text (for products imported before brandId was set)
-  const where = {
-    AND: [
-      {
-        OR: [
-          { brandId: brand.id },
-          { brand: { equals: brand.name, mode: 'insensitive' as const } },
-        ],
+  // Support links whose capitalization differs from the stored slug.
+  if (!brand) {
+    brand = await prisma.brand.findFirst({
+      where: {
+        slug: {
+          equals: brandSlug,
+          mode: "insensitive",
+        },
       },
-      ...(q
-        ? [{
-          OR: [
-            { title: { contains: q, mode: 'insensitive' as const } },
-            { sku: { contains: q, mode: 'insensitive' as const } },
-          ],
-        }]
-        : []),
-    ],
-  };
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+  }
 
-  const [products, totalCount] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      skip,
-    }),
-    prisma.product.count({ where }),
+  // A completely unknown brand URL should still return a real 404.
+  // Known sidebar brands can render even before their Brand row exists.
+  if (!brand && !knownBrandName) {
+    notFound();
+  }
+
+  const brandName = brand?.name ?? knownBrandName ?? brandSlug;
+  const routeSlug = brand?.slug ?? brandSlug;
+
+  const pagePath =
+    `${BRAND_BASE_PATH}/${encodeURIComponent(routeSlug)}`;
+
+  // Match linked products and older products that only contain brand text.
+  const brandConditions: Prisma.ProductWhereInput[] = [];
+
+  if (brand) {
+    brandConditions.push({
+      brandId: brand.id,
+    });
+  }
+
+  const textNames = new Set<string>([
+    brandName,
+    brandSlug,
   ]);
 
-  const totalPages = Math.ceil(totalCount / limit);
+  if (knownBrandName) {
+    textNames.add(knownBrandName);
+  }
+
+  for (const name of textNames) {
+    brandConditions.push({
+      brand: {
+        equals: name,
+        mode: "insensitive",
+      },
+    });
+  }
+
+  const conditions: Prisma.ProductWhereInput[] = [
+    {
+      OR: brandConditions,
+    },
+  ];
+
+  if (q) {
+    conditions.push({
+      OR: [
+        {
+          title: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          sku: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  const where: Prisma.ProductWhereInput = {
+    AND: conditions,
+  };
+
+  const totalCount = await prisma.product.count({
+    where,
+  });
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalCount / PAGE_SIZE),
+  );
+
+  // Avoid an empty page after deleting the last item on a later page.
+  const page = Math.min(requestedPage, totalPages);
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const products = await prisma.product.findMany({
+    where,
+    include: {
+      category: true,
+    },
+    orderBy: [
+      {
+        createdAt: "desc",
+      },
+      {
+        id: "desc",
+      },
+    ],
+    take: PAGE_SIZE,
+    skip,
+  });
+
+  const addParams = new URLSearchParams({
+    category: "walk-in-cooler-freezer",
+  });
+
+  // Only preselect a brand that actually exists in the database.
+  if (brand) {
+    addParams.set("brand", brand.slug);
+  }
+
+  const addProductUrl =
+    `/admin/products/new?${addParams.toString()}`;
+
+  function paginationUrl(nextPage: number): string {
+    const query = new URLSearchParams({
+      page: String(nextPage),
+    });
+
+    if (q) {
+      query.set("q", q);
+    }
+
+    return `${pagePath}?${query.toString()}`;
+  }
+
+  const firstResult = totalCount > 0 ? skip + 1 : 0;
+  const lastResult = Math.min(skip + PAGE_SIZE, totalCount);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
-            <Link
-              href="/admin/products/walk-in-cooler-freezer"
-              className="hover:text-blue-600 transition-colors"
-            >
-              Walk-in Cooler &amp; Freezer
-            </Link>
-            <span>/</span>
-            <span className="text-slate-800 font-medium">{brand.name}</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Tag size={22} className="text-blue-500" />
-            {brand.name}
+          <Link
+            href={WALK_IN_PATH}
+            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
+          >
+            <ArrowLeft size={16} />
+            Walk-In Cooler &amp; Freezer
+          </Link>
+
+          <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight text-slate-900">
+            <span className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <Tag size={22} />
+            </span>
+
+            {brandName}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {totalCount} product{totalCount !== 1 ? 's' : ''} under{' '}
-            <span className="font-medium text-slate-700">{brand.name}</span>
+
+          <p className="mt-2 text-sm text-slate-500">
+            {totalCount} product{totalCount === 1 ? "" : "s"}
+            {" "}found for {brandName}.
           </p>
         </div>
+
         <Link
-          href={`/admin/products/new?brand=${brand.slug}&category=walk-in-cooler-freezer`}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
+          href={addProductUrl}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-[0.98]"
         >
-          <Plus size={20} />
-          <span>Add Product</span>
+          <Plus size={18} />
+          Add Product
         </Link>
       </div>
 
-      {/* Brand badge tabs — quick navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          {['astra', 'amerikooler', 'icemanz'].map((slug) => (
-            <Link
-              key={slug}
-              href={`/admin/products/walk-in-cooler-freezer/brand/${slug}`}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors capitalize ${slug === brandSlug
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-            >
-              {slug.charAt(0).toUpperCase() + slug.slice(1)}
-            </Link>
-          ))}
+      {/* Missing brand record: useful information instead of a 404 */}
+      {!brand && (
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900"
+        >
+          <AlertCircle
+            size={20}
+            className="mt-0.5 shrink-0"
+          />
+
+          <div className="space-y-1 text-sm">
+            <p className="font-semibold">
+              {brandName} is not registered in the Brand table.
+            </p>
+
+            <p>
+              Products saved with the brand text &quot;{brandName}&quot;
+              {" "}can still appear here.
+            </p>
+
+            <p>
+              To enable brand selection in the product form, add a Brand
+              record with name{" "}
+              <strong>{brandName}</strong>
+              {" "}and slug{" "}
+              <code className="rounded bg-amber-100 px-1.5 py-0.5">
+                {brandSlug}
+              </code>
+              {" "}in Prisma Studio.
+            </p>
+          </div>
         </div>
-
-        {/* Search */}
-        <Suspense fallback={<div className="w-full sm:w-72 h-9 bg-slate-100 rounded-lg animate-pulse" />}>
-          <BrandSearchBox />
-        </Suspense>
-      </div>
-
-      {/* Search result info */}
-      {q && (
-        <p className="text-sm text-slate-500">
-          Showing results for <span className="font-semibold text-slate-800">&quot;{q}&quot;</span>
-          {' '}— <span className="font-medium">{totalCount}</span> product{totalCount !== 1 ? 's' : ''} found
-        </p>
       )}
 
-      {/* Products Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+      {/* Brand navigation and search */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <nav
+          aria-label="Product brands"
+          className="flex flex-wrap items-center gap-2"
+        >
+          {Array.from(BRAND_NAMES.entries()).map(([slug, name]) => {
+            const active = slug === brandSlug;
+
+            return (
+              <Link
+                key={slug}
+                href={`${BRAND_BASE_PATH}/${slug}`}
+                aria-current={active ? "page" : undefined}
+                className={[
+                  "rounded-full px-4 py-2 text-sm font-semibold",
+                  "transition-colors",
+                  active
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+                ].join(" ")}
+              >
+                {name}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <form
+          action={pagePath}
+          method="get"
+          className="flex w-full items-center gap-2 lg:w-auto"
+        >
+          <div className="relative min-w-0 flex-1">
+            <Search
+              size={17}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+
+            <input
+              key={q}
+              type="search"
+              name="q"
+              defaultValue={q}
+              aria-label="Search products by title or SKU"
+              placeholder="Search title or SKU..."
+              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100 lg:w-72"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+
+      {q && (
+        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+          <p>
+            Results for{" "}
+            <strong className="text-slate-800">
+              &quot;{q}&quot;
+            </strong>
+          </p>
+
+          <Link
+            href={pagePath}
+            className="font-semibold text-blue-600 hover:underline"
+          >
+            Clear search
+          </Link>
+        </div>
+      )}
+
+      {/* Products */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 whitespace-nowrap">
+            <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
               <tr>
-                <th className="px-6 py-4 w-full">Product</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Price</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th scope="col" className="px-6 py-4">
+                  Product
+                </th>
+
+                <th
+                  scope="col"
+                  className="whitespace-nowrap px-6 py-4"
+                >
+                  Category
+                </th>
+
+                <th
+                  scope="col"
+                  className="whitespace-nowrap px-6 py-4"
+                >
+                  Price
+                </th>
+
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-right"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-slate-100">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-16 text-center text-slate-500">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="size-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-                        <ImageIcon className="size-8 text-slate-300" />
+                  <td
+                    colSpan={4}
+                    className="px-6 py-16 text-center"
+                  >
+                    <div className="mx-auto flex max-w-sm flex-col items-center">
+                      <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-slate-100">
+                        <ImageIcon
+                          size={30}
+                          className="text-slate-400"
+                        />
                       </div>
-                      <p className="text-base font-medium text-slate-600">
-                        {q ? `No products matching "${q}"` : `No products for ${brand.name} yet`}
+
+                      <p className="text-base font-semibold text-slate-800">
+                        {q
+                          ? "No products match your search"
+                          : `No products found for ${brandName}`}
                       </p>
-                      <p className="text-sm text-slate-400 mt-1">
-                        {q ? 'Try a different search term.' : 'Click "Add Product" to get started.'}
+
+                      <p className="mt-2 text-sm text-slate-500">
+                        {q
+                          ? "Try a different title or SKU."
+                          : "Check the product's saved brand or add a new product."}
                       </p>
+
+                      <Link
+                        href={q ? pagePath : addProductUrl}
+                        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-100"
+                      >
+                        {q ? (
+                          "Clear Search"
+                        ) : (
+                          <>
+                            <Plus size={16} />
+                            Add Product
+                          </>
+                        )}
+                      </Link>
                     </div>
                   </td>
                 </tr>
               ) : (
-                products.map((product) => (
-                  <tr key={product.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4 max-w-[200px] sm:max-w-[300px] lg:max-w-[500px]">
-                      <div className="flex items-center gap-4">
-                        <div className="size-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center flex-shrink-0">
-                          {product.images?.[0] ? (
-                            <img
-                              src={product.images[0]}
-                              alt={product.title}
-                              className="size-full object-cover"
-                            />
-                          ) : (
-                            <ImageIcon className="size-6 text-slate-400" />
-                          )}
+                products.map((product) => {
+                  const imageUrl = getProductImage(product.images);
+
+                  return (
+                    <tr
+                      key={product.id}
+                      className="transition-colors hover:bg-slate-50/70"
+                    >
+                      <td className="min-w-[280px] max-w-[520px] px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                            {imageUrl ? (
+                              <img
+                                src={imageUrl}
+                                alt={product.title}
+                                loading="lazy"
+                                className="size-full object-contain"
+                              />
+                            ) : (
+                              <ImageIcon
+                                size={23}
+                                className="text-slate-400"
+                              />
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <Link
+                              href={`/admin/products/${product.id}/edit`}
+                              className="line-clamp-2 font-semibold text-slate-900 transition-colors hover:text-blue-600"
+                            >
+                              {product.title}
+                            </Link>
+
+                            {product.sku && (
+                              <p className="mt-1 font-mono text-xs text-slate-400">
+                                SKU: {product.sku}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p
-                            className="font-semibold text-slate-900 line-clamp-2 whitespace-normal break-words"
-                            title={product.title}
-                          >
-                            {product.title}
-                          </p>
-                          {product.sku && (
-                            <p className="text-xs text-slate-400 mt-0.5 font-mono">SKU: {product.sku}</p>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap align-top">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
-                        {product.category?.name || 'Uncategorized'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap align-top">
-                      {product.price || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-right whitespace-nowrap align-top">
-                      <ProductActions productId={product.id} />
-                    </td>
-                  </tr>
-                ))
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                          {product.category?.name ?? "Uncategorized"}
+                        </span>
+                      </td>
+
+                      <td className="whitespace-nowrap px-6 py-4 font-semibold text-slate-800">
+                        {displayPrice(product.price)}
+                      </td>
+
+                      <td className="whitespace-nowrap px-6 py-4 text-right">
+                        <ProductActions productId={product.id} />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="border-t border-slate-200 px-6 py-4 flex items-center justify-between bg-slate-50">
-            <div className="text-sm text-slate-500">
-              Showing{' '}
-              <span className="font-medium text-slate-900">{skip + 1}</span> to{' '}
-              <span className="font-medium text-slate-900">
-                {Math.min(skip + limit, totalCount)}
-              </span>{' '}
-              of <span className="font-medium text-slate-900">{totalCount}</span> results
-            </div>
-            <div className="flex items-center gap-2">
-              <Link
-                href={page > 1 ? `?page=${page - 1}${q ? `&q=${encodeURIComponent(q)}` : ''}` : '#'}
-                className={`p-2 rounded-lg border ${page > 1
-                  ? 'border-slate-300 text-slate-700 hover:bg-slate-100'
-                  : 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50'
-                  }`}
-                aria-disabled={page <= 1}
-              >
-                <ChevronLeft size={18} />
-              </Link>
-              <div className="text-sm font-medium text-slate-700 px-2">
-                Page {page} of {totalPages}
-              </div>
-              <Link
-                href={page < totalPages ? `?page=${page + 1}${q ? `&q=${encodeURIComponent(q)}` : ''}` : '#'}
-                className={`p-2 rounded-lg border ${page < totalPages
-                  ? 'border-slate-300 text-slate-700 hover:bg-slate-100'
-                  : 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50'
-                  }`}
-                aria-disabled={page >= totalPages}
-              >
-                <ChevronRight size={18} />
-              </Link>
-            </div>
-          </div>
-        )}
+        <div className="flex flex-col gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-500">
+            Showing{" "}
+            <strong className="text-slate-800">
+              {firstResult}–{lastResult}
+            </strong>
+            {" "}of{" "}
+            <strong className="text-slate-800">
+              {totalCount}
+            </strong>
+          </p>
+
+          {totalPages > 1 && (
+            <nav
+              aria-label="Product pagination"
+              className="flex items-center gap-3"
+            >
+              {page > 1 ? (
+                <Link
+                  href={paginationUrl(page - 1)}
+                  aria-label="Previous page"
+                  className="rounded-lg border border-slate-300 bg-white p-2 text-slate-600 transition-colors hover:bg-slate-100"
+                >
+                  <ChevronLeft size={18} />
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  aria-label="Previous page"
+                  className="rounded-lg border border-slate-200 p-2 text-slate-300"
+                >
+                  <ChevronLeft size={18} />
+                </span>
+              )}
+
+              <span className="text-sm font-medium text-slate-700">
+                {page} / {totalPages}
+              </span>
+
+              {page < totalPages ? (
+                <Link
+                  href={paginationUrl(page + 1)}
+                  aria-label="Next page"
+                  className="rounded-lg border border-slate-300 bg-white p-2 text-slate-600 transition-colors hover:bg-slate-100"
+                >
+                  <ChevronRight size={18} />
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  aria-label="Next page"
+                  className="rounded-lg border border-slate-200 p-2 text-slate-300"
+                >
+                  <ChevronRight size={18} />
+                </span>
+              )}
+            </nav>
+          )}
+        </div>
       </div>
     </div>
   );

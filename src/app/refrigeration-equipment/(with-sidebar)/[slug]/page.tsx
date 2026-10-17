@@ -1,75 +1,167 @@
-import prisma from '@/lib/prisma';
-import RefrigerationEquipmentClient from './RefrigerationEquipmentClient';
+import type { Prisma } from "@prisma/client";
+import { redirect } from "next/navigation";
 
-export const dynamic = 'force-dynamic';
+import prisma from "@/lib/prisma";
+import RefrigerationEquipmentClient from "./RefrigerationEquipmentClient";
 
-export default async function RefrigerationSubcategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+export const dynamic = "force-dynamic";
+
+type EquipmentProduct = Prisma.ProductGetPayload<{
+  include: {
+    category: true;
+  };
+}>;
+
+type QueryParams = Record<
+  string,
+  string | string[] | undefined
+>;
+
+type Props = {
+  params: Promise<{
+    slug: string;
+  }>;
+  searchParams: Promise<QueryParams>;
+};
+
+export default async function RefrigerationSubcategoryPage({
+  params,
+  searchParams,
+}: Props) {
   const { slug } = await params;
 
-  // Fetch category and all root categories in parallel
+  /*
+   * Keep existing links/bookmarks working.
+   *
+   * Old:
+   * /refrigeration-equipment/condensing-units
+   *
+   * New:
+   * /condensing-units
+   */
+  if (slug === "condensing-units") {
+    const query = await searchParams;
+    const queryString = new URLSearchParams();
+
+    for (const [name, value] of Object.entries(query)) {
+      if (Array.isArray(value)) {
+        value.forEach((entry) => {
+          queryString.append(name, entry);
+        });
+      } else if (typeof value === "string") {
+        queryString.set(name, value);
+      }
+    }
+
+    const suffix = queryString.toString();
+
+    redirect(
+      suffix
+        ? `/condensing-units?${suffix}`
+        : "/condensing-units",
+    );
+  }
+
   const [category, dbCategories] = await Promise.all([
     prisma.category.findUnique({
-      where: { slug }
+      where: { slug },
     }),
+
     prisma.category.findMany({
-      where: { parentId: null },
+      where: {
+        parentId: null,
+      },
       include: {
         subcategories: {
           include: {
-            subcategories: true
-          }
-        }
-      }
-    })
+            subcategories: true,
+          },
+        },
+      },
+    }),
   ]);
 
-  let products: any[] = [];
+  let products: EquipmentProduct[] = [];
+
   let title = slug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("-")
+    .filter(Boolean)
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() + word.slice(1),
+    )
+    .join(" ");
 
   if (category) {
     title = category.name;
-    // Collect all category IDs (this category + its subcategories + sub-subcategories)
-    const categoryIdsToFetch = [category.id];
 
-    const subCategories = await prisma.category.findMany({
-      where: { parentId: category.id },
-      include: { subcategories: true }
+    const allCategories = await prisma.category.findMany({
+      select: {
+        id: true,
+        parentId: true,
+      },
     });
 
-    for (const sub of subCategories) {
-      categoryIdsToFetch.push(sub.id);
-      for (const subSub of sub.subcategories) {
-        categoryIdsToFetch.push(subSub.id);
+    const categoryIds = new Set<string>([category.id]);
+
+    // Include descendants at every nesting level.
+    let changed = true;
+
+    while (changed) {
+      changed = false;
+
+      for (const item of allCategories) {
+        if (
+          item.parentId &&
+          categoryIds.has(item.parentId) &&
+          !categoryIds.has(item.id)
+        ) {
+          categoryIds.add(item.id);
+          changed = true;
+        }
       }
     }
 
     products = await prisma.product.findMany({
       where: {
-        categoryId: { in: categoryIdsToFetch }
+        categoryId: {
+          in: Array.from(categoryIds),
+        },
       },
       include: {
-        category: true
-      }
+        category: true,
+      },
+      orderBy: [
+        { title: "asc" },
+        { id: "asc" },
+      ],
     });
-  } else {
-    // If slug doesn't match an exact category, we fallback to an empty product list or fetch all if "all"
-    if (slug === 'all' || !slug) {
-      title = "All Products";
-      products = await prisma.product.findMany({
-        include: {
-          category: true
-        }
-      });
-    }
+  } else if (slug === "all") {
+    title = "All Products";
+
+    products = await prisma.product.findMany({
+      include: {
+        category: true,
+      },
+      orderBy: [
+        { title: "asc" },
+        { id: "asc" },
+      ],
+    });
   }
+
+  const serializedProducts = JSON.parse(
+    JSON.stringify(products),
+  );
+
+  const serializedCategories = JSON.parse(
+    JSON.stringify(dbCategories),
+  );
 
   return (
     <RefrigerationEquipmentClient
-      products={products}
-      categories={dbCategories as any}
+      products={serializedProducts}
+      categories={serializedCategories}
       slug={slug}
       title={title}
     />

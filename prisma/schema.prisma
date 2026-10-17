@@ -65,7 +65,7 @@ model Product {
   brandRef         Brand?    @relation(fields: [brandId], references: [id])
 }
 
-yu-
+
 
 model InvoiceRequest {
   id                 String    @id @default(uuid())
